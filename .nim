@@ -43,6 +43,13 @@ plugins:
       filter: $entry->path =~ /^clmemo/;
       path: memo/tag/{tag}
 
+  - module: AutoIndex
+    config:
+      filter: $entry->path =~ /^clmemo/;
+      path: memo
+      filename: index.rss
+
   - module: Paginate
     config:
+      filter: $page->filename !~ /\.rss/
       entries_per_page: 10

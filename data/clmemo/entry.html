@@ -1,5 +1,9 @@
 ? extends 'common/base.html'
 
+? block option_headers => sub {
+  <link rel="alternate" type="application/rss+xml" href="http://unknownplace.org/memo/index.rss" />
+? }
+
 <?
    block subtitle => sub {
        Text::MicroTemplate::escape_html($entry->title . ' - ');
