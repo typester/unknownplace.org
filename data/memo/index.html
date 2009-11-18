@@ -1,0 +1,82 @@
+? use Data::Page::Navigation;
+? extends 'common/base.html'
+
+<?
+   block subtitle => sub {
+       my ($d) = $page->filename =~ m!memo/(\d+/\d+/\d+)!;
+       $d ? "$d - memo - " : 'memo - ';
+   };
+?>
+
+? block content => sub {
+
+? for my $entry (@{ $page->entries }) {
+? my ($eid) = $entry->filename =~ /(\d+)$/;
+? my $permalink = '/memo/' . $entry->datetime->ymd('/') . '/' . $eid . '/';
+<div class="entry autopagerize_page_element">
+  <h2<?= $page->filename =~ m!memo/\d+/\d+/\d+! ? encoded_string sprintf(' id="e%03d"', $eid) : '' ?>><a href="<?= $permalink ?>"><?= $entry->title ?></a></h2>
+
+  <div class="body">
+    <?= encoded_string $entry->body ?>
+  </div>
+
+  <div class="meta">
+    by typester /
+    at <a href="<?= $permalink ?>"><?= $entry->datetime ?></a> /
+? my $i = 0;
+? for my $tag (@{ $entry->meta->{tags} || [] }) {
+    <?= $i++ > 0 ? encoded_string '&middot;' : '' ?> <a href=""><?= $tag ?></a>
+? }
+    / <a href="<?= $permalink ?>#disqus_thread">Comment</a>
+  </div>
+</div>
+
+? } # endfor $entry
+
+<?
+
+my $link_for = sub($) {
+    my $p = shift;
+    return '' unless defined $p;
+
+    (my $path = $page->filename) =~ s!/page/(\d+).*$!!;
+    my @path = split '/', $path; pop @path if $path[-1] =~ /\./;
+
+    if ($p == 1) {
+        return join '/', '', @path, '';
+    }
+    else {
+        join '/', '', @path, 'page', $p, '';
+    }
+};
+
+?>
+? if (my $pager = $page->pager and $page->pager->last_page > 1) {
+
+<div id="pager" class="autopagerize_insert_before">
+  <p class="pages">
+? if ($pager->previous_page) {
+    <a class="prev" rel="previous" href="<?= $link_for->($pager->previous_page) ?>">&laquo; Prev</a>
+? } else {
+    <span class="prev">&laquo; Prev</span>
+? }
+? for my $p ($pager->pages_in_navigation(10)) {
+? if ($p == $pager->current_page) {
+    <span class="current"><?= $p ?></span>
+? } else {
+    <a href="<?= $link_for->($p) ?>"><?= $p ?></a>
+? }
+? }
+? if ($pager->next_page) {
+    <a class="next" rel="next" href="<?= $link_for->($pager->next_page) ?>">Next &raquo;</a>
+? } else {
+    <span class="next">Next &raquo;</span>
+? }
+  </p>
+  <p class="info">(Page <?= $pager->current_page ?> of <?= $pager->last_page ?>)</p>
+</div><?# /pager ?>
+
+
+? } # endif pager
+? } # endblock content
+
