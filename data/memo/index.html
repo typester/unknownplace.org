@@ -25,7 +25,7 @@
     at <a href="<?= $permalink ?>"><?= $entry->datetime ?></a> /
 ? my $i = 0;
 ? for my $tag (@{ $entry->meta->{tags} || [] }) {
-    <?= $i++ > 0 ? encoded_string '&middot;' : '' ?> <a href=""><?= $tag ?></a>
+    <?= $i++ > 0 ? encoded_string '&middot; ' : '' ?><a href="/memo/tag/<?= $tag ?>/"><?= $tag ?></a>
 ? }
     / <a href="<?= $permalink ?>#disqus_thread">Comment</a>
   </div>

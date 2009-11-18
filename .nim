@@ -8,7 +8,7 @@ plugins:
   - module: Entry::Clmemo
     config:
       file: './clmemo.txt'
-      limit: 30
+#      limit: 30
 
   - module: Meta
   - module: Markdown
@@ -37,6 +37,11 @@ plugins:
     config:
       filter: $entry->path =~ /^clmemo/;
       path: memo
+
+  - module: AutoIndex
+    config:
+      filter: $entry->path =~ /^clmemo/;
+      path: memo/tag/{tag}
 
   - module: Paginate
     config:
