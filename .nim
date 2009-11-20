@@ -21,8 +21,8 @@ plugins:
     rule:
       expression: $entry->path =~ /^clmemo/;
     config:
-      path: memo/{year}/{month}/{day}
-      filename: '{filename}/index.html'
+      path: memo/<?= $year ?>/<?= $month ?>/<?= $day ?>
+      filename: '<?= $filename ?>/index.html'
 
   - module: AutoIndex
     config:
@@ -31,7 +31,7 @@ plugins:
   - module: AutoIndex
     config:
       filter: $entry->path =~ /^clmemo/;
-      path: memo/{year}/{month}/{day}
+      path: memo/<?= $year ?>/<?= $month ?>/<?= $day ?>
 
   - module: AutoIndex
     config:
@@ -41,7 +41,7 @@ plugins:
   - module: AutoIndex
     config:
       filter: $entry->path =~ /^clmemo/;
-      path: memo/tag/{tag}
+      path: memo/tag/<?= $tag ?>
 
   - module: AutoIndex
     config:
