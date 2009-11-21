@@ -1,3 +1,12 @@
+2009-11-21 (Sat)  Daisuke Murase  <typester@mujina.local>
+
+	* 11:08 なぜか X 関係でビルドできないとき [lighttpd]:
+	lighttpd 1.4.24 以降や現在の SVN head で `autogen.sh` を走らせてからビルドしようとするとなぜか X 関係のエラーが出て `make` が失敗するということがありますがそういうときは、
+
+	    cp `which libtool` .
+
+	とかすると `make` とおるようになります。それ以上追ってないけど。なんでだろ？
+
 2009-11-19 (Thu)  Daisuke Murase  <typester@mujina.local>
 
 	* 00:31 リニューアル [web] [life]:
