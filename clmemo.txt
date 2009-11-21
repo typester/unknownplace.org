@@ -1,5 +1,24 @@
 2009-11-21 (Sat)  Daisuke Murase  <typester@mujina.local>
 
+	* 12:08 mod_accessvalve [lighttpd]:
+	lighttpd で一定時間におけるアクセス数をもとにアクセスを制限したいという用件があったのですが、それにマッチする良いモジュールがなかったので試しに書いてみた。
+
+	> [typester's mod_accessvalve at master - GitHub](http://github.com/typester/mod_accessvalve)
+
+	設定項目は
+
+	 * `accessvalve.bucket-size`: `reset-interval` の時間内に許可するリクエスト数
+	 * `accessvalve.reset-interval`: リクエスト数カウントをリセットする時間（秒） (デフォルト 60)
+	 * `accessvalve.ban-duration`: リクエスト数が `bucket-size` を超えた場合にアクセスを拒否する時間（秒）(デフォルト 900)
+
+	という感じで。また `bucket-size` を指定しない、もしくは `0` に設定するとそのブロックではこの機能は無効になる。
+
+	このようなアクセス制限をあえて HTTPD でやる利点としては、Virtual Hostごとに設定を変えたり、特定のパスだけ制限したりと言うことができると言うことかなぁ。あとは 503 エラーとかかえせたりとかか。その分無駄なループが発生するのでオーバーヘッドになる。
+
+	最初 lighttpd のサイトを検索すると `mod_throttle` というのを誰かが書いているのが見つかってそれを使おうとしたのだけど、設定ファイルの patch 処理がされてなく、上記のような設定ファイルの場所によって設定を変えるということができなかったので採用を見送った。
+
+	また、単純なコネクションごとの帯域制限やコネクション数制限は lighttpd に付属の mod_evasive でできる。
+
 	* 11:08 なぜか X 関係でビルドできないとき [lighttpd]:
 	lighttpd 1.4.24 以降や現在の SVN head で `autogen.sh` を走らせてからビルドしようとするとなぜか X 関係のエラーが出て `make` が失敗するということがありますがそういうときは、
 
