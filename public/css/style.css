@@ -143,7 +143,7 @@ pre code {
     -webkit-border-bottom-left-radius: 0.5em;
 }
 
-p code {
+p code, li code {
     display: inline;
     background-color: #f0f0f0;
     padding: 0.1em 0.4em;
@@ -174,8 +174,8 @@ ul ul, ul ol, ol ol, ol ul  {
 }
 
 li {
-    line-height: 1.4em;
     font-size: 1.1em;
+    padding: 0.2em;
 }
 
 ol li {
