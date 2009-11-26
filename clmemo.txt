@@ -1,3 +1,12 @@
+2009-11-26 (Thu)  Daisuke Murase  <typester@mujina.local>
+
+	* 23:40 CookPad の iPhone 用 API [web] [cookpad] [iphone]:
+	こんな感じかな。
+
+	> [typester's cookpad-api-perl at master - GitHub](http://github.com/typester/cookpad-api-perl)
+
+	`api_key` ないと動かないからあれだけど。
+
 2009-11-25 (Wed)  Daisuke Murase  <typester@mujina.local>
 
 	* 15:00 中里情報ソースに困る [baseball]:
