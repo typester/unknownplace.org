@@ -1,3 +1,58 @@
+2009-12-03 (Thu)  Daisuke Murase  <typester@mujina.local>
+
+	* 16:00 無線APによって自動でhostsを変える方法 [osx]:
+	OSX の LaunchAgents には特定のパスを監視して更新があったらプログラムを起動すると言うことが出来ます。例えば以下のような設定を書いてみると：
+
+	    <?xml version="1.0" encoding="UTF-8"?>
+	    <!DOCTYPE plist PUBLIC "-//Apple Computer//DTD PLIST 1.0//EN"
+	              "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+	    <plist version="1.0">
+	      <dict>
+	        <key>Label</key>
+	        <string>org.unknownplace.wifi_switch</string>
+	        <key>ProgramArguments</key>
+	        <array>
+	          <string>/usr/bin/zsh</string>
+	          <string>-c</string>
+	          <string>exec perl /Users/typester/dev/scratch/wifi_switch/switch.pl</string>
+	        </array>
+	        <key>RunAtLoad</key>
+	        <true/>
+	        <key>StandardErrorPath</key>
+	        <string>/dev/null</string><!-- <string>/tmp/error</string> -->
+	        <key>StandardOutPath</key>
+	        <string>/dev/null</string>
+	        <key>WatchPaths</key>
+	        <array>
+	          <string>/Library/Preferences/SystemConfiguration/com.apple.airport.preferences.plist</string>
+	        </array>
+	      </dict>
+	    </plist>
+
+	`/Library/Preferences/SystemConfiguration/com.apple.airport.preferences.plist` を監視しそれが更新されたら `/Users/typester/dev/scratch/wifi_switch/switch.pl` を実行する。と言うことが実現できます。
+
+	この監視先のファイルは OSX の無線ネットワーク設定なので、これが更新されると言うことは無線通信の状態が変わったときと言うことを意味します。
+
+	これを有効にするにはこのファイルを適当な名前 `hoge.plist` で `/System/Library/LaunchDaemons/` 保存すれば次回起動から有効になります。すぐに有効にしたい場合は、
+
+	    sudo launchctl load /System/Library/LaunchDaemons/hoge.plist
+
+	などとすればOKです。詳しくは launchctl や LaunchAgent/LaunchDaemon のドキュメントを参照のこと。システムレベルの LaunchDaemon を使用しているのは `/etc/hosts` を書き換えるのに root 権限が必要だからです。
+
+	あとはここで起動されるスクリプト中でからAPの情報を取得しそれをもとに hosts を書き換えればいいわけです。APの情報は
+
+	    /System/Library/PrivateFrameworks/Apple80211.framework/Versions/A/Resources/airport -I
+
+	と言うコマンドで取得可能なのでそれをパースすればオッケーです。
+
+	以下に僕が実際に使用しているスクリプトを貼っておきます。
+
+	> [http://gist.github.com/247950](http://gist.github.com/247950)
+
+	このスクリプトと同じところに、`default.mt` と `特定のAPのSSID名.mt` と言うファイルで hosts を書いておくと、通常は `default.mt` が `/etc/hosts` に書き出され、SSIDにマッチするファイルがある場合には `SSID名.mt` が `/etc/hosts` に書き出されるという感じです。
+
+	AP によって hosts を変えたいという状況がそんなにあるとは思いませんが、ネットワークの状態によっていろいろ設定を変えると言う目的では便利で使えますので覚えておいて損はないでしょう。
+
 2009-11-26 (Thu)  Daisuke Murase  <typester@mujina.local>
 
 	* 23:40 CookPad の iPhone 用 API [web] [cookpad] [iphone]:
