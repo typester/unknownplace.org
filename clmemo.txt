@@ -1,3 +1,26 @@
+2009-12-06 (Sun)  Daisuke Murase  <typester@mujina.local>
+
+	* 14:10 PhotoShare にアップロードするだけのアプリ [iphone]:
+	[PhotoShare](http://www.bcphotoshare.com/) は写真共有を軸にした SNS のようなサイトで結構好きなのですが。写真をアップロードしたいだけという状況で写真をアップロードしようと公式アプリを立ち上げると自分宛のコメントが来てないかとか、友達の写真が更新されてないかとかチェックするのですぐにアップロード画面にいけずイライラしたりします。
+
+	そんなわけでシンプルに PhotoShare にアップロードするだけなアプリを作りました。
+
+	<a href="http://click.linksynergy.com/fs-bin/stat?id=epIEMEmECfk&offerid=94348&type=3&subid=0&tmpid=2192&RD_PARM1=http%253A%252F%252Fitunes.apple.com%252Fjp%252Fapp%252Fps-up-simple-fast-uploader-for-photoshare%252Fid342421711%253Fmt%253D8%2526uo%253D6%2526partnerId%253D30" target="itunes_store"><img height="15" width="61" alt="PS up: simple, fast uploader for PhotoShare" src="http://ax.phobos.apple.com.edgesuite.net/images/badgeitunes61x15dark.gif" /></a>
+
+	先日の[たこthon](http://d.hatena.ne.jp/tomyhero/20091120/1258718763) で適当に書き上げたアプリなので本当にアップロードする以外の機能がありませんが、使いながら欲しい物を加えていこうと思ってます。使い方見つつインタフェースも。
+
+	* 13:57 3GS 購入 [life]:
+	アプリ開発で 3GS を借りたのが最後、もうどうしてもあの速さがうらやましくなってしまって結局買ってしまった。
+
+	今まで使用していた 3G の分割のこり10ヶ月分くらいは次の請求で一括で払うことに。そのまま分割したままでもよかったが割引きかなくなるから一括で払っても変わらないからそれなら払っちゃっておいた方が良いかなーと。なんかよくわからないけどホワイトWとかなんちゃらオプションとか加入させられたのでそれはわすれないうちにオフにした。
+
+	感想としてはいままで iPhone 使ってて一番不満だったメモリ足りなすぎて重いなーって言う感じがまったくしなくなってとても快適。これが本来イメージされてた iPhone かーという感じ。
+	3G ユーザーはみんな乗り換えたら感動すると思う。
+
+	でも液晶の色合いがなんか 3G と違って白っぽいのはきになるなー。液晶は前の方が好み。
+
+	本体の方の色は 3G が白つかってたので黒にしたが、白の方がよかったなーと若干後悔中。iPhone の黒はなんか下品な感じがする。まぁカバーつけるから関係ないんだけど。
+
 2009-12-03 (Thu)  Daisuke Murase  <typester@mujina.local>
 
 	* 16:00 無線APによって自動でhostsを変える方法 [osx]:
