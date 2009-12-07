@@ -1,3 +1,85 @@
+2009-12-07 (Mon)  Daisuke Murase  <typester@mujina.local>
+
+	* 20:38 A simple chat server in AnyEvent [perl] [anyevent]:
+	[Node.js でつくってるやつ](http://dhotson.tumblr.com/post/271733389/a-simple-chat-server-in-node-js) をみて同じくらいで書けそうだなと思ったので試しに AnyEvent で書き直してみた。
+
+	    #!/usr/bin/perl
+	    
+	    use strict;
+	    use warnings;
+	    
+	    use AnyEvent::Socket;
+	    use AnyEvent::Handle;
+	    
+	    my @clients;
+	    
+	    tcp_server undef, 7000, sub {
+	        my ($fh) = @_ or die $!;
+	        my $h = AnyEvent::Handle->new( fh => $fh );
+	    
+	        my $leave = sub {
+	            undef $clients[ fileno($fh) ];
+	            for my $c (grep { defined } @clients) {
+	                $c->{handle}->push_write("$c->{name} has left.\n");
+	            }
+	        };
+	    
+	        $h->on_read(sub {
+	            shift->push_read( line => sub {
+	                my ($h, $line) = @_;
+	    
+	                my $client = $clients[ fileno($fh) ];
+	    
+	                unless (defined $client->{name}) {
+	                    if ($line =~ /(\S+)/) {
+	                        $client->{name} = $1;
+	                        $h->push_write("===========\n");
+	    
+	                        for my $client (grep { defined } @clients) {
+	                            next if $client->{handle} eq $h;
+	                            $client->{handle}
+	                                ->push_write( "$client->{name} has joined.\n" );
+	                        }
+	                    }
+	                    return;
+	                }
+	    
+	                my ($command) = $line =~ m!^/(.+)!;
+	                if ($command) {
+	                    if ($command eq 'users') {
+	                        $h->push_write("- $_->{name}\n") for grep { defined } @clients;
+	                    }
+	                    elsif ($command eq 'quit') {
+	                        $leave->();
+	                    }
+	                    return;
+	                }
+	    
+	                for my $c (grep { defined } @clients) {
+	                    next if $c->{handle} eq $h;
+	                    $c->{handle}->push_write( "$client->{name}: $line\n" );
+	                }
+	            });
+	        });
+	    
+	        $h->on_error(sub {
+	            my ($h, $fatal, $msg) = @_;
+	            $leave->();
+	            $h->destroy;
+	        });
+	    
+	        $clients[ fileno($fh) ] = {
+	            name   => undef,
+	            handle => $h,
+	        };
+	    
+	        $h->push_write("Welcome, enter your username:\n");
+	    };
+	    
+	    AE::cv->wait;
+
+	行数的にはほぼ同じくらい。
+
 2009-12-06 (Sun)  Daisuke Murase  <typester@mujina.local>
 
 	* 14:10 PhotoShare にアップロードするだけのアプリ [iphone]:
