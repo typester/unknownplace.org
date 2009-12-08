@@ -13,6 +13,10 @@ plugins:
   - module: Meta
   - module: Markdown
 
+  - module: EmacsColor
+    config:
+      filter: 'my [\$\@\%]'
+
   - module: Render::Entry
     rule:
       expression: $entry->path !~ /^clmemo/;
