@@ -18,9 +18,9 @@
 	        my $h = AnyEvent::Handle->new( fh => $fh );
 	    
 	        my $leave = sub {
-	            undef $clients[ fileno($fh) ];
+	            my $client = delete $clients[ fileno($fh) ];
 	            for my $c (grep { defined } @clients) {
-	                $c->{handle}->push_write("$c->{name} has left.\n");
+	                $c->{handle}->push_write("$client->{name} has left.\n");
 	            }
 	        };
 	    
@@ -79,6 +79,8 @@
 	    AE::cv->wait;
 
 	行数的にはほぼ同じくらい。
+
+	追記＠2009-12-08T10:36:37+09:00： left なメッセージがおかしかったので直した。
 
 2009-12-06 (Sun)  Daisuke Murase  <typester@mujina.local>
 
