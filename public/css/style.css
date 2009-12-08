@@ -270,3 +270,44 @@ ul ul li {
 #footer a:hover {
     border-bottom: 1px solid #000;
 }
+
+/* ir-black */
+code .buildin {
+    color: #F6F3E8;
+}
+
+code .comment, code .comment-delimiter {
+    color: #7C7C7C;
+}
+
+code .constant {
+    color: #99CC99;
+}
+
+code .cperl-array {
+    color: #ffff0c;
+}
+
+code .cperl-nonoverridable {
+    color: #ff89fa;
+}
+
+code .function-name {
+    color: #FFB774;
+}
+
+code .keyword {
+    color: #66B5FF;
+}
+
+code .string {
+    color: #3bce3b;
+}
+
+code .type {
+    color: #FFB774;
+}
+
+code .variable-name {
+    color: #fefe0b;
+}
