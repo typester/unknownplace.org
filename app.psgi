@@ -5,6 +5,12 @@ use Plack::App::Directory;
 use Plack::App::WrapCGI;
 use File::Basename;
 
+# preload modules
+use CGI ();
+use Text::MicroTemplate ();
+use Data::MessagePack ();
+use Time::Piece ()
+
 my $basedir = dirname(__FILE__);
 
 my $blosxom = Plack::App::WrapCGI->new(
