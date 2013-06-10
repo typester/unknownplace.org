@@ -9,7 +9,7 @@ use File::Basename;
 use CGI ();
 use Text::MicroTemplate ();
 use Data::MessagePack ();
-use Time::Piece ()
+use Time::Piece ();
 
 my $basedir = dirname(__FILE__);
 
