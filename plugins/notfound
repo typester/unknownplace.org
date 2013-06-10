@@ -1,0 +1,35 @@
+package notfound;
+use strict;
+use warnings;
+use CGI;
+
+sub start { 1 }
+
+sub skip {
+    my @files = keys %blosxom::files;
+
+    if ($blosxom::flavour eq 'rss') {
+        # rssはarchivesのみ
+        if ($blosxom::path_info ne 'archives') {
+            _render_404();
+            return 1;
+        }
+    }
+    elsif ($blosxom::flavour ne 'html') {
+        # 他はhtmlフレーバーのみ
+        _render_404();
+        return 1;
+    }
+
+    return;
+}
+
+sub _render_404 {
+    $blosxom::header = {
+        -type => 'text/html',
+        -status => '404 Not Found',
+    };
+    $blosxom::output = '<h1>404 Not Found</h1>';
+}
+
+1;

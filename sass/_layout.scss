@@ -1,0 +1,162 @@
+
+/* site header*/
+#site-header {
+    font-family: $font-stack-header;
+    padding: 20px 50px 0 50px;
+
+    a {
+        text-decoration: none;
+        color: #aaa;
+        font-weight: bold;
+        padding: 5px 10px;
+        font-size: 100%;
+    }
+
+    h1 {
+        display: inline;
+        font-size: 100%;
+
+        a {
+            color: #333;
+            padding: 8px 16px;
+            background-color: #000;
+            color: #fff;
+            font-weight: normal;
+        }
+    }
+
+    nav {
+        display: inline;
+        margin-left: 10px;
+
+        ul {
+            display: inline;
+            margin: 0;
+            padding: 0;
+
+            li {
+                padding: 0;
+                margin: 0;
+                display: inline;
+                list-style-display: none;
+            }
+        }
+
+        &:before {
+            content: "/";
+        }
+    }
+}
+
+/* main */
+#content {
+    padding: 0px 50px;
+
+    article:first-child h2 {
+        margin: $default-margin 0 0 0;
+    }
+
+    article img {
+        display: block;
+        box-shadow: 2px 2px 4px rgba(0, 0, 0, 0.8);
+    }
+
+    h2 a {
+        text-decoration: none;
+        color: $fg;
+
+        &:hover {
+            color: $link;
+        }
+    }
+
+    .footref {
+        font-size: 80%;
+        text-decoration: none;
+    }
+
+    .footdef {
+        border-top: 1px solid $border;
+        margin: $heading-margin 0 0 0;
+        font-size: 90%;
+        padding-top: 10px;
+
+        a {
+            text-decoration: none;
+        }
+
+        p {
+            margin: 5px 0;
+        }
+    }
+
+    #disqus_thread {
+        margin: $heading-margin 0 0 0;
+    }
+
+    #avatar {
+        float: left;
+        padding: 20px;
+
+        img {
+            width: 100px;
+            border-radius: 100px;
+        }
+    }
+
+    section.profile {
+        margin-left: 160px;
+    }
+}
+
+
+/* site footer */
+#site-footer {
+    border-top: 1px solid $border;
+    font-size: 80%;
+    text-align: right;
+    margin: $heading-margin 0 0 0;
+    padding: 8px 50px;
+
+    a {
+        color: $fg;
+        text-decoration: none;
+        font-weight: bold;
+    }
+}
+
+/* archives */
+#archives {
+    padding: 0px 50px;
+
+    section.year {
+        margin: $heading-margin 0 0 0;
+    }
+
+    h2 {
+        float: left;
+        text-align: right;
+        margin: 0;
+        border: none;
+        width: 80px;
+    }
+
+    article {
+        margin: ($default-margin / 4) 0 0 0;
+        margin-left: 100px;
+
+        time {
+            float: left;
+            font-size: 80%;
+            font-weight: bold;
+            margin-top: 1em;
+            padding-right: 10px;
+        }
+
+        h3 {
+            margin: 0;
+            border: none;
+            padding-top: 0.3em;
+        }
+    }
+}

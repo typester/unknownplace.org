@@ -1,0 +1,24 @@
+package site_title;
+use strict;
+use warnings;
+
+our $num_entries;
+our $site_title;
+
+sub start {
+    $num_entries = 0;
+    $blosxom::path_info =~ /\.html$/;
+}
+
+sub story {
+    $site_title = ${ $_[4] };
+    $num_entries++;
+}
+
+sub last {
+    if (1 == $num_entries) {
+        $blosxom::output =~ s!<title>!<title>$site_title - !;
+    }
+}
+
+1;

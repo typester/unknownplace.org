@@ -1,0 +1,12 @@
+@import "function";
+
+@import "variable";
+
+@import "class";
+
+@import "basic";
+@import "code_color";
+
+body {
+    margin: $default-margin ($default-margin * 4);
+}

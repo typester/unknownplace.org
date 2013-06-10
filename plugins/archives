@@ -1,0 +1,44 @@
+package archives;
+use strict;
+use warnings;
+
+our $LAST_YEAR;
+
+sub start {
+    if ($blosxom::path_info eq 'archives') {
+        no warnings 'redefine';
+        my $orig = $blosxom::template;
+
+        $blosxom::template = sub {
+            my ($path, $chunk, $flavour) = @_;
+
+            if ($chunk eq 'date' || $chunk eq 'story') {
+                $chunk = 'archives_' . $chunk;
+            }
+
+            my $template = $orig->($path, $chunk, $flavour);
+        };
+        return 1;
+    };
+}
+
+sub last {
+    $blosxom::output =~ s{<div id="content">}{<div id="archives">};
+    $blosxom::output =~ s{</div><!-- //#content -->}{</section>\n</div><!-- //#archives -->};
+}
+
+sub date {
+    my ($pkg, $path, $date_ref, $mtime, $dw, $mo, $mo_num, $da, $ti, $yr) = @_;
+
+    if ($LAST_YEAR and $LAST_YEAR != $yr) {
+        $$date_ref = "</section>\n" . $$date_ref;
+    }
+    if ($LAST_YEAR != $yr) {
+        $LAST_YEAR = $yr;
+    }
+
+    1;
+}
+
+1;
+

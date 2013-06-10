@@ -1,0 +1,17 @@
+package timepiece;
+use strict;
+use warnings;
+use Time::Piece ();
+
+our $current_date;
+our $entry_date;
+
+sub start {
+    $current_date = Time::Piece->localtime;
+}
+
+sub date {
+    $entry_date = Time::Piece->localtime($_[3]);
+}
+
+1;

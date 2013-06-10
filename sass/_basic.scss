@@ -1,0 +1,99 @@
+html,
+body {
+    font-size: 100%;
+}
+
+body {
+    margin: 0;
+    color: $fg;
+    background-color: $bg;
+    line-height: $default-line-height;
+    font-family: $font-stack-body;
+}
+
+h2 {
+    @extend %heading;
+    $ratio: 1.6;
+
+    margin: ($primary-heading-margin / $ratio) 0 0 0;
+    font-size: percentage($ratio);
+    font-weight: normal;
+    border-bottom: 1px solid $border;
+}
+
+h3 {
+  @extend %heading;
+  $ratio: 1.4;
+
+  margin: ($heading-margin / $ratio) 0 0 0;
+  font-size: percentage($ratio);
+  font-weight: normal;
+  border-bottom: 1px solid $border;
+}
+
+h4 {
+  @extend %heading;
+  $ratio: 1.1;
+
+  margin: ($default-margin / $ratio) 0 0 0;
+  font-size: percentage($ratio);
+}
+
+h5 {
+  @extend %heading;
+  $ratio: 1;
+
+  margin: ($default-margin / $ratio) 0 0 0;
+  font-size: percentage($ratio);
+}
+
+blockquote {
+    border-left: 6px solid $border;
+    margin: $default-margin 0;
+    padding-left: 18px;
+    position: relative;
+    color: rgb(100, 100, 100);
+
+    &:before {
+        font-family: Georgia, serif;;
+        display: block;
+        position: absolute;
+        left: -24px;
+        top: -24px;
+        font-size: 40px;
+        content: "\201C";
+    }
+}
+
+a {
+    color: $link;
+}
+
+p > code,
+li > code {
+    font-family: $font-stack-code;
+    background-color: rgb(240, 240, 240);
+    border: 1px solid rgb(224, 224, 224);
+    padding: 0px 4px;
+    @include rounded(4px);
+}
+
+pre {
+    > code {
+        display: block;
+        font-family: $font-stack-code;
+        background-color: #222;
+        color: #fff;
+        padding: 10px;
+        @include rounded(10px);
+        overflow: auto;
+    }
+}
+
+p,
+pre,
+ul,
+ol,
+blockquote {
+    margin: $default-margin 0;
+}

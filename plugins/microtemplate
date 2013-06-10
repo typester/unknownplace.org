@@ -1,0 +1,23 @@
+package microtemplate;
+use strict;
+use warnings;
+use Text::MicroTemplate ':all';
+use Time::Piece ();
+
+sub start { 1 }
+
+sub interpolate {
+    sub {
+        my ($template) = @_;
+        render_mt($template);
+    };
+}
+
+# helper functions
+sub permalink {
+    my $link = '/' . $blosxom::path_info . '/' . $blosxom::fn . '.' . $blosxom::default_flavour;
+    $link =~ s!^/+!/!;
+    $link;
+}
+
+1;
