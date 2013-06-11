@@ -12,7 +12,7 @@ sub start {
         $blosxom::template = sub {
             my ($path, $chunk, $flavour) = @_;
 
-            if ($chunk eq 'date' || $chunk eq 'story') {
+            if ($flavour eq 'html' and $chunk eq 'date' || $chunk eq 'story') {
                 $chunk = 'archives_' . $chunk;
             }
 
