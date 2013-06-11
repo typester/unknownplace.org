@@ -15,8 +15,8 @@ sub interpolate {
 
 # helper functions
 sub permalink {
-    my $link = '/' . $blosxom::path_info . '/' . $blosxom::fn . '.' . $blosxom::default_flavour;
-    $link =~ s!^/+!/!;
+    my $link = $blosxom::path . '/' . $blosxom::fn . '.' . $blosxom::default_flavour;
+    $link =~ s!^/*!/!;
     $link;
 }
 
