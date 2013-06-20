@@ -10,6 +10,8 @@ our $datadir = $ENV{HOME} =~ /typester/
     ? "$ENV{HOME}/Dropbox/blosxom"
     : "/home/typester/Dropbox/blosxom";
 
+our $template_dir = dirname(__FILE__) . "/templates";
+
 our $plugin_dir       = dirname(__FILE__) . "/plugins";
 our $plugin_state_dir = dirname(__FILE__) . "/plugins/state";
 
