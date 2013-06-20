@@ -1,0 +1,11 @@
+package fixpath;
+use strict;
+use warnings;
+
+sub start { 1 }
+
+sub date {
+    $blosxom::path = '' unless defined $blosxom::path;
+}
+
+1;
