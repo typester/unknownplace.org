@@ -43,6 +43,8 @@ sub entries {
             $data;
         };
 
+        my $needs_update = 0;
+
         File::Find::find(sub {
             if (
                 # a match
@@ -76,6 +78,7 @@ sub entries {
                     $cache->{ $File::Find::name }{date}  =
                         $t ? $t->epoch : $mtime;
 
+                    $needs_update++;
                 }
 
                 $files{ $File::Find::name } =
@@ -84,14 +87,16 @@ sub entries {
 
         }, $blosxom::datadir);
 
-        # update cache
-        my $fh = File::Temp->new or die $!;
-        print $fh packer->encode($cache);
-        close $fh;
+        if ($needs_update) {
+            # update cache
+            my $fh = File::Temp->new or die $!;
+            print $fh packer->encode($cache);
+            close $fh;
 
-        link $fh->filename => $cache_file
-            or move $fh->filename => $cache_file
-                or die $!;
+            link $fh->filename => $cache_file
+                or move $fh->filename => $cache_file
+                    or die $!;
+        }
 
         return (\%files, \%indexes, \%others);
     };
