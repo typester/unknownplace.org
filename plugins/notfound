@@ -3,6 +3,8 @@ use strict;
 use warnings;
 use CGI;
 
+our $story_rendered = 0;
+
 sub start { 1 }
 
 sub skip {
@@ -22,6 +24,14 @@ sub skip {
     }
 
     return;
+}
+
+sub story {
+    $story_rendered++;
+}
+
+sub last {
+    _render_404() unless $story_rendered;
 }
 
 sub _render_404 {
