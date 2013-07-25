@@ -69,7 +69,7 @@ sub entries {
                     while (my $line = <$fh>) {
                         last if $line =~ /^\r?\n$/;
                         if ($line =~ /meta-creation_date:\s*(\S+)/) {
-                            $t = Time::Piece->strptime($1, '%Y-%m-%dT%H:%M:%S');
+                            $t = Time::Piece->strptime($1, '%Y-%m-%dT%H:%M:%S%z');
                         }
                     }
                     close $fh;
