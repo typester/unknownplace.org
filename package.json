@@ -1,0 +1,21 @@
+{
+  "name": "unknownplace.org",
+  "version": "1.0.0",
+  "main": "index.js",
+  "repository": "ssh://git@github.com/typester/unknownplace.org.git",
+  "author": "Daisuke Murase <typester@cpan.org>",
+  "license": "MIT",
+  "dependencies": {
+    "@types/next": "^7.0.6",
+    "@types/react": "^16.7.18",
+    "@types/styled-jsx": "^2.2.7",
+    "@zeit/next-sass": "^1.0.1",
+    "@zeit/next-typescript": "^1.1.1",
+    "bulma": "^0.7.2",
+    "next": "^7.0.2",
+    "node-sass": "^4.11.0",
+    "react": "^16.7.0",
+    "react-dom": "^16.7.0",
+    "typescript": "^3.2.2"
+  }
+}
