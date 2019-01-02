@@ -1,7 +1,0 @@
-    <item>
-      <title><?= $blosxom::title ?></title>
-      <link>http://unknownplace.org<?= permalink ?></link>
-      <description><![CDATA[<?= encoded_string $blosxom::body ?>]]></description>
-      <dc:creator>typester</dc:creator>
-      <pubDate><?= $blosxom::dw ?>, <?= $blosxom::da ?> <?= $blosxom::mo ?> <?= $blosxom::yr ?> <?= $blosxom::ti ?>:00 <?= $blosxom::utc_offset ?></pubDate>
-    </item>
