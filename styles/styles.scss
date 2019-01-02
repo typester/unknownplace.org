@@ -1,0 +1,43 @@
+@import "../node_modules/bulma/bulma";
+
+.navbar-brand {
+    .navbar-item {
+        #logo {
+            background-color: black;
+            color: white;
+            font-weight: bold;
+            padding: 4px 14px;
+        }
+
+        @include until($desktop) {
+            padding-left: 0;
+        }
+    }
+}
+
+#aboutme {
+    margin: 3em 0;
+
+    h1 {
+        margin-bottom: 1em;
+    }
+
+    #avatar img {
+        border-radius: 100px;
+    }
+    #avatar-container {
+        margin-left: 0;
+    }
+
+    #links {
+        margin: 2em 0;
+
+        #links-mobile {
+            a {
+                margin-right: .5em;
+                line-height: 2.8em;
+                color: $black;
+            }
+        }
+    }
+}
