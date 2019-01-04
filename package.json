@@ -12,6 +12,7 @@
     "@zeit/next-sass": "^1.0.1",
     "@zeit/next-typescript": "^1.1.1",
     "bulma": "^0.7.2",
+    "moment": "^2.23.0",
     "next": "^7.0.2",
     "node-sass": "^4.11.0",
     "react": "^16.7.0",

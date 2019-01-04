@@ -1,7 +1,7 @@
 import { Layout } from '../components/layout';
 
 export default () =>
-  <Layout title="index">
+  <Layout>
     <section className="content" id="aboutme">
       <h1>About me</h1>
 

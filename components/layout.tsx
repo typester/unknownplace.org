@@ -13,7 +13,7 @@ export const Layout: React.StatelessComponent<LayoutProps> = ({ title, children 
       <meta name="viewport" content="width=device-width, initial-scale=1" />
       <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.6.3/css/brands.css" integrity="sha384-1KLgFVb/gHrlDGLFPgMbeedi6tQBLcWvyNUN+YKXbD7ZFbjX6BLpMDf0PJ32XJfX" crossOrigin="anonymous" />
       <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.6.3/css/fontawesome.css" integrity="sha384-jLuaxTTBR42U2qJ/pm4JRouHkEDHkVqH0T1nyQXn1mZ7Snycpf6Rl25VBNthU4z0" crossOrigin="anonymous"/>
-      <title>{ title }</title>
+      <title>{ title ? `${title} - ` : '' }unknownplace.org</title>
     </Head>
 
     <section className="section">
