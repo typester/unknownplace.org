@@ -1,5 +1,16 @@
 @import "../node_modules/bulma/bulma";
 
+@mixin rounded($radius: 10px) {
+    -moz-border-radius-bottomleft: $radius;
+    -moz-border-radius-bottomright: $radius;
+    -moz-border-radius-topleft: $radius;
+    -moz-border-radius-topright: $radius;
+    -webkit-border-top-left-radius: $radius;
+    -webkit-border-top-right-radius: $radius;
+    -webkit-border-bottom-right-radius: $radius;
+    -webkit-border-bottom-left-radius: $radius;
+}
+
 .navbar-brand {
     .navbar-item {
         #logo {
@@ -12,6 +23,16 @@
         @include until($desktop) {
             padding-left: 0;
         }
+
+        a {
+            color: gray;
+            border-bottom: none;
+            box-shadow: none;
+            font-weight: bold;
+            &:hover {
+                background-color: none;
+            }
+        }
     }
 }
 
@@ -19,12 +40,10 @@ a {
     color: $black;
     border-bottom: 3px solid #b4e7f8;
     box-shadow: inset 0 -4px 0 #b4e7f8;
+    &:hover {
+        background-color: #b4e7f8;
+    }
 }
-
-a:hover {
-    background-color: #b4e7f8;
-}
-
 
 #aboutme {
     margin: 3em 0;
@@ -73,7 +92,7 @@ a:hover {
             margin-bottom: 20px;
 
             .archive-date {
-                width: 40px;
+                width: 44px;
                 margin-top: 6px;
             }
 
@@ -81,5 +100,55 @@ a:hover {
                 padding-left: 0;
             }
         }
+    }
+}
+
+article.archive {
+    h1 {
+        font-size: 2rem;
+        padding-top: 3rem;
+        padding-bottom: 2rem;
+    }
+
+    .content {
+        @include from($tablet) {
+            font-size: 1.1rem;
+        }
+
+        h2, h3, h4 {
+            padding-top: 2rem;
+            font-weight: normal;
+            border-bottom: 1px solid #eee;
+            line-height: 1.25;
+        }
+
+        .footref {
+            font-size: 0.9rem;
+        }
+
+        .footdef {
+            font-size: 0.9rem;
+            margin-top: 6rem;
+            padding-top: 1rem;
+            border-top: 1px solid #eee;
+        }
+
+        @import "code";
+
+        pre {
+            padding: 0;
+            background-color: transparent;
+
+            > code {
+                display: block;
+                font-family: $code-family;
+                background-color: #222;
+                color: #fff;
+                padding: 10px;
+                @include rounded(10px);
+                overflow: auto;
+            }
+        }
+
     }
 }

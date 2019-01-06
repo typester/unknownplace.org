@@ -1,12 +1,13 @@
 import React from 'react';
 import { Layout } from '../../components/layout';
+import Link from 'next/link';
 import moment from 'moment';
 
 interface Archives {
   title: string;
   date: Date;
   tags: string[];
-  content: string;
+  slug: string;
 }
 
 interface ArchivesIndexProps {
@@ -48,7 +49,9 @@ export default class ArchivesIndex extends React.Component<ArchivesIndexProps> {
                     <div className="column is-narrow date">
                       <div className="is-size-7 has-text-weight-bold archive-date">{moment(archive.date).format("MMM DD")}</div>
                     </div>
-                    <div className="column is-size-5 archive-title"><a>{archive.title}</a></div>
+                    <div className="column is-size-5 archive-title">
+                      <Link href={`/archives/${archive.slug}`}><a>{archive.title}</a></Link>
+                    </div>
                   </div>
                 )}
               </div>

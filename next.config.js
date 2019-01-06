@@ -22,6 +22,9 @@ const withTypescript = require('@zeit/next-typescript')
 const withSass = require('@zeit/next-sass')
 module.exports = {
   ...withTypescript(withSass()),
+
+  useFileSystemPublicRoutes: false,
+
   exportPathMap: async () => {
     const map = {
       '/': { page: '/index' },
@@ -32,22 +35,28 @@ module.exports = {
     const archives_files = await scanDir('./data/archives', '.json');
     for (let f of archives_files) {
       const data = JSON.parse(await readfile(`${f}.json`));
+      const slug = path.basename(f, '.json');
 
-      archives.push({
+      const archive = {
         title: data.title || "",
         date: new Date(data.date || 0),
         tags: data.tags || [],
-      });
+        content: data.content,
+        slug,
+      };
+      archives.push(archive);
+
+      map[`/archives/${slug}`] = { page: '/archives/entry', query: { archive } };
     }
     archives.sort((a, b) => b.date - a.date);
     map['/archives'] = { page: '/archives', query: { archives } };
 
-    /* blog entries */
-    const entries = await scanDir('./data/blog', '.json');
-    for (let e of entries) {
-      map[ e.replace(/.*?data/, '') ] = { page: '/blog/_entry', query: { json: e } };
-    }
-    delete map['/blog/_entry'];
+//    /* blog entries */
+//    const entries = await scanDir('./data/blog', '.json');
+//    for (let e of entries) {
+//      map[ e.replace(/.*?data/, '') ] = { page: '/blog/_entry', query: { json: e } };
+//    }
+//    delete map['/blog/_entry'];
 
     console.log('urlMap', map);
 
