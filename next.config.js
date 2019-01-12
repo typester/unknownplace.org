@@ -3,6 +3,7 @@ const fs = require('fs');
 const { promisify } = require('util');
 const readdir = promisify(fs.readdir);
 const readfile = promisify(fs.readFile);
+const moment = require('moment');
 
 const scanDir = async (dir, ext) => {
   let res = [];
@@ -51,12 +52,35 @@ module.exports = {
     archives.sort((a, b) => b.date - a.date);
     map['/archives'] = { page: '/archives', query: { archives } };
 
-//    /* blog entries */
-//    const entries = await scanDir('./data/blog', '.json');
-//    for (let e of entries) {
-//      map[ e.replace(/.*?data/, '') ] = { page: '/blog/_entry', query: { json: e } };
-//    }
-//    delete map['/blog/_entry'];
+    /* blog */
+    const entries = [];
+    const entry_files = await scanDir('./data/blog', '.json');
+    for (let f of entry_files) {
+      const data = JSON.parse(await readfile(`${f}.json`));
+      const slug = path.basename(f, '.json');
+
+      const date = new Date(data.date || 0);
+      const p = `/blog/${moment(date).format('YYYY/MM/DD')}/${slug}`;
+
+      const entry = {
+        title: data.title || "",
+        date,
+        tags: data.tags || [],
+        content: data.content,
+        slug,
+        path: p,
+      };
+
+      entries.push(entry);
+
+      map[p] = {
+        page: '/blog/entry',
+        query: { entry },
+      };
+    }
+    entries.sort((a, b) => b.date - a.date);
+
+    map['/blog'] = { page: '/blog', query: { entries } };
 
     console.log('urlMap', map);
 

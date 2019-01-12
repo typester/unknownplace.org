@@ -1,5 +1,7 @@
 @import "../node_modules/bulma/bulma";
 
+@import "code";
+
 @mixin rounded($radius: 10px) {
     -moz-border-radius-bottomleft: $radius;
     -moz-border-radius-bottomright: $radius;
@@ -103,6 +105,47 @@ a {
     }
 }
 
+@mixin contentbase() {
+    @include from($tablet) {
+        font-size: 1.1rem;
+    }
+
+    h2, h3, h4 {
+        padding-top: 2rem;
+        font-weight: normal;
+        border-bottom: 1px solid #eee;
+        line-height: 1.25;
+    }
+
+    .footref {
+        font-size: 0.9rem;
+    }
+
+    .footdef {
+        font-size: 0.9rem;
+        margin-top: 6rem;
+        padding-top: 1rem;
+        border-top: 1px solid #eee;
+    }
+
+    @include codecolor();
+
+    pre {
+        padding: 0;
+        background-color: transparent;
+
+        > code {
+            display: block;
+            font-family: $code-family;
+            background-color: #222;
+            color: #fff;
+            padding: 10px;
+            @include rounded(10px);
+            overflow: auto;
+        }
+    }
+}
+
 article.archive {
     h1 {
         font-size: 2rem;
@@ -111,43 +154,44 @@ article.archive {
     }
 
     .content {
-        @include from($tablet) {
-            font-size: 1.1rem;
+        @include contentbase();
+    }
+}
+
+#blogindex {
+    article {
+        padding: 2rem 0;
+        &:first-child {
+            padding-top: 0;
         }
+    }
+}
 
-        h2, h3, h4 {
-            padding-top: 2rem;
-            font-weight: normal;
-            border-bottom: 1px solid #eee;
-            line-height: 1.25;
-        }
+article.blog {
+    h1 {
+        font-size: 1.8rem;
+        padding-top: 3rem;
+        border-bottom: 1px solid #eee;
+        margin-bottom: 1.8rem;
+    }
 
-        .footref {
-            font-size: 0.9rem;
-        }
+    .content {
+        @include contentbase();
+    }
 
-        .footdef {
-            font-size: 0.9rem;
-            margin-top: 6rem;
-            padding-top: 1rem;
-            border-top: 1px solid #eee;
-        }
+    .meta {
+        font-size: 0.9rem;
+        border-top: 1px solid #eee;
+        margin: 0.5rem 0;
+        padding: 0.5rem 0;
 
-        @import "code";
-
-        pre {
-            padding: 0;
-            background-color: transparent;
-
-            > code {
-                display: block;
-                font-family: $code-family;
-                background-color: #222;
-                color: #fff;
-                padding: 10px;
-                @include rounded(10px);
-                overflow: auto;
-            }
+        a {
+            color: white;
+            background-color: black;
+            padding: 0.2rem 0.8rem;
+            border-bottom: none;
+            box-shadow: none;
+            @include rounded(0.2rem);
         }
 
     }
