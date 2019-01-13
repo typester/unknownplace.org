@@ -5,6 +5,8 @@ const readdir = promisify(fs.readdir);
 const readfile = promisify(fs.readFile);
 const moment = require('moment');
 
+const ENTRIES_PER_PAGE = 1;
+
 const scanDir = async (dir, ext) => {
   let res = [];
   const files = await readdir(dir, { withFileTypes: true });
@@ -54,6 +56,7 @@ module.exports = {
 
     /* blog */
     const entries = [];
+    const entries_by_tag = {};
     const entry_files = await scanDir('./data/blog', '.json');
     for (let f of entry_files) {
       const data = JSON.parse(await readfile(`${f}.json`));
@@ -72,6 +75,10 @@ module.exports = {
       };
 
       entries.push(entry);
+      entry.tags.map(t => {
+        if (!entries_by_tag[t]) entries_by_tag[t] = [];
+        entries_by_tag[t].push(entry);
+      })
 
       map[p] = {
         page: '/blog/entry',
@@ -80,7 +87,18 @@ module.exports = {
     }
     entries.sort((a, b) => b.date - a.date);
 
-    map['/blog'] = { page: '/blog', query: { entries } };
+    const pagenate = (entries, basepath) => {
+      for (let i = 1; entries.length > 0; i++) {
+        const p = i == 1 ? basepath : `${basepath}/${i}`;
+        const e = entries.splice(0, ENTRIES_PER_PAGE);
+        map[p] = { page: '/blog', query: { entries: e } };
+      }
+    };
+    pagenate(entries.slice(), '/blog');
+
+    for (let t of Object.keys(entries_by_tag)) {
+      pagenate(entries_by_tag[t].slice(), `/blog/tags/${t}`);
+    }
 
     console.log('urlMap', map);
 
