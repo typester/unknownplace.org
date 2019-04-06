@@ -9,34 +9,36 @@ interface Archive {
   content: string;
 }
 
+interface ArchiveData {
+  default: {
+    title: string;
+    date: string;
+    tags: string[];
+    content: string;
+  };
+}
+
 interface ArchiveEntryProps {
   archive?: Archive;
 }
 
 export default class ArchiveEntry extends React.Component<ArchiveEntryProps> {
-  static async getInitialProps({ query }: { query: { archive: Archive }}) {
-    return { archive: query.archive };
+  static async getInitialProps(context) {
+    const data: ArchiveData = await import(`../../data${context.asPath}.json`)
+      .catch(e => console.log("failed to load entry:", e));
+
+    if (!data) {
+      return {};
+    }
+
+    return {
+      archive: {
+        ...data.default,
+        date: new Date(data.default.date),
+      },
+    };
   }
-//  static async getInitialProps({ query }: { query: { json: string }}) {
-//    if (!query || !query.json) {
-//      return {};
-//    }
-//
-//    const json = await import(`../../${query.json}`)
-//      .catch(e => console.log(`archive entry ${query.json} not found: ${e}`));
-//
-//    if (json) {
-//      const archive: Archive = {
-//        title: json.title,
-//        date: new Date(json.date || 0),
-//        tags: json.tags || {},
-//        content: json.content,
-//      };
-//      return { archive };
-//    }
-//    return {};
-//  }
-//
+
   render() {
     const { archive } = this.props;
 

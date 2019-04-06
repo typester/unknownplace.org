@@ -1,5 +1,6 @@
 import React from 'react';
 import { Layout } from '../../components/layout';
+import App from "next/app";
 import Link from 'next/link';
 import moment from 'moment';
 
@@ -15,13 +16,19 @@ interface ArchivesIndexProps {
 }
 
 export default class ArchivesIndex extends React.Component<ArchivesIndexProps> {
-  static async getInitialProps({ query }: { query: { archives: Archives[] }}) {
-    const archives = query.archives;
-    if (!archives) return { archives: {} };
+  static async getInitialProps() {
+    const index = await import("../../data/archives/index.json");
+    const archives: Archives[] = index.default.map(i => ({
+      ...i,
+      date: new Date(i.date),
+    }));
 
     /* split by year */
     const years: { [key:string]: Archives[] } = {};
     for (let a of archives) {
+      /* inflate date */
+      a.date = new Date(a.date || 0);
+
       const yr = a.date.getFullYear();
       if (!years[ yr ]) {
         years[yr] = [];

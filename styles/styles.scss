@@ -1,3 +1,10 @@
+$pagination-margin: 2rem 0;
+$pagination-color: black;
+$pagination-current-color: black;
+$pagination-current-background-color: transparent;
+$pagination-current-border-color: transparent;
+
+
 @import "../node_modules/bulma/bulma";
 
 @import "code";

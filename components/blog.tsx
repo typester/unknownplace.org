@@ -25,7 +25,7 @@ export const BlogEntryView: React.StatelessComponent<BlogEntryViewProps> = ({ en
         <>
         {' '}/{' '}
         { entry.tags.map((tag, i) =>
-          <Link key={i}><a>{tag}</a></Link>
+          <Link key={i} href={"/blog/tag/" + tag}><a>{tag}</a></Link>
         )}
         </>
       }

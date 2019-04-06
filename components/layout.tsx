@@ -1,6 +1,6 @@
-import React from 'react';
 import Head from 'next/head';
-import Link from 'next/link';
+import Link from "next/link";
+import React from 'react';
 import "../styles/styles.scss";
 
 interface LayoutProps {
@@ -21,14 +21,20 @@ export const Layout: React.StatelessComponent<LayoutProps> = ({ title, children 
         <nav className="navbar" role="navigation">
           <div className="navbar-brand">
             <div className="navbar-item">
-              <Link href="/"><a id="logo">unknownplace.org</a></Link>
+              <Link href="/">
+                <a id="logo">unknownplace.org</a>
+              </Link>
             </div>
 
             <div className="navbar-item">
-              <Link href="/blog"><a>blog</a></Link>
+              <Link href="/blog">
+                <a>blog</a>
+              </Link>
             </div>
             <div className="navbar-item">
-              <Link href="/archives"><a>archives</a></Link>
+              <Link href="/archives">
+                <a>archives</a>
+              </Link>
             </div>
           </div>
         </nav>
