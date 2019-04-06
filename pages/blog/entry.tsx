@@ -19,7 +19,7 @@ interface BlogEntryData {
 
 export default class BlogEntryPage extends React.Component<BlogEntryProps> {
   static async getInitialProps(context) {
-    const data: BlogEntryData = await import(`../../data${context.asPath}.json`)
+    const data: BlogEntryData = await import(`../../data${context.asPath.replace(/\/$/, "")}.json`)
       .catch(e => console.log("failed to load entry:", e));
 
     if (!data) {

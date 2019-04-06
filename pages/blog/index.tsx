@@ -26,7 +26,7 @@ interface BlogIndexData {
 
 export default class BlogIndex extends React.Component<BlogIndexProps> {
   static async getInitialProps(context) {
-    const data: BlogIndexData = await import(`../../data${context.asPath}/index.json`)
+    const data: BlogIndexData = await import(`../../data${context.asPath.replace(/\/$/, "")}/index.json`)
       .catch(e => console.log("failed to load entry:", e));
     if (!data) return {};
 

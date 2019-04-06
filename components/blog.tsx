@@ -20,12 +20,12 @@ export const BlogEntryView: React.StatelessComponent<BlogEntryViewProps> = ({ en
     <h1>{entry.title}</h1>
     <div className="content" dangerouslySetInnerHTML={{__html: entry.content}}/>
     <aside className="meta">
-      <Link href={entry.path}><a>{moment(entry.date).format()}</a></Link>
+      <Link href="/blog/entry" as={entry.path}><a>{moment(entry.date).format()}</a></Link>
       { entry.tags.length >= 1 &&
         <>
         {' '}/{' '}
         { entry.tags.map((tag, i) =>
-          <Link key={i} href={"/blog/tag/" + tag}><a>{tag}</a></Link>
+          <Link key={i} href="/blog" as={"/blog/tag/" + tag}><a>{tag}</a></Link>
         )}
         </>
       }

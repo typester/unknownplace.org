@@ -65,8 +65,6 @@ module.exports = {
       };
     }
 
-    console.log('urlMap', map);
-
     return map;
   },
 }

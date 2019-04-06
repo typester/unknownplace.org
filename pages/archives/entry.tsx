@@ -24,7 +24,7 @@ interface ArchiveEntryProps {
 
 export default class ArchiveEntry extends React.Component<ArchiveEntryProps> {
   static async getInitialProps(context) {
-    const data: ArchiveData = await import(`../../data${context.asPath}.json`)
+    const data: ArchiveData = await import(`../../data${context.asPath.replace(/\/$/, "")}.json`)
       .catch(e => console.log("failed to load entry:", e));
 
     if (!data) {

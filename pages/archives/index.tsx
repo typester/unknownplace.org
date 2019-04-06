@@ -57,7 +57,7 @@ export default class ArchivesIndex extends React.Component<ArchivesIndexProps> {
                       <div className="is-size-7 has-text-weight-bold archive-date">{moment(archive.date).format("MMM DD")}</div>
                     </div>
                     <div className="column is-size-5 archive-title">
-                      <Link href={`/archives/${archive.slug}`}><a>{archive.title}</a></Link>
+                      <Link href="/archives/entry" as={`/archives/${archive.slug}`}><a>{archive.title}</a></Link>
                     </div>
                   </div>
                 )}

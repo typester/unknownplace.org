@@ -16,12 +16,12 @@ const link = ({ prelink }: TemplatePaginatorVariables, page: number) => {
 export const Pager: React.StatelessComponent<PagerProps> = ({ data }) =>
   <nav className="pagination is-centered is-small" role="navigation">
     { data.previous ?
-      <Link href={link(data, data.previous)}><a className="pagination-previous">Previous</a></Link>
+      <Link href="/blog" as={link(data, data.previous)}><a className="pagination-previous">Previous</a></Link>
       :
       <a className="pagination-previous" disabled>Previous</a>
     }
     { data.next ?
-      <Link href={link(data, data.next)}><a className="pagination-next">Next</a></Link>
+      <Link href="/blog" as={link(data, data.next)}><a className="pagination-next">Next</a></Link>
       :
       <a className="pagination-next" disabled>Next</a>
     }
@@ -29,9 +29,9 @@ export const Pager: React.StatelessComponent<PagerProps> = ({ data }) =>
       { data.range.map(r =>
         <li key={r}>
           { r == data.current ?
-            <a className="pagination-link is-current">{r}</a>
+            <a className="pagination-link is-current" disabled>{r}</a>
             :
-            <Link href={link(data, r)}><a className="pagination-link">{r}</a></Link>
+            <Link href="/blog" as={link(data, r)}><a className="pagination-link">{r}</a></Link>
           }
         </li>
       )}
