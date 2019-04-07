@@ -4,6 +4,7 @@ $pagination-current-color: black;
 $pagination-current-background-color: transparent;
 $pagination-current-border-color: transparent;
 
+$code-family: "Source Han Code JP", "Source Code Pro", monospace;
 
 @import "../node_modules/bulma/bulma";
 
@@ -180,24 +181,44 @@ article.blog {
         padding-top: 3rem;
         border-bottom: 1px solid #eee;
         margin-bottom: 1.8rem;
+
+        a {
+            border-bottom: none;
+            box-shadow: none;
+            text-decoration: none;
+        }
     }
 
     .content {
         @include contentbase();
+
+        h2, h3, h4 {
+            padding-top: 0;
+        }
+
+        .footdef {
+            margin-top: 1rem;
+        }
     }
 
     .meta {
         font-size: 0.9rem;
-        border-top: 1px solid #eee;
+        //border-top: 1px solid #eee;
         margin: 0.5rem 0;
         padding: 0.5rem 0;
 
         a {
+            &:first-child {
+                margin-left: 0;
+            }
+
             color: white;
             background-color: black;
             padding: 0.2rem 0.8rem;
+            margin: 0 0.4rem;
             border-bottom: none;
             box-shadow: none;
+            line-height: 2em;
             @include rounded(0.2rem);
         }
 

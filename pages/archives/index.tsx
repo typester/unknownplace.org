@@ -1,17 +1,17 @@
+import moment from 'moment';
+import Head from 'next/head';
+import Link from 'next/link';
 import React from 'react';
 import { Layout } from '../../components/layout';
-import App from "next/app";
-import Link from 'next/link';
-import moment from 'moment';
 
-interface Archives {
+export interface Archives {
   title: string;
   date: Date;
   tags: string[];
   slug: string;
 }
 
-interface ArchivesIndexProps {
+export interface ArchivesIndexProps {
   archives: { [key: string]: Archives[] }
 }
 
@@ -44,6 +44,9 @@ export default class ArchivesIndex extends React.Component<ArchivesIndexProps> {
 
     return (
       <Layout title="Archives">
+        <Head>
+          <link rel="alternate" type="application/rss+xml" href="/static/feeds/archives.xml" />
+        </Head>
         <div id="archiveindex">
           { Object.keys(archives).sort().reverse().map((yr, i) =>
             <section className="columns year" key={`yr-${i}`}>

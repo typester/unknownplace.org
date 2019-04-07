@@ -1,8 +1,9 @@
-import React from 'react';
 import Error from 'next/error';
-import { Layout } from '../../components/layout';
-import { BlogEntry, BlogEntryView } from '../../components/blog';
+import Head from 'next/head';
 import { TemplatePaginatorVariables } from 'pagination';
+import React from 'react';
+import { BlogEntry, BlogEntryView } from '../../components/blog';
+import { Layout } from '../../components/layout';
 import { Pager } from '../../components/pager';
 
 interface BlogIndexProps {
@@ -52,6 +53,9 @@ export default class BlogIndex extends React.Component<BlogIndexProps> {
 
     return (
       <Layout title="Blog">
+        <Head>
+          <link rel="alternate" type="application/rss+xml" href="/static/feeds/blog.xml" />
+        </Head>
         <div id="blogindex">
           { entries.map((e, i) =>
             <BlogEntryView key={i} entry={e} />

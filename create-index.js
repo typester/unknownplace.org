@@ -5,11 +5,18 @@ const readdir = promisify(fs.readdir);
 const readfile = promisify(fs.readFile);
 const moment = require('moment');
 const pagination = require('pagination');
+const Feed = require("feed").Feed;
 
 const data_dir = "./data";
 const archive_prefix = "archives";
 const blog_prefix = "blog";
-const entries_per_page = 1;
+const entries_per_page = 10;
+
+const program = require('commander');
+
+program
+  .option('-d, --draft', 'Add draft entries')
+  .parse(process.argv);
 
 const scanDir = async (dir, ext) => {
   let res = [];
@@ -26,7 +33,14 @@ const scanDir = async (dir, ext) => {
 };
 
 (async () => {
+  // clear index files
+  for (let f of await scanDir(data_dir, ".json")) {
+    if (path.basename(f, ".json") != "index") continue;
+    fs.unlinkSync(`${f}.json`);
+  }
+
   // archives
+  const archives = [];
   const archive_index = [];
   const archives_files = await scanDir(path.join(data_dir, archive_prefix), ".json");
   for (let f of archives_files) {
@@ -35,18 +49,27 @@ const scanDir = async (dir, ext) => {
 
     const data = JSON.parse(await readfile(`${f}.json`));
 
+    if (!program.draft && data.tags.find(t => t == "draft")) {
+      continue;
+    }
+
     const archive = {
       title: data.title || "",
       date: new Date(data.date || 0),
       tags: data.tags || [],
       slug,
     };
+    archives.push({
+      ...archive,
+      content: data.content,
+    });
     archive_index.push(archive);
   }
+  archives.sort((a, b) => b.date - a.date);
   archive_index.sort((a, b) => b.date - a.date);
 
   fs.writeFileSync(
-    path.join(data_dir, archive_prefix, "index.json"), 
+    path.join(data_dir, archive_prefix, "index.json"),
     JSON.stringify(archive_index)
   );
 
@@ -59,6 +82,10 @@ const scanDir = async (dir, ext) => {
     if (slug == "index") continue;
     const data = JSON.parse(await readfile(`${f}.json`));
 
+    if (!program.draft && data.tags.find(t => t == "draft")) {
+      continue;
+    }
+
     const date = new Date(data.date || 0);
     const p = `/blog/${moment(date).format('YYYY/MM/DD')}/${slug}`;
 
@@ -67,6 +94,7 @@ const scanDir = async (dir, ext) => {
       date,
       tags: data.tags || [],
       content: data.content,
+      eid: data.eid,
       slug,
       path: p,
     };
@@ -122,5 +150,42 @@ const scanDir = async (dir, ext) => {
       fs.writeFileSync(path.join(dir, "index.json"), JSON.stringify(index.data));
     }
   }
+
+  // Generafe feed
+  const archive_feed = new Feed({
+    title: "unknownplace.org - archives",
+    description: "recent entries for /archives",
+    id: "https://unknownplace.org/archives/",
+    link: "https://unknownplace.org/archives/",
+    updated: archive_index[0].date,
+  });
+  for (let archive of archives) {
+    archive_feed.addItem({
+      title: archive.title,
+      id: `https://unknownplace.org/archives/${archive.slug}/`,
+      link: `https://unknownplace.org/archives/${archive.slug}/`,
+      content: archive.content,
+      date: archive.date,
+    });
+  }
+  fs.writeFileSync("./static/feeds/archives.xml", archive_feed.rss2());
+
+  const blog_feed = new Feed({
+    title: "unknownplace.org - blog",
+    description: "recent entries for /blog",
+    id: "https://unknownplace.org/blog/",
+    link: "https://unknownplace.org/blog/",
+    updated: blog_entries[0].date,
+  });
+  for (let entry of blog_entries.slice().splice(0, 10)) {
+    blog_feed.addItem({
+      title: entry.title,
+      id: `https://unknownplace.org${entry.path}`,
+      link: `https://unknownplace.org${entry.path}`,
+      content: entry.content,
+      date: entry.date,
+    });
+  }
+  fs.writeFileSync("./static/feeds/blog.xml", blog_feed.rss2());
 
 })();

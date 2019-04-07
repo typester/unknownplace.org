@@ -17,7 +17,11 @@ interface BlogEntryViewProps {
 
 export const BlogEntryView: React.StatelessComponent<BlogEntryViewProps> = ({ entry }) =>
   <article className="blog">
-    <h1>{entry.title}</h1>
+    <h1>
+      <Link href="/blog/entry" as={entry.path}>
+        <a>{entry.title}</a>
+      </Link>
+    </h1>
     <div className="content" dangerouslySetInnerHTML={{__html: entry.content}}/>
     <aside className="meta">
       <Link href="/blog/entry" as={entry.path}><a>{moment(entry.date).format()}</a></Link>
