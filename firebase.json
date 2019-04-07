@@ -1,6 +1,13 @@
 {
   "hosting": {
     "public": "out",
+    "redirects": [
+      {
+        "source" : "/archives/index.rss",
+        "destination" : "/static/feeds/archives.xml",
+        "type" : 301
+      }
+    ],
     "ignore": [
       "firebase.json",
       "**/.*",
