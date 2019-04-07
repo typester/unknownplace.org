@@ -6,6 +6,11 @@
         "source" : "/archives/index.rss",
         "destination" : "/static/feeds/archives.xml",
         "type" : 301
+      },
+      {
+        "source" : "/memo/index.rss",
+        "destination" : "/static/feeds/blog.xml",
+        "type" : 301
       }
     ],
     "ignore": [
