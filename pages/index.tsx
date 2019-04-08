@@ -8,7 +8,7 @@ export default () =>
       <article className="media">
         <figure className="media-left" id="avatar-container">
           <p className="image is-100x100" id="avatar">
-            <img src="http://www.gravatar.com/avatar/0d2a86f4099d096a4a6a9d1eb977bf38?s=100" />
+            <img src="https://www.gravatar.com/avatar/0d2a86f4099d096a4a6a9d1eb977bf38?s=100" />
           </p>
         </figure>
 
