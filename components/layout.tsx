@@ -5,15 +5,20 @@ import "../styles/styles.scss";
 
 interface LayoutProps {
   title?: string;
+  url?: string;
 }
 
-export const Layout: React.StatelessComponent<LayoutProps> = ({ title, children }) =>
+export const Layout: React.StatelessComponent<LayoutProps> = ({ title, url, children }) =>
   <div>
     <Head>
       <meta name="viewport" content="width=device-width, initial-scale=1" />
       <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.6.3/css/brands.css" integrity="sha384-1KLgFVb/gHrlDGLFPgMbeedi6tQBLcWvyNUN+YKXbD7ZFbjX6BLpMDf0PJ32XJfX" crossOrigin="anonymous" />
       <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.6.3/css/fontawesome.css" integrity="sha384-jLuaxTTBR42U2qJ/pm4JRouHkEDHkVqH0T1nyQXn1mZ7Snycpf6Rl25VBNthU4z0" crossOrigin="anonymous"/>
       <title>{ title ? `${title} - ` : '' }unknownplace.org</title>
+      <meta property="og:title" content={title || 'unknownplace.org'} />
+      { title ? <meta property="og:type" content="article" /> : <meta property="og:type" content="website" /> }
+      <meta property="og:site_name" content="unknownplace.org" />
+      { url && <meta property="og:url" content={url} /> }
     </Head>
 
     <section className="section">

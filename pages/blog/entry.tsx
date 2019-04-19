@@ -45,7 +45,7 @@ export default class BlogEntryPage extends React.Component<BlogEntryProps> {
     }
 
     return (
-      <Layout title={entry.title}>
+      <Layout title={entry.title} url={`https://unknownplace.org${entry.path}`}>
         <div id="blogentry">
           <BlogEntryView entry={entry}/>
         </div>
