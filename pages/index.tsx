@@ -15,7 +15,7 @@ export default () =>
         <div className="media-content">
           <div className="content">
             <p>
-              <strong>Daisuke Mruase</strong> <small>a.k.a</small> <strong>typester</strong>
+              <strong>Daisuke Murase</strong> <small>a.k.a</small> <strong>typester</strong>
             </p>
             <p>Software engineer, lives in Kamakura Japan.</p>
 
