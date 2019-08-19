@@ -17,7 +17,7 @@ export default () =>
             <p>
               <strong>Daisuke Murase</strong> <small>a.k.a</small> <strong>typester</strong>
             </p>
-            <p>Software engineer, lives in Kamakura Japan.</p>
+            <p>Software engineer, lives in Portland OR.</p>
 
             <div id="links">
               <ul className="is-hidden-mobile">
