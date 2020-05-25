@@ -1,7 +1,6 @@
 export interface Archive {
   title: string;
   date: string;
-  tz: string;
   tags: string[];
   slug: string;
 }

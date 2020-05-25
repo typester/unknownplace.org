@@ -2,6 +2,7 @@ import { promises as fs } from 'fs';
 import path from 'path';
 import { ArchiveDetail } from '../entities/Archive';
 import { BlogDetail } from '../entities/Blog';
+import moment from 'moment';
 
 const archivesCache: ArchiveDetail[] = [];
 const blogCache: BlogDetail[] = [];
@@ -28,15 +29,9 @@ export const readArchives = async (): Promise<ArchiveDetail[]> => {
       }
     }
 
-    const m = json.date.match(/^(.*?)([+-]\d{4})?$/);
-    if (!m || !m[1]) {
-      throw new Error(`invalid date format: ${json.date}`);
-    }
-
     archivesCache.push({
       title: json.title,
-      date: m[1],
-      tz: m[2] || '',
+      date: json.date,
       tags: json.tags,
       content: json.content,
       slug: f.replace(/\.json$/, ''),
@@ -69,15 +64,9 @@ export const readBlogs = async (): Promise<BlogDetail[]> => {
       }
     }
 
-    const md = json.date.match(/^(.*?)([+-]\d{4})?$/);
-    if (!md || !md[1]) {
-      throw new Error(`invalid date format: ${json.date}`);
-    }
-
     blogCache.push({
       title: json.title,
-      date: md[1],
-      tz: md[2] || '',
+      date: json.date,
       tags: json.tags,
       content: json.content,
       slug: [m[1], m[2], m[3], m[4]],
