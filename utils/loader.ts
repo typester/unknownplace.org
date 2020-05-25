@@ -2,7 +2,6 @@ import { promises as fs } from 'fs';
 import path from 'path';
 import { ArchiveDetail } from '../entities/Archive';
 import { BlogDetail } from '../entities/Blog';
-import moment from 'moment';
 
 const archivesCache: ArchiveDetail[] = [];
 const blogCache: BlogDetail[] = [];
