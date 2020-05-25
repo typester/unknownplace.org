@@ -1,6 +1,6 @@
 import Head from 'next/head';
 import Link from "next/link";
-import React from 'react';
+import React, { FunctionComponent } from 'react';
 import "../styles/styles.scss";
 
 interface LayoutProps {
@@ -8,7 +8,7 @@ interface LayoutProps {
   url?: string;
 }
 
-export const Layout: React.StatelessComponent<LayoutProps> = ({ title, url, children }) =>
+export const Layout: FunctionComponent<LayoutProps> = ({ title, url, children }) =>
   <div>
     <Head>
       <meta name="viewport" content="width=device-width, initial-scale=1" />
@@ -32,12 +32,12 @@ export const Layout: React.StatelessComponent<LayoutProps> = ({ title, url, chil
             </div>
 
             <div className="navbar-item">
-              <Link href="/blog">
+              <Link href="/blog/">
                 <a>blog</a>
               </Link>
             </div>
             <div className="navbar-item">
-              <Link href="/archives">
+              <Link href="/archives/">
                 <a>archives</a>
               </Link>
             </div>
