@@ -33,12 +33,6 @@ const scanDir = async (dir, ext) => {
 };
 
 (async () => {
-  // clear index files
-  for (let f of await scanDir(data_dir, ".json")) {
-    if (path.basename(f, ".json") != "index") continue;
-    fs.unlinkSync(`${f}.json`);
-  }
-
   // archives
   const archives = [];
   const archive_index = [];
@@ -68,11 +62,6 @@ const scanDir = async (dir, ext) => {
   archives.sort((a, b) => b.date - a.date);
   archive_index.sort((a, b) => b.date - a.date);
 
-  fs.writeFileSync(
-    path.join(data_dir, archive_prefix, "index.json"),
-    JSON.stringify(archive_index)
-  );
-
   // blog
   const blog_entries = [];
   const blog_entries_by_tag = {};
@@ -86,8 +75,13 @@ const scanDir = async (dir, ext) => {
       continue;
     }
 
+    const m = slug.match(/^(\d{4})-(\d{2})-(\d{2})_(.*)$/);
+    if (!m) {
+      throw new Error(`invalid slug: ${slug}`);
+    }
+
     const date = new Date(data.date || 0);
-    const p = `/blog/${moment(date).format('YYYY/MM/DD')}/${slug}`;
+    const p = `/blog/${m.join('/')}/`;
 
     const entry = {
       title: data.title || "",
@@ -95,8 +89,8 @@ const scanDir = async (dir, ext) => {
       tags: data.tags || [],
       content: data.content,
       eid: data.eid,
-      slug,
-      path: p,
+      slug: m[4],
+      path: '/blog/' + [m[1],m[2],m[3]].join('/') + '/',
     };
     blog_entries.push(entry);
     entry.tags.map(tag => {
@@ -135,22 +129,6 @@ const scanDir = async (dir, ext) => {
     return pages;
   };
 
-  const blog_indexes = paginate(blog_entries.slice(), '/blog');
-  for (let index of blog_indexes) {
-    const dir = path.join(data_dir, index.page);
-    fs.mkdirSync(dir, { recursive: true });
-    fs.writeFileSync(path.join(dir, "index.json"), JSON.stringify(index.data));
-  }
-
-  for (let tag of Object.keys(blog_entries_by_tag)) {
-    const blog_tag_indexes = paginate(blog_entries_by_tag[tag].slice(), '/blog/tag/'+tag);
-    for (let index of blog_tag_indexes) {
-      const dir = path.join(data_dir, index.page);
-      fs.mkdirSync(dir, { recursive: true });
-      fs.writeFileSync(path.join(dir, "index.json"), JSON.stringify(index.data));
-    }
-  }
-
   // Generafe feed
   const archive_feed = new Feed({
     title: "unknownplace.org - archives",
@@ -168,7 +146,7 @@ const scanDir = async (dir, ext) => {
       date: archive.date,
     });
   }
-  fs.writeFileSync("./static/feeds/archives.xml", archive_feed.rss2());
+  fs.writeFileSync("./public/static/feeds/archives.xml", archive_feed.rss2());
 
   const blog_feed = new Feed({
     title: "unknownplace.org - blog",
@@ -186,6 +164,6 @@ const scanDir = async (dir, ext) => {
       date: entry.date,
     });
   }
-  fs.writeFileSync("./static/feeds/blog.xml", blog_feed.rss2());
+  fs.writeFileSync("./public/static/feeds/blog.xml", blog_feed.rss2());
 
 })();

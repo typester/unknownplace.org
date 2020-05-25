@@ -24,5 +24,9 @@
   "devDependencies": {
     "commander": "^2.20.0",
     "feed": "^2.0.4"
+  },
+  "scripts": {
+    "dev": "yarn next dev",
+    "export": "node create-feeds.js && yarn next build && yarn next export"
   }
 }
