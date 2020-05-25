@@ -16,7 +16,7 @@ export const BlogEntryView: React.StatelessComponent<BlogEntryViewProps> = ({ en
     </h1>
     <div className="content" dangerouslySetInnerHTML={{__html: entry.content}}/>
     <aside className="meta">
-      <Link href="/blog/[...slug]" as={`/${entry.slug.join('/')}/`}><a>{moment(entry.date).format()}</a></Link>
+      <Link href="/blog/[...slug]" as={`/blog/${entry.slug.join('/')}/`}><a>{moment(entry.date).format('YYYY-MM-DDThh:mm:ss') + entry.tz}</a></Link>
       { entry.tags.length >= 1 &&
         <>
         {' '}/{' '}

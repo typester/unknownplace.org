@@ -21,9 +21,22 @@ export const readArchives = async (): Promise<ArchiveDetail[]> => {
 
     const data = await fs.readFile(path.join(dir, f), 'utf-8');
     const json: ArchiveDetail = JSON.parse(data);
+
+    if (process.env.INCLUDE_DRAFTS !== '1') {
+      if (json.tags.find(t => t == 'draft')) {
+        continue;
+      }
+    }
+
+    const m = json.date.match(/^(.*?)([+-]\d{4})?$/);
+    if (!m || !m[1]) {
+      throw new Error(`invalid date format: ${json.date}`);
+    }
+
     archivesCache.push({
       title: json.title,
-      date: json.date,
+      date: m[1],
+      tz: m[2] || '',
       tags: json.tags,
       content: json.content,
       slug: f.replace(/\.json$/, ''),
@@ -49,9 +62,22 @@ export const readBlogs = async (): Promise<BlogDetail[]> => {
 
     const data = await fs.readFile(path.join(dir, f), 'utf-8');
     const json: BlogDetail = JSON.parse(data);
+
+    if (process.env.INCLUDE_DRAFTS !== '1') {
+      if (json.tags.find(t => t == 'draft')) {
+        continue;
+      }
+    }
+
+    const md = json.date.match(/^(.*?)([+-]\d{4})?$/);
+    if (!md || !md[1]) {
+      throw new Error(`invalid date format: ${json.date}`);
+    }
+
     blogCache.push({
       title: json.title,
-      date: json.date,
+      date: md[1],
+      tz: md[2] || '',
       tags: json.tags,
       content: json.content,
       slug: [m[1], m[2], m[3], m[4]],
