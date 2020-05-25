@@ -18,18 +18,18 @@ export const Pager: React.StatelessComponent<PagerProps> = ({ data }) =>
     { data.previous ?
       <Link href="/blog" as={link(data, data.previous)}><a className="pagination-previous">Previous</a></Link>
       :
-      <a className="pagination-previous" disabled>Previous</a>
+      {/*<a className="pagination-previous" disabled>Previous</a>*/}
     }
     { data.next ?
       <Link href="/blog" as={link(data, data.next)}><a className="pagination-next">Next</a></Link>
       :
-      <a className="pagination-next" disabled>Next</a>
+      {/*<a className="pagination-next" disabled>Next</a>*/}
     }
     <ul className="pagination-list">
       { data.range.map(r =>
         <li key={r}>
           { r == data.current ?
-            <a className="pagination-link is-current" disabled>{r}</a>
+            {/*<a className="pagination-link is-current" disabled>{r}</a>*/}
             :
             <Link href="/blog" as={link(data, r)}><a className="pagination-link">{r}</a></Link>
           }
