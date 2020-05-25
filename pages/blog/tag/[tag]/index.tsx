@@ -1,19 +1,25 @@
-import moment from 'moment';
-import { GetStaticProps } from 'next';
-import Head from 'next/head';
-import Link from 'next/link';
 import React, { FunctionComponent } from 'react';
-import { Layout } from '../../components/layout';
-import { Blog } from '../../entities/Blog';
-import { readBlogs } from '../../utils/loader';
+import moment from 'moment';
+import { Layout } from '../../../../components/layout';
+import Head from 'next/head';
+import { Blog } from '../../../../entities/Blog';
+import Link from 'next/link';
+import { GetStaticPaths, GetStaticProps } from 'next';
+import { readBlogs } from '../../../../utils/loader';
+import { ParsedUrlQuery } from 'querystring';
 
-interface BlogIndexProps {
+interface TagIndexParams extends ParsedUrlQuery {
+  tag: string;
+}
+
+interface TagIndexProps {
+  tag: string;
   entries: { [key: string]: Blog[] },
 }
 
-const BlogIndex :FunctionComponent<BlogIndexProps> = ({ entries }) => {
+const TagIndex: FunctionComponent<TagIndexProps> = ({ tag, entries }) => {
   return (
-    <Layout title="Blog">
+    <Layout title={`Blog - Tag:${tag}`}>
       <Head>
         <link rel="alternate" type="application/rss+xml" href="/static/feeds/blog.xml" />
       </Head>
@@ -42,10 +48,31 @@ const BlogIndex :FunctionComponent<BlogIndexProps> = ({ entries }) => {
   );
 };
 
-export default BlogIndex;
+export default TagIndex;
 
-export const getStaticProps: GetStaticProps<BlogIndexProps> = async () => {
+export const getStaticPaths: GetStaticPaths = async () => {
   const entries = await readBlogs();
+
+  const tags: { [key: string]: number } = {};
+  for (const e of entries) {
+    for (const t of e.tags) {
+      tags[t]++;
+    }
+  }
+
+  const paths = Object.keys(tags).map(t => ({
+    params: { tag: t },
+  }));
+
+  return { paths, fallback: false };
+};
+
+export const getStaticProps: GetStaticProps<TagIndexProps, TagIndexParams> = async ({ params }) => {
+  if (!params) {
+    throw new Error('params is required');
+  }
+
+  const entries = (await readBlogs()).filter(e => e.tags.find(t => t == params.tag));
 
   /* split by year */
   const years: { [key:string]: Blog[] } = {};
@@ -65,7 +92,9 @@ export const getStaticProps: GetStaticProps<BlogIndexProps> = async () => {
 
   return {
     props: {
+      tag: params.tag,
       entries: years,
     },
   };
 };
+

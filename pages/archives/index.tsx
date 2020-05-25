@@ -1,74 +1,70 @@
 import moment from 'moment';
+import { GetStaticProps } from 'next';
 import Head from 'next/head';
 import Link from 'next/link';
-import React from 'react';
+import React, { FunctionComponent } from 'react';
 import { Layout } from '../../components/layout';
-
-export interface Archives {
-  title: string;
-  date: Date;
-  tags: string[];
-  slug: string;
-}
+import { readArchives } from '../../utils/loader';
+import { Archive } from '../../entities/Archive';
 
 export interface ArchivesIndexProps {
-  archives: { [key: string]: Archives[] }
+  archives: { [key: string]: Archive[] }
 }
 
-export default class ArchivesIndex extends React.Component<ArchivesIndexProps> {
-  static async getInitialProps() {
-    const index = await import("../../data/archives/index.json");
-    const archives: Archives[] = index.default.map(i => ({
-      ...i,
-      date: new Date(i.date),
-    }));
-
-    /* split by year */
-    const years: { [key:string]: Archives[] } = {};
-    for (let a of archives) {
-      /* inflate date */
-      a.date = new Date(a.date || 0);
-
-      const yr = a.date.getFullYear();
-      if (!years[ yr ]) {
-        years[yr] = [];
-      }
-      years[yr].push(a);
-    }
-
-    return { archives: years };
-  }
-
-  render() {
-    const { archives } = this.props;
-
-    return (
-      <Layout title="Archives">
-        <Head>
-          <link rel="alternate" type="application/rss+xml" href="/static/feeds/archives.xml" />
-        </Head>
-        <div id="archiveindex">
-          { Object.keys(archives).sort().reverse().map((yr, i) =>
-            <section className="columns year" key={`yr-${i}`}>
-              <div className="column is-narrow">
-                <h2 className="is-size-3">{yr}</h2>
-              </div>
-              <div className="column archivelist">
-                { archives[yr].map((archive, i) =>
-                  <div className="columns is-mobile archive" key={`archive-${i}`}>
-                    <div className="column is-narrow date">
-                      <div className="is-size-7 has-text-weight-bold archive-date">{moment(archive.date).format("MMM DD")}</div>
-                    </div>
-                    <div className="column is-size-5 archive-title">
-                      <Link href="/archives/entry" as={`/archives/${archive.slug}`}><a>{archive.title}</a></Link>
-                    </div>
+const ArchivesIndex: FunctionComponent<ArchivesIndexProps> = ({ archives }) => {
+  return (
+    <Layout title="Archives">
+      <Head>
+        <link rel="alternate" type="application/rss+xml" href="/static/feeds/archives.xml" />
+      </Head>
+      <div id="archiveindex">
+        { Object.keys(archives).sort().reverse().map((yr, i) =>
+          <section className="columns year" key={`yr-${i}`}>
+            <div className="column is-narrow">
+              <h2 className="is-size-3">{yr}</h2>
+            </div>
+            <div className="column archivelist">
+              { archives[yr].map((archive, i) =>
+                <div className="columns is-mobile archive" key={`archive-${i}`}>
+                  <div className="column is-narrow date">
+                    <div className="is-size-7 has-text-weight-bold archive-date">{moment(new Date(archive.date)).format("MMM DD")}</div>
                   </div>
+                  <div className="column is-size-5 archive-title">
+                    <Link href="/archives/[slug]" as={`/archives/${archive.slug}/`}><a>{archive.title}</a></Link>
+                  </div>
+                </div>
                 )}
-              </div>
-            </section>
+            </div>
+          </section>
           )}
-        </div>
-      </Layout>
-    );
+      </div>
+    </Layout>
+  );
+};
+export default ArchivesIndex;
+
+export const getStaticProps: GetStaticProps<ArchivesIndexProps> = async () => {
+  const archives = await readArchives();
+
+  /* split by year */
+  const years: { [key:string]: Archive[] } = {};
+  for (const a of archives) {
+    const yr = (new Date(a.date)).getFullYear();
+    if (!years[ yr ]) {
+      years[yr] = [];
+    }
+    years[yr].push(a);
   }
-}
+
+  /* sort */
+  for (const yr of Object.keys(years)) {
+    /* see https://github.com/microsoft/TypeScript/issues/5710 for +new Date */
+    years[yr] = years[yr].sort((a, b) => +new Date(b.date) - +new Date(a.date));
+  }
+
+  return {
+    props: {
+      archives: years,
+    },
+  };
+};
