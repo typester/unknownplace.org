@@ -191,6 +191,37 @@ article.blog {
         .footdef {
             margin-top: 1rem;
         }
+
+        .image {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-top: 40px;
+            margin-bottom: 60px;
+
+            a {
+                border-bottom: none;
+                box-shadow: none;
+                text-decoration: none;
+            }
+
+            > div {
+                display: flex;
+                flex-direction: column;
+                align-items: center;
+                border: 2px solid #cecece;
+                padding: 4px;
+                padding-bottom: 0;
+                align-items: center;
+                justify-content: center;
+
+                .caption {
+                    font-size: 0.8em;
+                    padding: 4px;
+                    color: #333;
+                };
+            }
+        }
     }
 
     .meta {
