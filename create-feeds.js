@@ -81,7 +81,6 @@ const scanDir = async (dir, ext) => {
     }
 
     const date = new Date(data.date || 0);
-    const p = `/blog/${m.join('/')}/`;
 
     const entry = {
       title: data.title || "",
@@ -158,8 +157,8 @@ const scanDir = async (dir, ext) => {
   for (let entry of blog_entries.slice().splice(0, 10)) {
     blog_feed.addItem({
       title: entry.title,
-      id: `https://unknownplace.org${entry.path}`,
-      link: `https://unknownplace.org${entry.path}`,
+      id: `https://unknownplace.org${entry.path}${entry.slug}/`,
+      link: `https://unknownplace.org${entry.path}${entry.slug}/`,
       content: entry.content,
       date: entry.date,
     });
