@@ -1,6 +1,5 @@
-import React from 'react';
 import Link from 'next/link';
-import moment from 'moment';
+import React from 'react';
 import { BlogDetail } from '../entities/Blog';
 
 interface BlogEntryViewProps {
