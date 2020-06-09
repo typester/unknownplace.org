@@ -3,6 +3,7 @@ export interface Blog {
   tags: string[];
   date: string;
   slug: string[];
+  image?: string;
 }
 
 export interface BlogDetail extends Blog {

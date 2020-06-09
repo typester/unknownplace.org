@@ -23,7 +23,7 @@ const BlogEntry: FunctionComponent<BlogEntryProps> = ({ entry }) => {
   }
 
   return (
-    <Layout title={entry.title} url={`https://unknownplace.org/blog/${entry.slug.join('/')}/`}>
+    <Layout title={entry.title} url={`https://unknownplace.org/blog/${entry.slug.join('/')}/`} image={entry.image}>
       <div id="blogentry">
         <BlogEntryView entry={entry}/>
       </div>

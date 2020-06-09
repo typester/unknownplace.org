@@ -6,9 +6,10 @@ import "../styles/styles.scss";
 interface LayoutProps {
   title?: string;
   url?: string;
+  image?: string;
 }
 
-export const Layout: FunctionComponent<LayoutProps> = ({ title, url, children }) =>
+export const Layout: FunctionComponent<LayoutProps> = ({ title, url, image, children }) =>
   <div>
     <Head>
       <meta name="viewport" content="width=device-width, initial-scale=1" />
@@ -19,6 +20,7 @@ export const Layout: FunctionComponent<LayoutProps> = ({ title, url, children })
       { title ? <meta property="og:type" content="article" /> : <meta property="og:type" content="website" /> }
       <meta property="og:site_name" content="unknownplace.org" />
       { url && <meta property="og:url" content={url} /> }
+      { image && <meta property="og:image" content={image} /> }
     </Head>
 
     <section className="section">

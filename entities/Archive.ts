@@ -3,6 +3,7 @@ export interface Archive {
   date: string;
   tags: string[];
   slug: string;
+  image?: string;
 }
 
 export interface ArchiveDetail extends Archive {

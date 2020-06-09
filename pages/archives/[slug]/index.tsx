@@ -22,7 +22,7 @@ const ArchiveEntry: FunctionComponent<ArchiveEntryProps> = ({ archive }) => {
   }
 
   return (
-    <Layout>
+    <Layout title={archive.title} url={`https://unknownplace.org/archives/${archive.slug}/`} image={archive.image}>
       <article className="archive">
         <h1>{archive.title}</h1>
         <div className="content" dangerouslySetInnerHTML={{ __html:  archive.content }} />

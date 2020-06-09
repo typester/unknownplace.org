@@ -28,13 +28,16 @@ export const readArchives = async (): Promise<ArchiveDetail[]> => {
       }
     }
 
-    archivesCache.push({
+    const archive: ArchiveDetail = {
       title: json.title,
       date: json.date,
       tags: json.tags,
       content: json.content,
       slug: f.replace(/\.json$/, ''),
-    });
+    };
+    if (json.image) archive.image = json.image;
+
+    archivesCache.push(archive);
   }
 
   return archivesCache;
@@ -63,13 +66,16 @@ export const readBlogs = async (): Promise<BlogDetail[]> => {
       }
     }
 
-    blogCache.push({
+    const entry: BlogDetail = {
       title: json.title,
       date: json.date,
       tags: json.tags,
       content: json.content,
       slug: [m[1], m[2], m[3], m[4]],
-    });
+    };
+    if (json.image) entry.image = json.image;
+
+    blogCache.push(entry);
   }
 
   return blogCache;
