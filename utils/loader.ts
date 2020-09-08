@@ -61,7 +61,7 @@ export const readBlogs = async (): Promise<BlogDetail[]> => {
     const json: BlogDetail = JSON.parse(data);
 
     if (process.env.INCLUDE_DRAFTS !== '1') {
-      if (json.tags.find(t => t == 'draft')) {
+      if ((json.tags || []).find(t => t == 'draft')) {
         continue;
       }
     }
