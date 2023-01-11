@@ -14,12 +14,12 @@
     "bulma": "^0.7.2",
     "disqus-react": "^1.0.5",
     "moment": "^2.23.0",
-    "next": "^9.4.2",
-    "node-sass": "^6.0.1",
+    "next": "^12.3.1",
     "pagination": "^0.4.6",
-    "react": "^16.8.6",
-    "react-dom": "^16.7.0",
-    "typescript": "^3.2.2"
+    "react": "^18.2.0",
+    "react-dom": "^18.2.0",
+    "sass": "^1.54.9",
+    "typescript": "^4.8.3"
   },
   "devDependencies": {
     "commander": "^2.20.0",

@@ -172,7 +172,6 @@ article.blog {
         font-size: 1.8rem;
         padding-top: 3rem;
         border-bottom: 1px solid #eee;
-        margin-bottom: 1.8rem;
 
         a {
             border-bottom: none;
@@ -183,6 +182,8 @@ article.blog {
 
     .content {
         @include contentbase();
+
+        margin-bottom: 120px;
 
         h2, h3, h4 {
             padding-top: 0;
@@ -225,23 +226,30 @@ article.blog {
     }
 
     .meta {
-        font-size: 0.9rem;
+        font-size: 0.8rem;
         //border-top: 1px solid #eee;
         margin: 0.5rem 0;
         padding: 0.5rem 0;
+        margin-bottom: 1.8rem;
+        display: flex;
+        //justify-content: flex-end;
 
         a {
             &:first-child {
                 margin-left: 0;
             }
+            &:last-child {
+                margin-right: 0;
+            }
 
             color: white;
+            font-weight: bold;
             background-color: black;
             padding: 0.2rem 0.8rem;
             margin: 0 0.4rem;
             border-bottom: none;
             box-shadow: none;
-            line-height: 2em;
+            //letter-spacing: 0.05rem;
             @include rounded(0.2rem);
         }
 

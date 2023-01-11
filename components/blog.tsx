@@ -13,16 +13,19 @@ export const BlogEntryView: React.StatelessComponent<BlogEntryViewProps> = ({ en
         <a>{entry.title}</a>
       </Link>
     </h1>
-    <div className="content" dangerouslySetInnerHTML={{__html: entry.content}}/>
+
     <aside className="meta">
       <Link href="/blog/[...slug]" as={`/blog/${entry.slug.join('/')}/`}><a>{entry.date}</a></Link>
       { entry.tags.length >= 1 &&
         <>
-        {' '}/{' '}
-        { entry.tags.map((tag, i) =>
-          <Link key={i} href="/blog/tag/[tag]" as={"/blog/tag/" + tag}><a>{tag}</a></Link>
-        )}
+          {' '}/{' '}
+          { entry.tags.map((tag, i) =>
+            <Link key={i} href="/blog/tag/[tag]" as={"/blog/tag/" + tag}><a>{tag}</a></Link>
+            )}
         </>
       }
     </aside>
+
+    <div className="content" dangerouslySetInnerHTML={{__html: entry.content}}/>
+
   </article>;

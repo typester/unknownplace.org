@@ -1,7 +1,6 @@
 import Head from 'next/head';
 import Link from "next/link";
 import React, { FunctionComponent } from 'react';
-import "../styles/styles.scss";
 
 interface LayoutProps {
   title?: string;
