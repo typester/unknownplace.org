@@ -232,6 +232,7 @@ article.blog {
         padding: 0.5rem 0;
         margin-bottom: 1.8rem;
         display: flex;
+        flex-wrap: wrap;
         //justify-content: flex-end;
 
         a {
@@ -246,7 +247,7 @@ article.blog {
             font-weight: bold;
             background-color: black;
             padding: 0.2rem 0.8rem;
-            margin: 0 0.4rem;
+            margin: 0.2rem 0.4rem;
             border-bottom: none;
             box-shadow: none;
             //letter-spacing: 0.05rem;
