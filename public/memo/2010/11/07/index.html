@@ -1,0 +1,152 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="ja" xml:lang="ja">
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <title>2010/11/07 - memo - unknownplace.org</title>
+  <link rel="stylesheet" type="text/css" href="http://yui.yahooapis.com/3.0.0/build/cssreset/reset-min.css" />
+  <link rel="stylesheet" type="text/css" href="http://yui.yahooapis.com/3.0.0/build/cssfonts/fonts-min.css" />
+  <link rel="stylesheet" href="/css/style.css" type="text/css" />
+  <meta property="fb:admins" content="1093631929" />
+  <meta name="robots" content="noindex" />
+  <link rel="alternate" type="application/rss+xml" href="http://unknownplace.org/memo/index.rss" />
+</head>
+<body>
+
+<div id="container">
+<div id="header">
+    <h1><a href="/">unknownplace.org</a></h1> /
+<a href="/memo/">memo</a>
+</div>
+
+<div id="content">
+
+<div class="entry autopagerize_page_element">
+  <h2 id="e001"><a href="/memo/2010/11/07/1/">VAIO P に ubuntu 10.4 入れたときのメモ</a></h2>
+
+  <div class="body">
+    <p><a href="http://www.flickr.com/photos/typester/5153154329/" title="VAIO P + ubuntu 10.4 NetBook edition by typester, on Flickr"><img alt="VAIO P + ubuntu 10.4 NetBook edition" height="333" src="http://farm5.static.flickr.com/4038/5153154329_b6b380762b.jpg" width="500" /></a></p>
+<p>だいぶん前の話になりますが、重たい Macbook を常に持ち歩くのに嫌気がさし、外出用PCとして VAIO P を購入しました。 ただ Windows をつかうつもりは全くなかったので、とどいてすぐ ubuntu をインストールしました。</p>
+<h4>リカバリディスクの作成</h4>
+<p>最近の PC はリカバリディスクがないかわりに、HDD 内にリカバリ領域をもつ。 この領域もフルで使いたかったのでまずリカバリディスクを作成しリカバリ領域が消えても問題ないようにする。</p>
+<p>手順はマニュアルを参照してやるとすぐできた。 なんとこれにDVD-Rが二枚必要だった。</p>
+<h4>ubuntu インストール</h4>
+<p>10.4 の NetBook エディションを選択。（当時は 10.10 がまだ出ていなかった）</p>
+<p>インストールはイメージを DVD に焼いて DVD ブートし、通常インストール。</p>
+<p>まず DVD ブートの方法がわからず苦労する。 起動時に適当にボタンを押しまくって F2 で BIOS 画面が出せることがわかった。そこで起動順序を変更すれば OK。(なんかこれマニュアルに見つけられなかった)</p>
+<p>あとスティックが効かないのでGUIインストールは苦労。 これはあとで以下の起動オプションを渡せばいいことがわかった。</p>
+<pre><code>i8042.reset i8042.nomux i8042.nopnp i8042.noloop
+</code></pre>
+<p>あとは手順通りにインストール。HDD パーティションは 10GB くらいを <code>/</code> に、残りを全部 <code>/home</code> に割り当てた。swap 領域はなしとした。</p>
+<h4>スティックポインタが動くよう修正</h4>
+<p>インストール完了したらまずスティックポインタを動くように修正する。<code>/etc/default/grub</code> の <code>GRUB_CMDLINE_LINUX_DEFAULT</code> にさっきの</p>
+<pre><code>i8042.reset i8042.nomux i8042.nopnp i8042.noloop
+</code></pre>
+<p>を追加。これで再起動すればスティックが動くようになる。</p>
+<h4>SSD 対策</h4>
+<p>意味あるかわからないけど fstab をいじって、<code>/</code>、<code>/home</code> ともに noatime でマウントするように、<code>/tmp</code> は tmpfs に設定しておく。</p>
+<h4>ディスプレイドライバ</h4>
+<p>デフォルトだと描画が重たいので GMA500 用のドライバを入れる</p>
+<pre><code>sudo add-apt-repository ppa:gma500/ppa
+sudo apt-get update
+sudo apt-get install poulsbo-driver-2d poulsbo-driver-3d poulsbo-config
+</code></pre>
+<p>また、<code>/etc/default/grub</code> の <code>GRUB_CMDLINE_LINUX_DEFAULT</code> にさらに</p>
+<pre><code>mem=1920mb nohz=off
+</code></pre>
+<p>を追加しておく。</p>
+<p>この辺の情報は ubuntu の wiki の <a href="https://wiki.ubuntu.com/HardwareSupportComponentsVideoCardsPoulsbo/">HardwareSupportComponentsVideoCardsPoulsbo</a> にまとまってる。</p>
+<p>で、これはしばらくつかった最近はまったのだが、このドライバはカーネルアップグレードしても自動的にビルドされないみたいでうっかりアップデートがきてカーネルのバージョンをアップしちゃうと起動不可能になってしまう。カーネルアップしたら再起動するまえにこのドライバの再インストールを忘れないようにする必要があるようだ。</p>
+<h4>サスペンドできるように</h4>
+<p>ここの方法を今は使っている <a href="http://ubuntuforums.org/showthread.php?t=1531976">http://ubuntuforums.org/showthread.php?t=1531976</a></p>
+<pre><code>sudo apt-get uninstall vbetool
+sudo apt-get install uswsusp
+</code></pre>
+<p>して、<code>/usr/sbin/pm-suspend</code> を以下で上書き</p>
+<pre><code>#!/bin/sh
+#remove wlan modules
+for m in `lsmod | grep ath9k | awk &apos;{print $1}&apos;` ;
+do
+rmmod $m
+done
+
+s2ram --force
+
+modprobe ath9k
+</code></pre>
+<h4>日本語入力できるように</h4>
+<ul><li>ibus-anthyとかいれる</li><li>System -&gt; iBus Preferences で anthy を Input Method リストに入れる</li><li>System -&gt; Language Support で Keyboard input method system を ibus にセットして再起動</li></ul>
+<p>でOK。</p>
+<p>日本語入力のトグルキーは iBus Preferences から変更できる。デフォルトでは Ctrl-space もトグルキーとして設定されているが、これは emacs とコンフリクトするからはずしておく。</p>
+<h4>残ってる問題</h4>
+<p>スピーカーから音が出ない。ヘッドホン端子につなげばそこから音は出る。 解決方法知っている人いたら教えてください。</p>
+<h4>使用感</h4>
+<p>ターミナルとブラウザ、あとたまにSkypeつかうっていう程度なので ubuntu でも全然問題ない、というか非常に快適。</p>
+<p>キーボードはこの大きさでも普通にタッチタイプでき、ローカルに入った Emacs でその気になればコーディングも可能。</p>
+<p>またいまや Google Chrome のおかげでほかの OS と遜色ないブラウザ環境があるのも大きい。Flash Player も Chrome 自身に内蔵されているので何も考えなくていい。 Flash 内で日本語がインライン入力できるあたりは OS X より快適とも言える。</p>
+<p>外出時にWiFiつないだりといったネットワーク設定なんかも当たり前のようにタスクトレイからできてLinuxも楽ちんになったものだなー。</p>
+
+  </div>
+
+  <div class="meta">
+    by typester /
+    at <a href="/memo/2010/11/07/1/">2010-11-07T17:07:00</a> /
+    <a href="/memo/tag/ubuntu/">ubuntu</a>
+    &middot; <a href="/memo/tag/vaiop/">vaiop</a>
+    / <a href="/memo/2010/11/07/1/#disqus_thread">Comment</a>
+  </div>
+</div>
+
+
+
+</div>
+
+<p id="footer">
+  Copyright &copy; 2005-2013
+      by <a class="author" href="/about/#me">Daisuke Murase (typester)</a> /
+  Site generated by <a href="https://github.com/typester/nim">nim</a> /
+  Comments powered by <a href="http://disqus.com">DISQUS</a>.
+</p>
+
+</div>
+
+
+<script type="text/javascript">
+//<![CDATA[
+(function() {
+	var links = document.getElementsByTagName('a');
+	var query = '?';
+	for(var i = 0; i < links.length; i++) {
+	if(links[i].href.indexOf('#disqus_thread') >= 0) {
+		query += 'url' + i + '=' + encodeURIComponent(links[i].href) + '&';
+	}
+	}
+	document.write('<script charset="utf-8" type="text/javascript" src="http://disqus.com/forums/unknownplace/get_num_replies.js' + query + '"></' + 'script>');
+})();
+//]]>
+</script>
+
+
+<script type="text/javascript">
+var gaJsHost = (("https:" == document.location.protocol) ? "https://ssl." : "http://www.");
+document.write(unescape("%3Cscript src='" + gaJsHost + "google-analytics.com/ga.js' type='text/javascript'%3E%3C/script%3E"));
+</script>
+<script type="text/javascript">
+try {
+var pageTracker = _gat._getTracker("UA-53067-1");
+pageTracker._trackPageview();
+} catch(err) {}</script>
+
+<script>
+function googleTranslateElementInit() {
+  new google.translate.TranslateElement({
+    pageLanguage: 'ja',
+    gaTrack: true,
+    gaId: 'UA-53067',
+    floatPosition: google.translate.TranslateElement.FloatPosition.BOTTOM_RIGHT
+  });
+}
+</script><script src="//translate.google.com/translate_a/element.js?cb=googleTranslateElementInit"></script>
+
+</body>
+</html>

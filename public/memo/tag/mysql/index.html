@@ -1,0 +1,194 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="ja" xml:lang="ja">
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <title>memo - unknownplace.org</title>
+  <link rel="stylesheet" type="text/css" href="http://yui.yahooapis.com/3.0.0/build/cssreset/reset-min.css" />
+  <link rel="stylesheet" type="text/css" href="http://yui.yahooapis.com/3.0.0/build/cssfonts/fonts-min.css" />
+  <link rel="stylesheet" href="/css/style.css" type="text/css" />
+  <meta property="fb:admins" content="1093631929" />
+  <meta name="robots" content="noindex" />
+  <link rel="alternate" type="application/rss+xml" href="http://unknownplace.org/memo/index.rss" />
+</head>
+<body>
+
+<div id="container">
+<div id="header">
+    <h1><a href="/">unknownplace.org</a></h1> /
+<a href="/memo/">memo</a>
+</div>
+
+<div id="content">
+
+<div class="entry autopagerize_page_element">
+  <h2><a href="/memo/2011/02/02/1/">brew install mysql</a></h2>
+
+  <div class="body">
+    <p>なんか <code>mysql_install_db --tmpdir=/tmp</code> とかしないとうまく行かなかったメモ。</p>
+<pre><code>$ brew install mysql
+$ mysql_install_db --tmpdir=/tmp
+$ mysql.server start
+</code></pre>
+
+  </div>
+
+  <div class="meta">
+    by typester /
+    at <a href="/memo/2011/02/02/1/">2011-02-02T16:07:00</a> /
+    <a href="/memo/tag/homebrew/">homebrew</a>
+    &middot; <a href="/memo/tag/mysql/">mysql</a>
+    / <a href="/memo/2011/02/02/1/#disqus_thread">Comment</a>
+  </div>
+</div>
+
+<div class="entry autopagerize_page_element">
+  <h2><a href="/memo/2008/09/04/1/">TheSchwartzのテストが通らなくてあせった件</a></h2>
+
+  <div class="body">
+    <p>TheSchwartzをインストールしようとしたらテストが通らなかった。</p>
+<p>テストが通らなくても、原因を見ると失敗していても影響ないような失敗をしていることが多いので気軽にソースをのぞいて見たところどうもそんな気楽な感じでもなくて普通にエラーっててどうしたもんかと思った。</p>
+<p>具体的には</p>
+<pre><code>$ prove -bv t/unique.t
+t/unique....
+1..12
+ok 1 - made first feed major job
+ok 2 - The object isa TheSchwartz::JobHandle
+ok 3 - made another feed major job
+ok 4 - no handle
+ok 5 - made scratch major job
+not ok 6 - The object isa TheSchwartz::JobHandle
+
+#   Failed test &apos;The object isa TheSchwartz::JobHandle&apos;
+#   at t/unique.t line 44.
+#     The object isn&apos;t defined
+ok 7 - made first feed major job
+ok 8 - The object isa TheSchwartz::JobHandle
+ok 9 - made another feed major job
+ok 10 - no handle
+ok 11 - made scratch major job
+ok 12 - The object isa TheSchwartz::JobHandle
+# Looks like you failed 1 test of 12.
+ Dubious, test returned 1 (wstat 256, 0x100)
+ Failed 1/12 subtests
+
+Test Summary Report
+-------------------
+t/unique (Wstat: 256 Tests: 12 Failed: 1)
+  Failed test:  6
+  Non-zero exit status: 1
+Files=1, Tests=12,  0 wallclock secs ( 0.02 usr  0.01 sys +  0.14 cusr  0.03 csys =  0.20 CPU)
+Result: FAIL
+</code></pre>
+<p>こんな感じ。</p>
+<p><code>$client-&gt;insert</code> が正しく JobHandle オブジェクトを返していないということは job を insert できてないってことなのでこれは問題である。</p>
+<p>しょうがないのでもう少し追うと、このテストは3回 insert をしていて2回目の insert はわざと失敗させている。TheSchwartz はこの失敗した場合にエラーコード 1062 だけを特別扱いし、それ以外の場合はそのDBが死んだと判断して <code>mark_as_dead</code> する。</p>
+<p><code>Data::ObjectDriver::Driver::DBI</code> の <code>last_error</code> とか <code>Data::ObjectDriver::Driver::DBD::mysql</code> の <code>map_error_code</code> あたりを参照のこと。</p>
+<p>1062 というのはこの <code>DOD::DBD::mysql</code> にハードコードされていて、MySQL の <code>Duplicate entry &apos;%s&apos; for key %d</code> とかいうエラー。</p>
+<p>この辺の実装もどうかと思うが、ここで僕の環境では 1582 というエラーコードが帰ってきていたため、DBが <code>mark_as_dead</code> されてしまい、次のinsertも失敗するということになっていたようだ。</p>
+<p>ちなみにエラーコードは違ったけれども <code>Duplicate entry &apos;1-major&apos; for key &apos;funcid_2&apos;</code> という期待するエラーが返ってきていた。</p>
+<p>この環境の MySQL はずいぶん前に入れた 5.1beta (5.1.18-beta) で、ほかの5.0なマシンではテストとおるので、5.1 になってエラーコード変わったのかなぁと思って<a href="http://dev.mysql.com/doc/refman/5.1/en/error-messages-server.html">マニュアル</a>見てみたけど変わってないので、よくわからないけどとりあえずMySQLを最新(5.1rc)にしてみたらテストとおるようになってしまった。</p>
+<p>古い5.1は罠だということかなー。</p>
+
+  </div>
+
+  <div class="meta">
+    by typester /
+    at <a href="/memo/2008/09/04/1/">2008-09-04T18:11:00</a> /
+    <a href="/memo/tag/perl/">perl</a>
+    &middot; <a href="/memo/tag/theschwartz/">theschwartz</a>
+    &middot; <a href="/memo/tag/mysql/">mysql</a>
+    / <a href="/memo/2008/09/04/1/#disqus_thread">Comment</a>
+  </div>
+</div>
+
+<div class="entry autopagerize_page_element">
+  <h2><a href="/memo/2006/10/16/2/">MySQLのダブルクオートとsqlt</a></h2>
+
+  <div class="body">
+    <p>MySQLのsqlにダブルクオートが含まれてるとsqltがこける。</p>
+<p>なんだろう。シングルクオートに置換すると通る。</p>
+<p>とはいえ、便利すなぁ。sqlt。</p>
+
+  </div>
+
+  <div class="meta">
+    by typester /
+    at <a href="/memo/2006/10/16/2/">2006-10-16T13:02:00</a> /
+    <a href="/memo/tag/dbic/">dbic</a>
+    &middot; <a href="/memo/tag/mysql/">mysql</a>
+    &middot; <a href="/memo/tag/sqlt/">sqlt</a>
+    / <a href="/memo/2006/10/16/2/#disqus_thread">Comment</a>
+  </div>
+</div>
+
+<div class="entry autopagerize_page_element">
+  <h2><a href="/memo/2006/09/19/3/">VARCHAR</a></h2>
+
+  <div class="body">
+    <p>charset=utf8 だと短く感じるなぁ。</p>
+<p>感覚的に日本語は2バイト換算で考えてしまうので、<code>村瀬 大輔</code> は楽勝ではいるのに <code>Daisuke Murase</code> は Mu までしかはいらないとか、エェってなる。</p>
+
+  </div>
+
+  <div class="meta">
+    by typester /
+    at <a href="/memo/2006/09/19/3/">2006-09-19T09:47:00</a> /
+    <a href="/memo/tag/mysql/">mysql</a>
+    / <a href="/memo/2006/09/19/3/#disqus_thread">Comment</a>
+  </div>
+</div>
+
+
+
+</div>
+
+<p id="footer">
+  Copyright &copy; 2005-2013
+      by <a class="author" href="/about/#me">Daisuke Murase (typester)</a> /
+  Site generated by <a href="https://github.com/typester/nim">nim</a> /
+  Comments powered by <a href="http://disqus.com">DISQUS</a>.
+</p>
+
+</div>
+
+
+<script type="text/javascript">
+//<![CDATA[
+(function() {
+	var links = document.getElementsByTagName('a');
+	var query = '?';
+	for(var i = 0; i < links.length; i++) {
+	if(links[i].href.indexOf('#disqus_thread') >= 0) {
+		query += 'url' + i + '=' + encodeURIComponent(links[i].href) + '&';
+	}
+	}
+	document.write('<script charset="utf-8" type="text/javascript" src="http://disqus.com/forums/unknownplace/get_num_replies.js' + query + '"></' + 'script>');
+})();
+//]]>
+</script>
+
+
+<script type="text/javascript">
+var gaJsHost = (("https:" == document.location.protocol) ? "https://ssl." : "http://www.");
+document.write(unescape("%3Cscript src='" + gaJsHost + "google-analytics.com/ga.js' type='text/javascript'%3E%3C/script%3E"));
+</script>
+<script type="text/javascript">
+try {
+var pageTracker = _gat._getTracker("UA-53067-1");
+pageTracker._trackPageview();
+} catch(err) {}</script>
+
+<script>
+function googleTranslateElementInit() {
+  new google.translate.TranslateElement({
+    pageLanguage: 'ja',
+    gaTrack: true,
+    gaId: 'UA-53067',
+    floatPosition: google.translate.TranslateElement.FloatPosition.BOTTOM_RIGHT
+  });
+}
+</script><script src="//translate.google.com/translate_a/element.js?cb=googleTranslateElementInit"></script>
+
+</body>
+</html>

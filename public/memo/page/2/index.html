@@ -1,0 +1,452 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="ja" xml:lang="ja">
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <title>memo - unknownplace.org</title>
+  <link rel="stylesheet" type="text/css" href="http://yui.yahooapis.com/3.0.0/build/cssreset/reset-min.css" />
+  <link rel="stylesheet" type="text/css" href="http://yui.yahooapis.com/3.0.0/build/cssfonts/fonts-min.css" />
+  <link rel="stylesheet" href="/css/style.css" type="text/css" />
+  <meta property="fb:admins" content="1093631929" />
+  <meta name="robots" content="noindex" />
+  <link rel="alternate" type="application/rss+xml" href="http://unknownplace.org/memo/index.rss" />
+</head>
+<body>
+
+<div id="container">
+<div id="header">
+    <h1><a href="/">unknownplace.org</a></h1> /
+<a href="/memo/">memo</a>
+</div>
+
+<div id="content">
+
+<div class="entry autopagerize_page_element">
+  <h2><a href="/memo/2013/01/23/1/">plenv が良い感じ</a></h2>
+
+  <div class="body">
+    <p>perlbrew 使ってたんだけど、tokuhirom がつくってる <a href="http://blog.64p.org/entry/2013/01/21/134639">plenv</a> にスイッチした。</p>
+<p>perlbrew よりシンプルでなにやってるかわかるのがなにより。 というか perlbrew がよく分からなすぎるという話もある。</p>
+<p>plenv だとさらに <code>.perl-version</code> というファイルに perl のバージョンをいれておくと、そのディレクトリ以下では自動的にそのバージョンの perl が使われるという機能があって、これがだいぶはかどる。</p>
+<p>perlbrew で入れた各種 perl は <code>-g</code> つけわすれて SEGV したときこまってて別途 <code>--as=5.14.2-debug</code> みたいのをつくってたけど、 その経験を生かして今度は最初から</p>
+<pre><code>$ plenv install 5.14.2 -D=DEBUGGING=-g
+</code></pre>
+<p>な感じで全部入れるようにした。ちなみにこの install オプションはまだドキュメントになってないのでまだ変わるかもしれないから、この記述は参考にしないようおねがいいたす。</p>
+<p>perlbrew と比べるといったんラッパーをかます分 bootstrap が遅いというのがあって、 flymake とかだと結構気になるけど、 perl のバージョン検出の仕組みはシンプルだから elisp でかき直すのもすぐできそう。</p>
+
+  </div>
+
+  <div class="meta">
+    by typester /
+    at <a href="/memo/2013/01/23/1/">2013-01-23T11:36:00</a> /
+    <a href="/memo/tag/perl/">perl</a>
+    / <a href="/memo/2013/01/23/1/#disqus_thread">Comment</a>
+  </div>
+</div>
+
+<div class="entry autopagerize_page_element">
+  <h2><a href="/memo/2013/01/21/1/">Emacsの設定を見直し、 el-get の distributed セットアップに統一</a></h2>
+
+  <div class="body">
+    <p>いままで<a href="https://github.com/typester/emacs-config-old">秘伝のタレのような設定</a>を使い続けていたのだが、どうもしばらく使っているとEmacsがCPUを非常に食うようになってくる。 flymakeの設定かなー？とかほかにもいろいろ怪しげなところを削ってみたりしたがわからず、だましだまし使っていた。</p>
+<p>そういう理由もあってEmacs設定をリセットしたいと思っていたので、<a href="http://amzn.to/10wxFU8">Emacs実践入門</a>や Advent Calendar を読んでいたら <a href="https://github.com/dimitri/el-get">el-get</a> というパッケージマネージャがなかなかよさそうだと思った。</p>
+<p>これ、存在自体はまえから知っていたけど秘伝のタレベースな自分は使わないだろうなーとスルーしていた物だが、 ドキュメント(info)を読んでみると思った以上によさげだと言うことが分かった。 Mac 使ってる人にわかりやすくいうなら Emacs 用の homebrew という感じ。</p>
+<p>なかでも <code>6.3 Distributed Setup</code> で紹介されてる方法を使うと、他の環境に設定を持って行ったときも初回起動時にパッケージをよしなにインストールしてくれて自動的に同じ環境にしてくれる。これはなかなか便利。</p>
+<p>というわけで作り直した設定がこちら、まだ perl と clmemo 周りの最小限の設定しかないけれども。</p>
+<blockquote><p><a href="https://github.com/typester/emacs-config">https://github.com/typester/emacs-config</a></p></blockquote>
+<p><code>~/.emacs.d/</code> 以下に置かなくても動くようにつくってあるので、</p>
+<pre><code>$ git clone git://github.com/typester/emacs-config.git
+
+# no-window の場合
+$ emacs -q -l emacs-config/init.el
+
+# Cocoa の場合
+$ /Applications/Emacs.app/Contents/MacOS/Emacs -q -l emacs-config/init.el
+</code></pre>
+<p>とするともりもりパッケージのセットアップが始まって（時間はかかるけど）僕と同じ設定で Emacs を試せる状態になるはず。</p>
+<p>Emacs24 前提と、 el-get のために git コマンドが <code>exec-path</code> に必要。</p>
+<p>このように非常にカジュアルに人の設定を試せるのはかなり革命的。 （もちろん複数の環境で設定を同期するのにも革命的）</p>
+<p>なのでみんながこれ前提でセットアップしてくれたら最高だなーと思いますのでこれを読んでる Emacs ユーザーの方々におかれましては el-get ベースな設定を一考していただければ幸いでございます。</p>
+
+  </div>
+
+  <div class="meta">
+    by typester /
+    at <a href="/memo/2013/01/21/1/">2013-01-21T13:08:00</a> /
+    <a href="/memo/tag/emacs/">emacs</a>
+    / <a href="/memo/2013/01/21/1/#disqus_thread">Comment</a>
+  </div>
+</div>
+
+<div class="entry autopagerize_page_element">
+  <h2><a href="/memo/2013/01/16/1/">MacでのBluetoothホストコントロールデバイスの優先順位の変更</a></h2>
+
+  <div class="body">
+    <p>毎回ググるのでメモ。</p>
+<p>OSX は USBのドングルとかBluetoothホストコントローラとかをつけたときの挙動を、ファームウェアの NVRAM ってところに <code>bluetoothHostControllerSwitchBehavior</code> というキーで値を設定してあげることによって以下の3種類のうちから決めることができる。</p>
+<ul><li><code>never</code>: 外付けのホストコントローラにスイッチせず、つねにビルドインコントローラを使う</li><li><code>always</code>: ビルドインコントローラからdetachして外付けのホストコントローラにスイッチする</li><li><code>default</code>: 外付けホストコントローラがApple以外のときはビルドインからdetachして外付けデバイスを使う</li></ul>
+<p>デフォルトはもちろん <code>default</code>。</p>
+<p>で、 BT4LE に対応したドングルを持っていれば、BT4積んでない昔の MacBook なんかでも CoreBluetooth つかったり開発したりできる。</p>
+<p>さらに、あえてここで <code>never</code> を設定して外付けのホストコントローラを使わない設定にすると、 余っている外付けホストコントローラを iOS Simulator から利用することができる。</p>
+<p>この設定を変えるには <code>nvram</code> ってコマンドを使う:</p>
+<pre><code>$ sudo nvram bluetoothHostControllerSwitchBehavior=<span class="string">"never"</span>
+</code></pre>
+<p>とかでOK。</p>
+<p>詳しくは</p>
+<blockquote><p><a href="http://developer.apple.com/library/ios/#technotes/tn2295/_index.html">Technical Note TN2295: Testing Core Bluetooth Applications in the iOS Simulator</a></p></blockquote>
+<p>参照。</p>
+
+  </div>
+
+  <div class="meta">
+    by typester /
+    at <a href="/memo/2013/01/16/1/">2013-01-16T12:30:00</a> /
+    <a href="/memo/tag/osx/">osx</a>
+    / <a href="/memo/2013/01/16/1/#disqus_thread">Comment</a>
+  </div>
+</div>
+
+<div class="entry autopagerize_page_element">
+  <h2><a href="/memo/2012/12/25/1/">Any::Moose とか幻想やったんや</a></h2>
+
+  <div class="body">
+    <p><code>Any::Moose</code> は <code>Moose</code> と <code>Mouse</code> のラッパーで、バックエンドがどちらになるかは <code>use Any::Moose</code> した時点で <code>Moose</code> or <code>Mouse</code> がロードされているかによって変わる。</p>
+<p>どこかで <code>use Moose</code> していたら <code>use Any::Moose</code> は <code>use Moose</code> としてうごくし、 そうじゃない場合は <code>use Mouse</code> としてうごく。</p>
+<p>これはなんのためにあるかというと、MouseとMooseの両方のモジュールを混ぜて使うと壊れるからなんだけど、 そもそも混ぜて使って問題になるのは Mouse のクラスを Moose で extends したりとか、そういう Moose 周りの機能を相互に使おうとした場合だけであって、混ぜて使っていてもそれぞれのクラスを普通に使い合う分にはなんの問題もない。</p>
+<p>また、昔はruntimeの速度にそこまで性能差はなかったということもある。(<code>make_immutable</code> してたら Moose もそこまで遅くない)</p>
+<p>しかし現在では gfx マジックによって Mouse は激しく高速化されており、runtime での速度差もかなりある。 したがって、Moose的な意味で相互利用する場合でなければ、<code>Any::Moose</code> が勝手に Moose になるとうれしくない場合がほとんどだ。</p>
+<p>さらに、MooseとMouseの非互換によって、バックエンドがMouseのときはうまく動いていたコードが、 どこからMooseモジュールを使用したことによってバックエンドがMooseに切り替わった瞬間に動かなくなるという事例もある。</p>
+<p>結論として <code>Any::Moose</code> つかわないで <code>Mouse</code> を直で使う、で誰も困らないなーとおもってるのでそうしていこうと考えております。</p>
+<p>もし混ぜることがあったとしても Moose からつかうときは non Moose なクラスとして扱うようにすれば別に問題ないでしょう。(僕はそもそもMoose使わないけどw)</p>
+
+  </div>
+
+  <div class="meta">
+    by typester /
+    at <a href="/memo/2012/12/25/1/">2012-12-25T11:02:00</a> /
+    <a href="/memo/tag/perl/">perl</a>
+    / <a href="/memo/2012/12/25/1/#disqus_thread">Comment</a>
+  </div>
+</div>
+
+<div class="entry autopagerize_page_element">
+  <h2><a href="/memo/2012/11/07/1/">Redis布教活動報告 ISUCON 編</a></h2>
+
+  <div class="body">
+    <p>最近 <code>Test::RedisServer</code> とかもろもろつくっててばれてるかもしれませんが、だいぶ Redis 期にありまして、最近の趣味は？っていう問いにはだいたいRedisのソースを読むことですってなくらいなのですが、 memcached とかシンプルな KVS と比べるとだいぶ機能が豊富なので使い方を迷ったりとかそういう事例もあり、周りにもう少し使える人を増やさなければ僕の書いたコードが属人化しててつらい感じになるなーっていうわけで、 布教活動をおこなっておりまして、その一環として ISUCON2 に参加してきましたのでその報告です。</p>
+<blockquote><p><a href="http://blog.livedoor.jp/techblog/archives/67726489.html">livedoor Techブログ : #isucon2 リアルタイムフォトレポート 更新終了</a></p></blockquote>
+<p>前回の優勝チームに混ぜてもらった感じでだいぶついてる感じもしますが、見事連覇を果たせ、懇親会でも redis redis と連呼してきたのでだいぶ興味持った方も多いのではないでしょうか！</p>
+<p>そんな布教活動視点から ISUCON を振り返ってみたいと思います。</p>
+<h4>Redis がつかえるかどうか</h4>
+<p>開始直後はチーム間でのコンフリクトをさけるために <code>git push</code> で rev サーバーに反映ってのだけは設定しましたが、そのあとはすぐボトルネックそうなところで Redis に置き換えられる物はないか探していました。</p>
+<p>すぐに購入トランザクションが見つかります。Redis には Set 型という集合を表す型があり、それを使うと集合のなかから排他的に一つランダムでとりだして消すというのをとても効率的に実装することができます。 ISUCON ではこのランダム条件が（チェッカーがバグでスルーしていたみたいですけど）なかなかきびしかったところだと思いますが、そこもするっと解決です。 なお、順番に購入という条件であれば双方向リストの List 型を使うのが正解でしょう。こちらも先頭or末尾からの取得＆削除を排他的に行うことができます。</p>
+<p>ついでに購入履歴も Redis にもたせておけばそこから、サイドバー(<code>recent_sold</code>)とCSV吐き出しもどちらも行えそうだなと思いました。</p>
+<p>ここまででとりあえずこの購入トランザクションだけでも Redis にうつしたら DB ロックする必要がないのでだいぶ良さそうだなと思い、redisブランチやりますとチームに宣言します。</p>
+<h4>書き換えの流れ</h4>
+<p>そしてもりもり書き換えました。</p>
+<ul><li><code>POST /admin</code> でMySQLにデータを流し込んだあとに stock のデータをすべて redis にコピーする。(<code>stock:{variation_id}</code> というキーのSet)</li><li><code>POST /buy</code> で対象の Set から一つ取り出し、<code>order_history</code> という List にアーティスト名などの付属情報込みな辞書情報をPush。</li><li>サイドバーは <code>order_history</code> から最新10件を取得するように変更</li><li>CSV書き出しは <code>order_history</code> をまるっと書き出す感じ</li><li>その他もろもろテンプレに渡してるデータをよしなに変更</li></ul>
+<p>といった感じですが、アプリのテストコードがないのでだいぶ変更が手探りな感じでつらかったです。とくにテンプレ周り。なおしてベンチ止まって、ベンチのエラー見て修正という…。 そんなつらいかんじや実際の作業内容は <a href="https://github.com/kayac/isucon2/commits/redis">redis ブランチのコミットログ</a>を参照いただくと分かるかなと思います。</p>
+<h4>他になんかあるか？</h4>
+<p>コード見てるだけだとわからなかったので fujiwara さんにボトルネック探してもらいつつ、自分はとくにやることもないので非同期の実装を模索しておりました。 この時点ではforkモデルの限界なんじゃなかろうかと思っていて非同期にしてベンチ取ってみるか、みたいな感じでしたが、Perlで非同期にすると書き直しになるし、nodeの実装いじっててもうまく動かなくてすぐにあきらめてしまったんですが、それは fujiwara さんがテンプレのレンダリングボトルネックを見つけてくれて、そちらを直したら今までのアプリでも十分スループット（reverse proxy &lt;-&gt; app 間）が出ており、非同期全然意味ありませんでした。</p>
+<p>まぁそうだよね、IOウェイトが問題になるような場合以外は非同期意味ないなーとそのとき思った次第です。</p>
+<h4>テンプレキャッシュ</h4>
+<p>組長が見つけてくれたチケットの座席表のレンダリングのボトルネック。これも Redis でキャッシュするようにしました。 Redis は単純なKVSとしてみても十分高速なのでこういう用途にも使えます。</p>
+<h4>データ永続化</h4>
+<p>これは本家ドキュメントよくまとまっております。</p>
+<blockquote><p><a href="http://redis.io/topics/persistence">http://redis.io/topics/persistence</a></p></blockquote>
+<p>スナップショット(dump)と追記ログ(appendlog - MySQLのbinlog的な)の二種類の永続化方法があり、dumpはバックアップ用、復元をappendlogから、ってのがオススメな方法。</p>
+<p>appendlog は基本的にはプロトコルログなんですが、大きくなるとバックグラウンドで最適化されて小さくなります。デフォルトでは fsync が1秒ごとに走るので最悪そこまでのデータは保全される。 書き込み毎に sync って言うのも設定でできますがパフォーマンス的につらいことになるでしょう。</p>
+<p>これがISUCONのレギュレーションを満たしているかは定かではありませんがとりあえず fujiwara 組では1秒fsyncなappendlogでデータ永続化をしました。</p>
+<p>また、メモリいっぱい使い切っているような大きなデータセットの場合に appendlog するは不安感ありますが、自分もまだ試したことがないので、近いうちに試したいと思っております。</p>
+<h4>まとめ</h4>
+<p>あんまりおすすめしまくっていると勘違いしちゃう人もいるかもしれないのでいちおう補足しておきますが、単純に MySQL を Redis に置き換えたら速くなる、っていうことはないです。 MySQLがいいところ、Redisがいいところ、（もちろんその他のツールも）どちらもあるので、 Pros and Cons やトレードオフを考えた上で選択するのが大事です。</p>
+<p>僕自身も Redis つかっているといっても運用上のノウハウなどまだまだうちも足りていないのでそこはこれから精進していきたいと思います。</p>
+<p>しかし、ISUCON楽しいですね。 #isucon のログによると</p>
+<pre><code>11:47 &lt; typester&gt; すでにだいぶたのしい
+</code></pre>
+<p>といっており、ここからずーーーっと終了までたのしかったですね。</p>
+<p>あと珈琲ありがとうございました！</p>
+<h4>番外: Xslate の速さを実感</h4>
+<p>家帰って他の言語の実装をうごかしてみると、明らかに座席表のレンダリングが遅いんです。ブラウザで見てボトルネックって分かるレベル。 でも、Perl の実装をブラウザで見た人はあのページの遅さはテンプレートエンジンじゃなくてブラウザがレンダリングするのに時間かかってる、くらいにしか感じない気がする。 今回の罠は Xslate の速さと言っても良いのではないでしょうか。</p>
+<p>これは gfx++ といわざるを得ませんね！</p>
+
+  </div>
+
+  <div class="meta">
+    by typester /
+    at <a href="/memo/2012/11/07/1/">2012-11-07T08:46:00</a> /
+    <a href="/memo/tag/isucon/">isucon</a>
+    &middot; <a href="/memo/tag/life/">life</a>
+    &middot; <a href="/memo/tag/redis/">redis</a>
+    / <a href="/memo/2012/11/07/1/#disqus_thread">Comment</a>
+  </div>
+</div>
+
+<div class="entry autopagerize_page_element">
+  <h2><a href="/memo/2012/10/31/1/">コマンドラインでネットワーク設定のネットワーク環境のところを変える</a></h2>
+
+  <div class="body">
+    <p>ネットワーク周りの設定は <code>networksetup</code> コマンドでいろいろできるみたいで、 man をみるとどうも環境設定でできることはほとんどここからもできる模様。</p>
+<p>んで、ネットワーク環境というのは</p>
+<pre><code>-listlocations
+        List all network locations.
+
+-getcurrentlocation
+        Display the name of the current set.
+
+-createlocation location [populate]
+        Create a set with the user-defined-name name and optionally populate it with the default services.
+
+-deletelocation location
+        Delete the set.
+
+-switchtolocation location
+        Make the specified set the current set.
+</code></pre>
+<p>この辺が該当するようだ、切り替えるだけなら</p>
+<pre><code>$ networksetup -switchtolocation Hoge
+</code></pre>
+<p>で OK。</p>
+
+  </div>
+
+  <div class="meta">
+    by typester /
+    at <a href="/memo/2012/10/31/1/">2012-10-31T10:35:00</a> /
+    <a href="/memo/tag/osx/">osx</a>
+    / <a href="/memo/2012/10/31/1/#disqus_thread">Comment</a>
+  </div>
+</div>
+
+<div class="entry autopagerize_page_element">
+  <h2><a href="/memo/2012/09/30/2/">バッテリーのこり60秒で通知の話</a></h2>
+
+  <div class="body">
+    <p>僕のトークでなんか気になった人がいるとのことなので僕の使っているスクリプトを置いておきますね。</p>
+<pre><code><span class="comment-delimiter">#</span><span class="comment">!/usr/bin/env perl
+</span>
+<span class="keyword">use</span> <span class="function-name">strict</span>;
+<span class="keyword">use</span> <span class="function-name">warnings</span>;
+<span class="keyword">use</span> <span class="function-name">utf8</span>;
+
+<span class="keyword">use</span> <span class="function-name">Cocoa::BatteryInfo</span>;
+<span class="keyword">use</span> <span class="function-name">Cocoa::EventLoop</span>;
+<span class="keyword">use</span> <span class="function-name">Cocoa::Growl</span> <span class="string">&apos;:all&apos;</span>;
+
+growl_register(
+    <span class="string">app</span>           =&gt; <span class="string">&apos;Battery Notifier&apos;</span>,
+    <span class="string">notifications</span> =&gt; [<span class="string">&apos;NotifyLastOneMinite&apos;</span>, <span class="string">&apos;NotifyTimeRemaining&apos;</span>],
+);
+
+Cocoa::BatteryInfo::time_remaining_handler {
+    <span class="keyword">my</span> <span class="variable-name">$sec</span> = Cocoa::BatteryInfo-&gt;time_remaining_estimate;
+
+    <span class="keyword">return</span> <span class="keyword">unless</span> $sec =~ <span class="constant">/</span><span class="builtin">\</span><span class="type">d</span><span class="constant">/</span>;
+
+    <span class="keyword">if</span> ($sec &lt;= 60) {
+        growl_notify(
+            <span class="string">name</span>        =&gt; <span class="string">&apos;NotifyLastOneMinite&apos;</span>,
+            <span class="string">title</span>       =&gt; <span class="string">&apos;バッテリー切れまで&apos;</span>,
+            <span class="string">description</span> =&gt; <span class="type">sprintf</span> <span class="string">&apos;残り </span><span class="cperl-hash">%d</span><span class="string"> 秒&apos;</span>, $sec,
+        );
+    }
+    <span class="keyword">else</span> {
+        <span class="keyword">my</span> <span class="variable-name">$time</span>;
+
+        <span class="keyword">if</span> ($sec &gt;= 60*60) {
+            $time = <span class="type">sprintf</span> <span class="string">&apos;</span><span class="cperl-hash">%d</span><span class="string"> 時間 </span><span class="cperl-hash">%d</span><span class="string"> 分 </span><span class="cperl-hash">%d</span><span class="string"> 秒&apos;</span>,
+                <span class="type">int</span>($sec / (60*60)), <span class="type">int</span>(($sec % (60*60)) / 60), $sec % 60;
+        }
+        <span class="keyword">elsif</span> ($sec &gt; 60) {
+            $time = <span class="type">sprintf</span> <span class="string">&apos;</span><span class="cperl-hash">%d</span><span class="string"> 分 </span><span class="cperl-hash">%d</span><span class="string"> 秒&apos;</span>,
+                <span class="type">int</span>($sec / 60), $sec % 60;
+        }
+        <span class="keyword">else</span> {
+            $time = <span class="type">sprintf</span> <span class="string">&apos;</span><span class="cperl-hash">%d</span><span class="string"> 秒&apos;</span>, $sec;
+        }
+
+        growl_notify(
+            <span class="string">name</span>        =&gt; <span class="string">&apos;NotifyTimeRemaining&apos;</span>,
+            <span class="string">title</span>       =&gt; <span class="string">&apos;バッテリー切れまで&apos;</span>,
+            <span class="string">description</span> =&gt; <span class="type">sprintf</span> <span class="string">&apos;残り </span><span class="cperl-hash">%s</span><span class="string">&apos;</span>, $time,
+        );
+    }
+};
+
+Cocoa::EventLoop-&gt;run;
+</code></pre>
+<p>これを LaunchAgent でログイン時に自動で立ち上がるようにしております。</p>
+<p>で、これをうごかしているとバッテリー残り時間が変化したタイミングで Growl 通知が来るのですが、 普通は <code>NotifyTimeRemaining</code> という通知が来ます。もしそのときに残りが60秒いないだったらその代わりに <code>NotifyLastOneMinite</code> という通知が来ます。</p>
+<p>毎回通知されるのはうざいので僕は <code>NotifyTimeRemaining</code> というほうは Growl の設定でオフにしています。</p>
+<p>で、だいたい使っている感覚としては60秒でまず通知が来て、 その後もういちど、残り0秒という通知がきて、その直後にハイバネートする、というような感じのようです。</p>
+
+  </div>
+
+  <div class="meta">
+    by typester /
+    at <a href="/memo/2012/09/30/2/">2012-09-30T13:14:00</a> /
+    <a href="/memo/tag/perl/">perl</a>
+    &middot; <a href="/memo/tag/osx/">osx</a>
+    / <a href="/memo/2012/09/30/2/#disqus_thread">Comment</a>
+  </div>
+</div>
+
+<div class="entry autopagerize_page_element">
+  <h2><a href="/memo/2012/09/30/1/">YAPC::Asia 2012</a></h2>
+
+  <div class="body">
+    <p>今回は前夜祭でも話すことになって、始めて前夜祭からの参加になったけど、なかなかおもしろかった。</p>
+<p>トークは二つってのはかなり久しぶりだけど、どちらも20分だし、YAPC向けになにか特別ネタを用意したというわけではなく、普段やってることや考えていることを話しただけでだいぶがんばってない感じのトークです</p>
+<h4>UV - libuv binding for Perl</h4>
+<p><script async="async" class="speakerdeck-embed" data-id="5063ff80ca5241000204982f" data-ratio="1.3333333333333333" src="//speakerdeck.com/assets/embed.js"></script></p>
+<h4>Perlハッカーは息をするようにCPANモジュールを書く</h4>
+<p><script async="async" class="speakerdeck-embed" data-id="50668ff0244a9d000204654c" data-ratio="1.3333333333333333" src="//speakerdeck.com/assets/embed.js"></script></p>
+<p>というようなトークたちです。</p>
+<p>今回は基本的にホールで電源ある席を陣取り、コード書きつつトークを見る、というスタイルで参加。</p>
+<p>Padre の話は聞けなかったんだけど、Adam Kennedy さんはなんというか堂々としていて自信に満ちていてかっこよかった。あう言う大人になりたい。 Cocoa ネイティブ対応はなんか気が向いたら見てみようかなーって言う感じ。</p>
+<p>Ingy はなんかすごいおじいちゃんっぽくなってておもしろかった。</p>
+<p>NYTProf の話は Phase0 のスピリチュアルなところが結構響いた。これは見せたい人が一杯いるのでスライドを待つ。 実際の最適化の話はおおむね賛成できるかなーというところ。pidのオプションとかしらなかったなー。</p>
+<p>mizzy さんはほんとにいいひとだな！ って思いました。</p>
+<p>あと、antipop さんは<del>きもい</del>すごい</p>
+
+  </div>
+
+  <div class="meta">
+    by typester /
+    at <a href="/memo/2012/09/30/1/">2012-09-30T12:38:00</a> /
+    <a href="/memo/tag/perl/">perl</a>
+    &middot; <a href="/memo/tag/yapcasia/">yapcasia</a>
+    / <a href="/memo/2012/09/30/1/#disqus_thread">Comment</a>
+  </div>
+</div>
+
+<div class="entry autopagerize_page_element">
+  <h2><a href="/memo/2012/09/04/1/">Cocoa::BatteryInfo has been released!</a></h2>
+
+  <div class="body">
+    <p>本日二回ほどバッテリー切れで黒い画面をみて、「システムのバッテリー残量警告でるのはやすぎなんだよなーもっとぎりぎりの残量通知が欲しいよなー」、とか思いつつバッテリー周りのAPIドキュメントを眺めていたら気がついたらCPANモジュールができていた…。</p>
+<blockquote><p><a href="https://metacpan.org/module/Cocoa::BatteryInfo">Cocoa::BatteryInfo - Getting battery informations on your Mac - metacpan.org</a></p></blockquote>
+<p>単純なバッテリー情報の取得の他にも、 <code>Cocoa::EventLoop</code> との合わせ技で OS からのバッテリー関連通知を受け取るという機能もあるので残量監視スクリプトなど作るのに最適です。</p>
+<p>というとネタモジュールな感じだけど、ノートブックのインターナルバッテリー以外にも OS X Server に接続している UPS の情報などもとれたりしますのでわりとそっち系では実用モジュールなのではないかと思われる。</p>
+
+  </div>
+
+  <div class="meta">
+    by typester /
+    at <a href="/memo/2012/09/04/1/">2012-09-04T18:29:00</a> /
+    <a href="/memo/tag/perl/">perl</a>
+    &middot; <a href="/memo/tag/osx/">osx</a>
+    / <a href="/memo/2012/09/04/1/#disqus_thread">Comment</a>
+  </div>
+</div>
+
+<div class="entry autopagerize_page_element">
+  <h2><a href="/memo/2012/09/03/1/">JSON::Types ってのを書いた</a></h2>
+
+  <div class="body">
+    <blockquote><p><a href="https://metacpan.org/release/JSON-Types">JSON-Types-0.01 - variable type utility for JSON encoding - metacpan.org</a></p></blockquote>
+<p>Perl から JSON 吐くときに、ここは絶対数値で（文字列で）だしたい、みたいなときに</p>
+<pre><code><span class="keyword">use</span> <span class="function-name">JSON</span>;
+
+<span class="cperl-nonoverridable">print</span> encode_json({
+    <span class="string">number</span> =&gt; $num + 0,
+    <span class="string">string</span> =&gt; $str . <span class="string">&apos;&apos;</span>,
+    <span class="string">bool</span>   =&gt; $bool ? \1 : \0,
+});
+</code></pre>
+<p>みたいにすることがあるかもしれませんが、これってやっぱりハックなので可読性悪いしわかりにくいってことで、</p>
+<pre><code><span class="keyword">use</span> <span class="function-name">JSON</span>;
+<span class="keyword">use</span> <span class="function-name">JSON::Types</span>;
+
+<span class="cperl-nonoverridable">print</span> encode_json({
+    <span class="string">number</span> =&gt; number $num,
+    <span class="string">string</span> =&gt; string $str,
+    <span class="string">bool</span>   =&gt; bool $bool,
+});
+</code></pre>
+<p>みたいな感じで、まぁ内部的にやってることは同じなのですが可読性を上げていこう！というような趣旨のモジュールです。</p>
+<p>追伸： Acme::Hidek のリリースで hidek さんの誕生日を知りました。おめでとうございます！</p>
+
+  </div>
+
+  <div class="meta">
+    by typester /
+    at <a href="/memo/2012/09/03/1/">2012-09-03T20:22:00</a> /
+    <a href="/memo/tag/perl/">perl</a>
+    / <a href="/memo/2012/09/03/1/#disqus_thread">Comment</a>
+  </div>
+</div>
+
+
+
+
+<div id="pager" class="autopagerize_insert_before">
+  <p class="pages">
+    <a class="prev" rel="previous" href="/memo/">&laquo; Prev</a>
+    <a href="/memo/">1</a>
+    <span class="current">2</span>
+    <a href="/memo/page/3/">3</a>
+    <a href="/memo/page/4/">4</a>
+    <a href="/memo/page/5/">5</a>
+    <a href="/memo/page/6/">6</a>
+    <a href="/memo/page/7/">7</a>
+    <a href="/memo/page/8/">8</a>
+    <a href="/memo/page/9/">9</a>
+    <a href="/memo/page/10/">10</a>
+    <a class="next" rel="next" href="/memo/page/3/">Next &raquo;</a>
+  </p>
+  <p class="info">(Page 2 of 203)</p>
+</div>
+
+
+</div>
+
+<p id="footer">
+  Copyright &copy; 2005-2013
+      by <a class="author" href="/about/#me">Daisuke Murase (typester)</a> /
+  Site generated by <a href="https://github.com/typester/nim">nim</a> /
+  Comments powered by <a href="http://disqus.com">DISQUS</a>.
+</p>
+
+</div>
+
+
+<script type="text/javascript">
+//<![CDATA[
+(function() {
+	var links = document.getElementsByTagName('a');
+	var query = '?';
+	for(var i = 0; i < links.length; i++) {
+	if(links[i].href.indexOf('#disqus_thread') >= 0) {
+		query += 'url' + i + '=' + encodeURIComponent(links[i].href) + '&';
+	}
+	}
+	document.write('<script charset="utf-8" type="text/javascript" src="http://disqus.com/forums/unknownplace/get_num_replies.js' + query + '"></' + 'script>');
+})();
+//]]>
+</script>
+
+
+<script type="text/javascript">
+var gaJsHost = (("https:" == document.location.protocol) ? "https://ssl." : "http://www.");
+document.write(unescape("%3Cscript src='" + gaJsHost + "google-analytics.com/ga.js' type='text/javascript'%3E%3C/script%3E"));
+</script>
+<script type="text/javascript">
+try {
+var pageTracker = _gat._getTracker("UA-53067-1");
+pageTracker._trackPageview();
+} catch(err) {}</script>
+
+<script>
+function googleTranslateElementInit() {
+  new google.translate.TranslateElement({
+    pageLanguage: 'ja',
+    gaTrack: true,
+    gaId: 'UA-53067',
+    floatPosition: google.translate.TranslateElement.FloatPosition.BOTTOM_RIGHT
+  });
+}
+</script><script src="//translate.google.com/translate_a/element.js?cb=googleTranslateElementInit"></script>
+
+</body>
+</html>

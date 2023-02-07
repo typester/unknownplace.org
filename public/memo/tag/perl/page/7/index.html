@@ -1,0 +1,359 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="ja" xml:lang="ja">
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <title>memo - unknownplace.org</title>
+  <link rel="stylesheet" type="text/css" href="http://yui.yahooapis.com/3.0.0/build/cssreset/reset-min.css" />
+  <link rel="stylesheet" type="text/css" href="http://yui.yahooapis.com/3.0.0/build/cssfonts/fonts-min.css" />
+  <link rel="stylesheet" href="/css/style.css" type="text/css" />
+  <meta property="fb:admins" content="1093631929" />
+  <meta name="robots" content="noindex" />
+  <link rel="alternate" type="application/rss+xml" href="http://unknownplace.org/memo/index.rss" />
+</head>
+<body>
+
+<div id="container">
+<div id="header">
+    <h1><a href="/">unknownplace.org</a></h1> /
+<a href="/memo/">memo</a>
+</div>
+
+<div id="content">
+
+<div class="entry autopagerize_page_element">
+  <h2><a href="/memo/2008/06/04/1/">flightというアプリを作ってみたのだがどうか</a></h2>
+
+  <div class="body">
+    <blockquote><p><a href="http://github.com/typester/flight/tree/master">http://github.com/typester/flight/tree/master</a></p></blockquote>
+<p>lighttpdを使用してFastCGIスクリプトのテスト(開発)サーバーを簡単に立てられるアプリです。</p>
+<pre><code>$ flight -p 3000 yourscript.fcgi
+</code></pre>
+<p>とかすると <code>localhost:3000</code> でそのfcgiスクリプトが動くという感じ。</p>
+<p>catalystだったら</p>
+<pre><code>$ flight -p 3000 ./script/myapp_fastcgi.pl
+</code></pre>
+<p>でOK。</p>
+<p>Catalyst用にはすでに専用のヘルパーを書いていて、lighttpdでテスト(開発)サーバーを立てられるようにしていたのだけどそれをもっと汎用的にした感じ。</p>
+<p>ネームスペースは <code>FCGI::Server::Lighttpd</code> とかしちゃってるのだけどどうだろう？ <code>App::Flight</code> とかのがいいのかなー。</p>
+<p>意見求む。</p>
+
+  </div>
+
+  <div class="meta">
+    by typester /
+    at <a href="/memo/2008/06/04/1/">2008-06-04T13:51:00</a> /
+    <a href="/memo/tag/perl/">perl</a>
+    / <a href="/memo/2008/06/04/1/#disqus_thread">Comment</a>
+  </div>
+</div>
+
+<div class="entry autopagerize_page_element">
+  <h2><a href="/memo/2008/05/29/3/">PDF::FromImage</a></h2>
+
+  <div class="body">
+    <p>とか言うのを作った。exampleディレクトリにimages2pdf.plというのがあって、これつかうと</p>
+<pre><code>image2pdf.pl -o output.pdf *.png
+</code></pre>
+<p>とかやることによりコマンドラインで渡した画像から一気にPDFのスライドが作れる。</p>
+<p>install_script するかまよったけどとりあえずしなかった。うかつにやるとおこられそうだしな。。</p>
+
+  </div>
+
+  <div class="meta">
+    by typester /
+    at <a href="/memo/2008/05/29/3/">2008-05-29T17:28:00</a> /
+    <a href="/memo/tag/perl/">perl</a>
+    / <a href="/memo/2008/05/29/3/#disqus_thread">Comment</a>
+  </div>
+</div>
+
+<div class="entry autopagerize_page_element">
+  <h2><a href="/memo/2008/05/22/1/">YAPC::Asia 2008 Tokyo</a></h2>
+
+  <div class="body">
+    <p>去年は参加できなかったため、2年ぶりのYAPCでした。</p>
+<p>僕のセッションの資料もアップしておきました。</p>
+<ul><li><a href="http://svn.coderepos.org/share/docs/typester/formvalidator-assets/start.html">FormValidator::Assets</a></li><li><a href="http://svn.coderepos.org/share/docs/typester/openfastladder-with-plagger/start.html">Open Fastladder with Plagger</a></li></ul>
+<p>やっぱり参加するとグッとモチベーションがあがりますね。</p>
+<p>2年前うけた衝撃も大きかったですが、今年もいろいろな人からアイデアややる気をもらいました。</p>
+<p>ところでこの2年間でひとつ大きく変わったなぁと思うのは、perlハッカーの使っているPCの種類が変わったことです。</p>
+<p>2006年時には</p>
+<p><a href="http://www.flickr.com/photos/nagayama/121922373/" title="Thinkpad大杉 by nagayama, on Flickr"><img alt="Thinkpad大杉" height="333" src="http://farm1.static.flickr.com/41/121922373_f28de88572.jpg" width="500" /></a></p>
+<p>こんな感じで Thinkpad が幅をきかせまくっていたと思うのですが、今回の hachathon で Thinkpad を使っていたのは僕と mizzy さんだけ！</p>
+<p>今年はみんな Macbook。</p>
+<p><a href="http://www.flickr.com/photos/typester/2508074878/" title="R0010880.JPG by typester, on Flickr"><img alt="R0010880.JPG" height="375" src="http://farm4.static.flickr.com/3198/2508074878_e0ab3cf8ce.jpg" width="500" /></a></p>
+<p>Hackathon きてた人の9割くらいは macbook だったんじゃなかろうか。。</p>
+
+  </div>
+
+  <div class="meta">
+    by typester /
+    at <a href="/memo/2008/05/22/1/">2008-05-22T15:17:00</a> /
+    <a href="/memo/tag/perl/">perl</a>
+    &middot; <a href="/memo/tag/yapc/">yapc</a>
+    / <a href="/memo/2008/05/22/1/#disqus_thread">Comment</a>
+  </div>
+</div>
+
+<div class="entry autopagerize_page_element">
+  <h2><a href="/memo/2008/05/12/1/">Google Docs にファイルアップロードするスクリプト</a></h2>
+
+  <div class="body">
+    <p>を書いてみた。</p>
+<p><a href="http://github.com/typester/www-google-docs-upload/tree/master/example/gdoc-upload.pl">http://github.com/typester/www-google-docs-upload/tree/master/example/gdoc-upload.pl</a></p>
+<p>muttとかサーバーサイドのメーラーを使っているとコンソールで開けない添付ファイルが来たときちょっと困るなーと思っていて、いままではsshfsとかでマウントしてあるところに一時的にファイルを保存してそこをローカルのPCから開いていたけど面倒。</p>
+<p>いちおうimapも使えるようにしてあるので添付ファイルだけほかのメーラーで読むというのもありかなと思ったけどBeckyもThunderbirdも(imap経由だからか)重くてよけいめんどい。</p>
+<p>で、mutt からパイプでわたすだけで google docs にアップロードされたら便利だなーと思って作ってみたというところ。</p>
+<p>ただパイプで渡したのを File::Temp で保存してそれをアップしてるのだけど、Google Docs側が拡張子でファイルの種類を判別してるようで、<code>File::Temp-&gt;new</code> しただけだと拡張子がつかなくてアップされない＞＜</p>
+<p>ので現状は</p>
+<pre><code>| gdoc-upload.pl -n ppt
+</code></pre>
+<p>とか拡張子を指定する必要がある。</p>
+
+  </div>
+
+  <div class="meta">
+    by typester /
+    at <a href="/memo/2008/05/12/1/">2008-05-12T12:51:00</a> /
+    <a href="/memo/tag/perl/">perl</a>
+    / <a href="/memo/2008/05/12/1/#disqus_thread">Comment</a>
+  </div>
+</div>
+
+<div class="entry autopagerize_page_element">
+  <h2><a href="/memo/2008/03/12/1/">convertコマンド</a></h2>
+
+  <div class="body">
+    <p>ImageMagickのconvertコマンドをsystem関数でたたいてた古いプログラムを動かす必要があったのだが、そのためだけにImageMagickインストールするとか面倒すぎたので、perlでconvertコマンド的なものを書いてお茶を濁した。</p>
+<p>ファイル形式の変換とリサイズしかできない。</p>
+<pre><code><span class="comment-delimiter">#</span><span class="comment">!/usr/bin/env perl
+</span>
+<span class="keyword">use</span> <span class="function-name">strict</span>;
+<span class="keyword">use</span> <span class="function-name">warnings</span>;
+
+<span class="keyword">use</span> <span class="function-name">Getopt::Long</span>;
+
+<span class="keyword">use</span> <span class="function-name">Imager</span>;
+<span class="keyword">use</span> <span class="function-name">Path::Class</span> <span class="cperl-nonoverridable">qw</span><span class="string">/file/</span>;
+
+GetOptions(
+    \my <span class="cperl-hash">%options</span>,
+    <span class="cperl-nonoverridable">qw</span><span class="string">/geometry=s/</span>,
+);
+
+<span class="keyword">my</span> <span class="variable-name">$in</span>  = file(<span class="cperl-array">$ARGV</span>[0]);
+<span class="keyword">my</span> <span class="variable-name">$out</span> = file(<span class="cperl-array">$ARGV</span>[1]);
+
+<span class="keyword">my</span> (<span class="variable-name">$width</span>, <span class="variable-name">$height</span>) = (<span class="cperl-hash">$options</span>{<span class="string">geometry</span>} || <span class="string">&apos;&apos;</span>) =~ <span class="constant">/</span><span class="keyword">(</span><span class="builtin">\</span><span class="type">d</span><span class="builtin">+</span><span class="keyword">)</span><span class="string">x</span><span class="keyword">(</span><span class="builtin">\</span><span class="type">d</span><span class="builtin">+</span><span class="keyword">)</span><span class="constant">/</span>;
+
+<span class="comment-delimiter"># </span><span class="comment">read
+</span><span class="keyword">my</span> <span class="variable-name">$img</span> = Imager-&gt;new;
+$img-&gt;<span class="type">read</span>( <span class="string">file</span> =&gt; <span class="string">&quot;$in&quot;</span> ) <span class="type">or</span> <span class="keyword">die</span> <span class="string">&apos;Cannot read: &apos;</span>, $img-&gt;errstr;
+
+<span class="comment-delimiter"># </span><span class="comment">scale if exists geometry option
+</span><span class="keyword">if</span> ($width <span class="type">and</span> $height) {
+    $img = $img-&gt;scale( <span class="string">xpixels</span> =&gt; $width, <span class="string">ypixels</span> =&gt; $height, <span class="string">type</span> =&gt; <span class="string">&apos;nonprop&apos;</span> );
+}
+
+<span class="comment-delimiter"># </span><span class="comment">write
+</span>$img-&gt;<span class="type">write</span>( <span class="string">file</span> =&gt; $out ) <span class="type">or</span> <span class="keyword">die</span> <span class="string">&apos;Cannot write: &apos;</span>, $img-&gt;errstr;
+</code></pre>
+
+  </div>
+
+  <div class="meta">
+    by typester /
+    at <a href="/memo/2008/03/12/1/">2008-03-12T12:24:00</a> /
+    <a href="/memo/tag/perl/">perl</a>
+    / <a href="/memo/2008/03/12/1/#disqus_thread">Comment</a>
+  </div>
+</div>
+
+<div class="entry autopagerize_page_element">
+  <h2><a href="/memo/2008/02/29/2/">Catalystアプリオレオレポリシー</a></h2>
+
+  <div class="body">
+    <p>下記camr作った時点での僕のポリシーは</p>
+<ol><li>アプリ名にかかわらず設定ファイルはconfig.yamlとconfig_local.yaml</li><li>でも変更することがないほとんどの設定はyamlには書かない。yamlがごちゃっとするときもい</li><li>ForceUTF8系モジュールは使用しない。内部がきちんとutf8で統一されていれば必要ない。</li><li>MyApp::UtilsとかいうのでいろいろBKなことをまとめてする。uri_forを気に入るように直したり、FillInFormの挙動変えたり</li></ol>
+<p>なんか抜けてる気がするけどこんな感じ。</p>
+
+  </div>
+
+  <div class="meta">
+    by typester /
+    at <a href="/memo/2008/02/29/2/">2008-02-29T12:17:00</a> /
+    <a href="/memo/tag/perl/">perl</a>
+    &middot; <a href="/memo/tag/catalyst/">catalyst</a>
+    / <a href="/memo/2008/02/29/2/#disqus_thread">Comment</a>
+  </div>
+</div>
+
+<div class="entry autopagerize_page_element">
+  <h2><a href="/memo/2008/02/29/1/">Webカメラから直接写真をFlickrにあげる</a></h2>
+
+  <div class="body">
+    <blockquote><p><a href="http://hatena.g.hatena.ne.jp/hatenafotolife/20080228/1204189811">はてなフォトライフでWebカメラから直接写真を撮影してアップロードできるようになりました - はてなフォトライフ日記 - 機能変更、お知らせなど</a></p></blockquote>
+<p>をみて、おもろいなーとおもったので僕も作ってみた。Flickrバージョン。</p>
+<blockquote><p><a href="http://coderepos.org/share/browser/websites/camr/trunk">http://coderepos.org/share/browser/websites/camr/trunk</a></p></blockquote>
+<p>本家に比べると大分しょぼいけど、動いたので満足した。なんかこれだけで3時間くらいかかった。。</p>
+<p>ローカル git レポジトリからあげる方法がわからなんだので、普通に svn import した＞＜</p>
+
+  </div>
+
+  <div class="meta">
+    by typester /
+    at <a href="/memo/2008/02/29/1/">2008-02-29T02:54:00</a> /
+    <a href="/memo/tag/perl/">perl</a>
+    / <a href="/memo/2008/02/29/1/#disqus_thread">Comment</a>
+  </div>
+</div>
+
+<div class="entry autopagerize_page_element">
+  <h2><a href="/memo/2008/02/17/1/">utf8::is_utf8</a></h2>
+
+  <div class="body">
+    <p>miyagawaさんが#catalystでいってたことやっと理解できた、きがする。</p>
+<pre><code><span class="keyword">use</span> <span class="function-name">Data::Dumper</span>;
+
+<span class="keyword">my</span> <span class="variable-name">$s</span> = <span class="string">&quot;H\x{c3}\x{ab}llo&quot;</span>;
+
+utf8::decode($s);
+
+<span class="type">warn</span> Dumper $s;        <span class="comment-delimiter"># </span><span class="comment">=&gt; &quot;H\x{eb}llo&quot;
+</span><span class="type">warn</span> utf8::is_utf8($s) <span class="comment-delimiter"># </span><span class="comment">=&gt; 1
+</span></code></pre>
+<p>だけれども</p>
+<pre><code><span class="keyword">my</span> <span class="variable-name">$s</span> = <span class="string">&quot;H\x{eb}llo&quot;</span>;
+
+<span class="type">warn</span> utf8::is_utf8($s) <span class="comment-delimiter"># </span><span class="comment">=&gt; Warning: something&apos;s wrong
+</span></code></pre>
+<p>ということで、<code>&quot;\x{6751}\x{702c}\x{5927}\x{8f14}&quot;</code> などというData::Dumper表記でかならずしも utf-8フラグがたつわけじゃない。ということがいいたかったんだと思うのだけれど、</p>
+<p>そもそも ë が latin-1 では <code>&quot;\x{eb}&quot;</code> だけど utf-8 では <code>&quot;\x{c4}\x{ab}&quot;</code> であるということを僕が認識してなかったせいでおかしなことになった。すみません。</p>
+
+  </div>
+
+  <div class="meta">
+    by typester /
+    at <a href="/memo/2008/02/17/1/">2008-02-17T23:07:00</a> /
+    <a href="/memo/tag/perl/">perl</a>
+    / <a href="/memo/2008/02/17/1/#disqus_thread">Comment</a>
+  </div>
+</div>
+
+<div class="entry autopagerize_page_element">
+  <h2><a href="/memo/2008/02/16/1/">Catalyst::Controller::Resources</a></h2>
+
+  <div class="body">
+    <p>かっこいい。</p>
+<p>オレオレ規約をもとに雛形を生成するヘルパースクリプトでがんばるよりこういう自分用のコントローラをつくるほうがスマートだなぁ。</p>
+<p>Catalystユーザー的にはオールドタイプな自分としては見習おうと思った。</p>
+
+  </div>
+
+  <div class="meta">
+    by typester /
+    at <a href="/memo/2008/02/16/1/">2008-02-16T19:34:00</a> /
+    <a href="/memo/tag/perl/">perl</a>
+    &middot; <a href="/memo/tag/catalyst/">catalyst</a>
+    / <a href="/memo/2008/02/16/1/#disqus_thread">Comment</a>
+  </div>
+</div>
+
+<div class="entry autopagerize_page_element">
+  <h2><a href="/memo/2008/02/08/1/">ユニークなランダム文字列</a></h2>
+
+  <div class="body">
+    <p>すでに生成したIDかどうかを気にする必要がないユニークな文字列を作成しようとした場合</p>
+<pre><code><span class="keyword">use</span> <span class="function-name">Data::UUID</span>;
+<span class="keyword">use</span> <span class="function-name">MIME::Base64::URLSafe</span>;
+
+<span class="cperl-nonoverridable">print</span> urlsafe_b64encode( Data::UUID-&gt;new-&gt;create );
+</code></pre>
+<p>こんな感じにやるのがいいのかなぁ。これで22文字。</p>
+<p>んー。</p>
+<p>エントリーのURLとかにつかいたくてもう少し短くしたいけど、文字列生成したときに重複してないか調べるためにDBを引くというのがイヤダナー。</p>
+
+  </div>
+
+  <div class="meta">
+    by typester /
+    at <a href="/memo/2008/02/08/1/">2008-02-08T14:19:00</a> /
+    <a href="/memo/tag/perl/">perl</a>
+    / <a href="/memo/2008/02/08/1/#disqus_thread">Comment</a>
+  </div>
+</div>
+
+
+
+
+<div id="pager" class="autopagerize_insert_before">
+  <p class="pages">
+    <a class="prev" rel="previous" href="/memo/tag/perl/page/6/">&laquo; Prev</a>
+    <a href="/memo/tag/perl/page/3/">3</a>
+    <a href="/memo/tag/perl/page/4/">4</a>
+    <a href="/memo/tag/perl/page/5/">5</a>
+    <a href="/memo/tag/perl/page/6/">6</a>
+    <span class="current">7</span>
+    <a href="/memo/tag/perl/page/8/">8</a>
+    <a href="/memo/tag/perl/page/9/">9</a>
+    <a href="/memo/tag/perl/page/10/">10</a>
+    <a href="/memo/tag/perl/page/11/">11</a>
+    <a href="/memo/tag/perl/page/12/">12</a>
+    <a class="next" rel="next" href="/memo/tag/perl/page/8/">Next &raquo;</a>
+  </p>
+  <p class="info">(Page 7 of 30)</p>
+</div>
+
+
+</div>
+
+<p id="footer">
+  Copyright &copy; 2005-2013
+      by <a class="author" href="/about/#me">Daisuke Murase (typester)</a> /
+  Site generated by <a href="https://github.com/typester/nim">nim</a> /
+  Comments powered by <a href="http://disqus.com">DISQUS</a>.
+</p>
+
+</div>
+
+
+<script type="text/javascript">
+//<![CDATA[
+(function() {
+	var links = document.getElementsByTagName('a');
+	var query = '?';
+	for(var i = 0; i < links.length; i++) {
+	if(links[i].href.indexOf('#disqus_thread') >= 0) {
+		query += 'url' + i + '=' + encodeURIComponent(links[i].href) + '&';
+	}
+	}
+	document.write('<script charset="utf-8" type="text/javascript" src="http://disqus.com/forums/unknownplace/get_num_replies.js' + query + '"></' + 'script>');
+})();
+//]]>
+</script>
+
+
+<script type="text/javascript">
+var gaJsHost = (("https:" == document.location.protocol) ? "https://ssl." : "http://www.");
+document.write(unescape("%3Cscript src='" + gaJsHost + "google-analytics.com/ga.js' type='text/javascript'%3E%3C/script%3E"));
+</script>
+<script type="text/javascript">
+try {
+var pageTracker = _gat._getTracker("UA-53067-1");
+pageTracker._trackPageview();
+} catch(err) {}</script>
+
+<script>
+function googleTranslateElementInit() {
+  new google.translate.TranslateElement({
+    pageLanguage: 'ja',
+    gaTrack: true,
+    gaId: 'UA-53067',
+    floatPosition: google.translate.TranslateElement.FloatPosition.BOTTOM_RIGHT
+  });
+}
+</script><script src="//translate.google.com/translate_a/element.js?cb=googleTranslateElementInit"></script>
+
+</body>
+</html>

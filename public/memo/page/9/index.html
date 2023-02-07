@@ -1,0 +1,613 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="ja" xml:lang="ja">
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <title>memo - unknownplace.org</title>
+  <link rel="stylesheet" type="text/css" href="http://yui.yahooapis.com/3.0.0/build/cssreset/reset-min.css" />
+  <link rel="stylesheet" type="text/css" href="http://yui.yahooapis.com/3.0.0/build/cssfonts/fonts-min.css" />
+  <link rel="stylesheet" href="/css/style.css" type="text/css" />
+  <meta property="fb:admins" content="1093631929" />
+  <meta name="robots" content="noindex" />
+  <link rel="alternate" type="application/rss+xml" href="http://unknownplace.org/memo/index.rss" />
+</head>
+<body>
+
+<div id="container">
+<div id="header">
+    <h1><a href="/">unknownplace.org</a></h1> /
+<a href="/memo/">memo</a>
+</div>
+
+<div id="content">
+
+<div class="entry autopagerize_page_element">
+  <h2><a href="/memo/2010/08/13/1/">ふるいPerlをいれる</a></h2>
+
+  <div class="body">
+    <p>perlbrew を導入したのでもりもりテスト環境を作れるようになったわけですが、perl-5.8.8 をいれようとしたら</p>
+<pre><code>    Can&apos;t open makefile: No such file or directory.
+    Can&apos;t open x2p/makefile: No such file or directory.
+    make: *** No rule to make target `&lt;command-line&gt;&apos;, needed by `miniperlmain.o&apos;.  Stop.
+    make: *** No rule to make target `&lt;command-line&gt;&apos;, needed by `miniperlmain.o&apos;.  Stop.
+</code></pre>
+<p>のように make がこけてしまってインストールできなかった。 ググってみるとどうも新しいgccだと古いPerlはうまくビルドできないらしい。</p>
+<p>解決法としては makefile (OSXではGNUmakefile) の <code>command-line</code> を含む行は消してあげるというのでなんとかなるみたい。</p>
+<p>以下のようにしてみた:</p>
+<pre><code>$ ./Configure -de -Dprefix=$HOME/perl5/perlbrew/perls/5.8.8
+$ perl -i~ -nle &apos;print unless /command-line/&apos; GNUmakefile x2p/GNUmakefile
+$ make
+$ make test
+$ make install
+</code></pre>
+<p>これでちゃんとperlbrewからも認識できてて</p>
+<pre><code>$ perlbrew switch 5.8.8
+</code></pre>
+<p>とかでswitchできました。まる。</p>
+
+  </div>
+
+  <div class="meta">
+    by typester /
+    at <a href="/memo/2010/08/13/1/">2010-08-13T09:05:00</a> /
+    <a href="/memo/tag/osx/">osx</a>
+    &middot; <a href="/memo/tag/perl/">perl</a>
+    / <a href="/memo/2010/08/13/1/#disqus_thread">Comment</a>
+  </div>
+</div>
+
+<div class="entry autopagerize_page_element">
+  <h2><a href="/memo/2010/07/27/1/">ユニバーサルバイナリ作成用シェルスクリプト</a></h2>
+
+  <div class="body">
+    <p>iPhone用にビルドしたライブラリは実機用(armv6/armv7)とシミュレータ用(i386)のユニバーサルバイナリとして作成しておくと使い勝手が良いです。 その分ビルドは面倒になるのですが。。</p>
+<p>僕は通常以下のようにしてユニバーサルバイナリを作成してます。</p>
+<ol><li>まずprefixをそれぞれ <code>~/dev/iphone/lib/curl-7.20.1-armv6</code> <code>~/dev/iphone/lib/curl-7.20.1-armv7</code> <code>~/dev/iphone/lib/curl-7.20.1-i386</code> などとしてそれぞれのアーキテクチャ用にビルドをする</li><li>適当に書いた <a href="http://gist.github.com/491799">bundle.sh</a> でユニバーサルバイナリ化</li></ol>
+<p>この <code>bundle.sh</code> は上の例だと</p>
+<pre><code>./bundle.sh ~/dev/iphone/lib/curl-7.20.1
+</code></pre>
+<p>として実行すると <code>~/dev/iphone/lib/curl-7.20.1-armv6</code> <code>~/dev/iphone/lib/curl-7.20.1-armv7</code> <code>~/dev/iphone/lib/curl-7.20.1-i386</code> が全部がっちゃんこした <code>~/dev/iphone/lib/curl-7.20.1</code> ができるという寸法です。</p>
+<p>この方法だとまだ3つ分手動でビルドするのがめんどくさいので、そこも自動化したいところですね。</p>
+
+  </div>
+
+  <div class="meta">
+    by typester /
+    at <a href="/memo/2010/07/27/1/">2010-07-27T14:52:00</a> /
+    <a href="/memo/tag/osx/">osx</a>
+    &middot; <a href="/memo/tag/iphone/">iphone</a>
+    / <a href="/memo/2010/07/27/1/#disqus_thread">Comment</a>
+  </div>
+</div>
+
+<div class="entry autopagerize_page_element">
+  <h2><a href="/memo/2010/07/03/1/">Text::MicroTemplate::DataSection</a></h2>
+
+  <div class="body">
+    <p><code>__DATA__</code> に</p>
+<pre><code><span class="nxml-text">__DATA__
+
+@@ index.mt
+</span><span class="nxml-tag-delimiter">&lt;</span><span class="nxml-element-local-name">html</span><span class="nxml-tag-delimiter">&gt;</span>
+ <span class="nxml-tag-delimiter">&lt;</span><span class="nxml-element-local-name">body</span><span class="nxml-tag-delimiter">&gt;</span><span class="nxml-text">Hello</span><span class="nxml-tag-delimiter">&lt;</span><span class="nxml-tag-slash">/</span><span class="nxml-element-local-name">body</span><span class="nxml-tag-delimiter">&gt;</span>
+<span class="nxml-tag-delimiter">&lt;</span><span class="nxml-tag-slash">/</span><span class="nxml-element-local-name">html</span><span class="nxml-tag-delimiter">&gt;</span><span class="nxml-text">
+
+@@ bar.mt
+? if ($true) {
+  Foo
+? }
+</span></code></pre>
+<p>こう言うのが書いてあるとき、<code>Data::Section::Simple</code> を使うと</p>
+<pre><code>get_data_section(&apos;index.mt&apos;);
+</code></pre>
+<p>とすることで該当セクションだけのデータを簡単に取得することができます。 なので普通の <code>Text::MicroTemplate</code> と組み合わせても</p>
+<pre><code>render_mt(get_data_section(&apos;index.mt&apos;));
+</code></pre>
+<p>って感じで使えてそんなに苦じゃないわけですが、どうせなら中で include とか extends とかで他のセクションのデータとも連携できるようにしたら便利だなーと思い3分クッキングして <code>Text::MicroTemplate::DataSection</code> と言うのを書いてみました。</p>
+<p>使い方は簡単、</p>
+<pre><code>use Text::MicroTemplate::DataSection &apos;render_mt&apos;;
+</code></pre>
+<p>とすると <code>Text::MicroTemplate::File</code> ベース、</p>
+<pre><code>use Text::MicroTemplate::DataSectionEx &apos;render_mt&apos;;
+</code></pre>
+<p>とすると <code>Text::MicroTemplate::Extended</code> ベースの機能が使えるようになります。</p>
+<p>あとは <code>render_mt(&apos;index.mt&apos;)</code> などとすれば <code>__DATA__</code> からテンプレート出力が行えます。基本ベースクラスのすべての機能がつかえますので、Exを使っている場合は、</p>
+<pre><code>? extends &apos;base&apos;;
+
+? block content =&gt; sub {
+Hello!
+? }
+</code></pre>
+<p>とか</p>
+<pre><code>?= include &apos;hoge&apos;
+</code></pre>
+<p>とかもそのまま <code>__DATA__</code> のなかのテンプレートで使用することができます。Enjoy!</p>
+
+  </div>
+
+  <div class="meta">
+    by typester /
+    at <a href="/memo/2010/07/03/1/">2010-07-03T12:20:00</a> /
+    <a href="/memo/tag/perl/">perl</a>
+    / <a href="/memo/2010/07/03/1/#disqus_thread">Comment</a>
+  </div>
+</div>
+
+<div class="entry autopagerize_page_element">
+  <h2><a href="/memo/2010/05/11/1/">PerlエンジニアのためのObjective-C Blocks入門</a></h2>
+
+  <div class="body">
+    <p>OS X 10.6 以降の xcode では Objective-C に Blocks というシンタックスが追加されている。</p>
+<blockquote><p><a href="https://developer.apple.com/mac/library/documentation/Cocoa/Conceptual/Blocks/Articles/00_Introduction.html#//apple_ref/doc/uid/TP40007502-CH1-SW1">Blocks Programming Topics: Introduction</a></p></blockquote>
+<p>Perl でいうところの無名関数（コードブロック）を作ることができる機能で、Perlでいうところの</p>
+<pre><code><span class="keyword">my</span> <span class="variable-name">$f</span> = <span class="keyword">sub</span> { ... };
+$f-&gt;();
+</code></pre>
+<p>は</p>
+<pre><code>void (^f)() = ^{ ... };
+f();
+</code></pre>
+<p>のように書ける。書式がきもいのはObjective-Cの定めなのであきらめましょう。 より詳しい書式については上記ドキュメントを見ると良い。</p>
+<p>しかしデフォルトではPerlのコードブロックとはレキシカル変数の扱いが異なる。</p>
+<pre><code><span class="keyword">my</span> <span class="variable-name">$i</span> = 0;
+<span class="keyword">my</span> <span class="variable-name">$f</span> = <span class="keyword">sub</span> { <span class="keyword">return</span> $i + 1 };
+
+$i++;
+
+$f-&gt;(); <span class="comment-delimiter"># </span><span class="comment">2 を返す
+</span></code></pre>
+<p>perlではこのようにレキシカル変数はコードブロック内と共有されるが、Objective-Cの場合は</p>
+<pre><code>int i = 0;
+int (^f)() = ^{ return i + 1; };
+
+i++;
+
+f(); // 1 を返す
+</code></pre>
+<p>このようになる。これはブロックを作成するときのレキシカル変数がコピーされるからである。 Perlとおなじような挙動を望む場合は <code>__block</code> ストレージタイプを指定すればいいようだ。</p>
+<pre><code>__block int i = 0;
+int (^f)() = ^{ return i + 1; };
+
+i++;
+
+f(); // 2
+</code></pre>
+<p>ここまでわかればObjective-CでBlockの再帰を書くことができる。</p>
+<pre><code>__block void (^f)();
+f = ^{ f(); };
+f();
+</code></pre>
+<p>これは以下とおなじ、</p>
+<pre><code><span class="keyword">my</span> <span class="variable-name">$f</span>;
+$f = <span class="keyword">sub</span> { $f-&gt;() };
+$f-&gt;();
+</code></pre>
+<p>というようにPerlエンジニアにとっては割と直感的なコードブロックが使えるようになっております。 書式がきもいことをのぞけばいい感じです。</p>
+<p>次回は「PerlエンジニアのためのGrand Central Dispatch」の予定です。</p>
+<h4>追記＠2010-05-11T19:12:48+09:00</h4>
+<blockquote><p><a href="http://b.hatena.ne.jp/entry/unknownplace.org/memo/2010/05/11/1/">はてなブックマーク - PerlエンジニアのためのObjetive-C Blocks - unknownplace.org</a></p><p>lyokato 「Objective-Cの仕様というよりは、Blocks拡張に対応したCコンパイラの仕様かな」</p></blockquote>
+<p>ってことでやってみたら</p>
+<pre><code><span class="preprocessor">#include</span> <span class="string">&lt;stdio.h&gt;</span>
+
+<span class="type">int</span> <span class="function-name">main</span>(<span class="type">int</span> <span class="variable-name">argc</span>, <span class="type">char</span>** <span class="variable-name">argv</span>) {
+    <span class="type">void</span> (^f)() = ^{ printf(<span class="string">"Hello Blocks!\n"</span>); };
+    f();
+
+    <span class="keyword">return</span> 0;
+}
+
+<span class="comment-delimiter">// </span><span class="comment">$ gcc foo.c
+</span><span class="comment-delimiter">// </span><span class="comment">$ ./a.out
+</span></code></pre>
+<p>でも行けました。gcc の拡張なんですね。あざっす！</p>
+
+  </div>
+
+  <div class="meta">
+    by typester /
+    at <a href="/memo/2010/05/11/1/">2010-05-11T14:29:00</a> /
+    <a href="/memo/tag/objc/">objc</a>
+    &middot; <a href="/memo/tag/perl/">perl</a>
+    / <a href="/memo/2010/05/11/1/#disqus_thread">Comment</a>
+  </div>
+</div>
+
+<div class="entry autopagerize_page_element">
+  <h2><a href="/memo/2010/03/24/1/">qpsmtpd を Server::Starter 化するなど</a></h2>
+
+  <div class="body">
+    <p>Perl 製 SMTP サーバーとして <a href="http://smtpd.develooper.com/">qpsmtpd</a> というものがあり、僕もいろいろなところで利用している。主な用途としてはメール連動の Web アプリケーションのメール機能の部分。実際のメール配送などでは使用してない。</p>
+<p>フロントに qpsmtpd を置き、アプリで制御する宛先の場合のみ qpsmtpd からジョブキューに流したりする。 それ以外の通常のメールは <code>queue/postfix</code> プラグインなどを使用して裏側の postfix にまかせちゃう。というような使い方をしている。</p>
+<p>qpsmtpd 自体は apache.org や perl.org の SMTP として採用されており、パフォーマンスに関しては問題ないのだが、プラグインを書き換えたり設定を変更したりした場合に再起動が必要になるところが、フロントに立てるサーバーとしては不安な部分であった。</p>
+<p>なので前々から Server::Starter 対応はしたいとおもっていたが安定動作している既存のサーバーで作業する機会も特になく放置していた。</p>
+<p>そしてこのたびめでたく新しく qpsmtpd を設置することになったためいっちょやったるか、となった次第である。</p>
+<p>この辺で作業：</p>
+<blockquote><p><a href="http://github.com/typester/qpsmtpd/commits/topic/server_starter">http://github.com/typester/qpsmtpd/commits/topic/server_starter</a></p></blockquote>
+<p>使い方は：</p>
+<pre><code># start_server --port=25 --port=127.0.0.1:20025 -- ./qpsmtpd-async-server-starter
+</code></pre>
+<p>このような感じで、SMTP用のポートと、qpsmtpd 制御用の contig ポートを同時に渡して起動する。その後 <code>Server::Starter</code> の superdaemon にたいし HUP シグナルを送ると graceful restart できる。</p>
+<p>古い worker プロセスでは最大 <code>$TIMEOUT</code> 秒（デフォルト60）だけ既存の接続を終了まで待つ、graceful shutdown 機能も併せて実装したので完全にダウンタイムをなくせているはず。</p>
+<p>とりあえずあまりテストしきれてないけどドッグフードを食べてがんばろうと思います。</p>
+
+  </div>
+
+  <div class="meta">
+    by typester /
+    at <a href="/memo/2010/03/24/1/">2010-03-24T22:38:00</a> /
+    <a href="/memo/tag/perl/">perl</a>
+    &middot; <a href="/memo/tag/qpsmtpd/">qpsmtpd</a>
+    / <a href="/memo/2010/03/24/1/#disqus_thread">Comment</a>
+  </div>
+</div>
+
+<div class="entry autopagerize_page_element">
+  <h2><a href="/memo/2010/03/23/1/">GNU screen の裏にいる Window で完了したコマンドを Growl 通知したい</a></h2>
+
+  <div class="body">
+    <p>というようなことをつぶやいていたら、</p>
+<blockquote><p><a href="http://twitter.com/hchbaw/status/9921025674">Twitter / hchbaw: @typester 最近になって screen -Q windows とできるようになってますね。</a></p></blockquote>
+<p>と教えていただいた。</p>
+<p><code>-Q</code> コマンドというのは <code>-X</code> と同じようなものだけど、コマンド結果を screen 内のステータス領域ではなく標準出力で得ることができる。また、<code>-X</code> はつねに実行時にそれ自体がアクティブな screen セッションになるのに対し <code>-Q</code> はアクティブなセッションにクエリを投げる感じで、セッションが切り替わらない。（この辺は理解が怪しいので突っ込み歓迎）</p>
+<p>それでそれを使うと</p>
+<pre><code>screen -Q windows
+</code></pre>
+<p>と実行することで <code>:windows</code> で echo されるのとおなじ文字列を標準出力で得ることができる。その出力をパースすれば、自分が screen の裏にいるかどうか判断することができるというわけ。</p>
+<p>zsh でコマンド完了時（正確にはプロンプトが表示される直前）に呼ばれるフックは <code>precmd</code> なので以下のように定義：</p>
+<pre><code>function precmd() {
+    $HOME/bin/precmd.pl `history -n -1 | head -1`
+}
+</code></pre>
+<p>シェルスクリプトかけないので Perl に逃げています。 で、precmd.pl は以下のような感じ：</p>
+<pre><code><span class="comment-delimiter">#</span><span class="comment">!/usr/bin/perl
+</span>
+<span class="keyword">use</span> <span class="function-name">strict</span>;
+<span class="keyword">use</span> <span class="function-name">warnings</span>;
+<span class="keyword">use</span> <span class="function-name">FileHandle</span>;
+
+<span class="keyword">my</span> <span class="variable-name">$lastcmd</span> = <span class="type">join</span> <span class="string">&apos; &apos;</span>, <span class="cperl-array">@ARGV</span>;
+
+<span class="keyword">my</span> <span class="variable-name">$window</span> = <span class="cperl-hash">$ENV</span>{<span class="string">WINDOW</span>};
+
+<span class="keyword">my</span> <span class="variable-name">$windows</span> = <span class="cperl-nonoverridable">qx</span><span class="string">{ screen -Q windows }</span> <span class="type">or</span> <span class="keyword">die</span> <span class="string">&quot;Your screen doesn&apos;t support -Q&quot;</span>;
+<span class="cperl-nonoverridable">qx</span><span class="string">{ screen -X redisplay }</span>;
+
+<span class="keyword">my</span> <span class="variable-name">$active</span>;
+<span class="keyword">for</span> <span class="keyword">my</span> <span class="variable-name">$win</span> (<span class="cperl-nonoverridable">split</span> <span class="string">&quot;\x20\x20&quot;</span>, $windows) {
+    <span class="keyword">my</span> (<span class="variable-name">$num</span>, <span class="variable-name">$flag</span>, <span class="variable-name">$title</span>) = $win =~ <span class="constant">/</span><span class="function-name">^</span><span class="keyword">(</span><span class="builtin">\</span><span class="type">d</span><span class="builtin">+</span><span class="keyword">)(</span><span class="function-name">.</span><span class="keyword">)</span><span class="builtin">?</span><span class="string"> </span><span class="keyword">(</span><span class="function-name">.</span><span class="builtin">+</span><span class="keyword">)</span><span class="constant">/</span>;
+
+    <span class="keyword">if</span> ($flag <span class="type">and</span> $flag <span class="type">eq</span> <span class="string">&apos;*&apos;</span>) {
+        $active = $num;
+        <span class="keyword">last</span>;
+    }
+}
+
+<span class="keyword">if</span> ($window <span class="negation-char">!</span>= $active) {
+    <span class="type">open</span> <span class="keyword">my</span> <span class="variable-name">$fh</span>, <span class="string">&quot;|/usr/local/bin/growlnotify -t &apos;GNU screen window $window&apos;&quot;</span> <span class="type">or</span> <span class="keyword">die</span> $!;
+    <span class="cperl-nonoverridable">print</span> $fh <span class="type">sprintf</span> <span class="string">&apos;command done: &quot;</span><span class="cperl-hash">%s</span><span class="string">&quot;&apos;</span>, $lastcmd;
+    <span class="cperl-nonoverridable">print</span> $fh <span class="string">&quot;\n&quot;</span>;
+    <span class="type">close</span> $fh;
+}
+</code></pre>
+<p>これで、コマンドが完了した場合にピコーンと通知が来るようになりました。</p>
+<p>長い make や wget の時に超絶便利ですね！</p>
+<p>書き忘れましたが、現在この機能をつかうためには開発版の screen を使用する必要があります。</p>
+
+  </div>
+
+  <div class="meta">
+    by typester /
+    at <a href="/memo/2010/03/23/1/">2010-03-23T11:22:00</a> /
+    <a href="/memo/tag/screen/">screen</a>
+    &middot; <a href="/memo/tag/zsh/">zsh</a>
+    / <a href="/memo/2010/03/23/1/#disqus_thread">Comment</a>
+  </div>
+</div>
+
+<div class="entry autopagerize_page_element">
+  <h2><a href="/memo/2010/03/06/1/">yokohama.pm tech talk #5</a></h2>
+
+  <div class="body">
+    <p>OpenSocial なモバイルアプリを書く場合、アプリ単体でテストできるようにしてくれる Moxy の OpenSocial プラグインの話と、外部 API 呼び出しを専用に行う非同期なプロクシサーバーの話をしました。</p>
+<p>資料はこちら:</p>
+<blockquote><p><a href="http://typester.stfuawsc.com/slides/yokohamapm5/start.html">OpenSocial mobile application development</a></p></blockquote>
+<p>前者に関しては、個人的には OpenSocial モバイルアプリ開発には必須なツールなので良い感じにしていきたいところ。 ＆してくれるひと募集。</p>
+<p>後者のプロクシサーバーは「あんまり頭よくない」だけれども、現在のウェブアプリケーションの構成で、API呼び出しの待ち時間をうまく使おうとするときにはこうなるのかなぁと思った。同じようなことをしているところもあるらしい！</p>
+<p>個人的にはそれ〜でできるよ！ってのがないかなーと思っていたのだけど、ないっぽいのかなー。</p>
+<p>nginx でおしいところまではできるので、モジュール書いたら出来るのか調べてみようと思う。</p>
+
+  </div>
+
+  <div class="meta">
+    by typester /
+    at <a href="/memo/2010/03/06/1/">2010-03-06T13:19:00</a> /
+    <a href="/memo/tag/perl/">perl</a>
+    &middot; <a href="/memo/tag/yokohama.pm/">yokohama.pm</a>
+    / <a href="/memo/2010/03/06/1/#disqus_thread">Comment</a>
+  </div>
+</div>
+
+<div class="entry autopagerize_page_element">
+  <h2><a href="/memo/2010/03/01/1/">local::lib を切り替える</a></h2>
+
+  <div class="body">
+    <p>レガシーなアプリをメンテするのにレガシーな Perl モジュールが必要になることがあり、そのために古いアプリ用には専用の <code>local::lib</code> ディレクトリを切っているわけですが、普段から日常的に <code>local::lib</code> を使用しているため shell が上がったタイミングではデフォルトの <code>local::lib</code> 環境変数がセットされていて切り替えが非常に面倒だった。</p>
+<p>これまではそれほど頻繁に使用しなかったので放置していたのだが、ここのところ頻繁に必要になるためいい加減うざくなってきて簡単に <code>local::lib</code> を切り替えられるよう設定をしてみた。</p>
+<p>zsh に次のような関数をつくり、それで <code>local::lib</code> を切り替えるようにする。</p>
+<pre><code>function locallib () {
+    INSTALL_BASE=$1
+    if [ -d $INSTALL_BASE ]; then
+        eval $(~/bin/use-locallib $INSTALL_BASE)
+    fi
+}
+</code></pre>
+<p>これは</p>
+<pre><code>$ locallib ~/perl5
+</code></pre>
+<p>などのように <code>INSTALL_BASE</code> を指定して使う。指定されたパスが存在したら <code>use-locallib</code> というコマンドを使用して環境変数を切り替えるという内容。</p>
+<p>この <code>use-locallib</code> コマンドは以下のようなソースになっていて、古い <code>local::lib</code> の環境変数をクリアするとともに、新しい <code>local::lib</code> の環境変数を <code>print</code> するというものになっている。</p>
+<pre><code><span class="comment-delimiter">#</span><span class="comment">!/usr/bin/env perl
+</span>
+<span class="keyword">use</span> <span class="function-name">strict</span>;
+<span class="keyword">use</span> <span class="function-name">warnings</span>;
+<span class="keyword">use</span> <span class="function-name">Pod::Usage</span>;
+
+<span class="keyword">use</span> <span class="function-name">Config</span>;
+<span class="keyword">use</span> <span class="function-name">File::Spec</span>;
+
+<span class="keyword">my</span> <span class="variable-name">$install_base</span> = <span class="cperl-array">$ARGV</span>[0]
+    <span class="type">or</span> pod2usage(-1);
+
+$install_base = File::Spec-&gt;rel2abs($install_base);
+
+<span class="keyword">my</span> <span class="variable-name">$path</span>     = <span class="cperl-hash">$ENV</span>{<span class="string">PATH</span>};
+<span class="keyword">my</span> <span class="variable-name">$perl5lib</span> = <span class="cperl-hash">$ENV</span>{<span class="string">PERL5LIB</span>};
+
+<span class="cperl-nonoverridable">push</span> <span class="cperl-array">@INC</span>, File::Spec-&gt;catdir($install_base, <span class="string">&apos;lib&apos;</span>, <span class="string">&apos;perl5&apos;</span>);
+
+<span class="keyword">require</span> <span class="keyword">local</span>::lib;
+<span class="keyword">my</span> <span class="cperl-hash">%env</span> = <span class="keyword">local</span>::lib-&gt;build_environment_vars_for($install_base, 1);
+
+<span class="comment-delimiter"># </span><span class="comment">remove $PERL5LIB set by old local::lib if it exists.
+</span><span class="keyword">if</span> (<span class="keyword">my</span> <span class="variable-name">$old_base</span> = <span class="cperl-hash">$ENV</span>{<span class="string">PERL_MM_OPT</span>}) {
+    <span class="keyword">my</span> <span class="cperl-hash">%mmopt</span>;
+    <span class="keyword">for</span> <span class="keyword">my</span> <span class="variable-name">$opt</span> (<span class="cperl-nonoverridable">split</span> <span class="constant">/</span><span class="string">:</span><span class="builtin">+</span><span class="constant">/</span>, $old_base) {
+        <span class="keyword">my</span> (<span class="variable-name">$k</span>, <span class="variable-name">$v</span>) = <span class="cperl-nonoverridable">split</span> <span class="constant">/</span><span class="string">=</span><span class="constant">/</span>, $opt;
+        <span class="cperl-hash">$mmopt</span>{$k} = $v;
+    }
+
+    <span class="keyword">if</span> (<span class="keyword">my</span> <span class="variable-name">$old_installbase</span> = <span class="cperl-hash">$mmopt</span>{<span class="string">INSTALL_BASE</span>}) {
+        <span class="keyword">if</span> ($old_installbase <span class="type">eq</span> $install_base) {
+            <span class="comment-delimiter"># </span><span class="comment">do nothing if install_base is equal to old one
+</span>            <span class="keyword">exit</span>;
+        }
+
+        <span class="keyword">my</span> <span class="cperl-array">@old_perl5lib</span> = (
+            File::Spec-&gt;catdir($old_installbase, <span class="string">&apos;lib&apos;</span>, <span class="string">&apos;perl5&apos;</span>),
+            File::Spec-&gt;catdir($old_installbase, <span class="string">&apos;lib&apos;</span>, <span class="string">&apos;perl5&apos;</span>, <span class="cperl-hash">$Config</span>{<span class="string">archname</span>}),
+        );
+
+        <span class="cperl-hash">$env</span>{<span class="string">PERL5LIB</span>} = <span class="keyword">do</span> {
+            <span class="keyword">my</span> <span class="cperl-array">@env</span>;
+            <span class="constant">ENV:</span> <span class="keyword">for</span> <span class="keyword">my</span> <span class="variable-name">$e</span> (<span class="cperl-nonoverridable">grep</span> { $_ } <span class="cperl-nonoverridable">split</span> <span class="cperl-hash">$Config</span>{<span class="string">path_sep</span>}, <span class="cperl-hash">$env</span>{<span class="string">PERL5LIB</span>}) {
+                <span class="keyword">for</span> <span class="keyword">my</span> <span class="variable-name">$old</span> (<span class="cperl-array">@old_perl5lib</span>) {
+                    <span class="keyword">next</span> <span class="constant">ENV</span> <span class="keyword">if</span> $old <span class="type">eq</span> $e;
+                }
+                <span class="cperl-nonoverridable">push</span> <span class="cperl-array">@env</span>, $e;
+            }
+            <span class="type">join</span> <span class="cperl-hash">$Config</span>{<span class="string">path_sep</span>}, <span class="cperl-array">@env</span>;
+        };
+
+        <span class="keyword">my</span> <span class="variable-name">$old_path</span> = File::Spec-&gt;catdir($old_installbase, <span class="string">&apos;bin&apos;</span>);
+        <span class="cperl-hash">$env</span>{<span class="string">PATH</span>} = <span class="keyword">do</span> {
+            <span class="keyword">my</span> <span class="cperl-array">@p</span>;
+            <span class="keyword">for</span> <span class="keyword">my</span> <span class="variable-name">$p</span> (<span class="cperl-nonoverridable">grep</span> {$_} <span class="cperl-nonoverridable">split</span> <span class="cperl-hash">$Config</span>{<span class="string">path_sep</span>}, <span class="cperl-hash">$env</span>{<span class="string">PATH</span>}) {
+                <span class="keyword">next</span> <span class="keyword">if</span> $p <span class="type">eq</span> $old_path;
+                <span class="cperl-nonoverridable">push</span> <span class="cperl-array">@p</span>, $p;
+            }
+            <span class="type">join</span> <span class="cperl-hash">$Config</span>{<span class="string">path_sep</span>}, <span class="cperl-array">@p</span>;
+        };
+    }
+}
+
+<span class="keyword">while</span> (<span class="keyword">my</span> (<span class="variable-name">$k</span>, <span class="variable-name">$v</span>) = <span class="cperl-nonoverridable">each</span> <span class="cperl-hash">%env</span>) {
+    <span class="cperl-nonoverridable">print</span> <span class="cperl-nonoverridable">qq</span><span class="string">[export $k=&quot;$v&quot;\n]</span>;
+}
+<span class="comment">
+=head1 </span><span class="variable-name">NAME</span><span class="comment">
+
+use-locallib - set/switch local::lib environment
+
+=head1 </span><span class="variable-name">SYNOPSIS</span><span class="comment">
+
+use-locallib (MODULE INSTALL BASE)
+</span></code></pre>
+<p>これで <code>local::lib</code> を簡単に切り替えられるようになるけれど、複数の <code>local::lib</code> 環境を同時に使用しているとどのシェルがどの <code>local::lib</code> を使用しているかわからなくなってしまう。</p>
+<p>そのためシェルのプロンプトに <code>INSTALL_BASE</code> を表示されるようにしてしのいだ。</p>
+<p><a href="http://www.flickr.com/photos/typester/4397750144/" title="show INSTALL_BASE in terminal prompt by typester, on Flickr"><img alt="show INSTALL_BASE in terminal prompt" height="100" src="http://farm3.static.flickr.com/2758/4397750144_cd22b17a99_o.png" width="280" /></a></p>
+<p>これは単純に以下のような <code>PERL_MM_OPT</code> の <code>INSTALL_BASE</code> をプリントするスクリプトを PROMPT 設定から読んでいるだけである。</p>
+<pre><code><span class="comment-delimiter">#</span><span class="comment">!/usr/bin/env perl
+</span>
+<span class="keyword">use</span> <span class="function-name">strict</span>;
+<span class="keyword">use</span> <span class="function-name">warnings</span>;
+
+<span class="keyword">my</span> <span class="cperl-hash">%mm_opt</span>;
+<span class="keyword">for</span> <span class="keyword">my</span> <span class="variable-name">$opt</span> (<span class="cperl-nonoverridable">split</span> <span class="constant">/</span><span class="string">:</span><span class="builtin">+</span><span class="constant">/</span>, <span class="cperl-hash">$ENV</span>{<span class="string">PERL_MM_OPT</span>} || <span class="string">&apos;&apos;</span>) {
+    <span class="keyword">my</span> (<span class="variable-name">$k</span>, <span class="variable-name">$v</span>) = <span class="cperl-nonoverridable">split</span> <span class="constant">/</span><span class="string">=</span><span class="constant">/</span>, $opt;
+    <span class="cperl-hash">$mm_opt</span>{$k} = $v;
+}
+
+<span class="keyword">my</span> <span class="variable-name">$install_base</span> = <span class="cperl-hash">$mm_opt</span>{<span class="string">INSTALL_BASE</span>};
+<span class="keyword">if</span> (<span class="cperl-hash">$ENV</span>{<span class="string">HOME</span>}) {
+    $install_base =~ <span class="cperl-nonoverridable">s</span><span class="constant">/</span><span class="function-name">^</span><span class="cperl-hash">$ENV</span><span class="variable-name">{</span><span class="string">HOME</span><span class="variable-name">}</span><span class="constant">/</span><span class="string">~</span><span class="constant">/</span>;
+}
+
+<span class="cperl-nonoverridable">print</span> $install_base || <span class="string">&apos;none&apos;</span>;
+</code></pre>
+
+  </div>
+
+  <div class="meta">
+    by typester /
+    at <a href="/memo/2010/03/01/1/">2010-03-01T17:17:00</a> /
+    <a href="/memo/tag/perl/">perl</a>
+    &middot; <a href="/memo/tag/zsh/">zsh</a>
+    / <a href="/memo/2010/03/01/1/#disqus_thread">Comment</a>
+  </div>
+</div>
+
+<div class="entry autopagerize_page_element">
+  <h2><a href="/memo/2010/01/08/2/">ライブラリをユニバーサルバイナリでインストールする</a></h2>
+
+  <div class="body">
+    <p>以下のサイトが詳しい</p>
+<blockquote><p><a href="http://macwiki.sourceforge.jp/wiki/index.php/UniversalBinary">http://macwiki.sourceforge.jp/wiki/index.php/UniversalBinary</a></p></blockquote>
+<p><code>Imager</code> に必要な <code>libjpeg</code> などをユニバーサルバイナリにしてみた時のメモ</p>
+<p><code>-M</code> などがついていて <code>-arch</code> が複数指定できない場合以外は</p>
+<pre><code>CFLAGS=&apos;-arch x86_64 -arch i386 -isysroot /Developer/SDKs/MacOSX10.6.sdk&apos; CXXFLAGS=$CFLAGS
+</code></pre>
+<p>とかすればいいということだが、<code>libjpeg</code> は <code>-M</code> られていて無理だったので、amd64 と i386 という二つのディレクトリにソースコードを展開、それぞれ以下のオプションで make まで終わらす：</p>
+<pre><code>$ cd amd64
+$ CFLAGS=&apos;-arch x86_64 -isysroot /Developer/SDKs/MacOSX10.6.sdk&apos; CXXFLAGS=$CFLAGS ./configure ...
+$ make
+
+$ cd ../i386
+$ CFLAGS=&apos;-arch i386 -isysroot /Developer/SDKs/MacOSX10.6.sdk&apos; CXXFLAGS=$CFLAGS ./configure ...
+$ make
+</code></pre>
+<p>make されてできたバイナリを lipo コマンドでユニバーサルバイナリ化する。 上記サイトを参考にして、</p>
+<pre><code>#!/bin/sh
+
+filelist=$(find ./amd64 -type f |grep -v \\.o$ | xargs file | sed -e &apos;s,^\./amd64/,,g&apos; | \
+               grep -E \(Mach-O\)\|\(ar\ archive\) |sed -e &apos;s,:.*,,g&apos; -e &apos;/\for\ architecture/d&apos;)
+
+for i in $filelist
+do
+    echo $i
+    /usr/bin/lipo -create amd64/$i i386/$i -output `basename $i`
+    mv -f `basename $i` amd64/$i
+done
+</code></pre>
+<p>このようなスクリプトを書いて、amd64 などのディレクトリの一つ上の階層で実行すると、amd64 ディレクトリのバイナリがユニバーサルバイナリ化されるという仕組みを作ってみた。</p>
+<p>その後、amd64 のほうで <code>make install</code> してやれば OK。</p>
+
+  </div>
+
+  <div class="meta">
+    by typester /
+    at <a href="/memo/2010/01/08/2/">2010-01-08T11:28:00</a> /
+    <a href="/memo/tag/osx/">osx</a>
+    / <a href="/memo/2010/01/08/2/#disqus_thread">Comment</a>
+  </div>
+</div>
+
+<div class="entry autopagerize_page_element">
+  <h2><a href="/memo/2010/01/08/1/">Snow Leopard の Perl とアーキテクチャ</a></h2>
+
+  <div class="body">
+    <p>Snow Leopard には二つの Perl がインストールされている</p>
+<ul><li>/usr/bin/perl5.10.0</li><li>/usr/bin/perl5.8.9</li></ul>
+<p>デフォルトの <code>/usr/bin/perl</code> は 5.10.0 のほう。それぞれユニバーサルバイナリになっていて、</p>
+<pre><code>$ file /usr/bin/perl5.10.0
+/usr/bin/perl5.10.0: Mach-O universal binary with 3 architectures
+/usr/bin/perl5.10.0 (for architecture x86_64):  Mach-O 64-bit executable x86_64
+/usr/bin/perl5.10.0 (for architecture i386):    Mach-O executable i386
+/usr/bin/perl5.10.0 (for architecture ppc7400): Mach-O executable ppc
+
+$ file /usr/bin/perl5.8.9
+/usr/bin/perl5.8.9: Mach-O universal binary with 2 architectures
+/usr/bin/perl5.8.9 (for architecture i386):     Mach-O executable i386
+/usr/bin/perl5.8.9 (for architecture ppc7400):  Mach-O executable ppc
+</code></pre>
+<p>という感じで、5.10 は 64bit 版があるが、5.8 にはない。</p>
+<p>で、普通に perl を実行すると perl5.10.0 は <code>x86_64</code> で実行され、perl5.8.9 は <code>i386</code> で実行される。</p>
+<p>このアーキテクチャの差が結構くせ者で Snow Leopard 上で普通にライブラリなどを make すると <code>x86_64</code> だけでビルドされてしまうため、そのようにして作ったライブラリはそのままでは perl5.8.9 からは使えないということになる。</p>
+<p>デフォルトの 5.10.0 だけ使っている分にはなにも問題はないのだが、残念なことにこの 5.10.0 というのはいろいろな問題があり、開発に使用することはおすすめできない状況。(せめて 5.10.1 にしてくれればいいのに)</p>
+<p>したがって無用なトラブルを避けるためにも 5.8.9 の方を使用するか、自前でビルドした perl を使用するのが良い。</p>
+<p>またこのように <code>x86_64</code>、<code>i386</code> 両方のアーキテクチャの実行ファイルがあり得る Snow Leopard に対して自分でライブラリをインストールする場合それらもユニバーサルバイナリにしておくと良い。</p>
+<p>念のため追記＠2010-01-08T15:19:23+09:00: もちろんこれは 64bit 対応の CPU の場合の話。そうでない場合はどちらも i386 で実行されるのでこの問題は起こらない。</p>
+
+  </div>
+
+  <div class="meta">
+    by typester /
+    at <a href="/memo/2010/01/08/1/">2010-01-08T10:51:00</a> /
+    <a href="/memo/tag/osx/">osx</a>
+    &middot; <a href="/memo/tag/perl/">perl</a>
+    / <a href="/memo/2010/01/08/1/#disqus_thread">Comment</a>
+  </div>
+</div>
+
+
+
+
+<div id="pager" class="autopagerize_insert_before">
+  <p class="pages">
+    <a class="prev" rel="previous" href="/memo/page/8/">&laquo; Prev</a>
+    <a href="/memo/page/5/">5</a>
+    <a href="/memo/page/6/">6</a>
+    <a href="/memo/page/7/">7</a>
+    <a href="/memo/page/8/">8</a>
+    <span class="current">9</span>
+    <a href="/memo/page/10/">10</a>
+    <a href="/memo/page/11/">11</a>
+    <a href="/memo/page/12/">12</a>
+    <a href="/memo/page/13/">13</a>
+    <a href="/memo/page/14/">14</a>
+    <a class="next" rel="next" href="/memo/page/10/">Next &raquo;</a>
+  </p>
+  <p class="info">(Page 9 of 203)</p>
+</div>
+
+
+</div>
+
+<p id="footer">
+  Copyright &copy; 2005-2013
+      by <a class="author" href="/about/#me">Daisuke Murase (typester)</a> /
+  Site generated by <a href="https://github.com/typester/nim">nim</a> /
+  Comments powered by <a href="http://disqus.com">DISQUS</a>.
+</p>
+
+</div>
+
+
+<script type="text/javascript">
+//<![CDATA[
+(function() {
+	var links = document.getElementsByTagName('a');
+	var query = '?';
+	for(var i = 0; i < links.length; i++) {
+	if(links[i].href.indexOf('#disqus_thread') >= 0) {
+		query += 'url' + i + '=' + encodeURIComponent(links[i].href) + '&';
+	}
+	}
+	document.write('<script charset="utf-8" type="text/javascript" src="http://disqus.com/forums/unknownplace/get_num_replies.js' + query + '"></' + 'script>');
+})();
+//]]>
+</script>
+
+
+<script type="text/javascript">
+var gaJsHost = (("https:" == document.location.protocol) ? "https://ssl." : "http://www.");
+document.write(unescape("%3Cscript src='" + gaJsHost + "google-analytics.com/ga.js' type='text/javascript'%3E%3C/script%3E"));
+</script>
+<script type="text/javascript">
+try {
+var pageTracker = _gat._getTracker("UA-53067-1");
+pageTracker._trackPageview();
+} catch(err) {}</script>
+
+<script>
+function googleTranslateElementInit() {
+  new google.translate.TranslateElement({
+    pageLanguage: 'ja',
+    gaTrack: true,
+    gaId: 'UA-53067',
+    floatPosition: google.translate.TranslateElement.FloatPosition.BOTTOM_RIGHT
+  });
+}
+</script><script src="//translate.google.com/translate_a/element.js?cb=googleTranslateElementInit"></script>
+
+</body>
+</html>

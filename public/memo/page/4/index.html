@@ -1,0 +1,521 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="ja" xml:lang="ja">
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <title>memo - unknownplace.org</title>
+  <link rel="stylesheet" type="text/css" href="http://yui.yahooapis.com/3.0.0/build/cssreset/reset-min.css" />
+  <link rel="stylesheet" type="text/css" href="http://yui.yahooapis.com/3.0.0/build/cssfonts/fonts-min.css" />
+  <link rel="stylesheet" href="/css/style.css" type="text/css" />
+  <meta property="fb:admins" content="1093631929" />
+  <meta name="robots" content="noindex" />
+  <link rel="alternate" type="application/rss+xml" href="http://unknownplace.org/memo/index.rss" />
+</head>
+<body>
+
+<div id="container">
+<div id="header">
+    <h1><a href="/">unknownplace.org</a></h1> /
+<a href="/memo/">memo</a>
+</div>
+
+<div id="content">
+
+<div class="entry autopagerize_page_element">
+  <h2><a href="/memo/2012/04/03/1/">CoffeeScript</a></h2>
+
+  <div class="body">
+    <blockquote><p><a href="http://subtech.g.hatena.ne.jp/cho45/20120402/1333366338">なぜ CoffeeScript がダメか - 冬通りに消え行く制服ガールは✖夢物語にリアルを求めない。 - subtech</a></p></blockquote>
+<p>僕の考えでは JavaScript ネイティブでない（けれど非同期プログラミングやネットワークの知識はある）人が、Node.js を使ってネットワークアプリケーションを書くという用途では結構使えると思う。</p>
+<p>デバッグしづらいという点も Node と組み合わせる前提で考えれば <code>coffee</code> コマンドで直接実行すればいい話である。</p>
+<p>また僕自身も小さなネットワークアプリケーションは最近は CoffeeScript で書いてて、<a href="http://d.hatena.ne.jp/sfujiwara/">fujiwara</a> 氏などにメンテしてもらっているけれど、やはり彼も僕と同じようなスキル（JavaScriptネイティブでない）だから、そういう人が見て大体なんとなく理解できるものになってると感じる。</p>
+<p>これがもし、AnyEvent で書いたコードだったらそうはいかなかっただろうなーとw</p>
+
+  </div>
+
+  <div class="meta">
+    by typester /
+    at <a href="/memo/2012/04/03/1/">2012-04-03T10:07:00</a> /
+    <a href="/memo/tag/coffeescript/">coffeescript</a>
+    &middot; <a href="/memo/tag/perl/">perl</a>
+    / <a href="/memo/2012/04/03/1/#disqus_thread">Comment</a>
+  </div>
+</div>
+
+<div class="entry autopagerize_page_element">
+  <h2><a href="/memo/2012/04/02/1/">OS X 10.7.3 から LaunchAgents の WatchPaths の仕様が変わったようだ</a></h2>
+
+  <div class="body">
+    <p>前から <code>~/Library/LaunchAgents</code> にユーザー権限でおいた agent から root 所有のファイルを監視していたのだが、10.7.3 にアップデートしてからそれらが全く動かなくなってしまった。</p>
+<p>しょうがないので <code>/Library/LaunchAgents</code> に移動し、 root でうごかすようにしたら再び動き出した。</p>
+<p>監視してる root 所有のファイルはもちろん一般ユーザーでも読み込み可能な権限になっているのにこの制限は嫌だなぁ。</p>
+<h4>追記＠</h4>
+<p>隣の席の人は同じものが全く問題なく動いているとのこと…。僕の環境が悪いのか…。</p>
+
+  </div>
+
+  <div class="meta">
+    by typester /
+    at <a href="/memo/2012/04/02/1/">2012-04-02T11:36:00</a> /
+    <a href="/memo/tag/osx/">osx</a>
+    / <a href="/memo/2012/04/02/1/#disqus_thread">Comment</a>
+  </div>
+</div>
+
+<div class="entry autopagerize_page_element">
+  <h2><a href="/memo/2012/03/27/1/">tmux で pbcopy</a></h2>
+
+  <div class="body">
+    <p>デフォルトだと動かないのでなんか変なラッパーを挟むのがスタンダードな方法みたいですが、たまにしか使わないのにそんな無駄なことしたくないと、</p>
+<pre><code><span class="preprocessor"># tmux</span>
+<span class="keyword">if</span> [[ <span class="string">"$TMUX"</span> != <span class="string">""</span> ]] then
+    alias pbcopy=<span class="string">"ssh 127.0.0.1 pbcopy"</span>
+    alias pbpaste=<span class="string">"ssh 127.0.0.1 pbpaste"</span>
+fi
+</code></pre>
+<p>としてしのいでいる。僕の使用頻度だとこれで十分ぽい。</p>
+
+  </div>
+
+  <div class="meta">
+    by typester /
+    at <a href="/memo/2012/03/27/1/">2012-03-27T11:39:00</a> /
+    <a href="/memo/tag/tmux/">tmux</a>
+    &middot; <a href="/memo/tag/zsh/">zsh</a>
+    / <a href="/memo/2012/03/27/1/#disqus_thread">Comment</a>
+  </div>
+</div>
+
+<div class="entry autopagerize_page_element">
+  <h2><a href="/memo/2012/03/26/1/">tmux + irssi + canything で Anything 風チャンネル切り替えする</a></h2>
+
+  <div class="body">
+    <p>irssi 環境を prgmr.com からさくら VPS に移行したついでに irssi のプラグインを見直していて、そのときに <a href="http://wouter.coekaerts.be/irssi/nicklist">nicklist.pl</a> というのをいれたわけですが、これがなかなか hackish な実装になっており(笑)、named pipe なファイルつくってそれを cat しておくと irssi がそこに nicklist を書き込むというような感じになってて、基本的に GNU screen などの縦分割と一緒に使うように設計されている。</p>
+<p>で、僕はリモートサーバー上の GNU screen 上で irssi を動かしているので、それをつかうために縦分割をためしてみたわけですが、window 分割したときにでる caption を GNU screen では消すことができず、ローカルで使っている screen の hardstatus の上に、リモート screen の caption が出るという大変いやなかんじになってしまう。</p>
+<p>設定見てもどうにも消せないっぽいので、screen 競合として名高い tmux を見てみると普通に消せたのでとりあえずリモートだけ tmux に移行をしてみた。</p>
+<p>リモートだけのつもりが tmux をいじっているうちにこれはなかなか良いものだと言うことになり、ローカルも乗り換えるに至った。</p>
+<p>まず、tmux をおすすめしてる記事はこれまでもよく目にしてきたがピンとこなかったのは、ほとんどの記事が GNU screen をハードに使ってる人のものではなかったからである。 GNU screen をハードに使ってる人のために僕が tmux の良いところを上げると、</p>
+<ul><li>tmux 内外問わず、すべての操作をコマンドから行える</li><li>window 増やさなくても window の中に分割窓(pane)をおける</li></ul>
+<p>他にもいろいろあるのだが、この二つは大きい。</p>
+<h4>tmux 内外問わず、すべての操作をコマンドから行える</h4>
+<p>これは script 的に動作を拡張しようとしたときに重要になる。 GNU screen でもまぁ <code>screen -X</code> でできるのだが、tmux に比べるとできることが限られており、ちょっと込み入ったことをやろうとするとすぐに screen にパッチを当てる、みたいなことになるw</p>
+<h4>window 増やさなくても window の中に分割窓(pane)をおける</h4>
+<p>tmux は window 分割の概念が screen とは異なっている。tmux では分割された小窓は pane とよばれ、window とは定義が違ったものが存在する。それによって window を増やすことなく画面を分割でき、それぞれの window が分割 pane のレイアウトを別々に管理することが可能になっている。</p>
+<p>これは好みの問題もあるかもしれないが、僕は tmux 方式が気に入った。</p>
+<p>これによって GNU screen 利用時より分割を積極的につかうようになった。特にライフチェンジングだなとおもったのは、分割窓を Emacs でいうところの popwin.el 的に使う方法だ。man をチラ見したり、辞書を引いたりそういうレベルで気軽にpaneをつくれ、man を終了するとpaneが自動で閉じるといった具合に便利に使える。</p>
+<h4>canything</h4>
+<p>Emacs 使いが分割窓を popwin 的に使うようになったらまず思いつくのがやっぱり Anything だ。コマンドラインベースのがあったら tmux と相性いいだろうなとおもったらすぐに見つかりました。</p>
+<blockquote><p><a href="http://filmlang.org/soft/canything">canything: CUIでAnything</a></p></blockquote>
+<p>上記サイトにも乗っているけれど、</p>
+<pre><code>$ tmux lsw | canything | cut -d<span class="string">":"</span> -f 1 | xargs tmux select-window -t
+</code></pre>
+<p>とかすれば tmux ウィンドウを anything 風切り替えできるのですが、これを分割窓と組み合わせて、</p>
+<pre><code># .tmux.conf
+bind-key b split-window <span class="string">'tmux lsw | canything | cut -d":" -f 1 | xargs tmux select-window -t'</span>
+</code></pre>
+<p>みたいに設定すると、<code>C-z b</code> (僕はprefixキーz派) で Emacs っぽく画面分割され anything 風しぼりこみインタフェースで window 切り替えできる。すばらしい。</p>
+<h4>irssi で anything 風チャンネル切り替え</h4>
+<p>となるとやっぱり真っ先に思いつくのがこれでしょう。まず irssi プラグインを書き、コマンドラインから irssi のチャンネルリストを取得、チャンネル切り替えをできるようにするものを書いた。</p>
+<blockquote><p><a href="https://github.com/typester/irssi-plugins/blob/master/channel-socket.pl">channel-socket.pl</a></p></blockquote>
+<p>これを読み込んで、</p>
+<pre><code>/channel-socket start
+</code></pre>
+<p>とすると <code>/tmp/irssi-channels.sock</code> と <code>/tmp/irssi-set-channel.sock</code> という二つの UNIX ドメインソケットが作られる。それぞれチャンネル取得用ソケットと、チャンネル切り替え用ソケットだ。</p>
+<p>具体的には</p>
+<pre><code>$ nc -U /tmp/irssi-channels.sock
+</code></pre>
+<p>でチャンネル一覧取得でき、</p>
+<pre><code>$ echo &apos;#emacs-ja&apos; | nc -U /tmp/irssi-set-channel.sock
+</code></pre>
+<p>でチャンネルを切り替えられるっていう具合だ。</p>
+<p>これを連結させて</p>
+<pre><code>$ nc -U /tmp/irssi-channels.sock | canything | nc -U /tmp/irssi-set-channel.sock
+</code></pre>
+<p>で、anything 風 チャンネル切り替えのできあがり。</p>
+<p>これを tmux の分割窓とくみあわせれば完璧。さっきの tmux ウィンドウ切り替えみたいに tmux 側で bind しても良いが、irssi 側でやるのがより自然かなと思う。僕はこんな感じにした。</p>
+<pre><code>/bind meta-b command exec - tmux split-window &apos;nc -U /tmp/irssi-channels.sock | canything -i | nc -U /tmp/irssi-set-channel.sock&apos;
+</code></pre>
+<p>これで irssi 上で <code>M-b</code> すればチャンネル一覧の anything 窓がでる。</p>
+<p><a href="http://www.flickr.com/photos/typester/7015464855/" title="Anything like incremental channel switching at irssi by typester, on Flickr"><img alt="Anything like incremental channel switching at irssi" height="656" src="http://farm8.staticflickr.com/7047/7015464855_67cdeb30d7_o.png" width="920" /></a></p>
+<p>こんな感じ。他にもいろんなことにつかえそうですね！</p>
+
+  </div>
+
+  <div class="meta">
+    by typester /
+    at <a href="/memo/2012/03/26/1/">2012-03-26T06:53:00</a> /
+    <a href="/memo/tag/irssi/">irssi</a>
+    &middot; <a href="/memo/tag/tmux/">tmux</a>
+    / <a href="/memo/2012/03/26/1/#disqus_thread">Comment</a>
+  </div>
+</div>
+
+<div class="entry autopagerize_page_element">
+  <h2><a href="/memo/2012/03/22/1/">ssh経由でサーバー上のGNU screen上のirssiを一発で開くコマンド</a></h2>
+
+  <div class="body">
+    <p>IRCはssh経由でやっていて、毎回sshでつないだあとに手動でscreen attachとかめんどくさいなーと思っていたのですが、</p>
+<pre><code>$ ssh example.com -t screen -xR irssi
+</code></pre>
+<p>みたいな感じにすればssh接続と同時にscreen attachするようにできた。便利！ (ここでのirssiはコマンド名ではなく、GNU screenのセッション名です。念のため)</p>
+<p><code>irssi</code>っていうalias貼ったらローカルで実行してるような雰囲気になって良い。(実際にはローカルにもirssiいれているのでircというaliasにした)</p>
+
+  </div>
+
+  <div class="meta">
+    by typester /
+    at <a href="/memo/2012/03/22/1/">2012-03-22T14:46:00</a> /
+    <a href="/memo/tag/irssi/">irssi</a>
+    / <a href="/memo/2012/03/22/1/#disqus_thread">Comment</a>
+  </div>
+</div>
+
+<div class="entry autopagerize_page_element">
+  <h2><a href="/memo/2012/03/03/1/">Emacsデビューはこの本で決まり！ - Emacs実践入門</a></h2>
+
+  <div class="body">
+    <p>Emacs界の松岡修造こと<a href="http://d.hatena.ne.jp/tomoya/">tomoya</a>さんが素敵なEmacs本を書かれたので紹介。</p>
+<blockquote><p><a href="http://amzn.to/xOOF6y">Emacs実践入門　～思考を直感的にコード化し、開発を加速する (WEB+DB PRESS plus)</a></p><p><a href="http://amzn.to/xOOF6y"><img border="0" src="http://ws.assoc-amazon.jp/widgets/q?_encoding=UTF8&amp;Format=_SL160_&amp;ASIN=4774150029&amp;MarketPlace=JP&amp;ID=AsinImage&amp;WS=1&amp;tag=unknownplace-22&amp;ServiceVersion=20070822" /></a><img alt="" border="0" height="1" src="http://www.assoc-amazon.jp/e/ir?t=unknownplace-22&amp;l=as2&amp;o=9&amp;a=4774150029" style="border:none !important; margin:0px !important;" width="1" /></p></blockquote>
+<p>Emacsとはなにか？ から始まり、インストール、基本的な使い方、カスタマイズ方法といったことが体系的にまとめられたとても良い本。</p>
+<p>すでにEmacsユーザーの方は一通り読むことで自分の中で足りない知識を補完することができるし、体系的にまとめられたものを読むことでEmacs脳がかなり整理されるのでぜひ一読することをおすすめする。</p>
+<p>そしてEmacsユーザーではないけれど興味があるという人にこそ、この本を薦めたい。そういう人に対してこの本は最適な入門書になっていると思う。 一通り読み終わったあとは自分のマイEmacsを育てる土台ができていることでしょう。</p>
+<p>Emacsデビューはこの本で！</p>
+
+  </div>
+
+  <div class="meta">
+    by typester /
+    at <a href="/memo/2012/03/03/1/">2012-03-03T11:10:00</a> /
+    <a href="/memo/tag/emacs/">emacs</a>
+    / <a href="/memo/2012/03/03/1/#disqus_thread">Comment</a>
+  </div>
+</div>
+
+<div class="entry autopagerize_page_element">
+  <h2><a href="/memo/2012/01/24/2/">Objective-C スレッドと libuv スレッドとのやりとり</a></h2>
+
+  <div class="body">
+    <p>libuv 専用スレッドと通常の Objective-C スレッドとのやりとりの仕方、ついでに書いておく。</p>
+<p>tl;dr - libuv スレッドから Objective-C スレッドに対して何か送るときは Objective-C の作法がそのまま使える。逆は <code>uv_async</code> を使う</p>
+<h4>libuv スレッドから Objective-C スレッド</h4>
+<p>これは Objective-C の世界の作法がそのまま使える。</p>
+<p>iOS4+ と OSX 10.6+ であれば GCD で、</p>
+<pre><code>dispatch_async(dispatch_get_main_queue(), ^{
+    // ここはメインスレッド
+});
+</code></pre>
+<p>のようなのを書くだけでメインスレッドの動作を定義できるから、そこでメソッド呼ぶなり Notification を発行するなりすれば良いので楽ちん。</p>
+<p>それ以下の環境だったら <code>performSelector:onThread:withObject:waitUntilDone:</code> 系のを使う。</p>
+<h4>Objective-C スレッドから libuv スレッド</h4>
+<p>libuv スレッドでは NSRunLoop が回ってないので上記の作法は使えない。代わりに <code>uv_async</code> を使う。</p>
+<p>まず、libuv スレッドで async コールバックを設定：</p>
+<pre><code>static void async_cb(uv_async_t* handle, int status) {
+
+}
+
+uv_async_init(self-&gt;loop, &amp;self-&gt;async, async_cb);
+</code></pre>
+<p>で、呼び出し側（Objective-Cスレッド）から</p>
+<pre><code>uv_async_send(&amp;obj-&gt;async);
+</code></pre>
+<p>とすれば <code>async_cb</code> が libuv スレッドで発動するという寸法。</p>
+<p>データを渡したいときは</p>
+<pre><code>@synchronized (obj.send_queue) {
+    [obj.send_queue addObject:@<span class="string">"foo"</span>];
+}
+
+uv_async_send(&amp;obj-&gt;async);
+</code></pre>
+<p>という感じにしておいて、取り出す側も</p>
+<pre><code>static void async_cb(uv_async_t* handle, int status) {
+    NSArray* queue;
+
+    @synchronized (self.send_queue) {
+        queue = [NSArray arrayWithArray:self.send_queue];
+        [self.send_queue removeAllObjects];
+    }
+
+    // 処理
+}
+</code></pre>
+<p>みたいにすれば良い。</p>
+<p>async コールバックは複数作ることができるから、用途に応じてコールバックを使い分けるのがよさそう。(データ送信用、スレッド終了用など)</p>
+
+  </div>
+
+  <div class="meta">
+    by typester /
+    at <a href="/memo/2012/01/24/2/">2012-01-24T14:12:00</a> /
+    <a href="/memo/tag/objc/">objc</a>
+    &middot; <a href="/memo/tag/libuv/">libuv</a>
+    / <a href="/memo/2012/01/24/2/#disqus_thread">Comment</a>
+  </div>
+</div>
+
+<div class="entry autopagerize_page_element">
+  <h2><a href="/memo/2012/01/24/1/">libuv (libev) と Objective-C autorelease のはまりポイント</a></h2>
+
+  <div class="body">
+    <p>iOS や Mac アプリで HTTP 以外のネットワーク機能をつけたいといった場合に、libuv や libev を組み込んで使うというのを割とよくする。方法としては以下のような感じでその機能用のスレッドをつくる：</p>
+<pre><code>-(void)run {
+    NSThread* thread = [[NSThread alloc] initWithTarget:self
+                                               selector:@selector(loop)
+                                                 object:nil];
+    self.thread = thread;
+    [thread release];
+
+    [thread start];
+}
+</code></pre>
+<p>スレッドの中身は大体こんな感じ：</p>
+<pre><code>-(void)loop {
+    NSAutoreleasePool* pool = [[NSAutoreleasePool alloc] init];
+
+    uv_loop_t* loop = uv_loop_new();
+
+    // いろいろ初期化
+    // ...
+
+    // libuv イベントループ
+    uv_run(loop);
+
+    uv_loop_delete(loop);
+
+    [pool drain];
+}
+</code></pre>
+<p>このスレッドは <code>uv_run</code> でブロックしてしまう。本来ここではCocoaのイベントループ(NSRunLoop)をまわす部分だが、かわりに libuv のイベントループを回している感じになっている。</p>
+<p>したがってこのスレッドで Objective-C を混ぜる場合には autorelease がスレッド終了まで基本的にされなくなるから注意が必要。</p>
+<p>これを解決する方法で最初に思いつくのは、<code>uv_run</code> (<code>ev_run</code>) のかわりに <code>uv_run_once</code> (<code>ev_run(..., EVRUN_ONCE)</code>) を使うことだ。</p>
+<pre><code>while (1) {
+    NSAutoreleasePool* pool = [[NSAutoreleasePool alloc] init];
+    uv_run_once(loop);
+    [pool drain];
+}
+</code></pre>
+<p>これは一見簡単だけど while ループをとめるフラグを別途用意しないといけないし、<code>uv_run</code> とちがってループを抜けるときには各イベントハンドラが終了しているかを確かめる必要もありめんどくさい。</p>
+<p>結果いまはこんな感じにしている：</p>
+<pre><code>static void idle_cb(uv_idle_t* handle, int status) {
+    uv_idle_stop(handle);
+    [(NSAutoreleasePool*)handle-&gt;data drain];
+    handle-&gt;data = NULL;
+}
+
+static void check_cb(uv_check_t* handle, int status) {
+    uv_idle_t* idle = (uv_idle_t*)handle-&gt;data;
+    if (NULL != idle-&gt;data) return;
+
+    NSAutoreleasePool* pool = [[NSAutoreleasePool alloc] init];
+    idle-&gt;data = (void*)pool;
+    uv_idle_start(idle, idle_cb);
+}
+
+-(void)loop {
+    uv_loop_t* loop = uv_loop_new();
+
+    uv_check_t check;
+    uv_check_init(loop, &amp;check);
+    uv_check_start(&amp;check, check_cb);
+
+    uv_idle_t idle;
+    uv_idle_init(loop, &amp;idle);
+    check.data = (void*)&amp;idle;
+    idle.data = NULL;
+
+    // いろいろ初期化
+    // ...
+
+    uv_run(loop);
+
+    uv_loop_delete(loop);
+}
+</code></pre>
+<p><code>uv_check</code> (<code>ev_check</code>) で <code>NSAutoreleasePool</code> をつくりつつ idle タイマーを作って、 その idle タイマー時に <code>[pool drain]</code> する。 これだとイベントが詰まっている場合は drain は呼ばれず、キリの良いときに呼んでくれるから <code>run_once</code> でいちいちやるよりは効率も良さそうな気がする。</p>
+<p>このコードでは省略しているけど実際に使うときには <code>check</code> や <code>idle</code> も終了しないと <code>uv_run</code> から抜けてこないのでどこかのオブジェクトにまとめて突っ込んでおいたりして使うのが吉。</p>
+<p>こういうのを何も考えずに Objective-C をまぜるともりもりメモリ食うようになるから気をつけよう！</p>
+
+  </div>
+
+  <div class="meta">
+    by typester /
+    at <a href="/memo/2012/01/24/1/">2012-01-24T13:06:00</a> /
+    <a href="/memo/tag/objc/">objc</a>
+    &middot; <a href="/memo/tag/libuv/">libuv</a>
+    / <a href="/memo/2012/01/24/1/#disqus_thread">Comment</a>
+  </div>
+</div>
+
+<div class="entry autopagerize_page_element">
+  <h2><a href="/memo/2011/12/16/1/">skype-cli</a></h2>
+
+  <div class="body">
+    <p>昨日のコードを元に、<code>skype-cli</code> というコマンドラインツールを書いた。</p>
+<blockquote><p><a href="https://github.com/typester/skype-cli-osx">typester/skype-cli-osx - GitHub</a></p></blockquote>
+<p>Skype の <a href="http://developer.skype.com/public-api-reference-index">Desktop API</a> っていうのはマシン上で起動している Skype と通信することで、Skypeの機能にアクセスするAPIで、プラットフォーム毎に通信手段はことなるが、つながってしまったあとの通信内容はテキストベースのプロトコルとなっている。</p>
+<p>なので、このテキストプロトコルをtelnet感覚で標準入出力でアクセスできるツールを作ってみたという感じ。</p>
+<p>これを子プロセスで実行することで、nodeやEmacsなどからも簡単にSkype APIがたたける、はず。</p>
+<p>なんだけど、実際にnodeで以下のようなコードを書いてみてもうまく動かない。</p>
+<pre><code><span class="type">var</span> <span class="variable-name">child_process</span> = require(<span class="string">"child_process"</span>);
+
+<span class="type">var</span> <span class="variable-name">skype</span> = child_process.spawn(<span class="string">"./skype-cli"</span>);
+
+skype.stdout.setEncoding(<span class="string">"utf8"</span>);
+skype.stdout.on(<span class="string">"data"</span>, function (data) {
+    console.log(<span class="string">"stdout: %s"</span>, data);
+});
+
+skype.stderr.setEncoding(<span class="string">"utf8"</span>);
+skype.stderr.on(<span class="string">"data"</span>, function (data) {
+    console.log(<span class="string">"stderr: %s"</span>, data);
+});
+
+process.stdin.resume();
+process.stdin.setEncoding(<span class="string">"utf8"</span>);
+process.stdin.pipe(skype.stdin, { <span class="constant">end</span>: <span class="constant">false</span> });
+
+skype.on(<span class="string">"exit"</span>, function (code) { process.exit(code) });
+</code></pre>
+<p>なーんでか。</p>
+
+  </div>
+
+  <div class="meta">
+    by typester /
+    at <a href="/memo/2011/12/16/1/">2011-12-16T18:00:00</a> /
+    <a href="/memo/tag/osx/">osx</a>
+    &middot; <a href="/memo/tag/skype/">skype</a>
+    / <a href="/memo/2011/12/16/1/#disqus_thread">Comment</a>
+  </div>
+</div>
+
+<div class="entry autopagerize_page_element">
+  <h2><a href="/memo/2011/12/15/1/">Cocoa::Skype とか</a></h2>
+
+  <div class="body">
+    <p>Cocoa:: なんちゃらでほしいものを聞いていたときにも挙がっていた Cocoa::Skype だけど、その昔<a href="http://coderepos.org/share/wiki/Skype4IRC">Skype4COMを使った記憶</a>があって、SkypeAPI のバインディング書くのはめんどそうな印象だったのだが、 今日 Skype.framework のヘッダファイルみたら、</p>
+<pre><code>#import &lt;Cocoa/Cocoa.h&gt;
+
+@protocol SkypeAPIDelegate;
+
+@interface SkypeAPI : NSObject 
+{
+
+}
+
++ (BOOL)isSkypeRunning;             
++ (BOOL)isSkypeAvailable;       // You can only connect and send commands when this method returns YES.
+                                // For example, when Skype is running, but user is logged out, then it returns NO.
+
++ (void)setSkypeDelegate:(NSObject&lt;SkypeAPIDelegate&gt;*)aDelegate;
++ (NSObject&lt;SkypeAPIDelegate&gt;*)skypeDelegate;
++ (void)removeSkypeDelegate;
+
++ (void)connect;
++ (void)disconnect;
+
++ (void)sendSkypeCommand:(NSString*)aCommandString;
+@end
+
+
+// delegate protocol
+@protocol SkypeAPIDelegate
+- (NSString*)clientApplicationName;
+@end
+
+// delegate informal protocol
+@interface NSObject (SkypeAPIDelegateInformalProtocol)
+- (void)skypeNotificationReceived:(NSString*)aNotificationString;
+- (void)skypeAttachResponse:(unsigned)aAttachResponseCode;              // 0 - failed, 1 - success
+- (void)skypeBecameAvailable:(NSNotification*)aNotification;
+- (void)skypeBecameUnavailable:(NSNotification*)aNotification;
+@end
+</code></pre>
+<p>と想像以上に短く、これならすぐバインディング書けそうだなーということで気分転換もかねてPerlバインディングをつくってみた。</p>
+<blockquote><p><a href="https://github.com/typester/Cocoa-Skype">typester/Cocoa-Skype - GitHub</a></p></blockquote>
+<p>使い方は付属の example を参照のこと。 Skype.framework の機能は全部つけてある。 Perl サイドのメソッド名とかはまだ変更するかもしれない。暇なときにドキュメントつけてリリースしよう。</p>
+
+  </div>
+
+  <div class="meta">
+    by typester /
+    at <a href="/memo/2011/12/15/1/">2011-12-15T22:52:00</a> /
+    <a href="/memo/tag/perl/">perl</a>
+    &middot; <a href="/memo/tag/skype/">skype</a>
+    &middot; <a href="/memo/tag/osx/">osx</a>
+    / <a href="/memo/2011/12/15/1/#disqus_thread">Comment</a>
+  </div>
+</div>
+
+
+
+
+<div id="pager" class="autopagerize_insert_before">
+  <p class="pages">
+    <a class="prev" rel="previous" href="/memo/page/3/">&laquo; Prev</a>
+    <a href="/memo/">1</a>
+    <a href="/memo/page/2/">2</a>
+    <a href="/memo/page/3/">3</a>
+    <span class="current">4</span>
+    <a href="/memo/page/5/">5</a>
+    <a href="/memo/page/6/">6</a>
+    <a href="/memo/page/7/">7</a>
+    <a href="/memo/page/8/">8</a>
+    <a href="/memo/page/9/">9</a>
+    <a href="/memo/page/10/">10</a>
+    <a class="next" rel="next" href="/memo/page/5/">Next &raquo;</a>
+  </p>
+  <p class="info">(Page 4 of 203)</p>
+</div>
+
+
+</div>
+
+<p id="footer">
+  Copyright &copy; 2005-2013
+      by <a class="author" href="/about/#me">Daisuke Murase (typester)</a> /
+  Site generated by <a href="https://github.com/typester/nim">nim</a> /
+  Comments powered by <a href="http://disqus.com">DISQUS</a>.
+</p>
+
+</div>
+
+
+<script type="text/javascript">
+//<![CDATA[
+(function() {
+	var links = document.getElementsByTagName('a');
+	var query = '?';
+	for(var i = 0; i < links.length; i++) {
+	if(links[i].href.indexOf('#disqus_thread') >= 0) {
+		query += 'url' + i + '=' + encodeURIComponent(links[i].href) + '&';
+	}
+	}
+	document.write('<script charset="utf-8" type="text/javascript" src="http://disqus.com/forums/unknownplace/get_num_replies.js' + query + '"></' + 'script>');
+})();
+//]]>
+</script>
+
+
+<script type="text/javascript">
+var gaJsHost = (("https:" == document.location.protocol) ? "https://ssl." : "http://www.");
+document.write(unescape("%3Cscript src='" + gaJsHost + "google-analytics.com/ga.js' type='text/javascript'%3E%3C/script%3E"));
+</script>
+<script type="text/javascript">
+try {
+var pageTracker = _gat._getTracker("UA-53067-1");
+pageTracker._trackPageview();
+} catch(err) {}</script>
+
+<script>
+function googleTranslateElementInit() {
+  new google.translate.TranslateElement({
+    pageLanguage: 'ja',
+    gaTrack: true,
+    gaId: 'UA-53067',
+    floatPosition: google.translate.TranslateElement.FloatPosition.BOTTOM_RIGHT
+  });
+}
+</script><script src="//translate.google.com/translate_a/element.js?cb=googleTranslateElementInit"></script>
+
+</body>
+</html>

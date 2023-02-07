@@ -1,0 +1,334 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="ja" xml:lang="ja">
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <title>memo - unknownplace.org</title>
+  <link rel="stylesheet" type="text/css" href="http://yui.yahooapis.com/3.0.0/build/cssreset/reset-min.css" />
+  <link rel="stylesheet" type="text/css" href="http://yui.yahooapis.com/3.0.0/build/cssfonts/fonts-min.css" />
+  <link rel="stylesheet" href="/css/style.css" type="text/css" />
+  <meta property="fb:admins" content="1093631929" />
+  <meta name="robots" content="noindex" />
+  <link rel="alternate" type="application/rss+xml" href="http://unknownplace.org/memo/index.rss" />
+</head>
+<body>
+
+<div id="container">
+<div id="header">
+    <h1><a href="/">unknownplace.org</a></h1> /
+<a href="/memo/">memo</a>
+</div>
+
+<div id="content">
+
+<div class="entry autopagerize_page_element">
+  <h2><a href="/memo/2006/11/21/3/">DBIx::Class vs mysql vs UTF-8</a></h2>
+
+  <div class="body">
+    <blockquote><p><a href="http://d.hatena.ne.jp/lestrrat/20061120#1164020246">DBIx::Class vs mysql vs UTF-8</a></p></blockquote>
+<p>それ、0.7以降(多分)ならconnectionやconnect上書きしなくてもこうかけるよ。</p>
+<pre><code><span class="type">__PACKAGE__</span>-&gt;connection(
+    <span class="string">&apos;dbi:mysql:foo&apos;</span>,
+    <span class="string">&apos;root&apos;</span>,
+    {
+        <span class="string">on_connect_do</span> =&gt; [<span class="string">&apos;SET NAMES utf8&apos;</span>],
+    },
+);
+</code></pre>
+
+  </div>
+
+  <div class="meta">
+    by typester /
+    at <a href="/memo/2006/11/21/3/">2006-11-21T12:06:00</a> /
+    <a href="/memo/tag/perl/">perl</a>
+    &middot; <a href="/memo/tag/dbic/">dbic</a>
+    / <a href="/memo/2006/11/21/3/#disqus_thread">Comment</a>
+  </div>
+</div>
+
+<div class="entry autopagerize_page_element">
+  <h2><a href="/memo/2006/10/16/2/">MySQLのダブルクオートとsqlt</a></h2>
+
+  <div class="body">
+    <p>MySQLのsqlにダブルクオートが含まれてるとsqltがこける。</p>
+<p>なんだろう。シングルクオートに置換すると通る。</p>
+<p>とはいえ、便利すなぁ。sqlt。</p>
+
+  </div>
+
+  <div class="meta">
+    by typester /
+    at <a href="/memo/2006/10/16/2/">2006-10-16T13:02:00</a> /
+    <a href="/memo/tag/dbic/">dbic</a>
+    &middot; <a href="/memo/tag/mysql/">mysql</a>
+    &middot; <a href="/memo/tag/sqlt/">sqlt</a>
+    / <a href="/memo/2006/10/16/2/#disqus_thread">Comment</a>
+  </div>
+</div>
+
+<div class="entry autopagerize_page_element">
+  <h2><a href="/memo/2006/09/19/6/"></a></h2>
+
+  <div class="body">
+    <blockquote><p><a href="http://d.hatena.ne.jp/lestrrat/20060919#1158627963">D-5 出張版 - DBIx::Classページングのドツボ</a></p></blockquote>
+<p>おーそうだったんだ。あぶねー。</p>
+<p>同じような使い方してたけど、たまたまページ指定は最後にしていた。</p>
+
+  </div>
+
+  <div class="meta">
+    by typester /
+    at <a href="/memo/2006/09/19/6/">2006-09-19T18:15:00</a> /
+    <a href="/memo/tag/perl/">perl</a>
+    &middot; <a href="/memo/tag/dbic/">dbic</a>
+    / <a href="/memo/2006/09/19/6/#disqus_thread">Comment</a>
+  </div>
+</div>
+
+<div class="entry autopagerize_page_element">
+  <h2><a href="/memo/2006/09/01/4/">DBIC+SQLiteでイテレータループ内でupdateが出来ない件</a></h2>
+
+  <div class="body">
+    <p>すっかり忘れててまたはまってしまった。</p>
+<p>検索したら自分のメールが出てきてびびる罠。</p>
+<blockquote><p><a href="http://lists.rawmode.org/pipermail/dbix-class/2006-January/thread.html#531">The Dbix-class January 2006 Archive by thread</a></p></blockquote>
+<p>ここにもメモしてた</p>
+<ul><li><a href="http://unknownplace.org/memo/2006/01/20#e002">CLON - 2006/01/20 - DBD::SQLite のバグ？</a></li></ul>
+
+  </div>
+
+  <div class="meta">
+    by typester /
+    at <a href="/memo/2006/09/01/4/">2006-09-01T16:35:00</a> /
+    <a href="/memo/tag/perl/">perl</a>
+    &middot; <a href="/memo/tag/dbic/">dbic</a>
+    &middot; <a href="/memo/tag/sqlite/">sqlite</a>
+    / <a href="/memo/2006/09/01/4/#disqus_thread">Comment</a>
+  </div>
+</div>
+
+<div class="entry autopagerize_page_element">
+  <h2><a href="/memo/2006/08/04/3/">Schema::Loader::make_schema_at 便利</a></h2>
+
+  <div class="body">
+    <p>Schemaクラスの雛形つくるスクリプトを書こうと思って、sqltの出力ベースにしてやるかとか思ったらなんかcolinuxだとtestにこけたので、Schema::Loaderのdebug出力を基に作るかとか思ってSchema::Loaderのぞいてたら、なんかmake_schema_atとかいうのでやりたいことができた。</p>
+<p>いつのまに。coolすぎるぜ。</p>
+<p>すこし出力ファイルいじりたいからラッパスクリプト書くかな。</p>
+
+  </div>
+
+  <div class="meta">
+    by typester /
+    at <a href="/memo/2006/08/04/3/">2006-08-04T16:35:00</a> /
+    <a href="/memo/tag/perl/">perl</a>
+    &middot; <a href="/memo/tag/dbic/">dbic</a>
+    / <a href="/memo/2006/08/04/3/#disqus_thread">Comment</a>
+  </div>
+</div>
+
+<div class="entry autopagerize_page_element">
+  <h2><a href="/memo/2006/07/25/4/">DBIC が起動時の重いのは C3 のせい</a></h2>
+
+  <div class="body">
+    <p>らしい。さっきIRCでそのパッチが出てた。</p>
+<p>後で見てみよう。</p>
+<p>開発中アプリの再起動に時間かかって結構致命的なのよね。</p>
+
+  </div>
+
+  <div class="meta">
+    by typester /
+    at <a href="/memo/2006/07/25/4/">2006-07-25T13:56:00</a> /
+    <a href="/memo/tag/perl/">perl</a>
+    &middot; <a href="/memo/tag/dbic/">dbic</a>
+    / <a href="/memo/2006/07/25/4/#disqus_thread">Comment</a>
+  </div>
+</div>
+
+<div class="entry autopagerize_page_element">
+  <h2><a href="/memo/2006/06/20/3/">on_connect_do</a></h2>
+
+  <div class="body">
+    <p>で、下記の <code>PRAGMA synchronous = off</code> だとか、MySQL の <code>SET NAMES utf8</code> みたいなのを DBIC でやるばあいは</p>
+<pre><code>$schema-&gt;storage-&gt;on_connect_do( [<span class="string">&apos;SET NAMES utf8&apos;</span>] );
+</code></pre>
+<p>みたいにするわけだけど、これは今はschemaクラス自体には書いておけないのでめんどくさい。(0.699..のほうではできるようになっている)</p>
+<p>Catalyst でつかうだけなら、今の DBIC でも、Model::DBIC::Schema の <code>connect_info</code> で <code>on_connect_do</code> を書いておける。</p>
+<pre><code>connect_info =&gt; [
+    &apos;dbi:SQLite:dbname=foo.db&apos;,
+    { on_connect_do =&gt; [ &apos;PRAGMA synchronous = OFF&apos;, ], }
+],
+</code></pre>
+<p>blblack++</p>
+
+  </div>
+
+  <div class="meta">
+    by typester /
+    at <a href="/memo/2006/06/20/3/">2006-06-20T19:17:00</a> /
+    <a href="/memo/tag/perl/">perl</a>
+    &middot; <a href="/memo/tag/dbic/">dbic</a>
+    / <a href="/memo/2006/06/20/3/#disqus_thread">Comment</a>
+  </div>
+</div>
+
+<div class="entry autopagerize_page_element">
+  <h2><a href="/memo/2006/05/19/3/">DBIC というか SQL::Abstract の小技</a></h2>
+
+  <div class="body">
+    <p>同僚が DBIC で、</p>
+<pre><code>select * from table where column1 &gt; column2;
+</code></pre>
+<p>みたいのを実行したいけどどうやるかわからんとかいっていて、オレもわからなかったので IRC で聞いたらすぐ解決した。</p>
+<pre><code>$rs-&gt;search({ <span class="string">column1</span> =&gt; \<span class="string">&apos;&gt; column2&apos;</span> });
+</code></pre>
+<p><code>SQL::Abstract</code> の機能。しらなかった。</p>
+<p>これ他にもいろいろつかえるね。DBIC の機能というわけではないから CDBI::Sweet とかでもOKか。</p>
+
+  </div>
+
+  <div class="meta">
+    by typester /
+    at <a href="/memo/2006/05/19/3/">2006-05-19T17:29:00</a> /
+    <a href="/memo/tag/perl/">perl</a>
+    &middot; <a href="/memo/tag/dbic/">dbic</a>
+    / <a href="/memo/2006/05/19/3/#disqus_thread">Comment</a>
+  </div>
+</div>
+
+<div class="entry autopagerize_page_element">
+  <h2><a href="/memo/2006/04/20/7/">DBIx::Class::Schema</a></h2>
+
+  <div class="body">
+    <p>Schema ベースにすると重くない？</p>
+<p>なんかアプリの起動に10秒くらいかかるよ。。</p>
+
+  </div>
+
+  <div class="meta">
+    by typester /
+    at <a href="/memo/2006/04/20/7/">2006-04-20T16:44:00</a> /
+    <a href="/memo/tag/perl/">perl</a>
+    &middot; <a href="/memo/tag/dbic/">dbic</a>
+    / <a href="/memo/2006/04/20/7/#disqus_thread">Comment</a>
+  </div>
+</div>
+
+<div class="entry autopagerize_page_element">
+  <h2><a href="/memo/2006/04/10/3/">さっきかいたの</a></h2>
+
+  <div class="body">
+    <p><strong>PACKAGE</strong>-&gt;inflate_column( query =&gt; { inflate =&gt; sub { my $u = URI-&gt;new; $u-&gt;query(shift);</p>
+<pre><code>            <span class="keyword">my</span> <span class="variable-name">$ret</span> = {};
+            <span class="keyword">for</span> <span class="keyword">my</span> <span class="variable-name">$k</span> ( $u-&gt;query_param ) {
+                <span class="keyword">my</span> <span class="cperl-array">@v</span> = $u-&gt;query_param($k);
+                $ret-&gt;{$k} = <span class="cperl-array">@v</span> &gt; 1 ? [<span class="cperl-array">@v</span>] : <span class="cperl-array">$v</span>[0];
+            }
+
+            $ret;
+        },
+        <span class="string">deflate</span> =&gt; <span class="keyword">sub</span> {
+            <span class="keyword">my</span> <span class="variable-name">$utf8off</span> = <span class="keyword">sub</span> {
+                <span class="keyword">my</span> <span class="variable-name">$str</span> = <span class="cperl-nonoverridable">shift</span>;
+                utf8::encode($str) <span class="keyword">if</span> utf8::is_utf8($str);
+            };
+
+            <span class="keyword">my</span> <span class="variable-name">$hash</span> = <span class="cperl-nonoverridable">shift</span>;
+            <span class="keyword">for</span> ( <span class="cperl-nonoverridable">keys</span> <span class="cperl-hash">%</span><span class="variable-name">$hash</span> ) {
+                <span class="keyword">if</span> ( <span class="type">ref</span> $hash-&gt;{$_} <span class="type">eq</span> <span class="string">&apos;ARRAY&apos;</span> ) {
+                    $utf8off-&gt;($_) <span class="keyword">for</span> @{ $hash-&gt;{$_} };
+                }
+                <span class="keyword">else</span> {
+                    $utf8off-&gt;( $hash-&gt;{$_} );
+                }
+            }
+
+            <span class="keyword">my</span> <span class="variable-name">$u</span> = URI-&gt;new;
+            $u-&gt;query_param(<span class="cperl-hash">%</span><span class="variable-name">$hash</span>);
+            $u-&gt;query;
+        },
+    }
+);
+</code></pre>
+<p><code>foo=bar&amp;baz=blah</code> みたいなクエリを保存するカラムに、ハッシュで保存してハッシュで取り出すというやつ。</p>
+<p>短くかけるかと思って書き始めたら、URIの <code>query_form</code> や <code>query_param</code> にutf8フラグったの渡すとこけたり、<code>foo=bar&amp;foo=baz</code> のように配列になるべきものがうまくハッシュにできなかったりとかしてこんなに長く。</p>
+
+  </div>
+
+  <div class="meta">
+    by typester /
+    at <a href="/memo/2006/04/10/3/">2006-04-10T17:33:00</a> /
+    <a href="/memo/tag/perl/">perl</a>
+    &middot; <a href="/memo/tag/dbic/">dbic</a>
+    / <a href="/memo/2006/04/10/3/#disqus_thread">Comment</a>
+  </div>
+</div>
+
+
+
+
+<div id="pager" class="autopagerize_insert_before">
+  <p class="pages">
+    <a class="prev" rel="previous" href="/memo/tag/dbic/">&laquo; Prev</a>
+    <a href="/memo/tag/dbic/">1</a>
+    <span class="current">2</span>
+    <a href="/memo/tag/dbic/page/3/">3</a>
+    <a href="/memo/tag/dbic/page/4/">4</a>
+    <a class="next" rel="next" href="/memo/tag/dbic/page/3/">Next &raquo;</a>
+  </p>
+  <p class="info">(Page 2 of 4)</p>
+</div>
+
+
+</div>
+
+<p id="footer">
+  Copyright &copy; 2005-2013
+      by <a class="author" href="/about/#me">Daisuke Murase (typester)</a> /
+  Site generated by <a href="https://github.com/typester/nim">nim</a> /
+  Comments powered by <a href="http://disqus.com">DISQUS</a>.
+</p>
+
+</div>
+
+
+<script type="text/javascript">
+//<![CDATA[
+(function() {
+	var links = document.getElementsByTagName('a');
+	var query = '?';
+	for(var i = 0; i < links.length; i++) {
+	if(links[i].href.indexOf('#disqus_thread') >= 0) {
+		query += 'url' + i + '=' + encodeURIComponent(links[i].href) + '&';
+	}
+	}
+	document.write('<script charset="utf-8" type="text/javascript" src="http://disqus.com/forums/unknownplace/get_num_replies.js' + query + '"></' + 'script>');
+})();
+//]]>
+</script>
+
+
+<script type="text/javascript">
+var gaJsHost = (("https:" == document.location.protocol) ? "https://ssl." : "http://www.");
+document.write(unescape("%3Cscript src='" + gaJsHost + "google-analytics.com/ga.js' type='text/javascript'%3E%3C/script%3E"));
+</script>
+<script type="text/javascript">
+try {
+var pageTracker = _gat._getTracker("UA-53067-1");
+pageTracker._trackPageview();
+} catch(err) {}</script>
+
+<script>
+function googleTranslateElementInit() {
+  new google.translate.TranslateElement({
+    pageLanguage: 'ja',
+    gaTrack: true,
+    gaId: 'UA-53067',
+    floatPosition: google.translate.TranslateElement.FloatPosition.BOTTOM_RIGHT
+  });
+}
+</script><script src="//translate.google.com/translate_a/element.js?cb=googleTranslateElementInit"></script>
+
+</body>
+</html>

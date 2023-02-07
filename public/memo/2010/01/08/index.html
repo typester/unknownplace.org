@@ -1,0 +1,158 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="ja" xml:lang="ja">
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <title>2010/01/08 - memo - unknownplace.org</title>
+  <link rel="stylesheet" type="text/css" href="http://yui.yahooapis.com/3.0.0/build/cssreset/reset-min.css" />
+  <link rel="stylesheet" type="text/css" href="http://yui.yahooapis.com/3.0.0/build/cssfonts/fonts-min.css" />
+  <link rel="stylesheet" href="/css/style.css" type="text/css" />
+  <meta property="fb:admins" content="1093631929" />
+  <meta name="robots" content="noindex" />
+  <link rel="alternate" type="application/rss+xml" href="http://unknownplace.org/memo/index.rss" />
+</head>
+<body>
+
+<div id="container">
+<div id="header">
+    <h1><a href="/">unknownplace.org</a></h1> /
+<a href="/memo/">memo</a>
+</div>
+
+<div id="content">
+
+<div class="entry autopagerize_page_element">
+  <h2 id="e002"><a href="/memo/2010/01/08/2/">ライブラリをユニバーサルバイナリでインストールする</a></h2>
+
+  <div class="body">
+    <p>以下のサイトが詳しい</p>
+<blockquote><p><a href="http://macwiki.sourceforge.jp/wiki/index.php/UniversalBinary">http://macwiki.sourceforge.jp/wiki/index.php/UniversalBinary</a></p></blockquote>
+<p><code>Imager</code> に必要な <code>libjpeg</code> などをユニバーサルバイナリにしてみた時のメモ</p>
+<p><code>-M</code> などがついていて <code>-arch</code> が複数指定できない場合以外は</p>
+<pre><code>CFLAGS=&apos;-arch x86_64 -arch i386 -isysroot /Developer/SDKs/MacOSX10.6.sdk&apos; CXXFLAGS=$CFLAGS
+</code></pre>
+<p>とかすればいいということだが、<code>libjpeg</code> は <code>-M</code> られていて無理だったので、amd64 と i386 という二つのディレクトリにソースコードを展開、それぞれ以下のオプションで make まで終わらす：</p>
+<pre><code>$ cd amd64
+$ CFLAGS=&apos;-arch x86_64 -isysroot /Developer/SDKs/MacOSX10.6.sdk&apos; CXXFLAGS=$CFLAGS ./configure ...
+$ make
+
+$ cd ../i386
+$ CFLAGS=&apos;-arch i386 -isysroot /Developer/SDKs/MacOSX10.6.sdk&apos; CXXFLAGS=$CFLAGS ./configure ...
+$ make
+</code></pre>
+<p>make されてできたバイナリを lipo コマンドでユニバーサルバイナリ化する。 上記サイトを参考にして、</p>
+<pre><code>#!/bin/sh
+
+filelist=$(find ./amd64 -type f |grep -v \\.o$ | xargs file | sed -e &apos;s,^\./amd64/,,g&apos; | \
+               grep -E \(Mach-O\)\|\(ar\ archive\) |sed -e &apos;s,:.*,,g&apos; -e &apos;/\for\ architecture/d&apos;)
+
+for i in $filelist
+do
+    echo $i
+    /usr/bin/lipo -create amd64/$i i386/$i -output `basename $i`
+    mv -f `basename $i` amd64/$i
+done
+</code></pre>
+<p>このようなスクリプトを書いて、amd64 などのディレクトリの一つ上の階層で実行すると、amd64 ディレクトリのバイナリがユニバーサルバイナリ化されるという仕組みを作ってみた。</p>
+<p>その後、amd64 のほうで <code>make install</code> してやれば OK。</p>
+
+  </div>
+
+  <div class="meta">
+    by typester /
+    at <a href="/memo/2010/01/08/2/">2010-01-08T11:28:00</a> /
+    <a href="/memo/tag/osx/">osx</a>
+    / <a href="/memo/2010/01/08/2/#disqus_thread">Comment</a>
+  </div>
+</div>
+
+<div class="entry autopagerize_page_element">
+  <h2 id="e001"><a href="/memo/2010/01/08/1/">Snow Leopard の Perl とアーキテクチャ</a></h2>
+
+  <div class="body">
+    <p>Snow Leopard には二つの Perl がインストールされている</p>
+<ul><li>/usr/bin/perl5.10.0</li><li>/usr/bin/perl5.8.9</li></ul>
+<p>デフォルトの <code>/usr/bin/perl</code> は 5.10.0 のほう。それぞれユニバーサルバイナリになっていて、</p>
+<pre><code>$ file /usr/bin/perl5.10.0
+/usr/bin/perl5.10.0: Mach-O universal binary with 3 architectures
+/usr/bin/perl5.10.0 (for architecture x86_64):  Mach-O 64-bit executable x86_64
+/usr/bin/perl5.10.0 (for architecture i386):    Mach-O executable i386
+/usr/bin/perl5.10.0 (for architecture ppc7400): Mach-O executable ppc
+
+$ file /usr/bin/perl5.8.9
+/usr/bin/perl5.8.9: Mach-O universal binary with 2 architectures
+/usr/bin/perl5.8.9 (for architecture i386):     Mach-O executable i386
+/usr/bin/perl5.8.9 (for architecture ppc7400):  Mach-O executable ppc
+</code></pre>
+<p>という感じで、5.10 は 64bit 版があるが、5.8 にはない。</p>
+<p>で、普通に perl を実行すると perl5.10.0 は <code>x86_64</code> で実行され、perl5.8.9 は <code>i386</code> で実行される。</p>
+<p>このアーキテクチャの差が結構くせ者で Snow Leopard 上で普通にライブラリなどを make すると <code>x86_64</code> だけでビルドされてしまうため、そのようにして作ったライブラリはそのままでは perl5.8.9 からは使えないということになる。</p>
+<p>デフォルトの 5.10.0 だけ使っている分にはなにも問題はないのだが、残念なことにこの 5.10.0 というのはいろいろな問題があり、開発に使用することはおすすめできない状況。(せめて 5.10.1 にしてくれればいいのに)</p>
+<p>したがって無用なトラブルを避けるためにも 5.8.9 の方を使用するか、自前でビルドした perl を使用するのが良い。</p>
+<p>またこのように <code>x86_64</code>、<code>i386</code> 両方のアーキテクチャの実行ファイルがあり得る Snow Leopard に対して自分でライブラリをインストールする場合それらもユニバーサルバイナリにしておくと良い。</p>
+<p>念のため追記＠2010-01-08T15:19:23+09:00: もちろんこれは 64bit 対応の CPU の場合の話。そうでない場合はどちらも i386 で実行されるのでこの問題は起こらない。</p>
+
+  </div>
+
+  <div class="meta">
+    by typester /
+    at <a href="/memo/2010/01/08/1/">2010-01-08T10:51:00</a> /
+    <a href="/memo/tag/osx/">osx</a>
+    &middot; <a href="/memo/tag/perl/">perl</a>
+    / <a href="/memo/2010/01/08/1/#disqus_thread">Comment</a>
+  </div>
+</div>
+
+
+
+</div>
+
+<p id="footer">
+  Copyright &copy; 2005-2013
+      by <a class="author" href="/about/#me">Daisuke Murase (typester)</a> /
+  Site generated by <a href="https://github.com/typester/nim">nim</a> /
+  Comments powered by <a href="http://disqus.com">DISQUS</a>.
+</p>
+
+</div>
+
+
+<script type="text/javascript">
+//<![CDATA[
+(function() {
+	var links = document.getElementsByTagName('a');
+	var query = '?';
+	for(var i = 0; i < links.length; i++) {
+	if(links[i].href.indexOf('#disqus_thread') >= 0) {
+		query += 'url' + i + '=' + encodeURIComponent(links[i].href) + '&';
+	}
+	}
+	document.write('<script charset="utf-8" type="text/javascript" src="http://disqus.com/forums/unknownplace/get_num_replies.js' + query + '"></' + 'script>');
+})();
+//]]>
+</script>
+
+
+<script type="text/javascript">
+var gaJsHost = (("https:" == document.location.protocol) ? "https://ssl." : "http://www.");
+document.write(unescape("%3Cscript src='" + gaJsHost + "google-analytics.com/ga.js' type='text/javascript'%3E%3C/script%3E"));
+</script>
+<script type="text/javascript">
+try {
+var pageTracker = _gat._getTracker("UA-53067-1");
+pageTracker._trackPageview();
+} catch(err) {}</script>
+
+<script>
+function googleTranslateElementInit() {
+  new google.translate.TranslateElement({
+    pageLanguage: 'ja',
+    gaTrack: true,
+    gaId: 'UA-53067',
+    floatPosition: google.translate.TranslateElement.FloatPosition.BOTTOM_RIGHT
+  });
+}
+</script><script src="//translate.google.com/translate_a/element.js?cb=googleTranslateElementInit"></script>
+
+</body>
+</html>

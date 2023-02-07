@@ -1,0 +1,164 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="ja" xml:lang="ja">
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <title>memo - unknownplace.org</title>
+  <link rel="stylesheet" type="text/css" href="http://yui.yahooapis.com/3.0.0/build/cssreset/reset-min.css" />
+  <link rel="stylesheet" type="text/css" href="http://yui.yahooapis.com/3.0.0/build/cssfonts/fonts-min.css" />
+  <link rel="stylesheet" href="/css/style.css" type="text/css" />
+  <meta property="fb:admins" content="1093631929" />
+  <meta name="robots" content="noindex" />
+  <link rel="alternate" type="application/rss+xml" href="http://unknownplace.org/memo/index.rss" />
+</head>
+<body>
+
+<div id="container">
+<div id="header">
+    <h1><a href="/">unknownplace.org</a></h1> /
+<a href="/memo/">memo</a>
+</div>
+
+<div id="content">
+
+<div class="entry autopagerize_page_element">
+  <h2><a href="/memo/2012/03/27/1/">tmux で pbcopy</a></h2>
+
+  <div class="body">
+    <p>デフォルトだと動かないのでなんか変なラッパーを挟むのがスタンダードな方法みたいですが、たまにしか使わないのにそんな無駄なことしたくないと、</p>
+<pre><code><span class="preprocessor"># tmux</span>
+<span class="keyword">if</span> [[ <span class="string">"$TMUX"</span> != <span class="string">""</span> ]] then
+    alias pbcopy=<span class="string">"ssh 127.0.0.1 pbcopy"</span>
+    alias pbpaste=<span class="string">"ssh 127.0.0.1 pbpaste"</span>
+fi
+</code></pre>
+<p>としてしのいでいる。僕の使用頻度だとこれで十分ぽい。</p>
+
+  </div>
+
+  <div class="meta">
+    by typester /
+    at <a href="/memo/2012/03/27/1/">2012-03-27T11:39:00</a> /
+    <a href="/memo/tag/tmux/">tmux</a>
+    &middot; <a href="/memo/tag/zsh/">zsh</a>
+    / <a href="/memo/2012/03/27/1/#disqus_thread">Comment</a>
+  </div>
+</div>
+
+<div class="entry autopagerize_page_element">
+  <h2><a href="/memo/2012/03/26/1/">tmux + irssi + canything で Anything 風チャンネル切り替えする</a></h2>
+
+  <div class="body">
+    <p>irssi 環境を prgmr.com からさくら VPS に移行したついでに irssi のプラグインを見直していて、そのときに <a href="http://wouter.coekaerts.be/irssi/nicklist">nicklist.pl</a> というのをいれたわけですが、これがなかなか hackish な実装になっており(笑)、named pipe なファイルつくってそれを cat しておくと irssi がそこに nicklist を書き込むというような感じになってて、基本的に GNU screen などの縦分割と一緒に使うように設計されている。</p>
+<p>で、僕はリモートサーバー上の GNU screen 上で irssi を動かしているので、それをつかうために縦分割をためしてみたわけですが、window 分割したときにでる caption を GNU screen では消すことができず、ローカルで使っている screen の hardstatus の上に、リモート screen の caption が出るという大変いやなかんじになってしまう。</p>
+<p>設定見てもどうにも消せないっぽいので、screen 競合として名高い tmux を見てみると普通に消せたのでとりあえずリモートだけ tmux に移行をしてみた。</p>
+<p>リモートだけのつもりが tmux をいじっているうちにこれはなかなか良いものだと言うことになり、ローカルも乗り換えるに至った。</p>
+<p>まず、tmux をおすすめしてる記事はこれまでもよく目にしてきたがピンとこなかったのは、ほとんどの記事が GNU screen をハードに使ってる人のものではなかったからである。 GNU screen をハードに使ってる人のために僕が tmux の良いところを上げると、</p>
+<ul><li>tmux 内外問わず、すべての操作をコマンドから行える</li><li>window 増やさなくても window の中に分割窓(pane)をおける</li></ul>
+<p>他にもいろいろあるのだが、この二つは大きい。</p>
+<h4>tmux 内外問わず、すべての操作をコマンドから行える</h4>
+<p>これは script 的に動作を拡張しようとしたときに重要になる。 GNU screen でもまぁ <code>screen -X</code> でできるのだが、tmux に比べるとできることが限られており、ちょっと込み入ったことをやろうとするとすぐに screen にパッチを当てる、みたいなことになるw</p>
+<h4>window 増やさなくても window の中に分割窓(pane)をおける</h4>
+<p>tmux は window 分割の概念が screen とは異なっている。tmux では分割された小窓は pane とよばれ、window とは定義が違ったものが存在する。それによって window を増やすことなく画面を分割でき、それぞれの window が分割 pane のレイアウトを別々に管理することが可能になっている。</p>
+<p>これは好みの問題もあるかもしれないが、僕は tmux 方式が気に入った。</p>
+<p>これによって GNU screen 利用時より分割を積極的につかうようになった。特にライフチェンジングだなとおもったのは、分割窓を Emacs でいうところの popwin.el 的に使う方法だ。man をチラ見したり、辞書を引いたりそういうレベルで気軽にpaneをつくれ、man を終了するとpaneが自動で閉じるといった具合に便利に使える。</p>
+<h4>canything</h4>
+<p>Emacs 使いが分割窓を popwin 的に使うようになったらまず思いつくのがやっぱり Anything だ。コマンドラインベースのがあったら tmux と相性いいだろうなとおもったらすぐに見つかりました。</p>
+<blockquote><p><a href="http://filmlang.org/soft/canything">canything: CUIでAnything</a></p></blockquote>
+<p>上記サイトにも乗っているけれど、</p>
+<pre><code>$ tmux lsw | canything | cut -d<span class="string">":"</span> -f 1 | xargs tmux select-window -t
+</code></pre>
+<p>とかすれば tmux ウィンドウを anything 風切り替えできるのですが、これを分割窓と組み合わせて、</p>
+<pre><code># .tmux.conf
+bind-key b split-window <span class="string">'tmux lsw | canything | cut -d":" -f 1 | xargs tmux select-window -t'</span>
+</code></pre>
+<p>みたいに設定すると、<code>C-z b</code> (僕はprefixキーz派) で Emacs っぽく画面分割され anything 風しぼりこみインタフェースで window 切り替えできる。すばらしい。</p>
+<h4>irssi で anything 風チャンネル切り替え</h4>
+<p>となるとやっぱり真っ先に思いつくのがこれでしょう。まず irssi プラグインを書き、コマンドラインから irssi のチャンネルリストを取得、チャンネル切り替えをできるようにするものを書いた。</p>
+<blockquote><p><a href="https://github.com/typester/irssi-plugins/blob/master/channel-socket.pl">channel-socket.pl</a></p></blockquote>
+<p>これを読み込んで、</p>
+<pre><code>/channel-socket start
+</code></pre>
+<p>とすると <code>/tmp/irssi-channels.sock</code> と <code>/tmp/irssi-set-channel.sock</code> という二つの UNIX ドメインソケットが作られる。それぞれチャンネル取得用ソケットと、チャンネル切り替え用ソケットだ。</p>
+<p>具体的には</p>
+<pre><code>$ nc -U /tmp/irssi-channels.sock
+</code></pre>
+<p>でチャンネル一覧取得でき、</p>
+<pre><code>$ echo &apos;#emacs-ja&apos; | nc -U /tmp/irssi-set-channel.sock
+</code></pre>
+<p>でチャンネルを切り替えられるっていう具合だ。</p>
+<p>これを連結させて</p>
+<pre><code>$ nc -U /tmp/irssi-channels.sock | canything | nc -U /tmp/irssi-set-channel.sock
+</code></pre>
+<p>で、anything 風 チャンネル切り替えのできあがり。</p>
+<p>これを tmux の分割窓とくみあわせれば完璧。さっきの tmux ウィンドウ切り替えみたいに tmux 側で bind しても良いが、irssi 側でやるのがより自然かなと思う。僕はこんな感じにした。</p>
+<pre><code>/bind meta-b command exec - tmux split-window &apos;nc -U /tmp/irssi-channels.sock | canything -i | nc -U /tmp/irssi-set-channel.sock&apos;
+</code></pre>
+<p>これで irssi 上で <code>M-b</code> すればチャンネル一覧の anything 窓がでる。</p>
+<p><a href="http://www.flickr.com/photos/typester/7015464855/" title="Anything like incremental channel switching at irssi by typester, on Flickr"><img alt="Anything like incremental channel switching at irssi" height="656" src="http://farm8.staticflickr.com/7047/7015464855_67cdeb30d7_o.png" width="920" /></a></p>
+<p>こんな感じ。他にもいろんなことにつかえそうですね！</p>
+
+  </div>
+
+  <div class="meta">
+    by typester /
+    at <a href="/memo/2012/03/26/1/">2012-03-26T06:53:00</a> /
+    <a href="/memo/tag/irssi/">irssi</a>
+    &middot; <a href="/memo/tag/tmux/">tmux</a>
+    / <a href="/memo/2012/03/26/1/#disqus_thread">Comment</a>
+  </div>
+</div>
+
+
+
+</div>
+
+<p id="footer">
+  Copyright &copy; 2005-2013
+      by <a class="author" href="/about/#me">Daisuke Murase (typester)</a> /
+  Site generated by <a href="https://github.com/typester/nim">nim</a> /
+  Comments powered by <a href="http://disqus.com">DISQUS</a>.
+</p>
+
+</div>
+
+
+<script type="text/javascript">
+//<![CDATA[
+(function() {
+	var links = document.getElementsByTagName('a');
+	var query = '?';
+	for(var i = 0; i < links.length; i++) {
+	if(links[i].href.indexOf('#disqus_thread') >= 0) {
+		query += 'url' + i + '=' + encodeURIComponent(links[i].href) + '&';
+	}
+	}
+	document.write('<script charset="utf-8" type="text/javascript" src="http://disqus.com/forums/unknownplace/get_num_replies.js' + query + '"></' + 'script>');
+})();
+//]]>
+</script>
+
+
+<script type="text/javascript">
+var gaJsHost = (("https:" == document.location.protocol) ? "https://ssl." : "http://www.");
+document.write(unescape("%3Cscript src='" + gaJsHost + "google-analytics.com/ga.js' type='text/javascript'%3E%3C/script%3E"));
+</script>
+<script type="text/javascript">
+try {
+var pageTracker = _gat._getTracker("UA-53067-1");
+pageTracker._trackPageview();
+} catch(err) {}</script>
+
+<script>
+function googleTranslateElementInit() {
+  new google.translate.TranslateElement({
+    pageLanguage: 'ja',
+    gaTrack: true,
+    gaId: 'UA-53067',
+    floatPosition: google.translate.TranslateElement.FloatPosition.BOTTOM_RIGHT
+  });
+}
+</script><script src="//translate.google.com/translate_a/element.js?cb=googleTranslateElementInit"></script>
+
+</body>
+</html>

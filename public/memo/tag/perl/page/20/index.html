@@ -1,0 +1,311 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="ja" xml:lang="ja">
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <title>memo - unknownplace.org</title>
+  <link rel="stylesheet" type="text/css" href="http://yui.yahooapis.com/3.0.0/build/cssreset/reset-min.css" />
+  <link rel="stylesheet" type="text/css" href="http://yui.yahooapis.com/3.0.0/build/cssfonts/fonts-min.css" />
+  <link rel="stylesheet" href="/css/style.css" type="text/css" />
+  <meta property="fb:admins" content="1093631929" />
+  <meta name="robots" content="noindex" />
+  <link rel="alternate" type="application/rss+xml" href="http://unknownplace.org/memo/index.rss" />
+</head>
+<body>
+
+<div id="container">
+<div id="header">
+    <h1><a href="/">unknownplace.org</a></h1> /
+<a href="/memo/">memo</a>
+</div>
+
+<div id="content">
+
+<div class="entry autopagerize_page_element">
+  <h2><a href="/memo/2006/06/11/1/"></a></h2>
+
+  <div class="body">
+    <blockquote><p>syntax あつかい</p></blockquote>
+<p>そういうことみたいで。</p>
+<pre><code>my local our and or eq ne if else elsif until unless while for foreach return switch case given when
+</code></pre>
+<p>が、perltidy の<ins>スペースを伴う</ins>キーワードらしい。</p>
+<p>もちろん設定で変えられるけど、どうしようかな。</p>
+
+  </div>
+
+  <div class="meta">
+    by typester /
+    at <a href="/memo/2006/06/11/1/">2006-06-11T23:42:00</a> /
+    <a href="/memo/tag/perl/">perl</a>
+    / <a href="/memo/2006/06/11/1/#disqus_thread">Comment</a>
+  </div>
+</div>
+
+<div class="entry autopagerize_page_element">
+  <h2><a href="/memo/2006/06/10/4/"></a></h2>
+
+  <div class="body">
+    <p>同じように関数じゃないのかとおもったのに <code>my</code> がある。</p>
+<pre><code>my( $self, $c ) = @_;
+</code></pre>
+<p>はperltidyかけると</p>
+<pre><code>my ( $self, $c ) = @_;
+</code></pre>
+<p>になる。</p>
+<p>つまり perltidy では <code>my</code> も <code>return</code> も Perl BestPractices 的成形方法でいうところの識別子的扱いになっているのね、関数ではなく。</p>
+<p>でもperl的には両者はどちらも組み込み関数だよね？ 何その特別扱い。おしえてDamian！</p>
+
+  </div>
+
+  <div class="meta">
+    by typester /
+    at <a href="/memo/2006/06/10/4/">2006-06-10T23:52:00</a> /
+    <a href="/memo/tag/perl/">perl</a>
+    / <a href="/memo/2006/06/10/4/#disqus_thread">Comment</a>
+  </div>
+</div>
+
+<div class="entry autopagerize_page_element">
+  <h2><a href="/memo/2006/06/10/3/"></a></h2>
+
+  <div class="body">
+    <blockquote><p><a href="http://d.hatena.ne.jp/tokuhirom/20060610/1149949183">SQLAlchemy Database Engines 日記。 (TokuLog) - ||= と弊社コーディングルール</a></p></blockquote>
+<pre><code><span class="keyword">return</span> ($self-&gt;{<span class="string">_obj</span>} ||= My::Object-&gt;new);
+</code></pre>
+<p>は気持ち悪いと思った。括弧付けるなら</p>
+<pre><code><span class="keyword">return</span>( $self-&gt;{<span class="string">_obj</span>} ||= My::Object-&gt;new );
+</code></pre>
+<p>じゃね？</p>
+<p>とかおもたけど、上記をperltidyにかけると</p>
+<pre><code><span class="keyword">return</span> ( $self-&gt;{<span class="string">_obj</span>} ||= My::Object-&gt;new );
+</code></pre>
+<p>になる罠。なんだこりゃ。<code>return</code> は関数扱いではないのか。</p>
+
+  </div>
+
+  <div class="meta">
+    by typester /
+    at <a href="/memo/2006/06/10/3/">2006-06-10T23:43:00</a> /
+    <a href="/memo/tag/perl/">perl</a>
+    / <a href="/memo/2006/06/10/3/#disqus_thread">Comment</a>
+  </div>
+</div>
+
+<div class="entry autopagerize_page_element">
+  <h2><a href="/memo/2006/06/10/2/">全日本最強 CPAN Author 決定選手権</a></h2>
+
+  <div class="body">
+    <blockquote><p><a href="http://blog.livedoor.jp/nipotan/archives/16108466.html">輝け！全日本最強 CPAN Author 決定選手権 - にぽたん研究所</a></p></blockquote>
+<p>おぉ、なんか4位じゃん。前回はランク外だったのに＞＜</p>
+<p>前回はこれ元に偏差値出してた人がいたとおもったけど、それも見たい！</p>
+
+  </div>
+
+  <div class="meta">
+    by typester /
+    at <a href="/memo/2006/06/10/2/">2006-06-10T18:05:00</a> /
+    <a href="/memo/tag/perl/">perl</a>
+    / <a href="/memo/2006/06/10/2/#disqus_thread">Comment</a>
+  </div>
+</div>
+
+<div class="entry autopagerize_page_element">
+  <h2><a href="/memo/2006/06/10/1/">rt.cpan.org</a></h2>
+
+  <div class="body">
+    <p>起きたらなんかrt経由でtypo指摘きてたので直した。</p>
+<p>んで、てきとうに解決済みにしといたけどいまいち使いかたわからね。</p>
+
+  </div>
+
+  <div class="meta">
+    by typester /
+    at <a href="/memo/2006/06/10/1/">2006-06-10T17:54:00</a> /
+    <a href="/memo/tag/life/">life</a>
+    &middot; <a href="/memo/tag/perl/">perl</a>
+    / <a href="/memo/2006/06/10/1/#disqus_thread">Comment</a>
+  </div>
+</div>
+
+<div class="entry autopagerize_page_element">
+  <h2><a href="/memo/2006/05/29/3/"></a></h2>
+
+  <div class="body">
+    <p>ack いいねー。</p>
+
+  </div>
+
+  <div class="meta">
+    by typester /
+    at <a href="/memo/2006/05/29/3/">2006-05-29T06:38:00</a> /
+    <a href="/memo/tag/perl/">perl</a>
+    / <a href="/memo/2006/05/29/3/#disqus_thread">Comment</a>
+  </div>
+</div>
+
+<div class="entry autopagerize_page_element">
+  <h2><a href="/memo/2006/05/22/7/"></a></h2>
+
+  <div class="body">
+    <blockquote><p><a href="http://del.icio.us/url/f140e1ad9d58fa4f5b2ee0b55b9002db">del.icio.us/url/f140e1ad9d58fa4f5b2ee0b55b9002db</a></p><p>Catalyst::Authentication と NEXT.pm. NEXTでのMixinだとplugin内にメソッド定義しにくいため <code>Auth::Credential::*</code>, <code>A::Store::*</code> な名前空間がある。</p></blockquote>
+<p>これはちょっと違うので補足。</p>
+<p>それら二つの名前空間は単にいろいろな認証系に対応するためのもので、NEXTのために名前空間をわけているわけではないです。</p>
+<p>実装的にも <code>Credential::*</code> も <code>Store::*</code> も Authentication プラグインを利用してはいますが、それら自体は普通の Catalyst プラグインで、</p>
+<pre><code>use Catalyst qw(
+    Authentication
+    Authentication::Credential::Password
+    Authentication::Store::DBIC
+);
+</code></pre>
+<p>などのようにロードします。</p>
+<p>なのでそれぞれが、</p>
+<blockquote><p>NEXTでのMixinだとplugin内にメソッド定義しにくい</p></blockquote>
+<p>ということはいえます。</p>
+
+  </div>
+
+  <div class="meta">
+    by typester /
+    at <a href="/memo/2006/05/22/7/">2006-05-22T18:46:00</a> /
+    <a href="/memo/tag/perl/">perl</a>
+    &middot; <a href="/memo/tag/catalyst/">catalyst</a>
+    / <a href="/memo/2006/05/22/7/#disqus_thread">Comment</a>
+  </div>
+</div>
+
+<div class="entry autopagerize_page_element">
+  <h2><a href="/memo/2006/05/22/5/">Catalyst の認証系</a></h2>
+
+  <div class="body">
+    <blockquote><p><a href="http://blog.teachat.org/archives/50460153.html">Monologue:Catalystではてな認証APIを使うプラグイン</a></p></blockquote>
+<p>これはちょっとなぁ。コメントしようと思ったけど途中まで書いて長くなったのでここに書いておく。</p>
+<p>まず、<code>Authentication::Credential::*</code> と <code>Authentication::Store::*</code> はどちらも <code>Authentication</code> プラグインを利用する認証プラグインのための名前空間。</p>
+<p>なので、上記プラグインは Credential とつけるのはいくない。</p>
+<p>Authentication プラグインは Catalyst プラグインだけど、それ自体が認証プラグイン用のフレームワークみたいになっていて、ユーザー(プログラマ)はさまざまなバックエンドプラグインを共通のインタフェースで使用することができるようになっている。</p>
+<p>んで、上記プラグイン、名前をかえればいいんじゃね。とかおもったけどよくみたらこれ、<code>$c-&gt;login</code> とかよんでる。</p>
+<p>んでloginはプラグイン内になくて、トップレベルのアクションに <code>login : Local</code> とか書いてる。これ、MyApp.pm にlogin定義してないと動かないんじゃね。</p>
+<p>Authentication プラグインのコードが読みにくいということも問題かなぁ。NEXT を使うMixinのプラグイン機構はそのプラグイン内にメソッドを定義しまくれない(すべて<code>$c</code>の関数になってしまうから)ため、複雑な処理をしようとすると別名前空間を使う必要があるので実装がむずかしい。</p>
+<p>それプラス、作者が nothingmuch。この人のコードは基本読みにくいw</p>
+<p>でも、Authentication プラグインをつかったはてな認証プラグインは<a href="http://search.cpan.org/dist/Catalyst-Plugin-Authentication-Credential-Hatena/" title="Daisuke Murase / Catalyst-Plugin-Authentication-Credential-Hatena">すでにある</a>ので、今からつくるなら Authentication プラグインを使わないもののほうがいいのかな。</p>
+
+  </div>
+
+  <div class="meta">
+    by typester /
+    at <a href="/memo/2006/05/22/5/">2006-05-22T13:11:00</a> /
+    <a href="/memo/tag/perl/">perl</a>
+    &middot; <a href="/memo/tag/catalyst/">catalyst</a>
+    / <a href="/memo/2006/05/22/5/#disqus_thread">Comment</a>
+  </div>
+</div>
+
+<div class="entry autopagerize_page_element">
+  <h2><a href="/memo/2006/05/21/4/"></a></h2>
+
+  <div class="body">
+    <p>さっきのは Spiffy つかえばいいらしい。</p>
+<p>Spiffy ってそういえば <code>my $self = shift;</code> いらずになるとか聞いてはいたけど、pod みたことなかった。</p>
+
+  </div>
+
+  <div class="meta">
+    by typester /
+    at <a href="/memo/2006/05/21/4/">2006-05-21T23:03:00</a> /
+    <a href="/memo/tag/perl/">perl</a>
+    / <a href="/memo/2006/05/21/4/#disqus_thread">Comment</a>
+  </div>
+</div>
+
+<div class="entry autopagerize_page_element">
+  <h2><a href="/memo/2006/05/21/2/">use strict</a></h2>
+
+  <div class="body">
+    <p>絶対書くのに、いちいち書かなきゃいけないのめんどくね？</p>
+<p>dan さんとかがなんかおもしろいことしてなんとかしてくれるんじゃね、と思ったけど。</p>
+<blockquote><p><a href="http://blog.livedoor.jp/dankogai/archives/50502585.html">404 Blog Not Found:perl - use strict; # and be happy</a></p></blockquote>
+<p>なんだか普通の反応。しょぼん。</p>
+
+  </div>
+
+  <div class="meta">
+    by typester /
+    at <a href="/memo/2006/05/21/2/">2006-05-21T15:06:00</a> /
+    <a href="/memo/tag/perl/">perl</a>
+    / <a href="/memo/2006/05/21/2/#disqus_thread">Comment</a>
+  </div>
+</div>
+
+
+
+
+<div id="pager" class="autopagerize_insert_before">
+  <p class="pages">
+    <a class="prev" rel="previous" href="/memo/tag/perl/page/19/">&laquo; Prev</a>
+    <a href="/memo/tag/perl/page/16/">16</a>
+    <a href="/memo/tag/perl/page/17/">17</a>
+    <a href="/memo/tag/perl/page/18/">18</a>
+    <a href="/memo/tag/perl/page/19/">19</a>
+    <span class="current">20</span>
+    <a href="/memo/tag/perl/page/21/">21</a>
+    <a href="/memo/tag/perl/page/22/">22</a>
+    <a href="/memo/tag/perl/page/23/">23</a>
+    <a href="/memo/tag/perl/page/24/">24</a>
+    <a href="/memo/tag/perl/page/25/">25</a>
+    <a class="next" rel="next" href="/memo/tag/perl/page/21/">Next &raquo;</a>
+  </p>
+  <p class="info">(Page 20 of 30)</p>
+</div>
+
+
+</div>
+
+<p id="footer">
+  Copyright &copy; 2005-2013
+      by <a class="author" href="/about/#me">Daisuke Murase (typester)</a> /
+  Site generated by <a href="https://github.com/typester/nim">nim</a> /
+  Comments powered by <a href="http://disqus.com">DISQUS</a>.
+</p>
+
+</div>
+
+
+<script type="text/javascript">
+//<![CDATA[
+(function() {
+	var links = document.getElementsByTagName('a');
+	var query = '?';
+	for(var i = 0; i < links.length; i++) {
+	if(links[i].href.indexOf('#disqus_thread') >= 0) {
+		query += 'url' + i + '=' + encodeURIComponent(links[i].href) + '&';
+	}
+	}
+	document.write('<script charset="utf-8" type="text/javascript" src="http://disqus.com/forums/unknownplace/get_num_replies.js' + query + '"></' + 'script>');
+})();
+//]]>
+</script>
+
+
+<script type="text/javascript">
+var gaJsHost = (("https:" == document.location.protocol) ? "https://ssl." : "http://www.");
+document.write(unescape("%3Cscript src='" + gaJsHost + "google-analytics.com/ga.js' type='text/javascript'%3E%3C/script%3E"));
+</script>
+<script type="text/javascript">
+try {
+var pageTracker = _gat._getTracker("UA-53067-1");
+pageTracker._trackPageview();
+} catch(err) {}</script>
+
+<script>
+function googleTranslateElementInit() {
+  new google.translate.TranslateElement({
+    pageLanguage: 'ja',
+    gaTrack: true,
+    gaId: 'UA-53067',
+    floatPosition: google.translate.TranslateElement.FloatPosition.BOTTOM_RIGHT
+  });
+}
+</script><script src="//translate.google.com/translate_a/element.js?cb=googleTranslateElementInit"></script>
+
+</body>
+</html>

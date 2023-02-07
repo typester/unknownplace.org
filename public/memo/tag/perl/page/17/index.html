@@ -1,0 +1,305 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="ja" xml:lang="ja">
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <title>memo - unknownplace.org</title>
+  <link rel="stylesheet" type="text/css" href="http://yui.yahooapis.com/3.0.0/build/cssreset/reset-min.css" />
+  <link rel="stylesheet" type="text/css" href="http://yui.yahooapis.com/3.0.0/build/cssfonts/fonts-min.css" />
+  <link rel="stylesheet" href="/css/style.css" type="text/css" />
+  <meta property="fb:admins" content="1093631929" />
+  <meta name="robots" content="noindex" />
+  <link rel="alternate" type="application/rss+xml" href="http://unknownplace.org/memo/index.rss" />
+</head>
+<body>
+
+<div id="container">
+<div id="header">
+    <h1><a href="/">unknownplace.org</a></h1> /
+<a href="/memo/">memo</a>
+</div>
+
+<div id="content">
+
+<div class="entry autopagerize_page_element">
+  <h2><a href="/memo/2006/09/01/4/">DBIC+SQLiteでイテレータループ内でupdateが出来ない件</a></h2>
+
+  <div class="body">
+    <p>すっかり忘れててまたはまってしまった。</p>
+<p>検索したら自分のメールが出てきてびびる罠。</p>
+<blockquote><p><a href="http://lists.rawmode.org/pipermail/dbix-class/2006-January/thread.html#531">The Dbix-class January 2006 Archive by thread</a></p></blockquote>
+<p>ここにもメモしてた</p>
+<ul><li><a href="http://unknownplace.org/memo/2006/01/20#e002">CLON - 2006/01/20 - DBD::SQLite のバグ？</a></li></ul>
+
+  </div>
+
+  <div class="meta">
+    by typester /
+    at <a href="/memo/2006/09/01/4/">2006-09-01T16:35:00</a> /
+    <a href="/memo/tag/perl/">perl</a>
+    &middot; <a href="/memo/tag/dbic/">dbic</a>
+    &middot; <a href="/memo/tag/sqlite/">sqlite</a>
+    / <a href="/memo/2006/09/01/4/#disqus_thread">Comment</a>
+  </div>
+</div>
+
+<div class="entry autopagerize_page_element">
+  <h2><a href="/memo/2006/08/31/7/">Class::Inspector-&gt;loaded</a></h2>
+
+  <div class="body">
+    <p>の実装はなんか微妙な気がするなぁ。</p>
+<pre><code>$RE_CLASS = qr/\A[^\W\d]\w*(?:(?:&apos;|::)[^\W\d]\w*)*\z/s;
+</code></pre>
+<p>この正規表現でネームスペース名のチェックしてるけど、あってるのこれ。</p>
+<pre><code>Foo::32
+</code></pre>
+<p>とか、とおらない。</p>
+
+  </div>
+
+  <div class="meta">
+    by typester /
+    at <a href="/memo/2006/08/31/7/">2006-08-31T23:19:00</a> /
+    <a href="/memo/tag/perl/">perl</a>
+    / <a href="/memo/2006/08/31/7/#disqus_thread">Comment</a>
+  </div>
+</div>
+
+<div class="entry autopagerize_page_element">
+  <h2><a href="/memo/2006/08/04/3/">Schema::Loader::make_schema_at 便利</a></h2>
+
+  <div class="body">
+    <p>Schemaクラスの雛形つくるスクリプトを書こうと思って、sqltの出力ベースにしてやるかとか思ったらなんかcolinuxだとtestにこけたので、Schema::Loaderのdebug出力を基に作るかとか思ってSchema::Loaderのぞいてたら、なんかmake_schema_atとかいうのでやりたいことができた。</p>
+<p>いつのまに。coolすぎるぜ。</p>
+<p>すこし出力ファイルいじりたいからラッパスクリプト書くかな。</p>
+
+  </div>
+
+  <div class="meta">
+    by typester /
+    at <a href="/memo/2006/08/04/3/">2006-08-04T16:35:00</a> /
+    <a href="/memo/tag/perl/">perl</a>
+    &middot; <a href="/memo/tag/dbic/">dbic</a>
+    / <a href="/memo/2006/08/04/3/#disqus_thread">Comment</a>
+  </div>
+</div>
+
+<div class="entry autopagerize_page_element">
+  <h2><a href="/memo/2006/08/04/2/">CLASS.pm とか</a></h2>
+
+  <div class="body">
+    <p>きもいよ。</p>
+
+  </div>
+
+  <div class="meta">
+    by typester /
+    at <a href="/memo/2006/08/04/2/">2006-08-04T12:20:00</a> /
+    <a href="/memo/tag/perl/">perl</a>
+    / <a href="/memo/2006/08/04/2/#disqus_thread">Comment</a>
+  </div>
+</div>
+
+<div class="entry autopagerize_page_element">
+  <h2><a href="/memo/2006/08/01/2/">WWW::Blog::Metadata</a></h2>
+
+  <div class="body">
+    <p>Typepadのfeed数が変ったせいかテストこける。</p>
+<pre><code>--- t/01-extract.t.orig 2006-08-01 14:32:46.448523382 +0900
++++ t/01-extract.t      2006-08-01 14:32:02.566356991 +0900
+@@ -28,7 +28,7 @@
+ $meta = WWW::Blog::Metadata-&gt;extract_from_uri(<span class="string">&apos;http://btrott.typepad.com/&apos;</span>);
+ ok($meta);
+ ok($meta-&gt;feeds);
+-is(<span class="cperl-nonoverridable">scalar</span> @{ $meta-&gt;feeds }, 2);
++is(<span class="cperl-nonoverridable">scalar</span> @{ $meta-&gt;feeds }, 3);
+ is($meta-&gt;feeds-&gt;[0], <span class="string">&apos;http://btrott.typepad.com/typepad/atom.xml&apos;</span>);
+ is($meta-&gt;feeds-&gt;[1], <span class="string">&apos;http://btrott.typepad.com/typepad/index.rdf&apos;</span>);
+ is($meta-&gt;foaf_uri, <span class="string">&apos;http://btrott.typepad.com/foaf.rdf&apos;</span>);
+</code></pre>
+<p>うーむ、こういうテストの書き方はどうなんだ。RTかいとくか。</p>
+
+  </div>
+
+  <div class="meta">
+    by typester /
+    at <a href="/memo/2006/08/01/2/">2006-08-01T14:34:00</a> /
+    <a href="/memo/tag/perl/">perl</a>
+    / <a href="/memo/2006/08/01/2/#disqus_thread">Comment</a>
+  </div>
+</div>
+
+<div class="entry autopagerize_page_element">
+  <h2><a href="/memo/2006/07/31/3/">WWW::Robot的なの</a></h2>
+
+  <div class="body">
+    <p><code>WWW::Robot</code> ちょっといいなと思って使おうと思ったんだけど、今の<code>LWP::RobotUA</code>だとちょっとコード書き換えないとうごかねー。</p>
+<p>RTみてみたら<a href="http://rt.cpan.org/Public/Bug/Display.html?id=4209">二年も放置されてる模様</a>。</p>
+<p>うーむ。他に何か言いのありますか？ URL渡すとリンクたどってなんかする系。</p>
+<p><code>WWW::Robot</code>はなんかhookで処理追加できていい感じなんだよなー。再発明しちゃおっかなーー。</p>
+<p>てかなんかこれ系モジュールのきなみ最終更新古いなぁ。なんか見逃してる予感。</p>
+
+  </div>
+
+  <div class="meta">
+    by typester /
+    at <a href="/memo/2006/07/31/3/">2006-07-31T19:00:00</a> /
+    <a href="/memo/tag/perl/">perl</a>
+    / <a href="/memo/2006/07/31/3/#disqus_thread">Comment</a>
+  </div>
+</div>
+
+<div class="entry autopagerize_page_element">
+  <h2><a href="/memo/2006/07/31/2/">Algorithm::C3 0.02</a></h2>
+
+  <div class="body">
+    <p>あとでためすとかいいつつ結局なにもしてなかったblblackさんのC3高速化パッチですが、本家に適用されたみたい。</p>
+<p>あｔｄｔｍｓ</p>
+
+  </div>
+
+  <div class="meta">
+    by typester /
+    at <a href="/memo/2006/07/31/2/">2006-07-31T17:03:00</a> /
+    <a href="/memo/tag/perl/">perl</a>
+    / <a href="/memo/2006/07/31/2/#disqus_thread">Comment</a>
+  </div>
+</div>
+
+<div class="entry autopagerize_page_element">
+  <h2><a href="/memo/2006/07/25/4/">DBIC が起動時の重いのは C3 のせい</a></h2>
+
+  <div class="body">
+    <p>らしい。さっきIRCでそのパッチが出てた。</p>
+<p>後で見てみよう。</p>
+<p>開発中アプリの再起動に時間かかって結構致命的なのよね。</p>
+
+  </div>
+
+  <div class="meta">
+    by typester /
+    at <a href="/memo/2006/07/25/4/">2006-07-25T13:56:00</a> /
+    <a href="/memo/tag/perl/">perl</a>
+    &middot; <a href="/memo/tag/dbic/">dbic</a>
+    / <a href="/memo/2006/07/25/4/#disqus_thread">Comment</a>
+  </div>
+</div>
+
+<div class="entry autopagerize_page_element">
+  <h2><a href="/memo/2006/07/24/2/">Catalyst::Plugin::SubRequest</a></h2>
+
+  <div class="body">
+    <p>初めてソース見たけど、いいじゃんこれ。</p>
+<p>なぜか名前から連想で内部で<code>LWP::UserAgent</code>とかもってて普通にHTTPアクセスしてるとか勝手に思い込んでたけど、そうじゃなかった。</p>
+<p>食わず嫌いはよくないなぁ。</p>
+<p>自分自身が提供してるAPIを使う場合とかかなり便利そう。</p>
+<pre><code><span class="keyword">my</span> <span class="variable-name">$json</span> = $c-&gt;subreq(<span class="string">&apos;/json/blahapi&apos;</span>);
+</code></pre>
+
+  </div>
+
+  <div class="meta">
+    by typester /
+    at <a href="/memo/2006/07/24/2/">2006-07-24T12:43:00</a> /
+    <a href="/memo/tag/perl/">perl</a>
+    &middot; <a href="/memo/tag/catalyst/">catalyst</a>
+    / <a href="/memo/2006/07/24/2/#disqus_thread">Comment</a>
+  </div>
+</div>
+
+<div class="entry autopagerize_page_element">
+  <h2><a href="/memo/2006/07/22/3/">Simple tip for text parsers with Catalyst</a></h2>
+
+  <div class="body">
+    <pre><code><span class="keyword">for</span> <span class="keyword">my</span> <span class="variable-name">$parser</span> (<span class="cperl-nonoverridable">qw</span><span class="string">/Markdown Textile Trac Hatena/</span>) {
+    <span class="type">__PACKAGE__</span>-&gt;plugin( <span class="type">lc</span> $parser, <span class="string">&quot;Text::$parser&quot;</span> );
+}
+<span class="type">__PACKAGE__</span>-&gt;textile-&gt;charset(<span class="string">&apos;utf-8&apos;</span>);
+</code></pre>
+<p>とかで一括セットアップ。</p>
+<p><code>$c-&gt;trac-&gt;parse($text)</code> とか使える。</p>
+
+  </div>
+
+  <div class="meta">
+    by typester /
+    at <a href="/memo/2006/07/22/3/">2006-07-22T03:50:00</a> /
+    <a href="/memo/tag/perl/">perl</a>
+    &middot; <a href="/memo/tag/catalyst/">catalyst</a>
+    / <a href="/memo/2006/07/22/3/#disqus_thread">Comment</a>
+  </div>
+</div>
+
+
+
+
+<div id="pager" class="autopagerize_insert_before">
+  <p class="pages">
+    <a class="prev" rel="previous" href="/memo/tag/perl/page/16/">&laquo; Prev</a>
+    <a href="/memo/tag/perl/page/13/">13</a>
+    <a href="/memo/tag/perl/page/14/">14</a>
+    <a href="/memo/tag/perl/page/15/">15</a>
+    <a href="/memo/tag/perl/page/16/">16</a>
+    <span class="current">17</span>
+    <a href="/memo/tag/perl/page/18/">18</a>
+    <a href="/memo/tag/perl/page/19/">19</a>
+    <a href="/memo/tag/perl/page/20/">20</a>
+    <a href="/memo/tag/perl/page/21/">21</a>
+    <a href="/memo/tag/perl/page/22/">22</a>
+    <a class="next" rel="next" href="/memo/tag/perl/page/18/">Next &raquo;</a>
+  </p>
+  <p class="info">(Page 17 of 30)</p>
+</div>
+
+
+</div>
+
+<p id="footer">
+  Copyright &copy; 2005-2013
+      by <a class="author" href="/about/#me">Daisuke Murase (typester)</a> /
+  Site generated by <a href="https://github.com/typester/nim">nim</a> /
+  Comments powered by <a href="http://disqus.com">DISQUS</a>.
+</p>
+
+</div>
+
+
+<script type="text/javascript">
+//<![CDATA[
+(function() {
+	var links = document.getElementsByTagName('a');
+	var query = '?';
+	for(var i = 0; i < links.length; i++) {
+	if(links[i].href.indexOf('#disqus_thread') >= 0) {
+		query += 'url' + i + '=' + encodeURIComponent(links[i].href) + '&';
+	}
+	}
+	document.write('<script charset="utf-8" type="text/javascript" src="http://disqus.com/forums/unknownplace/get_num_replies.js' + query + '"></' + 'script>');
+})();
+//]]>
+</script>
+
+
+<script type="text/javascript">
+var gaJsHost = (("https:" == document.location.protocol) ? "https://ssl." : "http://www.");
+document.write(unescape("%3Cscript src='" + gaJsHost + "google-analytics.com/ga.js' type='text/javascript'%3E%3C/script%3E"));
+</script>
+<script type="text/javascript">
+try {
+var pageTracker = _gat._getTracker("UA-53067-1");
+pageTracker._trackPageview();
+} catch(err) {}</script>
+
+<script>
+function googleTranslateElementInit() {
+  new google.translate.TranslateElement({
+    pageLanguage: 'ja',
+    gaTrack: true,
+    gaId: 'UA-53067',
+    floatPosition: google.translate.TranslateElement.FloatPosition.BOTTOM_RIGHT
+  });
+}
+</script><script src="//translate.google.com/translate_a/element.js?cb=googleTranslateElementInit"></script>
+
+</body>
+</html>

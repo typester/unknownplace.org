@@ -1,0 +1,310 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="ja" xml:lang="ja">
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <title>memo - unknownplace.org</title>
+  <link rel="stylesheet" type="text/css" href="http://yui.yahooapis.com/3.0.0/build/cssreset/reset-min.css" />
+  <link rel="stylesheet" type="text/css" href="http://yui.yahooapis.com/3.0.0/build/cssfonts/fonts-min.css" />
+  <link rel="stylesheet" href="/css/style.css" type="text/css" />
+  <meta property="fb:admins" content="1093631929" />
+  <meta name="robots" content="noindex" />
+  <link rel="alternate" type="application/rss+xml" href="http://unknownplace.org/memo/index.rss" />
+</head>
+<body>
+
+<div id="container">
+<div id="header">
+    <h1><a href="/">unknownplace.org</a></h1> /
+<a href="/memo/">memo</a>
+</div>
+
+<div id="content">
+
+<div class="entry autopagerize_page_element">
+  <h2><a href="/memo/2007/04/10/2/">putty tray</a></h2>
+
+  <div class="body">
+    <p>xcezx さんにおしえてもらった。</p>
+<blockquote><p><a href="http://www.xs4all.nl/~whaa/putty/index.html">PuTTY Tray</a></p><p>PuTTY Tray is an improved version of PuTTY (Win32).</p><p>Features</p><ul><li>New high color icon.</li><li>Minimize to the system tray (on CTRL+minimize, always or directly on startup)</li><li>Customizable (tray) icon</li><li>Blink tray icon when a bell signal is received</li><li>Configurable window transparency</li><li>URL hyperlinking</li><li>Reconnect when PC wakes up from stand-by</li></ul></blockquote>
+<p>うれしいのはURLがクリッカブルになるくらいでしょうか。なんかバグってるけど。あとアイコンもカワイイ。</p>
+<p>でもごった煮についてるCtrl-Tabでのウィンドウ切り替えができなくてうーん。一長一短。</p>
+<p>Ctrl-Tabなくなったら死ねるけど、URLもクリックしたいので</p>
+<blockquote><p><a href="http://hp.vector.co.jp/authors/VA024651/">hdk の自作ソフトの紹介</a></p></blockquote>
+<p>ここで配布されてる PuTTY のウィンドウを Ctrl+Tab で切り替えられるようにするパッチ ためしにあてたらハイブリッドなバイナリができた！</p>
+<p>一応おいておくけど、自己責任で＞＜</p>
+<ul><li><a href="http://unknownplace.org/tmp/PUTTY.exe.bz2">PUTTY.exe.bz2</a></li></ul>
+<p>アイコンやmanifest埋め込みはしてないけど、設定でアイコン指定すれば無問題。</p>
+<p>作業手順</p>
+<ol><li>puttyソースDL</li><li>putty trayパッチ当てる</li><li>ctrl-tabパッチ当てる、(一個うまく当たらんからそこ手動でつっこむ)</li><li>WINDOWS\MSVC\PUTTY に VC 用のワークスペースファイルあるのでそれ開く</li><li>putty trayで追加されてると思われるファイルを適当にプロジェクトに追加</li><li>ビルド</li></ol>
+<p>ビルドは VC++ 2005 Express でやった。</p>
+
+  </div>
+
+  <div class="meta">
+    by typester /
+    at <a href="/memo/2007/04/10/2/">2007-04-10T18:23:00</a> /
+    <a href="/memo/tag/putty/">putty</a>
+    / <a href="/memo/2007/04/10/2/#disqus_thread">Comment</a>
+  </div>
+</div>
+
+<div class="entry autopagerize_page_element">
+  <h2><a href="/memo/2007/04/10/1/">AS3勉強会</a></h2>
+
+  <div class="body">
+    <p>なんだよなんだよ、オレも呼んでよ！！</p>
+
+  </div>
+
+  <div class="meta">
+    by typester /
+    at <a href="/memo/2007/04/10/1/">2007-04-10T11:14:00</a> /
+    <a href="/memo/tag/life/">life</a>
+    / <a href="/memo/2007/04/10/1/#disqus_thread">Comment</a>
+  </div>
+</div>
+
+<div class="entry autopagerize_page_element">
+  <h2><a href="/memo/2007/04/09/1/">Catalyst + 外部認証API</a></h2>
+
+  <div class="body">
+    <p>今作ってるサービス。</p>
+<pre><code>use Catalyst qw/
+    ...
+    Authentication
+    Authentication::Credential::Password
+    Authentication::Credential::OpenID
+    Authentication::Credential::TypeKey
+    Authentication::Credential::Hatena
+    Authentication::Credential::JugemKey
+    +MyApp::UserStore
+    ...
+    /;
+</code></pre>
+<p><code>MyApp::UserStore</code> は <code>A::Store::DBIC</code> のちょっとしたサブクラスで、<code>Cred::Password</code> のときは <code>auto_create_user</code> しないようにしただけのもの。</p>
+<p>最近の <code>Store::DBIC</code> の <code>auto_create_user</code> 機能つかうと外部認証使うサービス簡単に作れる。</p>
+<p><code>Cred::Password</code> 使わないなら (独自ユーザーを使わないなら) 、<code>Store::DBIC</code> そのまま使えばいける。</p>
+<p>すばらしいなー。</p>
+<p>リリースしたらちゃんとした記事を書きたい。</p>
+
+  </div>
+
+  <div class="meta">
+    by typester /
+    at <a href="/memo/2007/04/09/1/">2007-04-09T10:53:00</a> /
+    <a href="/memo/tag/perl/">perl</a>
+    &middot; <a href="/memo/tag/catalyst/">catalyst</a>
+    / <a href="/memo/2007/04/09/1/#disqus_thread">Comment</a>
+  </div>
+</div>
+
+<div class="entry autopagerize_page_element">
+  <h2><a href="/memo/2007/04/04/1/">YAPC の IRC の機械翻訳を lingr に投げ続けるスクリプト</a></h2>
+
+  <div class="body">
+    <p>YAPC 今年もきましたね！ 楽しんでますか！</p>
+<p>IRCあるけど英語わからんとか、日本語チャンネルあるけど日本語わからんとかいうひと用にIRCの機械翻訳をリアルタイムにlingrに流すスクリプトを作りました！</p>
+<ul><li>e2j: <a href="http://www.lingr.com/room/sharp-yapc.asia">#yapc.asia (at Lingr)</a></li><li>j2e: <a href="http://www.lingr.com/room/sharp-yapc.asia-ja">#yapc.asia-ja (at Lingr)</a></li></ul>
+<p>ソースはこんな感じ</p>
+<blockquote><p><a href="http://svn.unknownplace.org/public/scratch/yapc_irc2lingr/irc2lingr.pl">http://svn.unknownplace.org/public/scratch/yapc_irc2lingr/irc2lingr.pl</a></p></blockquote>
+
+  </div>
+
+  <div class="meta">
+    by typester /
+    at <a href="/memo/2007/04/04/1/">2007-04-04T11:50:00</a> /
+    <a href="/memo/tag/perl/">perl</a>
+    &middot; <a href="/memo/tag/yapc/">yapc</a>
+    / <a href="/memo/2007/04/04/1/#disqus_thread">Comment</a>
+  </div>
+</div>
+
+<div class="entry autopagerize_page_element">
+  <h2><a href="/memo/2007/04/01/1/">中日がはやくも単独首位になったわけですが</a></h2>
+
+  <div class="body">
+    <p>今年はこのまま一度もこの座を渡さず突っ走ってもおかしくないようなチーム状態、雰囲気。</p>
+
+  </div>
+
+  <div class="meta">
+    by typester /
+    at <a href="/memo/2007/04/01/1/">2007-04-01T01:43:00</a> /
+    <a href="/memo/tag/baseball/">baseball</a>
+    / <a href="/memo/2007/04/01/1/#disqus_thread">Comment</a>
+  </div>
+</div>
+
+<div class="entry autopagerize_page_element">
+  <h2><a href="/memo/2007/03/30/4/">フォントの話</a></h2>
+
+  <div class="body">
+    <blockquote><p>コーディングにはビットマップフォントしかありえない</p></blockquote>
+<p>などといっていた時代もありましたが、最近はアンチエイリアスってるのも使うようになった。慣れると悪くないなぁ。</p>
+<p>歳か＞＜</p>
+<p>といっても気分で使い分けています。</p>
+<ul><li>ビットマップ時: CodingFontTobiS + MSゴシック</li><li>ClearType時: Consolas + M+1VM+IPAG circle</li></ul>
+<p>とかいう感じ。</p>
+<p>最新の putty は ClearType オンにしてても putty 上だけノンアンチエイリアス表示ができるのがうれしいね。</p>
+<p>画面の小さいThinkpadとかだといまもやっぱりビットマップオンリーですが。</p>
+
+  </div>
+
+  <div class="meta">
+    by typester /
+    at <a href="/memo/2007/03/30/4/">2007-03-30T23:26:00</a> /
+    <a href="/memo/tag/life/">life</a>
+    &middot; <a href="/memo/tag/font/">font</a>
+    / <a href="/memo/2007/03/30/4/#disqus_thread">Comment</a>
+  </div>
+</div>
+
+<div class="entry autopagerize_page_element">
+  <h2><a href="/memo/2007/03/30/3/">GMail使いにありがち</a></h2>
+
+  <div class="body">
+    <ul><li>引用部分全削除で送ってくる</li><li>改行なしメール</li></ul>
+
+  </div>
+
+  <div class="meta">
+    by typester /
+    at <a href="/memo/2007/03/30/3/">2007-03-30T21:46:00</a> /
+    <a href="/memo/tag/life/">life</a>
+    / <a href="/memo/2007/03/30/3/#disqus_thread">Comment</a>
+  </div>
+</div>
+
+<div class="entry autopagerize_page_element">
+  <h2><a href="/memo/2007/03/30/2/">Config::Any--</a></h2>
+
+  <div class="body">
+    <p>パースエラーっても何も出さねーの。</p>
+<pre><code><span class="keyword">my</span> <span class="variable-name">$config</span>;
+<span class="keyword">eval</span> {
+    $config = $loader-&gt;load( $filename );
+};
+<span class="keyword">next</span> <span class="keyword">if</span> $EVAL_ERROR;
+</code></pre>
+<p>ふぁっく。</p>
+<p>yamlパースエラーってるの気づかずにはまったわー。</p>
+<p>しかもなんかデバッグ用と思われる warn がいっぱいコメントアウトされていてきもいｗ</p>
+
+  </div>
+
+  <div class="meta">
+    by typester /
+    at <a href="/memo/2007/03/30/2/">2007-03-30T17:29:00</a> /
+    <a href="/memo/tag/perl/">perl</a>
+    / <a href="/memo/2007/03/30/2/#disqus_thread">Comment</a>
+  </div>
+</div>
+
+<div class="entry autopagerize_page_element">
+  <h2><a href="/memo/2007/03/30/1/">メモリとどいた</a></h2>
+
+  <div class="body">
+    <p>4G。</p>
+<p>放置してたDELL2万サーバーがつかえる！</p>
+<p>サーバー自体よりメモリのほうが高い罠。</p>
+
+  </div>
+
+  <div class="meta">
+    by typester /
+    at <a href="/memo/2007/03/30/1/">2007-03-30T13:30:00</a> /
+    <a href="/memo/tag/life/">life</a>
+    / <a href="/memo/2007/03/30/1/#disqus_thread">Comment</a>
+  </div>
+</div>
+
+<div class="entry autopagerize_page_element">
+  <h2><a href="/memo/2007/03/29/1/">sfより</a></h2>
+
+  <div class="body">
+    <p>google code のほうがいまっぽいよ！！！！！くね？ ＞だれとなく</p>
+
+  </div>
+
+  <div class="meta">
+    by typester /
+    at <a href="/memo/2007/03/29/1/">2007-03-29T17:43:00</a> /
+    <a href="/memo/tag/life/">life</a>
+    / <a href="/memo/2007/03/29/1/#disqus_thread">Comment</a>
+  </div>
+</div>
+
+
+
+
+<div id="pager" class="autopagerize_insert_before">
+  <p class="pages">
+    <a class="prev" rel="previous" href="/memo/page/38/">&laquo; Prev</a>
+    <a href="/memo/page/35/">35</a>
+    <a href="/memo/page/36/">36</a>
+    <a href="/memo/page/37/">37</a>
+    <a href="/memo/page/38/">38</a>
+    <span class="current">39</span>
+    <a href="/memo/page/40/">40</a>
+    <a href="/memo/page/41/">41</a>
+    <a href="/memo/page/42/">42</a>
+    <a href="/memo/page/43/">43</a>
+    <a href="/memo/page/44/">44</a>
+    <a class="next" rel="next" href="/memo/page/40/">Next &raquo;</a>
+  </p>
+  <p class="info">(Page 39 of 203)</p>
+</div>
+
+
+</div>
+
+<p id="footer">
+  Copyright &copy; 2005-2013
+      by <a class="author" href="/about/#me">Daisuke Murase (typester)</a> /
+  Site generated by <a href="https://github.com/typester/nim">nim</a> /
+  Comments powered by <a href="http://disqus.com">DISQUS</a>.
+</p>
+
+</div>
+
+
+<script type="text/javascript">
+//<![CDATA[
+(function() {
+	var links = document.getElementsByTagName('a');
+	var query = '?';
+	for(var i = 0; i < links.length; i++) {
+	if(links[i].href.indexOf('#disqus_thread') >= 0) {
+		query += 'url' + i + '=' + encodeURIComponent(links[i].href) + '&';
+	}
+	}
+	document.write('<script charset="utf-8" type="text/javascript" src="http://disqus.com/forums/unknownplace/get_num_replies.js' + query + '"></' + 'script>');
+})();
+//]]>
+</script>
+
+
+<script type="text/javascript">
+var gaJsHost = (("https:" == document.location.protocol) ? "https://ssl." : "http://www.");
+document.write(unescape("%3Cscript src='" + gaJsHost + "google-analytics.com/ga.js' type='text/javascript'%3E%3C/script%3E"));
+</script>
+<script type="text/javascript">
+try {
+var pageTracker = _gat._getTracker("UA-53067-1");
+pageTracker._trackPageview();
+} catch(err) {}</script>
+
+<script>
+function googleTranslateElementInit() {
+  new google.translate.TranslateElement({
+    pageLanguage: 'ja',
+    gaTrack: true,
+    gaId: 'UA-53067',
+    floatPosition: google.translate.TranslateElement.FloatPosition.BOTTOM_RIGHT
+  });
+}
+</script><script src="//translate.google.com/translate_a/element.js?cb=googleTranslateElementInit"></script>
+
+</body>
+</html>

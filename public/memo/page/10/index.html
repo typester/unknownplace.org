@@ -1,0 +1,446 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="ja" xml:lang="ja">
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <title>memo - unknownplace.org</title>
+  <link rel="stylesheet" type="text/css" href="http://yui.yahooapis.com/3.0.0/build/cssreset/reset-min.css" />
+  <link rel="stylesheet" type="text/css" href="http://yui.yahooapis.com/3.0.0/build/cssfonts/fonts-min.css" />
+  <link rel="stylesheet" href="/css/style.css" type="text/css" />
+  <meta property="fb:admins" content="1093631929" />
+  <meta name="robots" content="noindex" />
+  <link rel="alternate" type="application/rss+xml" href="http://unknownplace.org/memo/index.rss" />
+</head>
+<body>
+
+<div id="container">
+<div id="header">
+    <h1><a href="/">unknownplace.org</a></h1> /
+<a href="/memo/">memo</a>
+</div>
+
+<div id="content">
+
+<div class="entry autopagerize_page_element">
+  <h2><a href="/memo/2009/12/24/2/">CocoaEmacs おかしいところ</a></h2>
+
+  <div class="body">
+    <p>anything-config.el も無事なおり、Shiftのバグなおして日本語入力も快適になり、あとはまぁだいたいいい感じに使えるようになった(現状では) CocoaEmacs だけど一点だけおかしいところがある。</p>
+<p>僕は結構 Emacs の customize 機能をヘビーユーズしてて（コーディングしてて気に入らない色設定とか出てきたらその場ですぐ customize-face する）これで色設定はほぼ調整してるのだけど、customize するのをすべての Emacs で同じものを使うのは微妙なので、</p>
+<pre><code>(setq custom-file <span class="string">&quot;~/.emacs.d/conf/cocoa-emacs-99customize.el&quot;</span>)
+</code></pre>
+<p>のようにして、 customize の保存先を Emacs 毎に変えている。</p>
+<p>のだけどこれが、<code>init-loader</code> のフェーズで <code>(load custom-file)</code> しても設定が適用されないという現象に悩まされている。</p>
+<p>立ち上がったあとに手動で <code>(load custom-file)</code> するとロードされる。。なぞ。</p>
+<p>しょうがないので、</p>
+<pre><code>(<span class="keyword">defun</span> <span class="function-name">reload-custom-file</span> ()
+  (interactive)
+  (load custom-file))
+</code></pre>
+<p>こんなの作っておいて起動後手動で実行している。不毛だけどまぁ Emacs たちあげっぱだからいいかなぁ。。</p>
+
+  </div>
+
+  <div class="meta">
+    by typester /
+    at <a href="/memo/2009/12/24/2/">2009-12-24T17:58:00</a> /
+    <a href="/memo/tag/emacs/">emacs</a>
+    / <a href="/memo/2009/12/24/2/#disqus_thread">Comment</a>
+  </div>
+</div>
+
+<div class="entry autopagerize_page_element">
+  <h2><a href="/memo/2009/12/24/1/">elispエラーった時の追い方</a></h2>
+
+  <div class="body">
+    <p>(setq debug-on-error t)</p>
+<p>しておいて、<code>eval-bufer</code>。StackTrace 出るのでそれを見る。</p>
+<p>Emacs 23 にしたら anything-config.el が <code>Invalid depth in char-table</code> とかいって死ぬようになったけど原因わからなくてこまってたけどこれやったら <code>~/.emacs.d/anything-c-adaptive-history</code> のロードに失敗してるのがわかった。消したらなおりました。imakado++</p>
+
+  </div>
+
+  <div class="meta">
+    by typester /
+    at <a href="/memo/2009/12/24/1/">2009-12-24T17:48:00</a> /
+    <a href="/memo/tag/emacs/">emacs</a>
+    / <a href="/memo/2009/12/24/1/#disqus_thread">Comment</a>
+  </div>
+</div>
+
+<div class="entry autopagerize_page_element">
+  <h2><a href="/memo/2009/12/18/1/">CocoaEmacsその後</a></h2>
+
+  <div class="body">
+    <p>フルスクリーン化以外にもいじりたくなったのでそれぞれブランチを切った。</p>
+<ul><li><a href="http://github.com/typester/emacs/tree/feature/fullscreen">feature/fullscreen</a> - 今まで作業していたフルスクリーン化対応ブランチ</li><li><a href="http://github.com/typester/emacs/tree/fix/shift_modifier_with_ime">fix/shift_modifier_with_ime</a> - IME経由で入力するときShiftなんちゃらがIMEを素通りするのを直すブランチ</li></ul>
+<p>という感じになっています。 master はこれらの統合ブランチになってますので使ってる人いたら注意です。</p>
+<p>使いながらちょいちょいいじっていて、昨日からの更新としては</p>
+<ul><li>フルスクリーン時に裏にノーマルなウィンドウが残ってしまっていたのを修正</li><li>日本語入力時に Shift なんちゃらが IME をとおらずそのまま Emacs に渡されてしまっているのを修正</li></ul>
+<p>という感じになっております。</p>
+
+  </div>
+
+  <div class="meta">
+    by typester /
+    at <a href="/memo/2009/12/18/1/">2009-12-18T13:03:00</a> /
+    <a href="/memo/tag/emacs/">emacs</a>
+    &middot; <a href="/memo/tag/osx/">osx</a>
+    / <a href="/memo/2009/12/18/1/#disqus_thread">Comment</a>
+  </div>
+</div>
+
+<div class="entry autopagerize_page_element">
+  <h2><a href="/memo/2009/12/17/2/">CocoaEmacsのフォント設定</a></h2>
+
+  <div class="body">
+    <p>現状こんな感じ。以前書いた<a href="http://unknownplace.org/memo/2009/01/20/2/">CarbonEmacsの設定</a>と大して変わってない。unicode コードセットで表示される文字が増えていたのでそれに対応した程度。</p>
+<pre><code>(create-fontset-from-fontset-spec
+ (concat
+  <span class="string">&quot;-*-fixed-medium-r-normal--12-*-*-*-*-*-fontset-tobi&quot;</span>
+  <span class="string">&quot;,ascii:-apple-codingfonttobi-medium-r-normal--16-120-72-72-m-120-*-*&quot;</span>
+  <span class="string">&quot;,japanese-jisx0208:-apple-osaka-*&quot;</span>
+  <span class="string">&quot;,katakana-jisx0201:-apple-osaka-*&quot;</span>
+  <span class="string">&quot;,unicode:-apple-osaka-*&quot;</span>
+  <span class="string">&quot;,chinese-big5-1:-apple-apple ligothic medium-*&quot;</span>
+  ))
+
+(set-default-font <span class="string">&quot;fontset-tobi&quot;</span>)
+</code></pre>
+<p>ascii 用につかってる CodingFontTobi は <a href="http://www.proggyfonts.com/">proggyfonts.com</a> から。</p>
+<p>もちろんビットマップ表示にするため</p>
+<pre><code>$ defaults write org.gnu.Emacs AppleAntiAliasingThreshold 16
+</code></pre>
+<p>としている。</p>
+<pre><code>(setq mac-allow-anti-aliasing nil)
+</code></pre>
+<p>は Snow Leopard では効かないみたいだ。</p>
+
+  </div>
+
+  <div class="meta">
+    by typester /
+    at <a href="/memo/2009/12/17/2/">2009-12-17T23:50:00</a> /
+    <a href="/memo/tag/emacs/">emacs</a>
+    &middot; <a href="/memo/tag/osx/">osx</a>
+    / <a href="/memo/2009/12/17/2/#disqus_thread">Comment</a>
+  </div>
+</div>
+
+<div class="entry autopagerize_page_element">
+  <h2><a href="/memo/2009/12/17/1/">フルスクリーン Cocoa Emacs</a></h2>
+
+  <div class="body">
+    <p>emacs23 が正式にリリースされ、ちまたではウィンドウシステムが Cocoa になったぞ、とか 64bit 対応だぞ、とか multitty だぞ、と盛り上がっていますが、 個人的にほとんど興味のないまま今日まできました。というのも CocoaEmacs は<em>フルスクリーンにできない</em>という僕にとっては致命的な問題があったからです。</p>
+<p>というのも最近は Emacs をフルスクリーンにし縦二分割で使ういわゆる imakado スタイルを実践しているため、それができない CocoaEmacs は眼中になかったのでした。</p>
+<p>そんなわけでずっと CarbonEmacs を使ってきたのですが、 Snow Leopard に移行したのを機に CocoaEmacs に移行し、さらについでにフルスクリーン化できるようにしてみています。 github でやってます。</p>
+<blockquote><p><a href="http://github.com/typester/emacs">typester&apos;s emacs at master - GitHub</a></p></blockquote>
+<p>現状でも若干不具合がありますが、使える段階にはなっていると思います。</p>
+<p>ビルドは</p>
+<pre><code>$ git clone git://github.com/typester/emacs.git
+$ cd emacs
+$ ./configure --with-ns
+$ make bootstrap
+$ make install
+</code></pre>
+<p>こんな感じにすると、<code>nextstep</code> ディレクトリ以下に <code>Emacs.app</code> ができます。フルスクリーンにするには</p>
+<pre><code>M-x ns-toggle-fullscreen
+</code></pre>
+<p>でいけます。キー割り当てておくと便利です。</p>
+<p>対応環境は定かではありませんが、OS X 10.4 と 10.6 で動作確認しております。</p>
+<p>また 10.6 の場合のみ、フルスクリーン時に隠れているメニューバーや Dock 領域にマウスカーソルを移動させると自動的に表示されるようになっています。 CarbonEmacs と違い Dock も自動で表示されるので個人的に非常に便利です。10.6 からの新 API のため、10.5 以前ではフルスクリーン時にメニューバー、Dock は強制オフになります。</p>
+<p>既知の不具合として外部ウィンドウでフルスクリーン化して戻そうとすると落ちるというのが報告されており調査中です。 それ以外は便利に使用できています。この文章もフルスクリーン CocoaEmacs で書いています ;)</p>
+<p>またこのハックをしたことで elisp から C や Objective-C のコードを呼ぶ方法がわかったのでいろいろ夢がひろがりんぐというところです。</p>
+
+  </div>
+
+  <div class="meta">
+    by typester /
+    at <a href="/memo/2009/12/17/1/">2009-12-17T20:27:00</a> /
+    <a href="/memo/tag/emacs/">emacs</a>
+    &middot; <a href="/memo/tag/osx/">osx</a>
+    / <a href="/memo/2009/12/17/1/#disqus_thread">Comment</a>
+  </div>
+</div>
+
+<div class="entry autopagerize_page_element">
+  <h2><a href="/memo/2009/12/07/1/">A simple chat server in AnyEvent</a></h2>
+
+  <div class="body">
+    <p><a href="http://dhotson.tumblr.com/post/271733389/a-simple-chat-server-in-node-js">Node.js でつくってるやつ</a> をみて同じくらいで書けそうだなと思ったので試しに AnyEvent で書き直してみた。</p>
+<pre><code><span class="comment-delimiter">#</span><span class="comment">!/usr/bin/perl
+</span>
+<span class="keyword">use</span> <span class="function-name">strict</span>;
+<span class="keyword">use</span> <span class="function-name">warnings</span>;
+
+<span class="keyword">use</span> <span class="function-name">AnyEvent::Socket</span>;
+<span class="keyword">use</span> <span class="function-name">AnyEvent::Handle</span>;
+
+<span class="keyword">my</span> <span class="cperl-array">@clients</span>;
+
+tcp_server <span class="cperl-nonoverridable">undef</span>, 7000, <span class="keyword">sub</span> {
+    <span class="keyword">my</span> (<span class="variable-name">$fh</span>) = <span class="cperl-array">@_</span> <span class="type">or</span> <span class="keyword">die</span> $!;
+    <span class="keyword">my</span> <span class="variable-name">$h</span> = AnyEvent::Handle-&gt;new( <span class="string">fh</span> =&gt; $fh );
+
+    <span class="keyword">my</span> <span class="variable-name">$leave</span> = <span class="keyword">sub</span> {
+        <span class="keyword">my</span> <span class="variable-name">$client</span> = <span class="cperl-nonoverridable">delete</span> <span class="cperl-array">$clients</span>[ <span class="type">fileno</span>($fh) ];
+        <span class="keyword">for</span> <span class="keyword">my</span> <span class="variable-name">$c</span> (<span class="cperl-nonoverridable">grep</span> { <span class="cperl-nonoverridable">defined</span> } <span class="cperl-array">@clients</span>) {
+            $c-&gt;{<span class="string">handle</span>}-&gt;push_write(<span class="string">&quot;$client-&gt;{name} has left.\n&quot;</span>);
+        }
+    };
+
+    $h-&gt;on_read(<span class="keyword">sub</span> {
+        <span class="cperl-nonoverridable">shift</span>-&gt;push_read( <span class="string">line</span> =&gt; <span class="keyword">sub</span> {
+            <span class="keyword">my</span> (<span class="variable-name">$h</span>, <span class="variable-name">$line</span>) = <span class="cperl-array">@_</span>;
+
+            <span class="keyword">my</span> <span class="variable-name">$client</span> = <span class="cperl-array">$clients</span>[ <span class="type">fileno</span>($fh) ];
+
+            <span class="keyword">unless</span> (<span class="cperl-nonoverridable">defined</span> $client-&gt;{<span class="string">name</span>}) {
+                <span class="keyword">if</span> ($line =~ <span class="constant">/</span><span class="keyword">(</span><span class="builtin">\</span><span class="type">S</span><span class="builtin">+</span><span class="keyword">)</span><span class="constant">/</span>) {
+                    $client-&gt;{<span class="string">name</span>} = $1;
+                    $h-&gt;push_write(<span class="string">&quot;===========\n&quot;</span>);
+
+                    <span class="keyword">for</span> <span class="keyword">my</span> <span class="variable-name">$client</span> (<span class="cperl-nonoverridable">grep</span> { <span class="cperl-nonoverridable">defined</span> } <span class="cperl-array">@clients</span>) {
+                        <span class="keyword">next</span> <span class="keyword">if</span> $client-&gt;{<span class="string">handle</span>} <span class="type">eq</span> $h;
+                        $client-&gt;{<span class="string">handle</span>}
+                            -&gt;push_write( <span class="string">&quot;$client-&gt;{name} has joined.\n&quot;</span> );
+                    }
+                }
+                <span class="keyword">return</span>;
+            }
+
+            <span class="keyword">my</span> (<span class="variable-name">$command</span>) = $line =~ <span class="cperl-nonoverridable">m</span><span class="constant">!</span><span class="function-name">^</span><span class="string">/</span><span class="keyword">(</span><span class="function-name">.</span><span class="builtin">+</span><span class="keyword">)</span><span class="constant">!</span>;
+            <span class="keyword">if</span> ($command) {
+                <span class="keyword">if</span> ($command <span class="type">eq</span> <span class="string">&apos;users&apos;</span>) {
+                    $h-&gt;push_write(<span class="string">&quot;- $_-&gt;{name}\n&quot;</span>) <span class="keyword">for</span> <span class="cperl-nonoverridable">grep</span> { <span class="cperl-nonoverridable">defined</span> } <span class="cperl-array">@clients</span>;
+                }
+                <span class="keyword">elsif</span> ($command <span class="type">eq</span> <span class="string">&apos;quit&apos;</span>) {
+                    $leave-&gt;();
+                }
+                <span class="keyword">return</span>;
+            }
+
+            <span class="keyword">for</span> <span class="keyword">my</span> <span class="variable-name">$c</span> (<span class="cperl-nonoverridable">grep</span> { <span class="cperl-nonoverridable">defined</span> } <span class="cperl-array">@clients</span>) {
+                <span class="keyword">next</span> <span class="keyword">if</span> $c-&gt;{<span class="string">handle</span>} <span class="type">eq</span> $h;
+                $c-&gt;{<span class="string">handle</span>}-&gt;push_write( <span class="string">&quot;$client-&gt;{name}: $line\n&quot;</span> );
+            }
+        });
+    });
+
+    $h-&gt;on_error(<span class="keyword">sub</span> {
+        <span class="keyword">my</span> (<span class="variable-name">$h</span>, <span class="variable-name">$fatal</span>, <span class="variable-name">$msg</span>) = <span class="cperl-array">@_</span>;
+        $leave-&gt;();
+        $h-&gt;destroy;
+    });
+
+    <span class="cperl-array">$clients</span>[ <span class="type">fileno</span>($fh) ] = {
+        <span class="string">name</span>   =&gt; <span class="cperl-nonoverridable">undef</span>,
+        <span class="string">handle</span> =&gt; $h,
+    };
+
+    $h-&gt;push_write(<span class="string">&quot;Welcome, enter your username:\n&quot;</span>);
+};
+
+AE::cv-&gt;<span class="type">wait</span>;
+</code></pre>
+<p>行数的にはほぼ同じくらい。</p>
+<p>追記＠2009-12-08T10:36:37+09:00： left なメッセージがおかしかったので直した。</p>
+
+  </div>
+
+  <div class="meta">
+    by typester /
+    at <a href="/memo/2009/12/07/1/">2009-12-07T20:38:00</a> /
+    <a href="/memo/tag/perl/">perl</a>
+    &middot; <a href="/memo/tag/anyevent/">anyevent</a>
+    / <a href="/memo/2009/12/07/1/#disqus_thread">Comment</a>
+  </div>
+</div>
+
+<div class="entry autopagerize_page_element">
+  <h2><a href="/memo/2009/12/06/2/">PhotoShare にアップロードするだけのアプリ</a></h2>
+
+  <div class="body">
+    <p><a href="http://www.bcphotoshare.com/">PhotoShare</a> は写真共有を軸にした SNS のようなサイトで結構好きなのですが。写真をアップロードしたいだけという状況で写真をアップロードしようと公式アプリを立ち上げると自分宛のコメントが来てないかとか、友達の写真が更新されてないかとかチェックするのですぐにアップロード画面にいけずイライラしたりします。</p>
+<p>そんなわけでシンプルに PhotoShare にアップロードするだけなアプリを作りました。</p>
+<p><a href="http://click.linksynergy.com/fs-bin/stat?id=epIEMEmECfk&amp;offerid=94348&amp;type=3&amp;subid=0&amp;tmpid=2192&amp;RD_PARM1=http%253A%252F%252Fitunes.apple.com%252Fjp%252Fapp%252Fps-up-simple-fast-uploader-for-photoshare%252Fid342421711%253Fmt%253D8%2526uo%253D6%2526partnerId%253D30" target="itunes_store"><img alt="PS up: simple, fast uploader for PhotoShare" height="15" src="http://ax.phobos.apple.com.edgesuite.net/images/badgeitunes61x15dark.gif" width="61" /></a></p>
+<p>先日の<a href="http://d.hatena.ne.jp/tomyhero/20091120/1258718763">たこthon</a> で適当に書き上げたアプリなので本当にアップロードする以外の機能がありませんが、使いながら欲しい物を加えていこうと思ってます。使い方見つつインタフェースも。</p>
+
+  </div>
+
+  <div class="meta">
+    by typester /
+    at <a href="/memo/2009/12/06/2/">2009-12-06T14:10:00</a> /
+    <a href="/memo/tag/iphone/">iphone</a>
+    / <a href="/memo/2009/12/06/2/#disqus_thread">Comment</a>
+  </div>
+</div>
+
+<div class="entry autopagerize_page_element">
+  <h2><a href="/memo/2009/12/06/1/">3GS 購入</a></h2>
+
+  <div class="body">
+    <p>アプリ開発で 3GS を借りたのが最後、もうどうしてもあの速さがうらやましくなってしまって結局買ってしまった。</p>
+<p>今まで使用していた 3G の分割のこり10ヶ月分くらいは次の請求で一括で払うことに。そのまま分割したままでもよかったが割引きかなくなるから一括で払っても変わらないからそれなら払っちゃっておいた方が良いかなーと。なんかよくわからないけどホワイトWとかなんちゃらオプションとか加入させられたのでそれはわすれないうちにオフにした。</p>
+<p>感想としてはいままで iPhone 使ってて一番不満だったメモリ足りなすぎて重いなーって言う感じがまったくしなくなってとても快適。これが本来イメージされてた iPhone かーという感じ。 3G ユーザーはみんな乗り換えたら感動すると思う。</p>
+<p>でも液晶の色合いがなんか 3G と違って白っぽいのはきになるなー。液晶は前の方が好み。</p>
+<p>本体の方の色は 3G が白つかってたので黒にしたが、白の方がよかったなーと若干後悔中。iPhone の黒はなんか下品な感じがする。まぁカバーつけるから関係ないんだけど。</p>
+
+  </div>
+
+  <div class="meta">
+    by typester /
+    at <a href="/memo/2009/12/06/1/">2009-12-06T13:57:00</a> /
+    <a href="/memo/tag/life/">life</a>
+    / <a href="/memo/2009/12/06/1/#disqus_thread">Comment</a>
+  </div>
+</div>
+
+<div class="entry autopagerize_page_element">
+  <h2><a href="/memo/2009/12/03/1/">無線APによって自動でhostsを変える方法</a></h2>
+
+  <div class="body">
+    <p>OSX の LaunchAgents には特定のパスを監視して更新があったらプログラムを起動すると言うことが出来ます。例えば以下のような設定を書いてみると：</p>
+<pre><code><span class="nxml-processing-instruction-delimiter">&lt;?</span><span class="nxml-processing-instruction-target">xml</span> <span class="nxml-attribute-local-name">version</span>=<span class="nxml-attribute-value-delimiter">&quot;</span><span class="nxml-attribute-value">1.0</span><span class="nxml-attribute-value-delimiter">&quot;</span> <span class="nxml-attribute-local-name">encoding</span>=<span class="nxml-attribute-value-delimiter">&quot;</span><span class="nxml-attribute-value">UTF-8</span><span class="nxml-attribute-value-delimiter">&quot;</span><span class="nxml-processing-instruction-delimiter">?&gt;</span>
+<span class="nxml-markup-declaration-delimiter">&lt;!</span><span class="nxml-prolog-keyword">DOCTYPE</span> plist <span class="nxml-prolog-keyword"><span class="nxml-prolog-keyword">PUBLIC</span></span> <span class="nxml-prolog-literal-delimiter">&quot;</span><span class="nxml-prolog-literal-content">-//Apple Computer//DTD PLIST 1.0//EN</span><span class="nxml-prolog-literal-delimiter">&quot;</span>
+          <span class="nxml-prolog-literal-delimiter">&quot;</span><span class="nxml-prolog-literal-content">http://www.apple.com/DTDs/PropertyList-1.0.dtd</span><span class="nxml-prolog-literal-delimiter">&quot;</span><span class="nxml-markup-declaration-delimiter">&gt;</span>
+<span class="nxml-tag-delimiter">&lt;</span><span class="nxml-element-local-name">plist</span> <span class="nxml-attribute-local-name">version</span>=<span class="nxml-attribute-value-delimiter">&quot;</span><span class="nxml-attribute-value">1.0</span><span class="nxml-attribute-value-delimiter">&quot;</span><span class="nxml-tag-delimiter">&gt;</span>
+  <span class="nxml-tag-delimiter">&lt;</span><span class="nxml-element-local-name">dict</span><span class="nxml-tag-delimiter">&gt;</span>
+    <span class="nxml-tag-delimiter">&lt;</span><span class="nxml-element-local-name">key</span><span class="nxml-tag-delimiter">&gt;</span><span class="nxml-text">Label</span><span class="nxml-tag-delimiter">&lt;</span><span class="nxml-tag-slash">/</span><span class="nxml-element-local-name">key</span><span class="nxml-tag-delimiter">&gt;</span>
+    <span class="nxml-tag-delimiter">&lt;</span><span class="nxml-element-local-name">string</span><span class="nxml-tag-delimiter">&gt;</span><span class="nxml-text">org.unknownplace.wifi_switch</span><span class="nxml-tag-delimiter">&lt;</span><span class="nxml-tag-slash">/</span><span class="nxml-element-local-name">string</span><span class="nxml-tag-delimiter">&gt;</span>
+    <span class="nxml-tag-delimiter">&lt;</span><span class="nxml-element-local-name">key</span><span class="nxml-tag-delimiter">&gt;</span><span class="nxml-text">ProgramArguments</span><span class="nxml-tag-delimiter">&lt;</span><span class="nxml-tag-slash">/</span><span class="nxml-element-local-name">key</span><span class="nxml-tag-delimiter">&gt;</span>
+    <span class="nxml-tag-delimiter">&lt;</span><span class="nxml-element-local-name">array</span><span class="nxml-tag-delimiter">&gt;</span>
+      <span class="nxml-tag-delimiter">&lt;</span><span class="nxml-element-local-name">string</span><span class="nxml-tag-delimiter">&gt;</span><span class="nxml-text">/usr/bin/zsh</span><span class="nxml-tag-delimiter">&lt;</span><span class="nxml-tag-slash">/</span><span class="nxml-element-local-name">string</span><span class="nxml-tag-delimiter">&gt;</span>
+      <span class="nxml-tag-delimiter">&lt;</span><span class="nxml-element-local-name">string</span><span class="nxml-tag-delimiter">&gt;</span><span class="nxml-text">-c</span><span class="nxml-tag-delimiter">&lt;</span><span class="nxml-tag-slash">/</span><span class="nxml-element-local-name">string</span><span class="nxml-tag-delimiter">&gt;</span>
+      <span class="nxml-tag-delimiter">&lt;</span><span class="nxml-element-local-name">string</span><span class="nxml-tag-delimiter">&gt;</span><span class="nxml-text">exec perl /Users/typester/dev/scratch/wifi_switch/switch.pl</span><span class="nxml-tag-delimiter">&lt;</span><span class="nxml-tag-slash">/</span><span class="nxml-element-local-name">string</span><span class="nxml-tag-delimiter">&gt;</span>
+    <span class="nxml-tag-delimiter">&lt;</span><span class="nxml-tag-slash">/</span><span class="nxml-element-local-name">array</span><span class="nxml-tag-delimiter">&gt;</span>
+    <span class="nxml-tag-delimiter">&lt;</span><span class="nxml-element-local-name">key</span><span class="nxml-tag-delimiter">&gt;</span><span class="nxml-text">RunAtLoad</span><span class="nxml-tag-delimiter">&lt;</span><span class="nxml-tag-slash">/</span><span class="nxml-element-local-name">key</span><span class="nxml-tag-delimiter">&gt;</span>
+    <span class="nxml-tag-delimiter">&lt;</span><span class="nxml-element-local-name">true</span><span class="nxml-tag-slash">/</span><span class="nxml-tag-delimiter">&gt;</span>
+    <span class="nxml-tag-delimiter">&lt;</span><span class="nxml-element-local-name">key</span><span class="nxml-tag-delimiter">&gt;</span><span class="nxml-text">StandardErrorPath</span><span class="nxml-tag-delimiter">&lt;</span><span class="nxml-tag-slash">/</span><span class="nxml-element-local-name">key</span><span class="nxml-tag-delimiter">&gt;</span>
+    <span class="nxml-tag-delimiter">&lt;</span><span class="nxml-element-local-name">string</span><span class="nxml-tag-delimiter">&gt;</span><span class="nxml-text">/dev/null</span><span class="nxml-tag-delimiter">&lt;</span><span class="nxml-tag-slash">/</span><span class="nxml-element-local-name">string</span><span class="nxml-tag-delimiter">&gt;</span><span class="nxml-comment-delimiter">&lt;!--</span><span class="nxml-comment-content"> &lt;string&gt;/tmp/error&lt;/string&gt; </span><span class="nxml-comment-delimiter">--&gt;</span>
+    <span class="nxml-tag-delimiter">&lt;</span><span class="nxml-element-local-name">key</span><span class="nxml-tag-delimiter">&gt;</span><span class="nxml-text">StandardOutPath</span><span class="nxml-tag-delimiter">&lt;</span><span class="nxml-tag-slash">/</span><span class="nxml-element-local-name">key</span><span class="nxml-tag-delimiter">&gt;</span>
+    <span class="nxml-tag-delimiter">&lt;</span><span class="nxml-element-local-name">string</span><span class="nxml-tag-delimiter">&gt;</span><span class="nxml-text">/dev/null</span><span class="nxml-tag-delimiter">&lt;</span><span class="nxml-tag-slash">/</span><span class="nxml-element-local-name">string</span><span class="nxml-tag-delimiter">&gt;</span>
+    <span class="nxml-tag-delimiter">&lt;</span><span class="nxml-element-local-name">key</span><span class="nxml-tag-delimiter">&gt;</span><span class="nxml-text">WatchPaths</span><span class="nxml-tag-delimiter">&lt;</span><span class="nxml-tag-slash">/</span><span class="nxml-element-local-name">key</span><span class="nxml-tag-delimiter">&gt;</span>
+    <span class="nxml-tag-delimiter">&lt;</span><span class="nxml-element-local-name">array</span><span class="nxml-tag-delimiter">&gt;</span>
+      <span class="nxml-tag-delimiter">&lt;</span><span class="nxml-element-local-name">string</span><span class="nxml-tag-delimiter">&gt;</span><span class="nxml-text">/Library/Preferences/SystemConfiguration/com.apple.airport.preferences.plist</span><span class="nxml-tag-delimiter">&lt;</span><span class="nxml-tag-slash">/</span><span class="nxml-element-local-name">string</span><span class="nxml-tag-delimiter">&gt;</span>
+    <span class="nxml-tag-delimiter">&lt;</span><span class="nxml-tag-slash">/</span><span class="nxml-element-local-name">array</span><span class="nxml-tag-delimiter">&gt;</span>
+  <span class="nxml-tag-delimiter">&lt;</span><span class="nxml-tag-slash">/</span><span class="nxml-element-local-name">dict</span><span class="nxml-tag-delimiter">&gt;</span>
+<span class="nxml-tag-delimiter">&lt;</span><span class="nxml-tag-slash">/</span><span class="nxml-element-local-name">plist</span><span class="nxml-tag-delimiter">&gt;</span>
+</code></pre>
+<p><code>/Library/Preferences/SystemConfiguration/com.apple.airport.preferences.plist</code> を監視しそれが更新されたら <code>/Users/typester/dev/scratch/wifi_switch/switch.pl</code> を実行する。と言うことが実現できます。</p>
+<p>この監視先のファイルは OSX の無線ネットワーク設定なので、これが更新されると言うことは無線通信の状態が変わったときと言うことを意味します。</p>
+<p>これを有効にするにはこのファイルを適当な名前 <code>hoge.plist</code> で <code>/System/Library/LaunchDaemons/</code> 保存すれば次回起動から有効になります。すぐに有効にしたい場合は、</p>
+<pre><code>sudo launchctl load /System/Library/LaunchDaemons/hoge.plist
+</code></pre>
+<p>などとすればOKです。詳しくは launchctl や LaunchAgent/LaunchDaemon のドキュメントを参照のこと。システムレベルの LaunchDaemon を使用しているのは <code>/etc/hosts</code> を書き換えるのに root 権限が必要だからです。</p>
+<p>あとはここで起動されるスクリプト中でからAPの情報を取得しそれをもとに hosts を書き換えればいいわけです。APの情報は</p>
+<pre><code>/System/Library/PrivateFrameworks/Apple80211.framework/Versions/A/Resources/airport -I
+</code></pre>
+<p>と言うコマンドで取得可能なのでそれをパースすればオッケーです。</p>
+<p>以下に僕が実際に使用しているスクリプトを貼っておきます。</p>
+<blockquote><p><a href="http://gist.github.com/247950">http://gist.github.com/247950</a></p></blockquote>
+<p>このスクリプトと同じところに、<code>default.mt</code> と <code>特定のAPのSSID名.mt</code> と言うファイルで hosts を書いておくと、通常は <code>default.mt</code> が <code>/etc/hosts</code> に書き出され、SSIDにマッチするファイルがある場合には <code>SSID名.mt</code> が <code>/etc/hosts</code> に書き出されるという感じです。</p>
+<p>AP によって hosts を変えたいという状況がそんなにあるとは思いませんが、ネットワークの状態によっていろいろ設定を変えると言う目的では便利で使えますので覚えておいて損はないでしょう。</p>
+
+  </div>
+
+  <div class="meta">
+    by typester /
+    at <a href="/memo/2009/12/03/1/">2009-12-03T16:00:00</a> /
+    <a href="/memo/tag/osx/">osx</a>
+    / <a href="/memo/2009/12/03/1/#disqus_thread">Comment</a>
+  </div>
+</div>
+
+<div class="entry autopagerize_page_element">
+  <h2><a href="/memo/2009/11/26/1/">CookPad の iPhone 用 API</a></h2>
+
+  <div class="body">
+    <p>こんな感じかな。</p>
+<blockquote><p><a href="http://github.com/typester/cookpad-api-perl">typester&apos;s cookpad-api-perl at master - GitHub</a></p></blockquote>
+<p><code>api_key</code> ないと動かないからあれだけど。</p>
+
+  </div>
+
+  <div class="meta">
+    by typester /
+    at <a href="/memo/2009/11/26/1/">2009-11-26T23:40:00</a> /
+    <a href="/memo/tag/web/">web</a>
+    &middot; <a href="/memo/tag/cookpad/">cookpad</a>
+    &middot; <a href="/memo/tag/iphone/">iphone</a>
+    / <a href="/memo/2009/11/26/1/#disqus_thread">Comment</a>
+  </div>
+</div>
+
+
+
+
+<div id="pager" class="autopagerize_insert_before">
+  <p class="pages">
+    <a class="prev" rel="previous" href="/memo/page/9/">&laquo; Prev</a>
+    <a href="/memo/page/6/">6</a>
+    <a href="/memo/page/7/">7</a>
+    <a href="/memo/page/8/">8</a>
+    <a href="/memo/page/9/">9</a>
+    <span class="current">10</span>
+    <a href="/memo/page/11/">11</a>
+    <a href="/memo/page/12/">12</a>
+    <a href="/memo/page/13/">13</a>
+    <a href="/memo/page/14/">14</a>
+    <a href="/memo/page/15/">15</a>
+    <a class="next" rel="next" href="/memo/page/11/">Next &raquo;</a>
+  </p>
+  <p class="info">(Page 10 of 203)</p>
+</div>
+
+
+</div>
+
+<p id="footer">
+  Copyright &copy; 2005-2013
+      by <a class="author" href="/about/#me">Daisuke Murase (typester)</a> /
+  Site generated by <a href="https://github.com/typester/nim">nim</a> /
+  Comments powered by <a href="http://disqus.com">DISQUS</a>.
+</p>
+
+</div>
+
+
+<script type="text/javascript">
+//<![CDATA[
+(function() {
+	var links = document.getElementsByTagName('a');
+	var query = '?';
+	for(var i = 0; i < links.length; i++) {
+	if(links[i].href.indexOf('#disqus_thread') >= 0) {
+		query += 'url' + i + '=' + encodeURIComponent(links[i].href) + '&';
+	}
+	}
+	document.write('<script charset="utf-8" type="text/javascript" src="http://disqus.com/forums/unknownplace/get_num_replies.js' + query + '"></' + 'script>');
+})();
+//]]>
+</script>
+
+
+<script type="text/javascript">
+var gaJsHost = (("https:" == document.location.protocol) ? "https://ssl." : "http://www.");
+document.write(unescape("%3Cscript src='" + gaJsHost + "google-analytics.com/ga.js' type='text/javascript'%3E%3C/script%3E"));
+</script>
+<script type="text/javascript">
+try {
+var pageTracker = _gat._getTracker("UA-53067-1");
+pageTracker._trackPageview();
+} catch(err) {}</script>
+
+<script>
+function googleTranslateElementInit() {
+  new google.translate.TranslateElement({
+    pageLanguage: 'ja',
+    gaTrack: true,
+    gaId: 'UA-53067',
+    floatPosition: google.translate.TranslateElement.FloatPosition.BOTTOM_RIGHT
+  });
+}
+</script><script src="//translate.google.com/translate_a/element.js?cb=googleTranslateElementInit"></script>
+
+</body>
+</html>

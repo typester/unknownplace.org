@@ -1,0 +1,300 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="ja" xml:lang="ja">
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <title>memo - unknownplace.org</title>
+  <link rel="stylesheet" type="text/css" href="http://yui.yahooapis.com/3.0.0/build/cssreset/reset-min.css" />
+  <link rel="stylesheet" type="text/css" href="http://yui.yahooapis.com/3.0.0/build/cssfonts/fonts-min.css" />
+  <link rel="stylesheet" href="/css/style.css" type="text/css" />
+  <meta property="fb:admins" content="1093631929" />
+  <meta name="robots" content="noindex" />
+  <link rel="alternate" type="application/rss+xml" href="http://unknownplace.org/memo/index.rss" />
+</head>
+<body>
+
+<div id="container">
+<div id="header">
+    <h1><a href="/">unknownplace.org</a></h1> /
+<a href="/memo/">memo</a>
+</div>
+
+<div id="content">
+
+<div class="entry autopagerize_page_element">
+  <h2><a href="/memo/2007/02/22/2/"></a></h2>
+
+  <div class="body">
+    <p><code>Locale::Maketext::Lexcon::Gettext</code> の parse_metadata の前後見ると、<code>msgid &quot;&quot;</code> なものはメタデータとして扱うようになっているらしい。で、そこの Content-Type の charset みてる。</p>
+<p>常識くせー。基本的なことを知らないので無駄にはまるなぁ＞＜</p>
+
+  </div>
+
+  <div class="meta">
+    by typester /
+    at <a href="/memo/2007/02/22/2/">2007-02-22T02:54:00</a> /
+    <a href="/memo/tag/perl/">perl</a>
+    &middot; <a href="/memo/tag/i18n/">i18n</a>
+    / <a href="/memo/2007/02/22/2/#disqus_thread">Comment</a>
+  </div>
+</div>
+
+<div class="entry autopagerize_page_element">
+  <h2><a href="/memo/2007/02/22/1/">Locale::Maketext::Simple, Decode =&gt; 1 しても utf8 strings にならない</a></h2>
+
+  <div class="body">
+    <p>use strict; use warnings; use utf8;</p>
+<pre><code><span class="keyword">use</span> Locale::Maketext::Simple(
+    <span class="string">Path</span>   =&gt; <span class="string">&apos;lib/MyApp/I18N&apos;</span>,
+    <span class="string">Decode</span> =&gt; 1,
+);
+
+loc_lang(<span class="string">&apos;ja&apos;</span>);
+<span class="keyword">my</span> <span class="variable-name">$foo</span> = loc(<span class="string">&apos;foobar&apos;</span>);
+
+<span class="keyword">if</span> (utf8::is_utf8($foo)) {
+    <span class="cperl-nonoverridable">print</span> <span class="string">&quot;utf8\n&quot;</span>;
+}
+<span class="keyword">else</span> {
+    <span class="cperl-nonoverridable">print</span> <span class="string">&quot;bytes\n&quot;</span>;
+}
+</code></pre>
+<p>で、bytesに。</p>
+<p>あーなんでだーー。</p>
+<p>と思ったら、poファイルの先頭に</p>
+<pre><code>msgid <span class="string">""</span>
+msgstr <span class="string">""</span>
+<span class="string">"MIME-Version: 1.0\n"</span>
+<span class="string">"Content-Type: text/plain; charset=utf-8\n"</span>
+<span class="string">"Content-Transfer-Encoding: 8bit\n"</span>
+</code></pre>
+<p>とかかいたら utf8 になった。</p>
+<p>これは、なに。</p>
+
+  </div>
+
+  <div class="meta">
+    by typester /
+    at <a href="/memo/2007/02/22/1/">2007-02-22T02:40:00</a> /
+    <a href="/memo/tag/perl/">perl</a>
+    &middot; <a href="/memo/tag/i18n/">i18n</a>
+    / <a href="/memo/2007/02/22/1/#disqus_thread">Comment</a>
+  </div>
+</div>
+
+<div class="entry autopagerize_page_element">
+  <h2><a href="/memo/2007/02/20/1/">perl-debug</a></h2>
+
+  <div class="body">
+    <p>とか言うパッケージがあったのか！！！！＞Debian</p>
+<p>いままでソースからわざわざ別の場所に入れてたよー。あー。</p>
+
+  </div>
+
+  <div class="meta">
+    by typester /
+    at <a href="/memo/2007/02/20/1/">2007-02-20T00:19:00</a> /
+    <a href="/memo/tag/perl/">perl</a>
+    &middot; <a href="/memo/tag/debian/">debian</a>
+    / <a href="/memo/2007/02/20/1/#disqus_thread">Comment</a>
+  </div>
+</div>
+
+<div class="entry autopagerize_page_element">
+  <h2><a href="/memo/2007/02/19/4/"></a></h2>
+
+  <div class="body">
+    <blockquote><p><a href="http://subtech.g.hatena.ne.jp/secondlife/20070218/1171806399">subtech - Pink Blossom Diary - 一度 tty から起動したプロセス</a></p><p>typoさん情報(thx!)</p></blockquote>
+<p>いつかのmotemen日記で知ったんだけどな！</p>
+
+  </div>
+
+  <div class="meta">
+    by typester /
+    at <a href="/memo/2007/02/19/4/">2007-02-19T16:04:00</a> /
+    <a href="/memo/tag/life/">life</a>
+    / <a href="/memo/2007/02/19/4/#disqus_thread">Comment</a>
+  </div>
+</div>
+
+<div class="entry autopagerize_page_element">
+  <h2><a href="/memo/2007/02/19/3/"></a></h2>
+
+  <div class="body">
+    <p>RTMのグリモン、なんかエレメントの判定 <code>type == &quot;text&quot;</code> なはずのとこ <code>type = &quot;text&quot;</code> とかかいててひどいことになってたのでなおした＞＜</p>
+
+  </div>
+
+  <div class="meta">
+    by typester /
+    at <a href="/memo/2007/02/19/3/">2007-02-19T11:33:00</a> /
+    <a href="/memo/tag/life/">life</a>
+    / <a href="/memo/2007/02/19/3/#disqus_thread">Comment</a>
+  </div>
+</div>
+
+<div class="entry autopagerize_page_element">
+  <h2><a href="/memo/2007/02/19/2/"></a></h2>
+
+  <div class="body">
+    <p>出社。</p>
+
+  </div>
+
+  <div class="meta">
+    by typester /
+    at <a href="/memo/2007/02/19/2/">2007-02-19T09:54:00</a> /
+    <a href="/memo/tag/life/">life</a>
+    / <a href="/memo/2007/02/19/2/#disqus_thread">Comment</a>
+  </div>
+</div>
+
+<div class="entry autopagerize_page_element">
+  <h2><a href="/memo/2007/02/19/1/">Remember The Milk で IME を自動で ON/OFF する greasemonkey スクリプト</a></h2>
+
+  <div class="body">
+    <p><a href="http://www.rememberthemilk.com">Remember The Milk</a> はサービス開始当初少し触っただけでまったく使っていなかったのだけど、最近周りの人が結構使っているのでちょっと見てみたらすごい進化していて、これは便利そうってことで使ってみている。</p>
+<p>それで、キーボードショートカットだけでいろいろな操作ができるようになっていてすごく便利になっているのだけど、IMEがONの状態だと動かない。</p>
+<p>タスクは日本語で入力することが多いので、いちいちIMEの状態を気にしなくてはいけなくて面倒。</p>
+<p>ってことで、テキストフィールドにフォーカスがあるときは自動でIMEをONにし、フォーカスが外れるとOFFにするスクリプトを書いてみた。</p>
+<ul><li><a href="/gm/rememberthemilkime/rememberthemilkime.user.js">rememberthemilkime.user.js</a></li></ul>
+<p>スクリプトと同じ階層にある IME.swf というのも読み込むようになっていて、IMEのON/OFFはそれでやってる。無駄にAS3で書いたため、Flash Player9以上でないと使えないとかいう。</p>
+
+  </div>
+
+  <div class="meta">
+    by typester /
+    at <a href="/memo/2007/02/19/1/">2007-02-19T04:25:00</a> /
+    <a href="/memo/tag/web/">web</a>
+    &middot; <a href="/memo/tag/firefox/">firefox</a>
+    &middot; <a href="/memo/tag/greasemonkey/">greasemonkey</a>
+    &middot; <a href="/memo/tag/rememberthemilk/">rememberthemilk</a>
+    / <a href="/memo/2007/02/19/1/#disqus_thread">Comment</a>
+  </div>
+</div>
+
+<div class="entry autopagerize_page_element">
+  <h2><a href="/memo/2007/02/18/1/">折りたたみキーボード</a></h2>
+
+  <div class="body">
+    <blockquote><p><a href="http://www.vshopu.com/r_RBK-2000BT/index.html">Reudo RBK-2000BT (Bluetooth HID ローマ字入力)</a></p></blockquote>
+<p>買った。</p>
+<p><code>/</code> の位置以外はまったく不満なく。なかなかいいです、これ。</p>
+
+  </div>
+
+  <div class="meta">
+    by typester /
+    at <a href="/memo/2007/02/18/1/">2007-02-18T02:35:00</a> /
+    <a href="/memo/tag/life/">life</a>
+    / <a href="/memo/2007/02/18/1/#disqus_thread">Comment</a>
+  </div>
+</div>
+
+<div class="entry autopagerize_page_element">
+  <h2><a href="/memo/2007/02/17/1/">64bit Debian で 32bit アプリを動かすの法</a></h2>
+
+  <div class="body">
+    <p>$ sudo aptitude install ia32-libs</p>
+<p>hamachi がうごかんくてあせったわー。</p>
+
+  </div>
+
+  <div class="meta">
+    by typester /
+    at <a href="/memo/2007/02/17/1/">2007-02-17T01:42:00</a> /
+    <a href="/memo/tag/linux/">linux</a>
+    &middot; <a href="/memo/tag/debian/">debian</a>
+    / <a href="/memo/2007/02/17/1/#disqus_thread">Comment</a>
+  </div>
+</div>
+
+<div class="entry autopagerize_page_element">
+  <h2><a href="/memo/2007/02/16/2/"></a></h2>
+
+  <div class="body">
+    <p>出社。</p>
+
+  </div>
+
+  <div class="meta">
+    by typester /
+    at <a href="/memo/2007/02/16/2/">2007-02-16T10:10:00</a> /
+    <a href="/memo/tag/life/">life</a>
+    / <a href="/memo/2007/02/16/2/#disqus_thread">Comment</a>
+  </div>
+</div>
+
+
+
+
+<div id="pager" class="autopagerize_insert_before">
+  <p class="pages">
+    <a class="prev" rel="previous" href="/memo/page/42/">&laquo; Prev</a>
+    <a href="/memo/page/39/">39</a>
+    <a href="/memo/page/40/">40</a>
+    <a href="/memo/page/41/">41</a>
+    <a href="/memo/page/42/">42</a>
+    <span class="current">43</span>
+    <a href="/memo/page/44/">44</a>
+    <a href="/memo/page/45/">45</a>
+    <a href="/memo/page/46/">46</a>
+    <a href="/memo/page/47/">47</a>
+    <a href="/memo/page/48/">48</a>
+    <a class="next" rel="next" href="/memo/page/44/">Next &raquo;</a>
+  </p>
+  <p class="info">(Page 43 of 203)</p>
+</div>
+
+
+</div>
+
+<p id="footer">
+  Copyright &copy; 2005-2013
+      by <a class="author" href="/about/#me">Daisuke Murase (typester)</a> /
+  Site generated by <a href="https://github.com/typester/nim">nim</a> /
+  Comments powered by <a href="http://disqus.com">DISQUS</a>.
+</p>
+
+</div>
+
+
+<script type="text/javascript">
+//<![CDATA[
+(function() {
+	var links = document.getElementsByTagName('a');
+	var query = '?';
+	for(var i = 0; i < links.length; i++) {
+	if(links[i].href.indexOf('#disqus_thread') >= 0) {
+		query += 'url' + i + '=' + encodeURIComponent(links[i].href) + '&';
+	}
+	}
+	document.write('<script charset="utf-8" type="text/javascript" src="http://disqus.com/forums/unknownplace/get_num_replies.js' + query + '"></' + 'script>');
+})();
+//]]>
+</script>
+
+
+<script type="text/javascript">
+var gaJsHost = (("https:" == document.location.protocol) ? "https://ssl." : "http://www.");
+document.write(unescape("%3Cscript src='" + gaJsHost + "google-analytics.com/ga.js' type='text/javascript'%3E%3C/script%3E"));
+</script>
+<script type="text/javascript">
+try {
+var pageTracker = _gat._getTracker("UA-53067-1");
+pageTracker._trackPageview();
+} catch(err) {}</script>
+
+<script>
+function googleTranslateElementInit() {
+  new google.translate.TranslateElement({
+    pageLanguage: 'ja',
+    gaTrack: true,
+    gaId: 'UA-53067',
+    floatPosition: google.translate.TranslateElement.FloatPosition.BOTTOM_RIGHT
+  });
+}
+</script><script src="//translate.google.com/translate_a/element.js?cb=googleTranslateElementInit"></script>
+
+</body>
+</html>

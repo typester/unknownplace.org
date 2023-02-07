@@ -1,0 +1,204 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="ja" xml:lang="ja">
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <title>memo - unknownplace.org</title>
+  <link rel="stylesheet" type="text/css" href="http://yui.yahooapis.com/3.0.0/build/cssreset/reset-min.css" />
+  <link rel="stylesheet" type="text/css" href="http://yui.yahooapis.com/3.0.0/build/cssfonts/fonts-min.css" />
+  <link rel="stylesheet" href="/css/style.css" type="text/css" />
+  <meta property="fb:admins" content="1093631929" />
+  <meta name="robots" content="noindex" />
+  <link rel="alternate" type="application/rss+xml" href="http://unknownplace.org/memo/index.rss" />
+</head>
+<body>
+
+<div id="container">
+<div id="header">
+    <h1><a href="/">unknownplace.org</a></h1> /
+<a href="/memo/">memo</a>
+</div>
+
+<div id="content">
+
+<div class="entry autopagerize_page_element">
+  <h2><a href="/memo/2007/07/31/1/">Twircにustreamチャット連携機能をつけてみた</a></h2>
+
+  <div class="body">
+    <p><a href="http://unknownplace.org/memo/2007/04/15#e001">IM &lt;-&gt; IRC な Twitter クライアント Twirc</a> に ustream のチャット連携機能をつけてみた。</p>
+<p>yaml のコメントアウトはずして適当に修正すれば、自分の twitter の更新が ustream チャットにもポストされるという感じ。</p>
+<p>Twirc 自体は非常に安定していて、数ヶ月連続稼動させても余裕で動くのだけど、この新機能はまだ適当なので、ustreamとの接続が切れたりするとそこでとまっちゃったりとか、なんかいろいろおかしいかもしれない。</p>
+<p>あとchannel適当に設定すると人のチャンネルにtwitterの更新流せてしまったりとかもするので気をつけて。</p>
+
+  </div>
+
+  <div class="meta">
+    by typester /
+    at <a href="/memo/2007/07/31/1/">2007-07-31T16:30:00</a> /
+    <a href="/memo/tag/twitter/">twitter</a>
+    / <a href="/memo/2007/07/31/1/#disqus_thread">Comment</a>
+  </div>
+</div>
+
+<div class="entry autopagerize_page_element">
+  <h2><a href="/memo/2007/06/05/1/">TwitBin はなんちゃって Firefox 拡張</a></h2>
+
+  <div class="body">
+    <p>IM 全然うごかねーので、<a href="http://www.twitbin.com/" title="TwitBin - twitter your browser - twitbin.co">TwitBin</a> とかいれてみたけど、日本語変換中でもEnter押すと送信されてしまう。</p>
+<p>あこれ、ちょっと前の del.icio.us と同じだなと思って DOM インスペクタでみてみるとやっぱり onkeyup でポストしている。</p>
+<p>そこ変えればいいなと思ってソース見てみたら。。あれ？ コード全然ない。</p>
+<p>よく見たらサイドバー内は拡張として実装されているわけではなく、単に <a href="http://www.twitbin.com/beta/">http://www.twitbin.com/beta/</a> をそのまま表示させてるだけ！！</p>
+<p>ID, パスワード普通にとられちゃってるねぇ。</p>
+<p>twitter 周りはこんなのばっかだなぁ。</p>
+
+  </div>
+
+  <div class="meta">
+    by typester /
+    at <a href="/memo/2007/06/05/1/">2007-06-05T21:22:00</a> /
+    <a href="/memo/tag/twitter/">twitter</a>
+    &middot; <a href="/memo/tag/firefox/">firefox</a>
+    / <a href="/memo/2007/06/05/1/#disqus_thread">Comment</a>
+  </div>
+</div>
+
+<div class="entry autopagerize_page_element">
+  <h2><a href="/memo/2007/05/05/1/"></a></h2>
+
+  <div class="body">
+    <blockquote><p><a href="http://d.hatena.ne.jp/brazil/20070505/1178352945">Collection &amp; Copy - Twircインストール、メモ</a></p></blockquote>
+<p>おー、使ってくれた人初めてみた。どもども。</p>
+<p>twitterのIM機能も今ではすっかり安定していい感じですね。Twirc自体も割と安定していて、僕の環境では2週間くらい放置してますがうまくうごいております。</p>
+<p>POEにも慣れてきた感が。</p>
+<p>そしてbrazilさんのtwitterアカウントがわからない。</p>
+<ins>わかった。koyachiさんありがとう。twitterでつぶやけばはやかったのか。</ins>
+
+  </div>
+
+  <div class="meta">
+    by typester /
+    at <a href="/memo/2007/05/05/1/">2007-05-05T20:10:00</a> /
+    <a href="/memo/tag/twitter/">twitter</a>
+    / <a href="/memo/2007/05/05/1/#disqus_thread">Comment</a>
+  </div>
+</div>
+
+<div class="entry autopagerize_page_element">
+  <h2><a href="/memo/2007/04/16/4/">ゲートウェイ Twirc</a></h2>
+
+  <div class="body">
+    <p>ircd の config に <code>no_nick_tweaks: 1</code> すると nick に @ つけないようにした。</p>
+<p>クライアントを選ばずに使えるようになったはず。</p>
+
+  </div>
+
+  <div class="meta">
+    by typester /
+    at <a href="/memo/2007/04/16/4/">2007-04-16T05:43:00</a> /
+    <a href="/memo/tag/twitter/">twitter</a>
+    / <a href="/memo/2007/04/16/4/#disqus_thread">Comment</a>
+  </div>
+</div>
+
+<div class="entry autopagerize_page_element">
+  <h2><a href="/memo/2007/04/16/2/">昨日のゲートウェイつかったスクリーンショット</a></h2>
+
+  <div class="body">
+    <p><a href="http://www.flickr.com/photos/typester/460402721/" title="Photo Sharing"><img alt="Twitter on irssi" height="409" src="http://farm1.static.flickr.com/175/460402721_98cc36b399_o.png" width="558" /></a></p>
+<p>こんな感じ。普通にIRCっぽくなる。</p>
+<p>安定してるから nick に @ つけるのはオプションにしてほかのクライアントでもつかえるようにしようかなぁ。</p>
+
+  </div>
+
+  <div class="meta">
+    by typester /
+    at <a href="/memo/2007/04/16/2/">2007-04-16T05:07:00</a> /
+    <a href="/memo/tag/perl/">perl</a>
+    &middot; <a href="/memo/tag/twitter/">twitter</a>
+    &middot; <a href="/memo/tag/irssi/">irssi</a>
+    / <a href="/memo/2007/04/16/2/#disqus_thread">Comment</a>
+  </div>
+</div>
+
+<div class="entry autopagerize_page_element">
+  <h2><a href="/memo/2007/04/15/1/">Yet Another IRC Gateway for Twitter</a></h2>
+
+  <div class="body">
+    <p>作った！</p>
+<p>空前の Twitter - IRC ゲートウェイ作成ブーム。</p>
+<p>ソースこの辺です。ライセンスは GPLv2。(たぶん。PoCo::Jabberのせいです。)</p>
+<blockquote><p><a href="http://svn.unknownplace.org/public/scratch/Twirc/">http://svn.unknownplace.org/public/scratch/Twirc/</a></p></blockquote>
+<p>これの特徴は</p>
+<ul><li>Jabber 使ってるのでリアルタイム性が高い</li><li>nick に @ つけているのでクライアントによってはバグる</li></ul>
+<p>などです。</p>
+<p>二個目は LimeChat でおかしくなることを確認。</p>
+<p>まー僕の使ってる irssi で動けばいいのです。</p>
+<p>irssi は nick の補完ができるので、@ をつけておけばいい感じで twitter 形式のレスができるってわけです。</p>
+<h4>使い方</h4>
+<ol><li>svn co</li><li>yaml いじる (jabberアカウントと、IRCのポートとIRCクライアントの文字コード)</li><li>./script/twirc.pl</li><li>IRCクライアントでつないで #twitter に join</li></ol>
+<p>あと、2で設定するjabber(or gtalk)アカウントはあらかじめtwitterで使えるように設定しておく必要があります。</p>
+
+  </div>
+
+  <div class="meta">
+    by typester /
+    at <a href="/memo/2007/04/15/1/">2007-04-15T05:30:00</a> /
+    <a href="/memo/tag/perl/">perl</a>
+    &middot; <a href="/memo/tag/twitter/">twitter</a>
+    / <a href="/memo/2007/04/15/1/#disqus_thread">Comment</a>
+  </div>
+</div>
+
+
+
+</div>
+
+<p id="footer">
+  Copyright &copy; 2005-2013
+      by <a class="author" href="/about/#me">Daisuke Murase (typester)</a> /
+  Site generated by <a href="https://github.com/typester/nim">nim</a> /
+  Comments powered by <a href="http://disqus.com">DISQUS</a>.
+</p>
+
+</div>
+
+
+<script type="text/javascript">
+//<![CDATA[
+(function() {
+	var links = document.getElementsByTagName('a');
+	var query = '?';
+	for(var i = 0; i < links.length; i++) {
+	if(links[i].href.indexOf('#disqus_thread') >= 0) {
+		query += 'url' + i + '=' + encodeURIComponent(links[i].href) + '&';
+	}
+	}
+	document.write('<script charset="utf-8" type="text/javascript" src="http://disqus.com/forums/unknownplace/get_num_replies.js' + query + '"></' + 'script>');
+})();
+//]]>
+</script>
+
+
+<script type="text/javascript">
+var gaJsHost = (("https:" == document.location.protocol) ? "https://ssl." : "http://www.");
+document.write(unescape("%3Cscript src='" + gaJsHost + "google-analytics.com/ga.js' type='text/javascript'%3E%3C/script%3E"));
+</script>
+<script type="text/javascript">
+try {
+var pageTracker = _gat._getTracker("UA-53067-1");
+pageTracker._trackPageview();
+} catch(err) {}</script>
+
+<script>
+function googleTranslateElementInit() {
+  new google.translate.TranslateElement({
+    pageLanguage: 'ja',
+    gaTrack: true,
+    gaId: 'UA-53067',
+    floatPosition: google.translate.TranslateElement.FloatPosition.BOTTOM_RIGHT
+  });
+}
+</script><script src="//translate.google.com/translate_a/element.js?cb=googleTranslateElementInit"></script>
+
+</body>
+</html>

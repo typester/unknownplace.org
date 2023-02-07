@@ -1,0 +1,378 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="ja" xml:lang="ja">
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <title>memo - unknownplace.org</title>
+  <link rel="stylesheet" type="text/css" href="http://yui.yahooapis.com/3.0.0/build/cssreset/reset-min.css" />
+  <link rel="stylesheet" type="text/css" href="http://yui.yahooapis.com/3.0.0/build/cssfonts/fonts-min.css" />
+  <link rel="stylesheet" href="/css/style.css" type="text/css" />
+  <meta property="fb:admins" content="1093631929" />
+  <meta name="robots" content="noindex" />
+  <link rel="alternate" type="application/rss+xml" href="http://unknownplace.org/memo/index.rss" />
+</head>
+<body>
+
+<div id="container">
+<div id="header">
+    <h1><a href="/">unknownplace.org</a></h1> /
+<a href="/memo/">memo</a>
+</div>
+
+<div id="content">
+
+<div class="entry autopagerize_page_element">
+  <h2><a href="/memo/2009/11/21/2/">mod_accessvalve</a></h2>
+
+  <div class="body">
+    <p>lighttpd で一定時間におけるアクセス数をもとにアクセスを制限したいという用件があったのですが、それにマッチする良いモジュールがなかったので試しに書いてみた。</p>
+<blockquote><p><a href="http://github.com/typester/mod_accessvalve">typester&apos;s mod_accessvalve at master - GitHub</a></p></blockquote>
+<p>設定項目は</p>
+<ul><li><code>accessvalve.bucket-size</code>: <code>reset-interval</code> の時間内に許可するリクエスト数</li><li><code>accessvalve.reset-interval</code>: リクエスト数カウントをリセットする時間（秒） (デフォルト 60)</li><li><code>accessvalve.ban-duration</code>: リクエスト数が <code>bucket-size</code> を超えた場合にアクセスを拒否する時間（秒）(デフォルト 900)</li></ul>
+<p>という感じで。また <code>bucket-size</code> を指定しない、もしくは <code>0</code> に設定するとそのブロックではこの機能は無効になる。</p>
+<p>このようなアクセス制限をあえて HTTPD でやる利点としては、Virtual Hostごとに設定を変えたり、特定のパスだけ制限したりと言うことができると言うことかなぁ。あとは 503 エラーとかかえせたりとかか。その分無駄なループが発生するのでオーバーヘッドになる。</p>
+<p>最初 lighttpd のサイトを検索すると <code>mod_throttle</code> というのを誰かが書いているのが見つかってそれを使おうとしたのだけど、設定ファイルの patch 処理がされてなく、上記のような設定ファイルの場所によって設定を変えるということができなかったので採用を見送った。</p>
+<p>また、単純なコネクションごとの帯域制限やコネクション数制限は lighttpd に付属の mod_evasive でできる。</p>
+
+  </div>
+
+  <div class="meta">
+    by typester /
+    at <a href="/memo/2009/11/21/2/">2009-11-21T12:08:00</a> /
+    <a href="/memo/tag/lighttpd/">lighttpd</a>
+    / <a href="/memo/2009/11/21/2/#disqus_thread">Comment</a>
+  </div>
+</div>
+
+<div class="entry autopagerize_page_element">
+  <h2><a href="/memo/2009/11/21/1/">なぜか X 関係でビルドできないとき</a></h2>
+
+  <div class="body">
+    <p>lighttpd 1.4.24 以降や現在の SVN head で <code>autogen.sh</code> を走らせてからビルドしようとするとなぜか X 関係のエラーが出て <code>make</code> が失敗するということがありますがそういうときは、</p>
+<pre><code>cp `which libtool` .
+</code></pre>
+<p>とかすると <code>make</code> とおるようになります。それ以上追ってないけど。なんでだろ？</p>
+
+  </div>
+
+  <div class="meta">
+    by typester /
+    at <a href="/memo/2009/11/21/1/">2009-11-21T11:08:00</a> /
+    <a href="/memo/tag/lighttpd/">lighttpd</a>
+    / <a href="/memo/2009/11/21/1/#disqus_thread">Comment</a>
+  </div>
+</div>
+
+<div class="entry autopagerize_page_element">
+  <h2><a href="/memo/2009/06/17/1/">lighttpd だけで多言語サイトを作る方法</a></h2>
+
+  <div class="body">
+    <p>lighttpd 1.4.21 以上では <code>$HTTP[&quot;language&quot;]</code> という新しい変数(?)が設定の中で使えるようになり、これを使用するとクライアントの <code>Accept-Language</code> に応じて lighttpd の設定を変えることが可能になります。</p>
+<p>これを利用して多言語化しているサイトとしては <a href="http://opensource.kayac.com/">opensource.kayac.com</a> が有名です。</p>
+<p>このサイトは以下のような設定で動作しております。</p>
+<pre><code>$HTTP[<span class="string">"url"</span>] <span class="negation-char">!</span>~ <span class="string">"^/(?:(?:css|js|img|images?|static|tmp)/|[^/]+\.[^/]+$)"</span> {
+    $HTTP[<span class="string">"url"</span>] <span class="negation-char">!</span>~ <span class="string">"^/(en|ja)(?:$|/)"</span> {
+        $HTTP[<span class="string">"language"</span>] =~ <span class="string">"(en|ja)"</span> {
+            url.redirect = ( <span class="string">"^/(.*)"</span> =&gt; <span class="string">"/%1/$1"</span> )
+        }
+        $HTTP[<span class="string">"language"</span>] <span class="negation-char">!</span>~ <span class="string">"(en|ja)"</span> {
+            url.redirect = ( <span class="string">"^/(.*)"</span> =&gt; <span class="string">"/en/$1"</span> )
+        }
+    }
+}
+</code></pre>
+<p>ちょっとややこしいですが、</p>
+<pre><code>$HTTP[<span class="string">"url"</span>] <span class="negation-char">!</span>~ <span class="string">"^/(?:(?:css|js|img|images?|static|tmp)/|[^/]+\.[^/]+$)"</span> {
+</code></pre>
+<p>で、cssやjsディレクトリ、もしくはルート直下のファイルへのアクセスはそのまま。</p>
+<pre><code>$HTTP[<span class="string">"url"</span>] <span class="negation-char">!</span>~ <span class="string">"^/(en|ja)(?:$|/)"</span> {
+</code></pre>
+<p>で、すでに <code>/ja/</code> や <code>/en/</code> へのリクエストであればそのまま。</p>
+<p>上記に該当しなかった場合、</p>
+<pre><code>$HTTP[<span class="string">"language"</span>] =~ <span class="string">"(en|ja)"</span> {
+    url.redirect = ( <span class="string">"^/(.*)"</span> =&gt; <span class="string">"/%1/$1"</span> )
+}
+</code></pre>
+<p>で、<code>Accept-Context</code> が en か ja の場合はそれに応じてリダイレクト先を振り分ける。それ以外の時(対応していない言語の場合)は</p>
+<pre><code>$HTTP[<span class="string">"language"</span>] <span class="negation-char">!</span>~ <span class="string">"(en|ja)"</span> {
+    url.redirect = ( <span class="string">"^/(.*)"</span> =&gt; <span class="string">"/en/$1"</span> )
+}
+</code></pre>
+<p>で、デフォルトの言語(ここではen)にリダイレクトする。</p>
+<p>というような感じで動作しております。</p>
+<p>このような使い方以外にもさまざまな使い方ができそうですね。覚えておくともしかしたら使えるかもしれません。</p>
+
+  </div>
+
+  <div class="meta">
+    by typester /
+    at <a href="/memo/2009/06/17/1/">2009-06-17T17:45:00</a> /
+    <a href="/memo/tag/lighttpd/">lighttpd</a>
+    / <a href="/memo/2009/06/17/1/#disqus_thread">Comment</a>
+  </div>
+</div>
+
+<div class="entry autopagerize_page_element">
+  <h2><a href="/memo/2009/03/25/1/">CGI用の設定</a></h2>
+
+  <div class="body">
+    <p><a href="http://unknownplace.org/memo/2007/03/16#e001">こういうようなFastCGI用の設定</a>のCGIバージョン。</p>
+<p>こんな感じかなー。</p>
+<pre><code>server.document-root = <span class="string">"/Users/typester/dev/scratch/myapp/root"</span>
+
+$HTTP[<span class="string">"url"</span>] <span class="negation-char">!</span>~ <span class="string">"^/(css/|images?/|js/|static/|tmp/|[^/]+\.[^/]+$)"</span> {
+    cgi.assign = ( <span class="string">""</span> =&gt; <span class="string">""</span> )
+    alias.url = (
+        <span class="string">""</span> =&gt; <span class="string">"/Users/typester/dev/scratch/myapp/script/myapp.cgi"</span>,
+    )
+}
+</code></pre>
+
+  </div>
+
+  <div class="meta">
+    by typester /
+    at <a href="/memo/2009/03/25/1/">2009-03-25T17:45:00</a> /
+    <a href="/memo/tag/lighttpd/">lighttpd</a>
+    / <a href="/memo/2009/03/25/1/#disqus_thread">Comment</a>
+  </div>
+</div>
+
+<div class="entry autopagerize_page_element">
+  <h2><a href="/memo/2008/12/24/1/">lighttpd 1.4.20 は CGI の STDERR をエラーログに出してくれない。</a></h2>
+
+  <div class="body">
+    <p>のでちょっとはまった。なんなんだ。</p>
+<p>コードを見るとなぜか <code>/dev/null</code> にリダイレクトしちゃっている。</p>
+<p>ログを追うと、</p>
+<blockquote><p><a href="http://redmine.lighttpd.net/repositories/revision/lighttpd/2163">http://redmine.lighttpd.net/repositories/revision/lighttpd/2163</a></p></blockquote>
+<p>この変更によるものらしいが、正直何してるのかよくわからない。</p>
+<p>とりあえず STDERR が闇に葬られるとか不便すぎるので</p>
+<pre><code>diff --git a/src/mod_cgi.c b/src/mod_cgi.c
+index 6f27f8b..18f88c2 100644
+--- a/src/mod_cgi.c
++++ b/src/mod_cgi.c
+@@ -987,8 +987,6 @@ static int cgi_create_env(server *srv, connection *con, plugin_data *p, buffer *
+         *c = &apos;/&apos;;
+            }
+
+-       openDevNull(STDERR_FILENO);
+-
+        /* we don&apos;t need the client socket */
+           for (i = 3; i &lt; 256; i++) {
+                  if (i != srv-&gt;errorlog_fd) close(i);
+</code></pre>
+<p>などとしておいた。1.4.x 系では今のところ最新の 1.4.20 だけがこうなってる。</p>
+<p>チケット作っとこうとしたらもうあった。</p>
+<blockquote><p><a href="http://redmine.lighttpd.net/issues/show/1836">http://redmine.lighttpd.net/issues/show/1836</a></p></blockquote>
+<p>次のバージョンでは直ると良いね。</p>
+
+  </div>
+
+  <div class="meta">
+    by typester /
+    at <a href="/memo/2008/12/24/1/">2008-12-24T15:27:00</a> /
+    <a href="/memo/tag/lighttpd/">lighttpd</a>
+    / <a href="/memo/2008/12/24/1/#disqus_thread">Comment</a>
+  </div>
+</div>
+
+<div class="entry autopagerize_page_element">
+  <h2><a href="/memo/2007/12/20/1/">lighttpd+fastcgiで</a></h2>
+
+  <div class="body">
+    <p>fastcgiだけ再起動したい場合に、再起動中にアクセスあるとfastcgiプロセスが上がったあとも500になってしまうことがあるのだけど、みんなどうしてる？</p>
+
+  </div>
+
+  <div class="meta">
+    by typester /
+    at <a href="/memo/2007/12/20/1/">2007-12-20T01:14:00</a> /
+    <a href="/memo/tag/lighttpd/">lighttpd</a>
+    &middot; <a href="/memo/tag/perl/">perl</a>
+    / <a href="/memo/2007/12/20/1/#disqus_thread">Comment</a>
+  </div>
+</div>
+
+<div class="entry autopagerize_page_element">
+  <h2><a href="/memo/2007/04/14/3/"></a></h2>
+
+  <div class="body">
+    <p>おお、1.4.15。</p>
+
+  </div>
+
+  <div class="meta">
+    by typester /
+    at <a href="/memo/2007/04/14/3/">2007-04-14T07:37:00</a> /
+    <a href="/memo/tag/lighttpd/">lighttpd</a>
+    / <a href="/memo/2007/04/14/3/#disqus_thread">Comment</a>
+  </div>
+</div>
+
+<div class="entry autopagerize_page_element">
+  <h2><a href="/memo/2007/03/16/1/"></a></h2>
+
+  <div class="body">
+    <p>学生さんのcatアプリ見せてもらった。なんかすごいがんばってた。</p>
+<p>Chainedアクションがないころのなのか、<code>/wiki/{pagename}/edit</code> とかそれ系のコントローラを Regex コントローラでがんばってたりしてた。</p>
+<p><code>Plugin::Images</code> とかつかってた。しらんかった。なんかあれだなーと思ったら作者見て納得。nothingmuch のか。</p>
+<p><code>Plugin::Static::Simple</code> とかは使わないほうがいいよ。静的ファイルはサーバー直でやんないと無駄。ロードするだけですらッ！</p>
+<p>それで思い出したけど、lighttpdの設定、最近 <code>mod_alias</code> も <code>mod_setenv</code> も <code>mod_rewrite</code> もつかわない書式を思いついて使ってる。</p>
+<pre><code>$HTTP[<span class="string">"url"</span>] =~ <span class="string">"^/(?!favicon\.ico$|static/|js/|css/|images?/)"</span> {
+    fastcgi.server = (
+        <span class="string">""</span> =&gt; (
+            ( <span class="string">"socket"</span> =&gt; <span class="string">"/path/to/myapp.socket"</span>,
+              <span class="string">"check-local"</span> =&gt; <span class="string">"disable"</span>, ),
+        ),
+    )
+}
+</code></pre>
+<p>こんなの。</p>
+<p>とにかく、技術はどうあれ、作ってみる、形にするってことはやっぱり重要だなと思った。口だけなら何でもいえる。</p>
+
+  </div>
+
+  <div class="meta">
+    by typester /
+    at <a href="/memo/2007/03/16/1/">2007-03-16T15:34:00</a> /
+    <a href="/memo/tag/life/">life</a>
+    &middot; <a href="/memo/tag/catalyst/">catalyst</a>
+    &middot; <a href="/memo/tag/lighttpd/">lighttpd</a>
+    / <a href="/memo/2007/03/16/1/#disqus_thread">Comment</a>
+  </div>
+</div>
+
+<div class="entry autopagerize_page_element">
+  <h2><a href="/memo/2006/12/19/5/">C::P::XSendFile supported X-LIGHTTPD-send-tempfile</a></h2>
+
+  <div class="body">
+    <p>1.5 動いた記念。</p>
+<blockquote><p><a href="http://svn.unknownplace.org/public/library/perl/trunk/Catalyst-Plugin-XSendFile/">http://svn.unknownplace.org/public/library/perl/trunk/Catalyst-Plugin-XSendFile/</a></p></blockquote>
+<p>Plugin::XSendFile をアップデート。あとでdevリリースでCPANに。</p>
+<pre><code># myapp.yml
+sendfile:
+  tempdir: /dev/shm
+</code></pre>
+<p>して</p>
+<pre><code>use Catalyst qw/XSendFile/;
+</code></pre>
+<p>するだけで、出力が 16kbyte 以上のときは自動で X-LIGHTTPD-send-tempfile 経由での出力になるって感じ。</p>
+<p>16kbyte って閾値と、それ以前に勝手にsendfileるのは設定できるようにしたほうが良いな。ま、おいおい。</p>
+<p>んで、確かに速いんだけど、なんか不安定。ベンチってたんだけど fastcgi プロセス反応なくなるときがある。</p>
+<p>XSendFile の使用有無にかかわらずそうなのでfastcgiサポート自体の問題くさいけどよくわからない。</p>
+
+  </div>
+
+  <div class="meta">
+    by typester /
+    at <a href="/memo/2006/12/19/5/">2006-12-19T21:18:00</a> /
+    <a href="/memo/tag/catalyst/">catalyst</a>
+    &middot; <a href="/memo/tag/lighttpd/">lighttpd</a>
+    / <a href="/memo/2006/12/19/5/#disqus_thread">Comment</a>
+  </div>
+</div>
+
+<div class="entry autopagerize_page_element">
+  <h2><a href="/memo/2006/12/19/4/">Catalyst on Lighttpd 1.5.0</a></h2>
+
+  <div class="body">
+    <p><a href="http://blog.lighttpd.net/articles/2006/12/18/pre-release-lighttpd-1-5-0-r1477-tar-gz" title="PRE-RELEASE: lighttpd-1.5.0-r1477.tar.gz">新しいの</a>でてたのでリベンジ。</p>
+<pre><code>server.modules = (
+    <span class="string">"mod_proxy_core"</span>,
+    <span class="string">"mod_proxy_backend_fastcgi"</span>,
+)
+
+server.document-root = <span class="string">"/home/typester/tmp/MyApp/root"</span>
+server.port = 3000
+
+proxy-core.balancer = <span class="string">"round-robin"</span>
+proxy-core.protocol = <span class="string">"fastcgi"</span>
+proxy-core.backends = ( <span class="string">"unix:/home/typester/tmp/MyApp/fcgi.socket"</span> )
+</code></pre>
+<p>でとりあえずMyApp動いた。</p>
+<p>バックエンドがひとつの場合でも proxy-core.balancer を必ず指定しないといけないようだ。でないと</p>
+<pre><code>mod_proxy_core.c.1550: (trace) backlog: all backends are down, putting /foo (4) into the backlog
+</code></pre>
+<p>といわれてしまう。</p>
+<p><a href="http://unknownplace.org/memo/2006/11/16#e002" title="CLON - 2006/11/16 - いまだに lighttpd 1.5.0 で">この間</a>はそれでできなかっただけかも！</p>
+<p>X-Rewrite-* や X-LIGHTTPD-send-tempfile など楽しげな機能でやっと遊べる＞＜</p>
+<p>あと <code>mod_uploadprogress</code> のソースもついてきていて、configureスクリプトの do_build のところに追加で書いてみたらビルドできた。これでも遊んでみたい。</p>
+
+  </div>
+
+  <div class="meta">
+    by typester /
+    at <a href="/memo/2006/12/19/4/">2006-12-19T16:01:00</a> /
+    <a href="/memo/tag/lighttpd/">lighttpd</a>
+    &middot; <a href="/memo/tag/catalyst/">catalyst</a>
+    / <a href="/memo/2006/12/19/4/#disqus_thread">Comment</a>
+  </div>
+</div>
+
+
+
+
+<div id="pager" class="autopagerize_insert_before">
+  <p class="pages">
+    <span class="prev">&laquo; Prev</span>
+    <span class="current">1</span>
+    <a href="/memo/tag/lighttpd/page/2/">2</a>
+    <a href="/memo/tag/lighttpd/page/3/">3</a>
+    <a class="next" rel="next" href="/memo/tag/lighttpd/page/2/">Next &raquo;</a>
+  </p>
+  <p class="info">(Page 1 of 3)</p>
+</div>
+
+
+</div>
+
+<p id="footer">
+  Copyright &copy; 2005-2013
+      by <a class="author" href="/about/#me">Daisuke Murase (typester)</a> /
+  Site generated by <a href="https://github.com/typester/nim">nim</a> /
+  Comments powered by <a href="http://disqus.com">DISQUS</a>.
+</p>
+
+</div>
+
+
+<script type="text/javascript">
+//<![CDATA[
+(function() {
+	var links = document.getElementsByTagName('a');
+	var query = '?';
+	for(var i = 0; i < links.length; i++) {
+	if(links[i].href.indexOf('#disqus_thread') >= 0) {
+		query += 'url' + i + '=' + encodeURIComponent(links[i].href) + '&';
+	}
+	}
+	document.write('<script charset="utf-8" type="text/javascript" src="http://disqus.com/forums/unknownplace/get_num_replies.js' + query + '"></' + 'script>');
+})();
+//]]>
+</script>
+
+
+<script type="text/javascript">
+var gaJsHost = (("https:" == document.location.protocol) ? "https://ssl." : "http://www.");
+document.write(unescape("%3Cscript src='" + gaJsHost + "google-analytics.com/ga.js' type='text/javascript'%3E%3C/script%3E"));
+</script>
+<script type="text/javascript">
+try {
+var pageTracker = _gat._getTracker("UA-53067-1");
+pageTracker._trackPageview();
+} catch(err) {}</script>
+
+<script>
+function googleTranslateElementInit() {
+  new google.translate.TranslateElement({
+    pageLanguage: 'ja',
+    gaTrack: true,
+    gaId: 'UA-53067',
+    floatPosition: google.translate.TranslateElement.FloatPosition.BOTTOM_RIGHT
+  });
+}
+</script><script src="//translate.google.com/translate_a/element.js?cb=googleTranslateElementInit"></script>
+
+</body>
+</html>

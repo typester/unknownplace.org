@@ -1,0 +1,287 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="ja" xml:lang="ja">
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <title>memo - unknownplace.org</title>
+  <link rel="stylesheet" type="text/css" href="http://yui.yahooapis.com/3.0.0/build/cssreset/reset-min.css" />
+  <link rel="stylesheet" type="text/css" href="http://yui.yahooapis.com/3.0.0/build/cssfonts/fonts-min.css" />
+  <link rel="stylesheet" href="/css/style.css" type="text/css" />
+  <meta property="fb:admins" content="1093631929" />
+  <meta name="robots" content="noindex" />
+  <link rel="alternate" type="application/rss+xml" href="http://unknownplace.org/memo/index.rss" />
+</head>
+<body>
+
+<div id="container">
+<div id="header">
+    <h1><a href="/">unknownplace.org</a></h1> /
+<a href="/memo/">memo</a>
+</div>
+
+<div id="content">
+
+<div class="entry autopagerize_page_element">
+  <h2><a href="/memo/2006/07/25/2/"></a></h2>
+
+  <div class="body">
+    <p>出社。</p>
+
+  </div>
+
+  <div class="meta">
+    by typester /
+    at <a href="/memo/2006/07/25/2/">2006-07-25T10:56:00</a> /
+    <a href="/memo/tag/life/">life</a>
+    / <a href="/memo/2006/07/25/2/#disqus_thread">Comment</a>
+  </div>
+</div>
+
+<div class="entry autopagerize_page_element">
+  <h2><a href="/memo/2006/07/25/1/"></a></h2>
+
+  <div class="body">
+    <p>退社。</p>
+
+  </div>
+
+  <div class="meta">
+    by typester /
+    at <a href="/memo/2006/07/25/1/">2006-07-25T01:55:00</a> /
+    <a href="/memo/tag/life/">life</a>
+    / <a href="/memo/2006/07/25/1/#disqus_thread">Comment</a>
+  </div>
+</div>
+
+<div class="entry autopagerize_page_element">
+  <h2><a href="/memo/2006/07/24/4/"></a></h2>
+
+  <div class="body">
+    <blockquote><p><a href="http://lowreal.net/logs/2006/07/24/1">svn fsfs, svnfs &lt; 24 &lt; July &lt; 2006 &lt; nulog, NULL::something : out of the headphone</a></p><p>svn の HEAD を自動で公開したい。Apache さんが HEAD を普通のファイルとして認識して、普通にアクセスできる感じ。既存のものをそのままバージョン管理するような。</p></blockquote>
+<pre><code>SVNAutoversioning On
+</code></pre>
+<p>でいいんじゃないと？おもった。</p>
+<p>でもWindowsのWebDAV機能はうんこすぎるのでまともに使う場合はdavfsとかでマウントしつつそれをsamba共有とかのほうがいい気がする。</p>
+
+  </div>
+
+  <div class="meta">
+    by typester /
+    at <a href="/memo/2006/07/24/4/">2006-07-24T17:00:00</a> /
+    <a href="/memo/tag/subversion/">subversion</a>
+    / <a href="/memo/2006/07/24/4/#disqus_thread">Comment</a>
+  </div>
+</div>
+
+<div class="entry autopagerize_page_element">
+  <h2><a href="/memo/2006/07/24/3/">SubRequest #2</a></h2>
+
+  <div class="body">
+    <p>今のCatalystだとうまく動かんね。localまくってるところに</p>
+<pre><code><span class="keyword">local</span> <span class="variable-name">$c</span>-&gt;{<span class="string">action</span>};
+<span class="keyword">local</span> <span class="variable-name">$c</span>-&gt;{<span class="string">namespace</span>};
+</code></pre>
+<p>追加いりそう。あんまり見てないんですが。</p>
+
+  </div>
+
+  <div class="meta">
+    by typester /
+    at <a href="/memo/2006/07/24/3/">2006-07-24T16:46:00</a> /
+    <a href="/memo/tag/catalyst/">catalyst</a>
+    / <a href="/memo/2006/07/24/3/#disqus_thread">Comment</a>
+  </div>
+</div>
+
+<div class="entry autopagerize_page_element">
+  <h2><a href="/memo/2006/07/24/2/">Catalyst::Plugin::SubRequest</a></h2>
+
+  <div class="body">
+    <p>初めてソース見たけど、いいじゃんこれ。</p>
+<p>なぜか名前から連想で内部で<code>LWP::UserAgent</code>とかもってて普通にHTTPアクセスしてるとか勝手に思い込んでたけど、そうじゃなかった。</p>
+<p>食わず嫌いはよくないなぁ。</p>
+<p>自分自身が提供してるAPIを使う場合とかかなり便利そう。</p>
+<pre><code><span class="keyword">my</span> <span class="variable-name">$json</span> = $c-&gt;subreq(<span class="string">&apos;/json/blahapi&apos;</span>);
+</code></pre>
+
+  </div>
+
+  <div class="meta">
+    by typester /
+    at <a href="/memo/2006/07/24/2/">2006-07-24T12:43:00</a> /
+    <a href="/memo/tag/perl/">perl</a>
+    &middot; <a href="/memo/tag/catalyst/">catalyst</a>
+    / <a href="/memo/2006/07/24/2/#disqus_thread">Comment</a>
+  </div>
+</div>
+
+<div class="entry autopagerize_page_element">
+  <h2><a href="/memo/2006/07/24/1/"></a></h2>
+
+  <div class="body">
+    <p>出社。</p>
+
+  </div>
+
+  <div class="meta">
+    by typester /
+    at <a href="/memo/2006/07/24/1/">2006-07-24T10:11:00</a> /
+    <a href="/memo/tag/life/">life</a>
+    / <a href="/memo/2006/07/24/1/#disqus_thread">Comment</a>
+  </div>
+</div>
+
+<div class="entry autopagerize_page_element">
+  <h2><a href="/memo/2006/07/22/3/">Simple tip for text parsers with Catalyst</a></h2>
+
+  <div class="body">
+    <pre><code><span class="keyword">for</span> <span class="keyword">my</span> <span class="variable-name">$parser</span> (<span class="cperl-nonoverridable">qw</span><span class="string">/Markdown Textile Trac Hatena/</span>) {
+    <span class="type">__PACKAGE__</span>-&gt;plugin( <span class="type">lc</span> $parser, <span class="string">&quot;Text::$parser&quot;</span> );
+}
+<span class="type">__PACKAGE__</span>-&gt;textile-&gt;charset(<span class="string">&apos;utf-8&apos;</span>);
+</code></pre>
+<p>とかで一括セットアップ。</p>
+<p><code>$c-&gt;trac-&gt;parse($text)</code> とか使える。</p>
+
+  </div>
+
+  <div class="meta">
+    by typester /
+    at <a href="/memo/2006/07/22/3/">2006-07-22T03:50:00</a> /
+    <a href="/memo/tag/perl/">perl</a>
+    &middot; <a href="/memo/tag/catalyst/">catalyst</a>
+    / <a href="/memo/2006/07/22/3/#disqus_thread">Comment</a>
+  </div>
+</div>
+
+<div class="entry autopagerize_page_element">
+  <h2><a href="/memo/2006/07/22/2/"></a></h2>
+
+  <div class="body">
+    <p>ブログ、日記すみわけ。</p>
+<p>こっちはどうでもいいこと。日記。独り言。メモ。</p>
+<p>向こうはまとまった記事用。英語の勉強のためになるべく文章を書く。</p>
+<p>なのでもう日本語ブログはいいか、復活させなくて。</p>
+
+  </div>
+
+  <div class="meta">
+    by typester /
+    at <a href="/memo/2006/07/22/2/">2006-07-22T02:51:00</a> /
+    <a href="/memo/tag/life/">life</a>
+    / <a href="/memo/2006/07/22/2/#disqus_thread">Comment</a>
+  </div>
+</div>
+
+<div class="entry autopagerize_page_element">
+  <h2><a href="/memo/2006/07/22/1/"></a></h2>
+
+  <div class="body">
+    <p>退社。というか帰宅。</p>
+
+  </div>
+
+  <div class="meta">
+    by typester /
+    at <a href="/memo/2006/07/22/1/">2006-07-22T01:49:00</a> /
+    <a href="/memo/tag/life/">life</a>
+    / <a href="/memo/2006/07/22/1/#disqus_thread">Comment</a>
+  </div>
+</div>
+
+<div class="entry autopagerize_page_element">
+  <h2><a href="/memo/2006/07/21/3/">Catalyst::Plugin::XSendFile</a></h2>
+
+  <div class="body">
+    <p>lightyのX-SendfileをCatalystから使うプラグインをつくった。</p>
+<pre><code>$c-&gt;res-&gt;sendfile(<span class="string">&quot;/path/to/file&quot;</span>);
+</code></pre>
+<p>って感じで使えます。同じインタフェースでCatalystテストサーバーの時でも動くようになってます。</p>
+<p>miyagawaさんの話だとperlbalでも同じようなことが出来るとのこと(もっと高機能)。でさらにそれにmogilefsを組み合わせるとかなりスケーラビリティが高そうな感じ。</p>
+<p>ちょっと見てみるべきかなぁ。</p>
+
+  </div>
+
+  <div class="meta">
+    by typester /
+    at <a href="/memo/2006/07/21/3/">2006-07-21T21:05:00</a> /
+    <a href="/memo/tag/perl/">perl</a>
+    &middot; <a href="/memo/tag/catalyst/">catalyst</a>
+    &middot; <a href="/memo/tag/lighttpd/">lighttpd</a>
+    / <a href="/memo/2006/07/21/3/#disqus_thread">Comment</a>
+  </div>
+</div>
+
+
+
+
+<div id="pager" class="autopagerize_insert_before">
+  <p class="pages">
+    <a class="prev" rel="previous" href="/memo/page/90/">&laquo; Prev</a>
+    <a href="/memo/page/87/">87</a>
+    <a href="/memo/page/88/">88</a>
+    <a href="/memo/page/89/">89</a>
+    <a href="/memo/page/90/">90</a>
+    <span class="current">91</span>
+    <a href="/memo/page/92/">92</a>
+    <a href="/memo/page/93/">93</a>
+    <a href="/memo/page/94/">94</a>
+    <a href="/memo/page/95/">95</a>
+    <a href="/memo/page/96/">96</a>
+    <a class="next" rel="next" href="/memo/page/92/">Next &raquo;</a>
+  </p>
+  <p class="info">(Page 91 of 203)</p>
+</div>
+
+
+</div>
+
+<p id="footer">
+  Copyright &copy; 2005-2013
+      by <a class="author" href="/about/#me">Daisuke Murase (typester)</a> /
+  Site generated by <a href="https://github.com/typester/nim">nim</a> /
+  Comments powered by <a href="http://disqus.com">DISQUS</a>.
+</p>
+
+</div>
+
+
+<script type="text/javascript">
+//<![CDATA[
+(function() {
+	var links = document.getElementsByTagName('a');
+	var query = '?';
+	for(var i = 0; i < links.length; i++) {
+	if(links[i].href.indexOf('#disqus_thread') >= 0) {
+		query += 'url' + i + '=' + encodeURIComponent(links[i].href) + '&';
+	}
+	}
+	document.write('<script charset="utf-8" type="text/javascript" src="http://disqus.com/forums/unknownplace/get_num_replies.js' + query + '"></' + 'script>');
+})();
+//]]>
+</script>
+
+
+<script type="text/javascript">
+var gaJsHost = (("https:" == document.location.protocol) ? "https://ssl." : "http://www.");
+document.write(unescape("%3Cscript src='" + gaJsHost + "google-analytics.com/ga.js' type='text/javascript'%3E%3C/script%3E"));
+</script>
+<script type="text/javascript">
+try {
+var pageTracker = _gat._getTracker("UA-53067-1");
+pageTracker._trackPageview();
+} catch(err) {}</script>
+
+<script>
+function googleTranslateElementInit() {
+  new google.translate.TranslateElement({
+    pageLanguage: 'ja',
+    gaTrack: true,
+    gaId: 'UA-53067',
+    floatPosition: google.translate.TranslateElement.FloatPosition.BOTTOM_RIGHT
+  });
+}
+</script><script src="//translate.google.com/translate_a/element.js?cb=googleTranslateElementInit"></script>
+
+</body>
+</html>

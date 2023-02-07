@@ -1,0 +1,335 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="ja" xml:lang="ja">
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <title>memo - unknownplace.org</title>
+  <link rel="stylesheet" type="text/css" href="http://yui.yahooapis.com/3.0.0/build/cssreset/reset-min.css" />
+  <link rel="stylesheet" type="text/css" href="http://yui.yahooapis.com/3.0.0/build/cssfonts/fonts-min.css" />
+  <link rel="stylesheet" href="/css/style.css" type="text/css" />
+  <meta property="fb:admins" content="1093631929" />
+  <meta name="robots" content="noindex" />
+  <link rel="alternate" type="application/rss+xml" href="http://unknownplace.org/memo/index.rss" />
+</head>
+<body>
+
+<div id="container">
+<div id="header">
+    <h1><a href="/">unknownplace.org</a></h1> /
+<a href="/memo/">memo</a>
+</div>
+
+<div id="content">
+
+<div class="entry autopagerize_page_element">
+  <h2><a href="/memo/2005/10/31/2/">windmove.el</a></h2>
+
+  <div class="body">
+    <pre><code>(setq windmove-wrap-around t)
+(global-set-key <span class="string">&quot;\C-\M-h&quot;</span> &apos;windmove-left)
+(global-set-key <span class="string">&quot;\C-\M-j&quot;</span> &apos;windmove-down)
+(global-set-key <span class="string">&quot;\C-\M-k&quot;</span> &apos;windmove-up)
+(global-set-key <span class="string">&quot;\C-\M-l&quot;</span> &apos;windmove-right)
+</code></pre>
+<p>結局こんな感じに。ここだけ vi バインド！</p>
+<p>\C-\M-(b|f|n|p) とかしたら f や b で指が死にそうだったの。</p>
+
+  </div>
+
+  <div class="meta">
+    by typester /
+    at <a href="/memo/2005/10/31/2/">2005-10-31T09:13:00</a> /
+    <a href="/memo/tag/emacs/">emacs</a>
+    / <a href="/memo/2005/10/31/2/#disqus_thread">Comment</a>
+  </div>
+</div>
+
+<div class="entry autopagerize_page_element">
+  <h2><a href="/memo/2005/10/30/4/">windmove.el のキーバインド</a></h2>
+
+  <div class="body">
+    <p>riece のために導入したはいいけど、キーバインド設定がむずい。悩む。</p>
+<p>(Shift or Meta) + カーソルキー ってしてる人が多いみたいだけどそれはやだなぁ。ううーん。</p>
+
+  </div>
+
+  <div class="meta">
+    by typester /
+    at <a href="/memo/2005/10/30/4/">2005-10-30T19:49:00</a> /
+    <a href="/memo/tag/emacs/">emacs</a>
+    / <a href="/memo/2005/10/30/4/#disqus_thread">Comment</a>
+  </div>
+</div>
+
+<div class="entry autopagerize_page_element">
+  <h2><a href="/memo/2005/10/28/2/">Meadow 素敵 #2</a></h2>
+
+  <div class="body">
+    <p>他にも、y/n とか聞かれるとこで自動で IME OFF にできたり、mew で URL 右クリすると Firefox 立ち上がったり、kill したのがクリップボード入ったりと、Windows との親和性が(当たり前だが) emacs via PuTTY と比べると全然便利。</p>
+<p>色分け設定もできるようになったのでいろいろいじってるんだけど(めんどくさい！)、.emacs 内で font-lockなんとかの face の色の指定しようとするとエラーになる。</p>
+<p>こんな感じに:</p>
+<pre><code>(set-face-foreground &apos;font-lock-comment-face <span class="string">&quot;lime green&quot;</span>)
+</code></pre>
+<p>とか書いておくと、<code>error: Invalid face, font-lock-comment-face</code> とかいわれる。</p>
+<p>font-lock-mode になってないからだろうけど、どすんだ。<a href="http://unknownplace.org/memo/2005/10/28#e006" title="謎エラー解決 - CLON">解決</a>。</p>
+<p>つか配色設定めんどすｇｒｒｒ</p>
+
+  </div>
+
+  <div class="meta">
+    by typester /
+    at <a href="/memo/2005/10/28/2/">2005-10-28T00:03:00</a> /
+    <a href="/memo/tag/emacs/">emacs</a>
+    &middot; <a href="/memo/tag/meadow/">meadow</a>
+    / <a href="/memo/2005/10/28/2/#disqus_thread">Comment</a>
+  </div>
+</div>
+
+<div class="entry autopagerize_page_element">
+  <h2><a href="/memo/2005/10/28/1/">Meadow 素敵</a></h2>
+
+  <div class="body">
+    <p>Meadow すごい。今まで散々悩んだ <a href="http://www.proggyfonts.com/" title="Proggy Programming Fonts">Proggy フォント</a>と日本語フォントの組み合わせが普通にあっさり使えた。までも、xyzzyでも普通につかえるのだけど。</p>
+<p>フォントの部分はよくわかってないが、こんな感じに:</p>
+<pre><code>; private-fontset&#20316;&#25104;
+(w32-add-font
+ <span class="string">"private-fontset"</span>
+ <span class="warning">'</span><span class="string">((spec
+    ((:char-spec ascii :height 90)
+     strict
+     (w32-logfont "CodingFontTobi1" 0 -12 400 0 nil nil nil 0 1 3 49))
+    ((:char-spec ascii :height 90 :weight bold)
+     strict
+     (w32-logfont "CodingFontTobi1" 0 -12 700 0 nil nil nil 0 1 3 49))
+    ((:char-spec ascii :height 90 :slant italic)
+     strict
+     (w32-logfont "CodingFontTobi1" 0 -12 400 0   t nil nil 0 1 3 49))
+    ((:char-spec ascii :height 90 :weight bold :slant italic)
+     strict
+     (w32-logfont "CodingFontTobi1" 0 -12 700 0   t nil nil 0 1 3 49))
+    ((:char-spec japanese-jisx0208 :height 120)
+     strict
+     (w32-logfont "&#65325;&#65331; &#12468;&#12471;&#12483;&#12463;" 0 -12 400 0 nil nil nil 128 1 3 49))
+    ((:char-spec japanese-jisx0208 :height 120 :weight bold)
+     strict
+     (w32-logfont "&#65325;&#65331; &#12468;&#12471;&#12483;&#12463;" 0 -12 700 0 nil nil nil 128 1 3 49)
+     ((spacing . -1)))
+    ((:char-spec japanese-jisx0208 :height 120 :slant italic)
+     strict
+     (w32-logfont "&#65325;&#65331; &#12468;&#12471;&#12483;&#12463;" 0 -12 400 0   t nil nil 128 1 3 49))
+    ((:char-spec japanese-jisx0208 :height 120 :weight bold :slant italic)
+     strict
+     (w32-logfont "&#65325;&#65331; &#12468;&#12471;&#12483;&#12463;" 0 -12 700 0   t nil nil 128 1 3 49)
+     ((spacing . -1))))))
+(set-face-attribute '</span>variable-pitch nil :family <span class="string">"*"</span>)
+</code></pre>
+<p>とかで fontset 作ってから</p>
+<pre><code>; &#21021;&#26399;&#12501;&#12524;&#12540;&#12512;
+(setq <span class="keyword">default</span>-frame-alist
+      (append (list <span class="warning">'</span><span class="string">(font . "private-fontset")
+            '</span>(ime-font . (w32-logfont <span class="string">"&#65325;&#65331; &#12468;&#12471;&#12483;&#12463;"</span> 0 12 400 0 nil nil nil 128 1 3 49)))
+          <span class="keyword">default</span>-frame-alist))
+</code></pre>
+<p>とかとしてデフォルトのフォントセットにする。</p>
+<p>とはいえ CodingFontTobi も MS ゴシックどっちも等幅といっても縦横比が違うので、混じっているとずれますが。日本語フォントは基本、mew 用なので問題ない。(Summaryがずれずれになっちゃうけど)</p>
+<p>日本語綺麗になっちゃったから navi2ch とか riece とかもいれちゃおうか！</p>
+<p>配色設定めんどくせー。</p>
+
+  </div>
+
+  <div class="meta">
+    by typester /
+    at <a href="/memo/2005/10/28/1/">2005-10-28T00:01:00</a> /
+    <a href="/memo/tag/emacs/">emacs</a>
+    &middot; <a href="/memo/tag/meadow/">meadow</a>
+    / <a href="/memo/2005/10/28/1/#disqus_thread">Comment</a>
+  </div>
+</div>
+
+<div class="entry autopagerize_page_element">
+  <h2><a href="/memo/2005/10/27/5/">Meadow</a></h2>
+
+  <div class="body">
+    <p>インスコしてみた。</p>
+<p>mew を使うようになって PuTTY 内 emacs でのフォントの問題がやっぱきついなーと。</p>
+<p>設定調べ中。どだろな。</p>
+
+  </div>
+
+  <div class="meta">
+    by typester /
+    at <a href="/memo/2005/10/27/5/">2005-10-27T13:24:00</a> /
+    <a href="/memo/tag/emacs/">emacs</a>
+    / <a href="/memo/2005/10/27/5/#disqus_thread">Comment</a>
+  </div>
+</div>
+
+<div class="entry autopagerize_page_element">
+  <h2><a href="/memo/2005/10/25/12/">mew</a></h2>
+
+  <div class="body">
+    <p>いい加減 Becky! 重いので、サーバー上で使うように入れてみる。</p>
+<p>と思ったら間違って colinux のほうに入れてた。とりあえずこっちで使ってみる。</p>
+<p>Namazu や Rast との連携もできるみたいでヨサゲかも。</p>
+<pre><code> 提案パッケージ:
+  w3m-el stunnel4 stunnel wv xlhtml ppthtml compface netpbm x-face-el mu-cite mule-ucs bogofilter bsfilter spamassassin
+  namazu2-index-tools mhc
+</code></pre>
+
+  </div>
+
+  <div class="meta">
+    by typester /
+    at <a href="/memo/2005/10/25/12/">2005-10-25T21:45:00</a> /
+    <a href="/memo/tag/emacs/">emacs</a>
+    &middot; <a href="/memo/tag/mew/">mew</a>
+    / <a href="/memo/2005/10/25/12/#disqus_thread">Comment</a>
+  </div>
+</div>
+
+<div class="entry autopagerize_page_element">
+  <h2><a href="/memo/2005/10/23/4/">viぽい%</a></h2>
+
+  <div class="body">
+    <p>Template-Toolkitの書式で誤動作しまくってちょっとうぜーかもしらんね。</p>
+
+  </div>
+
+  <div class="meta">
+    by typester /
+    at <a href="/memo/2005/10/23/4/">2005-10-23T19:16:00</a> /
+    <a href="/memo/tag/emacs/">emacs</a>
+    &middot; <a href="/memo/tag/perl/">perl</a>
+    / <a href="/memo/2005/10/23/4/#disqus_thread">Comment</a>
+  </div>
+</div>
+
+<div class="entry autopagerize_page_element">
+  <h2><a href="/memo/2005/10/17/5/">match-peren</a></h2>
+
+  <div class="body">
+    <p>Perl BestPractices に vi の % っぽいことをする elisp がのっていたけど emacs22 じゃそのままだとうまく動かなくて放置してたんだけど、EmacsWiki 見たら載ってた。</p>
+<pre><code>(<span class="keyword">defun</span> <span class="function-name">match-paren</span> (arg)
+  <span class="doc">&quot;Go to the matching paren if on a paren; otherwise insert %.&quot;</span>
+  (interactive <span class="string">&quot;p&quot;</span>)
+  (<span class="keyword">cond</span> ((looking-at <span class="string">&quot;\\s\(&quot;</span>) (forward-list 1) (backward-char 1))
+    ((looking-at <span class="string">&quot;\\s\)&quot;</span>) (forward-char 1) (backward-list 1))
+    (t (self-insert-command (or arg 1)))))
+(global-set-key <span class="string">&quot;%&quot;</span> &apos;match-paren)
+</code></pre>
+<p>これでOK。でも、なんでこれで <code>[]</code> とか <code>{}</code> でも動くのかわからん。。</p>
+
+  </div>
+
+  <div class="meta">
+    by typester /
+    at <a href="/memo/2005/10/17/5/">2005-10-17T17:16:00</a> /
+    <a href="/memo/tag/emacs/">emacs</a>
+    / <a href="/memo/2005/10/17/5/#disqus_thread">Comment</a>
+  </div>
+</div>
+
+<div class="entry autopagerize_page_element">
+  <h2><a href="/memo/2005/10/17/4/">EmacsRuby</a></h2>
+
+  <div class="body">
+    <p>lisp がわけわからないので、call-process とかで外部の Perl スクリプトでごにょごにょさせようとおもって call-process についてぐぐってみたら発見。</p>
+<p>これを使うと lisp のかわりに Ruby を使って emacs を拡張することができる。よすぎ。。</p>
+<p>Perl 版さがしたけどなさげ。</p>
+<p><a href="http://www.rubyist.net/~rubikitch/computer/el4r/">el4r - EmacsRuby</a></p>
+
+  </div>
+
+  <div class="meta">
+    by typester /
+    at <a href="/memo/2005/10/17/4/">2005-10-17T15:01:00</a> /
+    <a href="/memo/tag/emacs/">emacs</a>
+    / <a href="/memo/2005/10/17/4/#disqus_thread">Comment</a>
+  </div>
+</div>
+
+<div class="entry autopagerize_page_element">
+  <h2><a href="/memo/2005/10/09/1/">emacsで文字コード指定してからファイル開く</a></h2>
+
+  <div class="body">
+    <p><code>C-x ENTER c</code> で文字コード選んでから <code>C-x C-f</code></p>
+
+  </div>
+
+  <div class="meta">
+    by typester /
+    at <a href="/memo/2005/10/09/1/">2005-10-09T00:00:00</a> /
+    <a href="/memo/tag/emacs/">emacs</a>
+    / <a href="/memo/2005/10/09/1/#disqus_thread">Comment</a>
+  </div>
+</div>
+
+
+
+
+<div id="pager" class="autopagerize_insert_before">
+  <p class="pages">
+    <a class="prev" rel="previous" href="/memo/tag/emacs/page/5/">&laquo; Prev</a>
+    <a href="/memo/tag/emacs/">1</a>
+    <a href="/memo/tag/emacs/page/2/">2</a>
+    <a href="/memo/tag/emacs/page/3/">3</a>
+    <a href="/memo/tag/emacs/page/4/">4</a>
+    <a href="/memo/tag/emacs/page/5/">5</a>
+    <span class="current">6</span>
+    <span class="next">Next &raquo;</span>
+  </p>
+  <p class="info">(Page 6 of 6)</p>
+</div>
+
+
+</div>
+
+<p id="footer">
+  Copyright &copy; 2005-2013
+      by <a class="author" href="/about/#me">Daisuke Murase (typester)</a> /
+  Site generated by <a href="https://github.com/typester/nim">nim</a> /
+  Comments powered by <a href="http://disqus.com">DISQUS</a>.
+</p>
+
+</div>
+
+
+<script type="text/javascript">
+//<![CDATA[
+(function() {
+	var links = document.getElementsByTagName('a');
+	var query = '?';
+	for(var i = 0; i < links.length; i++) {
+	if(links[i].href.indexOf('#disqus_thread') >= 0) {
+		query += 'url' + i + '=' + encodeURIComponent(links[i].href) + '&';
+	}
+	}
+	document.write('<script charset="utf-8" type="text/javascript" src="http://disqus.com/forums/unknownplace/get_num_replies.js' + query + '"></' + 'script>');
+})();
+//]]>
+</script>
+
+
+<script type="text/javascript">
+var gaJsHost = (("https:" == document.location.protocol) ? "https://ssl." : "http://www.");
+document.write(unescape("%3Cscript src='" + gaJsHost + "google-analytics.com/ga.js' type='text/javascript'%3E%3C/script%3E"));
+</script>
+<script type="text/javascript">
+try {
+var pageTracker = _gat._getTracker("UA-53067-1");
+pageTracker._trackPageview();
+} catch(err) {}</script>
+
+<script>
+function googleTranslateElementInit() {
+  new google.translate.TranslateElement({
+    pageLanguage: 'ja',
+    gaTrack: true,
+    gaId: 'UA-53067',
+    floatPosition: google.translate.TranslateElement.FloatPosition.BOTTOM_RIGHT
+  });
+}
+</script><script src="//translate.google.com/translate_a/element.js?cb=googleTranslateElementInit"></script>
+
+</body>
+</html>

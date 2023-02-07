@@ -1,0 +1,156 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="ja" xml:lang="ja">
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <title>node.js を iPhone アプリから動かす - unknownplace.org</title>
+  <link rel="stylesheet" type="text/css" href="http://yui.yahooapis.com/3.0.0/build/cssreset/reset-min.css" />
+  <link rel="stylesheet" type="text/css" href="http://yui.yahooapis.com/3.0.0/build/cssfonts/fonts-min.css" />
+  <link rel="stylesheet" href="/css/style.css" type="text/css" />
+  <meta property="fb:admins" content="1093631929" />
+  <link rel="alternate" type="application/rss+xml" href="http://unknownplace.org/memo/index.rss" />
+</head>
+<body>
+
+<div id="container">
+<div id="header">
+    <h1><a href="/">unknownplace.org</a></h1> /
+<a href="/memo/">memo</a>
+</div>
+
+<div id="content">
+<div class="entry autopagerize_page_element">
+  <h2><a href="/memo/2011/11/10/1/">node.js を iPhone アプリから動かす</a></h2>
+
+  <div class="body">
+    <p>結論から言うと、 jailbreak してないと動きません。詳細はこの辺：</p>
+<blockquote><p><a href="http://code.google.com/p/v8/issues/detail?id=1312">Issue 1312 - v8 - It&apos;s time to get iOS supported! - V8 JavaScript Engine - Google Project Hosting</a></p></blockquote>
+<p>というわけでターゲットがデベロッパー用に絞られてしまいますがやってみましょう！</p>
+<h4>Node ダウンロード</h4>
+<p>今回はリリースされたばかりの 0.6.0 を使いました。</p>
+<blockquote><p><a href="http://nodejs.org/#download">http://nodejs.org/#download</a></p></blockquote>
+<p>からダウンロードして展開しましょう</p>
+<h4>libuv にパッチを当てる</h4>
+<p>libev はなにもしないでもそのまま iOS で動きますが、 libuv はそうではないようです。</p>
+<pre><code>$ cd deps/uv
+$ wget --no-check-certificate https://raw.github.com/gist/1354552/cfb4e9a544185bdbda1a8374aaf1cd5cc812c070/libuv-ios.patch
+$ patch -p1 &lt; libuv-ios.patch
+</code></pre>
+<p>なお、このパッチは本家に pull req 送っておきました。取り込まれると良いですね。</p>
+<h4>V8 にパッチを当てる</h4>
+<p>V8 自体は ARM に対応しているようですが、iOS SDK でクロスコンパイルしようとすると </p>
+<blockquote><p>ARM EABI support is required.</p></blockquote>
+<p>とか言われてしまいます。iPhone の ARM が EABI をサポートしてないためでしょうか。</p>
+<p>ただ、最初にリンクした Goole Code の issue 内で iOS 対応のパッチを投稿している人がいて、そのパッチを当てることでビルド可能になる模様。</p>
+<pre><code>$ cd deps/v8/src
+$ patch -p0 &lt; ~/Downloads/v8-ios.patch
+</code></pre>
+<h4>Node にパッチを当てる</h4>
+<p>プロセスリストにでるプロセス名を設定する機能が Carbon をつかっているので関数殺しちゃいます。iOS でプロセス名かえられても誰得ですよね。具体的には</p>
+<pre><code>process.title = <span class="string">"hoge"</span>;
+</code></pre>
+<p>が動かなくなります。</p>
+<pre><code>$ wget --no-check-certificate https://raw.github.com/gist/1354570/0c28584c07f0410c5e5608d4e2e9ea68e6d5dbc4/node-ios.patch
+$ patch -p1 &lt; node-ios.patch
+</code></pre>
+<h4>ビルド</h4>
+<p>まずもろもろ環境変数をセットし:</p>
+<pre><code><span class="type">export</span> <span class="variable-name">CC</span>=/Developer/Platforms/iPhoneOS.platform/Developer/usr/bin/gcc
+export CFLAGS=<span class="string">"-arch armv7 -isysroot /Developer/Platforms/iPhoneOS.platform/Developer/SDKs/iPhoneOS5.0.sdk -I$HOME/dev/iphone/lib/openssl/include"</span>
+export CXX=/Developer/Platforms/iPhoneOS.platform/Developer/usr/bin/g++
+export CXXFLAGS=$CFLAGS
+export CPP=/Developer/Platforms/iPhoneOS.platform/Developer/usr/bin/cpp
+export AR=/Developer/Platforms/iPhoneOS.platform/Developer/usr/bin/ar
+export LINKFLAGS=<span class="string">"-arch armv7 -isysroot /Developer/Platforms/iPhoneOS.platform/Developer/SDKs/iPhoneOS5.0.sdk -L$HOME/dev/iphone/lib/openssl/lib"</span>
+</code></pre>
+<p>ビルド:</p>
+<pre><code>./tools/waf-light configure build --product-type=cstaticlib --dest-cpu=arm --without-snapshot
+</code></pre>
+<p>ひっそり、前もってビルド済みの openssl を参照していますが、ない場合は <code>--without-ssl</code> を追加すればいけるはずです。</p>
+<p>成功すると</p>
+<pre><code>./out/Release/deps/uv/uv.a
+./out/Release/libnode.a
+./out/Release/libv8.a
+./out/Release/libv8preparser.a
+</code></pre>
+<p>といった静的ライブラリが出来てると思うんで、これらをアプリに埋め込んであげればいいわけですね。</p>
+<p>armv6, armv7, i386 用それぞれビルドし、<code>lipo</code> でユニバーサルバイナリに仕上げるのが iOS 用静的ライブラリ作成のセオリーですが、ここではめんどいので省略します。</p>
+<h3>アプリ</h3>
+<p>だいぶ適当ですが、サンプル作ってみました。</p>
+<blockquote><p><a href="https://github.com/typester/ios-node-test">https://github.com/typester/ios-node-test</a></p></blockquote>
+<p>lib ディレクトリにさっきビルドした .a ファイルを突っ込んであげる必要があります。 また <code>node.h</code> の参照元を nave でインストールした node のパスを設定してあるので、違う環境の人は Header Search Path を環境に合わせて書き換える必要もあります。</p>
+<p><a href="http://www.flickr.com/photos/typester/6331671816/" title="20111110195319 by typester, on Flickr"><img alt="20111110195319" height="500" src="http://farm7.static.flickr.com/6228/6331671816_f2b04eb55f.jpg" width="333" /></a></p>
+<p>こんな感じの画面が出るんで、適当にコード書いて Run おせば動かすことが出来ます。</p>
+<h3>注意</h3>
+<p>コードみてもらえばわかりますがだいぶ適当につくっておりまして、node の標準出力などをうけとっておりません。また、二回目実行しようとするとアプリが落ちますw</p>
+<p>直していただける方お待ちしております！</p>
+
+  </div>
+
+  <div class="meta">
+    by typester /
+    at <a href="/memo/2011/11/10/1/">2011-11-10T19:12:00</a> /
+    <a href="/memo/tag/node/">node</a>
+    &middot; <a href="/memo/tag/iphone/">iphone</a>
+    / <a href="/memo/2011/11/10/1/#disqus_thread">Comments(0)</a>
+  </div>
+</div>
+
+<div id="disqus_thread"></div>
+
+<script type="text/javascript">
+    var disqus_url = location.protocol + "//" + location.host + "/memo/2011/11/10/1/";
+</script>
+<script type="text/javascript" src="http://disqus.com/forums/unknownplace/embed.js"></script>
+
+</div>
+
+<p id="footer">
+  Copyright &copy; 2005-2013
+      by <a class="author" href="/about/#me">Daisuke Murase (typester)</a> /
+  Site generated by <a href="https://github.com/typester/nim">nim</a> /
+  Comments powered by <a href="http://disqus.com">DISQUS</a>.
+</p>
+
+</div>
+
+
+<script type="text/javascript">
+//<![CDATA[
+(function() {
+	var links = document.getElementsByTagName('a');
+	var query = '?';
+	for(var i = 0; i < links.length; i++) {
+	if(links[i].href.indexOf('#disqus_thread') >= 0) {
+		query += 'url' + i + '=' + encodeURIComponent(links[i].href) + '&';
+	}
+	}
+	document.write('<script charset="utf-8" type="text/javascript" src="http://disqus.com/forums/unknownplace/get_num_replies.js' + query + '"></' + 'script>');
+})();
+//]]>
+</script>
+
+
+<script type="text/javascript">
+var gaJsHost = (("https:" == document.location.protocol) ? "https://ssl." : "http://www.");
+document.write(unescape("%3Cscript src='" + gaJsHost + "google-analytics.com/ga.js' type='text/javascript'%3E%3C/script%3E"));
+</script>
+<script type="text/javascript">
+try {
+var pageTracker = _gat._getTracker("UA-53067-1");
+pageTracker._trackPageview();
+} catch(err) {}</script>
+
+<script>
+function googleTranslateElementInit() {
+  new google.translate.TranslateElement({
+    pageLanguage: 'ja',
+    gaTrack: true,
+    gaId: 'UA-53067',
+    floatPosition: google.translate.TranslateElement.FloatPosition.BOTTOM_RIGHT
+  });
+}
+</script><script src="//translate.google.com/translate_a/element.js?cb=googleTranslateElementInit"></script>
+
+</body>
+</html>

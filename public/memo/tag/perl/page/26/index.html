@@ -1,0 +1,369 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="ja" xml:lang="ja">
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <title>memo - unknownplace.org</title>
+  <link rel="stylesheet" type="text/css" href="http://yui.yahooapis.com/3.0.0/build/cssreset/reset-min.css" />
+  <link rel="stylesheet" type="text/css" href="http://yui.yahooapis.com/3.0.0/build/cssfonts/fonts-min.css" />
+  <link rel="stylesheet" href="/css/style.css" type="text/css" />
+  <meta property="fb:admins" content="1093631929" />
+  <meta name="robots" content="noindex" />
+  <link rel="alternate" type="application/rss+xml" href="http://unknownplace.org/memo/index.rss" />
+</head>
+<body>
+
+<div id="container">
+<div id="header">
+    <h1><a href="/">unknownplace.org</a></h1> /
+<a href="/memo/">memo</a>
+</div>
+
+<div id="content">
+
+<div class="entry autopagerize_page_element">
+  <h2><a href="/memo/2006/01/26/3/"></a></h2>
+
+  <div class="body">
+    <p>Catalyst 5.33 いれたら CPANPLUS とかいれられちゃったのでこの際移行してみる。</p>
+<p>ちょっとつかってみて CPAN よりいいところ</p>
+<ol><li>アンインストールコマンドがある</li><li>ユーザー権限でモジュールをインストールできる (内部でsudo使用らしい)</li><li>p コマンドで履歴というかログをページャで開ける (ファイルに保存も可)</li></ol>
+<p>2 が地味にいいなー。</p>
+
+  </div>
+
+  <div class="meta">
+    by typester /
+    at <a href="/memo/2006/01/26/3/">2006-01-26T16:06:00</a> /
+    <a href="/memo/tag/life/">life</a>
+    &middot; <a href="/memo/tag/perl/">perl</a>
+    / <a href="/memo/2006/01/26/3/#disqus_thread">Comment</a>
+  </div>
+</div>
+
+<div class="entry autopagerize_page_element">
+  <h2><a href="/memo/2006/01/24/2/">下書き</a></h2>
+
+  <div class="body">
+    <p>package DBIx::Class::Loader::Pluggable; use strict;</p>
+<pre><code><span class="keyword">use</span> <span class="function-name">base</span> <span class="cperl-nonoverridable">qw</span><span class="string">/DBIx::Class::Loader/</span>;
+<span class="keyword">require</span> <span class="function-name">Module::Pluggable::Fast</span>;
+
+<span class="keyword">sub</span> <span class="function-name">new</span> {
+    <span class="keyword">my</span> <span class="variable-name">$class</span> = <span class="cperl-nonoverridable">shift</span>;
+    <span class="keyword">my</span> <span class="cperl-hash">%attr</span>  = <span class="cperl-array">@_</span>;
+
+    <span class="keyword">my</span> <span class="variable-name">$self</span> = $class-&gt;SUPER::new(<span class="cperl-array">@_</span>);
+
+    Module::Pluggable::Fast-&gt;import(
+        <span class="string">name</span>    =&gt; <span class="string">&apos;_components&apos;</span>,
+        <span class="string">require</span> =&gt; 1,
+        <span class="string">search</span>  =&gt; [ <span class="cperl-hash">$attr</span>{<span class="string">namespace</span>} ],
+    );
+    <span class="type">__PACKAGE__</span>-&gt;_components;
+
+    $self;
+}
+
+1;
+</code></pre>
+
+  </div>
+
+  <div class="meta">
+    by typester /
+    at <a href="/memo/2006/01/24/2/">2006-01-24T19:59:00</a> /
+    <a href="/memo/tag/perl/">perl</a>
+    / <a href="/memo/2006/01/24/2/#disqus_thread">Comment</a>
+  </div>
+</div>
+
+<div class="entry autopagerize_page_element">
+  <h2><a href="/memo/2006/01/20/2/">DBD::SQLite のバグ？</a></h2>
+
+  <div class="body">
+    <p>DBIC::Loader の blblack さんが綺麗なサンプルを返信してくれたのでそれを書くと、</p>
+<pre><code><span class="keyword">my</span> <span class="variable-name">$test_ite</span> = DBIC::Test-&gt;search;
+
+<span class="keyword">while</span> ( <span class="keyword">my</span> <span class="variable-name">$test</span> = $test_ite-&gt;<span class="keyword">next</span> ) { <span class="comment-delimiter"># </span><span class="comment">Fails
+</span><span class="comment-delimiter">###</span><span class="comment">foreach my $test ($test_ite-&gt;all) { # Works
+</span>    $test-&gt;text( $test-&gt;text . <span class="string">&apos; updated&apos;</span> );
+    $test-&gt;update;
+}
+</code></pre>
+<p>とかで、イテレータでまわそうとするとupdate時に死ぬ。(searchで複数の行が帰ってくる場合)</p>
+<p>配列で全部とってきてまわしたときは普通に動く。</p>
+<p>ちなみに、DBIC::Test-&gt;search-&gt;all というのは CDBI でいうリストコンテキストでの search と同じことです。もちろん CDBI と同じように</p>
+<pre><code><span class="keyword">my</span> <span class="cperl-array">@tests</span> = DBIC::Test-&gt;search;
+</code></pre>
+<p>ともかけるす。というか僕は最初そやって投稿したので、上の例が帰ってきたときにネイティブDBIC使いとの違いを知らしめられたという感じです。</p>
+
+  </div>
+
+  <div class="meta">
+    by typester /
+    at <a href="/memo/2006/01/20/2/">2006-01-20T03:09:00</a> /
+    <a href="/memo/tag/perl/">perl</a>
+    &middot; <a href="/memo/tag/dbic/">dbic</a>
+    / <a href="/memo/2006/01/20/2/#disqus_thread">Comment</a>
+  </div>
+</div>
+
+<div class="entry autopagerize_page_element">
+  <h2><a href="/memo/2006/01/18/2/">daap_proxy.pl その後</a></h2>
+
+  <div class="body">
+    <p><a href="http://poe.perl.org/?POE_Cookbook">POE の Cookbook</a> にのってる <a href="http://poe.perl.org/?POE_Cookbook/TCP_Port_Redirection">TCP Forward サンプル</a>を元に、とりあえず動くのをつくって<a href="http://trickster.bulknews.net/trac.cgi/browser/trunk/Net-Rendezvous-Publish-Backend-BonjourWin32/examples/daap_proxy.pl" title="trunk/Net-Rendezvous-Publish-Backend-BonjourWin32/examples/daap_proxy.pl">コミット</a>。</p>
+<p><img alt="daap fwd" height="163" src="http://static.flickr.com/30/88182148_5d2b492c3f_o.png" width="176" /></p>
+<p>これで家の iTunes を会社の iTunes 共有に追加できたりする。</p>
+<pre><code>GET daap://address:3689/server-info HTTP/1.1
+</code></pre>
+<p>とかって通信してるはずなのに、それをそのまま中継して動く不思議。</p>
+<p>ちゃんとDAAPしゃべって中継したい！ 共有名変えたり、認証かけたり。</p>
+<p>現状は daap_proxy.pl というよりは daap_fwd.pl か。</p>
+
+  </div>
+
+  <div class="meta">
+    by typester /
+    at <a href="/memo/2006/01/18/2/">2006-01-18T21:50:00</a> /
+    <a href="/memo/tag/perl/">perl</a>
+    / <a href="/memo/2006/01/18/2/#disqus_thread">Comment</a>
+  </div>
+</div>
+
+<div class="entry autopagerize_page_element">
+  <h2><a href="/memo/2006/01/15/7/">DBIC の Trigger</a></h2>
+
+  <div class="body">
+    <p>よくわかんないんだが、CDBIのtriggerぽいことをするには</p>
+<pre><code><span class="keyword">sub</span> <span class="function-name">insert</span> {
+    <span class="keyword">my</span> <span class="variable-name">$self</span> = <span class="cperl-nonoverridable">shift</span>;
+    $self-&gt;created_date( DateTime-&gt;now ) <span class="keyword">unless</span> $self-&gt;created_date;
+    $self-&gt;SUPER::insert(<span class="cperl-array">@_</span>);
+}
+</code></pre>
+<p>みたいな感じでいいんかなぁ。</p>
+
+  </div>
+
+  <div class="meta">
+    by typester /
+    at <a href="/memo/2006/01/15/7/">2006-01-15T19:35:00</a> /
+    <a href="/memo/tag/perl/">perl</a>
+    / <a href="/memo/2006/01/15/7/#disqus_thread">Comment</a>
+  </div>
+</div>
+
+<div class="entry autopagerize_page_element">
+  <h2><a href="/memo/2006/01/15/6/">Static::Simple と StackTrace のロード</a></h2>
+
+  <div class="body">
+    <p>はこんな感じでどう。</p>
+<pre><code><span class="type">__PACKAGE__</span>-&gt;setup(
+    <span class="keyword">do</span> {
+        <span class="keyword">my</span> <span class="cperl-array">@plugins</span>;
+        <span class="cperl-nonoverridable">push</span> <span class="cperl-array">@plugins</span>, <span class="string">&apos;StackTrace&apos;</span> <span class="keyword">if</span> <span class="cperl-hash">$ENV</span>{<span class="string">CATALYST_DEBUG</span>};
+        <span class="cperl-nonoverridable">push</span> <span class="cperl-array">@plugins</span>, <span class="string">&apos;Static::Simple&apos;</span> <span class="keyword">if</span> <span class="cperl-hash">$ENV</span>{<span class="string">CATALYST_ENGINE</span>} =~ <span class="constant">/</span><span class="function-name">^</span><span class="string">HTTP</span><span class="constant">/</span>;
+        <span class="cperl-array">@plugins</span>;
+    }
+);
+</code></pre>
+
+  </div>
+
+  <div class="meta">
+    by typester /
+    at <a href="/memo/2006/01/15/6/">2006-01-15T18:32:00</a> /
+    <a href="/memo/tag/perl/">perl</a>
+    &middot; <a href="/memo/tag/catalyst/">catalyst</a>
+    / <a href="/memo/2006/01/15/6/#disqus_thread">Comment</a>
+  </div>
+</div>
+
+<div class="entry autopagerize_page_element">
+  <h2><a href="/memo/2006/01/15/2/">CPANRecentアップデート</a></h2>
+
+  <div class="body">
+    <p>namespaceフィルタに加えてauthorフィルタも追加した。</p>
+<p><a href="http://unknownplace.org/cpanrecent/author/miyagawa">/author/miyagawa</a></p>
+<p>とかで特定の人のログを追えるように。手抜きなので namespace フィルタと併用は出来ない。キーはCPAN IDです。</p>
+<p>miyagawa+naoya+tokuhirom とかすれば複数人を対象にできるます。</p>
+
+  </div>
+
+  <div class="meta">
+    by typester /
+    at <a href="/memo/2006/01/15/2/">2006-01-15T07:27:00</a> /
+    <a href="/memo/tag/perl/">perl</a>
+    / <a href="/memo/2006/01/15/2/#disqus_thread">Comment</a>
+  </div>
+</div>
+
+<div class="entry autopagerize_page_element">
+  <h2><a href="/memo/2006/01/14/3/"></a></h2>
+
+  <div class="body">
+    <p>つーかPOEよくわからねえええｋつ</p>
+
+  </div>
+
+  <div class="meta">
+    by typester /
+    at <a href="/memo/2006/01/14/3/">2006-01-14T02:44:00</a> /
+    <a href="/memo/tag/perl/">perl</a>
+    / <a href="/memo/2006/01/14/3/#disqus_thread">Comment</a>
+  </div>
+</div>
+
+<div class="entry autopagerize_page_element">
+  <h2><a href="/memo/2006/01/14/2/"></a></h2>
+
+  <div class="body">
+    <p>昨日の DAAP Proxy は POE::Component::Proxy::TCP はなんかLinuxでしかうまく動かんので、適当に実装してる。</p>
+<p>sekimura さんので iTunes の共有に表示出すのは簡単にできて、そっから DAAP の server-info content-codes login まではいくんだけど、そのあと updates で固まる。</p>
+<p>土日マター。</p>
+
+  </div>
+
+  <div class="meta">
+    by typester /
+    at <a href="/memo/2006/01/14/2/">2006-01-14T02:37:00</a> /
+    <a href="/memo/tag/perl/">perl</a>
+    / <a href="/memo/2006/01/14/2/#disqus_thread">Comment</a>
+  </div>
+</div>
+
+<div class="entry autopagerize_page_element">
+  <h2><a href="/memo/2006/01/13/2/">daap-proxy.pl</a></h2>
+
+  <div class="body">
+    <p>sekimura さんが Net::Rendezvous::Publish::Backend::BonjourWin32 とかいうアツイモジュールを作っているのを見てこんなの思いついた。</p>
+<p>実行できる環境にないので適当に書いてみただけで多分動きませんが、</p>
+<pre><code><span class="comment-delimiter">#</span><span class="comment">!/usr/bin/perl
+</span>
+<span class="keyword">use</span> <span class="function-name">strict</span>;
+<span class="keyword">use</span> <span class="function-name">warnings</span>;
+
+<span class="keyword">use</span> <span class="function-name">Getopt::Long</span>;
+<span class="keyword">use</span> <span class="function-name">FindBin</span>;
+<span class="keyword">use</span> <span class="function-name">lib</span> <span class="string">&quot;$FindBin::Bin/../lib&quot;</span>;
+
+<span class="keyword">use</span> <span class="function-name">POE</span> <span class="cperl-nonoverridable">qw</span><span class="string">/Component::Proxy::TCP/</span>;
+<span class="keyword">use</span> <span class="function-name">Net::Rendezvous::Publish</span>;
+<span class="keyword">use</span> <span class="function-name">Net::Rendezvous::Publish::Backend::BonjourWin32</span>;
+
+<span class="keyword">my</span> <span class="variable-name">$server_name</span>   = <span class="string">&apos;daap proxy&apos;</span>;
+<span class="keyword">my</span> <span class="variable-name">$server_port</span>   = 9999;
+<span class="keyword">my</span> <span class="variable-name">$remote_server</span> = <span class="string">&apos;localhost&apos;</span>;
+<span class="keyword">my</span> <span class="variable-name">$remote_port</span>   = 3689;
+
+GetOptions(
+    <span class="string">&apos;n|server-name=s&apos;</span>   =&gt; \$server_name,
+    <span class="string">&apos;p|port=i&apos;</span>          =&gt; \$server_port,
+    <span class="string">&apos;r|remote-port=i&apos;</span>   =&gt; \$remote_port,
+    <span class="string">&apos;s|remote-server=s&apos;</span> =&gt; \$remote_server,
+);
+
+POE::Component::Proxy::TCP-&gt;new(
+    <span class="string">Alias</span>       =&gt; <span class="string">&quot;ProxyServerSessionAlias&quot;</span>,
+    <span class="string">Port</span>        =&gt; $server_port,
+    <span class="string">OrigPort</span>    =&gt; $remote_port,
+    <span class="string">OrigAddress</span> =&gt; $remote_server,
+);
+
+<span class="keyword">my</span> <span class="variable-name">$service</span> = Net::Rendezvous::Publish-&gt;new-&gt;publish(
+    <span class="string">name</span> =&gt; $server_name,
+    <span class="string">type</span> =&gt; <span class="string">&apos;_daap._tcp&apos;</span>,
+    <span class="string">port</span> =&gt; $server_port,
+);
+
+$poe_kernel-&gt;run;
+</code></pre>
+<p>目的はLANの外にあるDAAP ServerをiTunesの共有で聞きたい、てのがしたいということ。</p>
+<p>家にも会社にも音楽ファイル置いててめんどいのでこゆのほしかった。</p>
+<p>これで動くといいけどなぁ。詳しくは明日。</p>
+
+  </div>
+
+  <div class="meta">
+    by typester /
+    at <a href="/memo/2006/01/13/2/">2006-01-13T02:31:00</a> /
+    <a href="/memo/tag/perl/">perl</a>
+    / <a href="/memo/2006/01/13/2/#disqus_thread">Comment</a>
+  </div>
+</div>
+
+
+
+
+<div id="pager" class="autopagerize_insert_before">
+  <p class="pages">
+    <a class="prev" rel="previous" href="/memo/tag/perl/page/25/">&laquo; Prev</a>
+    <a href="/memo/tag/perl/page/21/">21</a>
+    <a href="/memo/tag/perl/page/22/">22</a>
+    <a href="/memo/tag/perl/page/23/">23</a>
+    <a href="/memo/tag/perl/page/24/">24</a>
+    <a href="/memo/tag/perl/page/25/">25</a>
+    <span class="current">26</span>
+    <a href="/memo/tag/perl/page/27/">27</a>
+    <a href="/memo/tag/perl/page/28/">28</a>
+    <a href="/memo/tag/perl/page/29/">29</a>
+    <a href="/memo/tag/perl/page/30/">30</a>
+    <a class="next" rel="next" href="/memo/tag/perl/page/27/">Next &raquo;</a>
+  </p>
+  <p class="info">(Page 26 of 30)</p>
+</div>
+
+
+</div>
+
+<p id="footer">
+  Copyright &copy; 2005-2013
+      by <a class="author" href="/about/#me">Daisuke Murase (typester)</a> /
+  Site generated by <a href="https://github.com/typester/nim">nim</a> /
+  Comments powered by <a href="http://disqus.com">DISQUS</a>.
+</p>
+
+</div>
+
+
+<script type="text/javascript">
+//<![CDATA[
+(function() {
+	var links = document.getElementsByTagName('a');
+	var query = '?';
+	for(var i = 0; i < links.length; i++) {
+	if(links[i].href.indexOf('#disqus_thread') >= 0) {
+		query += 'url' + i + '=' + encodeURIComponent(links[i].href) + '&';
+	}
+	}
+	document.write('<script charset="utf-8" type="text/javascript" src="http://disqus.com/forums/unknownplace/get_num_replies.js' + query + '"></' + 'script>');
+})();
+//]]>
+</script>
+
+
+<script type="text/javascript">
+var gaJsHost = (("https:" == document.location.protocol) ? "https://ssl." : "http://www.");
+document.write(unescape("%3Cscript src='" + gaJsHost + "google-analytics.com/ga.js' type='text/javascript'%3E%3C/script%3E"));
+</script>
+<script type="text/javascript">
+try {
+var pageTracker = _gat._getTracker("UA-53067-1");
+pageTracker._trackPageview();
+} catch(err) {}</script>
+
+<script>
+function googleTranslateElementInit() {
+  new google.translate.TranslateElement({
+    pageLanguage: 'ja',
+    gaTrack: true,
+    gaId: 'UA-53067',
+    floatPosition: google.translate.TranslateElement.FloatPosition.BOTTOM_RIGHT
+  });
+}
+</script><script src="//translate.google.com/translate_a/element.js?cb=googleTranslateElementInit"></script>
+
+</body>
+</html>

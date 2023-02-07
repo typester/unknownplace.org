@@ -1,0 +1,248 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="ja" xml:lang="ja">
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <title>memo - unknownplace.org</title>
+  <link rel="stylesheet" type="text/css" href="http://yui.yahooapis.com/3.0.0/build/cssreset/reset-min.css" />
+  <link rel="stylesheet" type="text/css" href="http://yui.yahooapis.com/3.0.0/build/cssfonts/fonts-min.css" />
+  <link rel="stylesheet" href="/css/style.css" type="text/css" />
+  <meta property="fb:admins" content="1093631929" />
+  <meta name="robots" content="noindex" />
+  <link rel="alternate" type="application/rss+xml" href="http://unknownplace.org/memo/index.rss" />
+</head>
+<body>
+
+<div id="container">
+<div id="header">
+    <h1><a href="/">unknownplace.org</a></h1> /
+<a href="/memo/">memo</a>
+</div>
+
+<div id="content">
+
+<div class="entry autopagerize_page_element">
+  <h2><a href="/memo/2006/02/28/3/">Plagger::Plugin::Store::DBIC #2</a></h2>
+
+  <div class="body">
+    <p>DB Schema 外部におく必要ねーよなー、よく考えたらｗ</p>
+<p>DBIx::Class::Schema のメリットは Plugin::Store::DBIC::Schema::SQLite とかで作って、それを外部から普通に使えるっていうことで、反対だよ。</p>
+
+  </div>
+
+  <div class="meta">
+    by typester /
+    at <a href="/memo/2006/02/28/3/">2006-02-28T18:06:00</a> /
+    <a href="/memo/tag/plagger/">plagger</a>
+    / <a href="/memo/2006/02/28/3/#disqus_thread">Comment</a>
+  </div>
+</div>
+
+<div class="entry autopagerize_page_element">
+  <h2><a href="/memo/2006/02/28/2/"></a></h2>
+
+  <div class="body">
+    <p>どこにおこうか迷って、svk のローカルreposのみで作業していた plaggerer(何 をとりあえず僕のpublic reposにマージ。</p>
+<p>Plagger::Plugin::Store::DBIC から使っている Schema を公開したかったので。</p>
+<p>svk はこういうのが簡単に出来るから素敵ですねー。</p>
+<p>昨日書いた Plugin::Store::DBIC の schema_class で指定しているクラスが<a href="http://svn.unknownplace.org/public/plaggerer/trunk/lib/Plaggerer/Schema.pm" title="Plaggerer::Schema">これ</a>で、その階層以下にテーブル定義があります。</p>
+<p>sql は<a href="http://svn.unknownplace.org/public/plaggerer/trunk/sql/plaggerer.sqlite.sql" title="plaggerer.sqlite.sql">こんな感じ</a>。</p>
+
+  </div>
+
+  <div class="meta">
+    by typester /
+    at <a href="/memo/2006/02/28/2/">2006-02-28T12:37:00</a> /
+    <a href="/memo/tag/life/">life</a>
+    &middot; <a href="/memo/tag/plagger/">plagger</a>
+    / <a href="/memo/2006/02/28/2/#disqus_thread">Comment</a>
+  </div>
+</div>
+
+<div class="entry autopagerize_page_element">
+  <h2><a href="/memo/2006/02/27/4/">Plagger::Plugin::Store::DBIC</a></h2>
+
+  <div class="body">
+    <p>作ってみたけどびみょーー。Schema をこっちの指定通りに作ってないとだめなんだよな。せっかく外部におけるのに。</p>
+<pre><code><span class="keyword">package</span> <span class="function-name">Plagger::Plugin::Store::DBIC</span>;
+<span class="keyword">use</span> <span class="function-name">strict</span>;
+<span class="keyword">use</span> <span class="function-name">warnings</span>;
+<span class="keyword">use</span> <span class="function-name">base</span> <span class="cperl-nonoverridable">qw</span><span class="string">/Plagger::Plugin Class::Accessor::Fast/</span>;
+
+<span class="keyword">use</span> UNIVERSAL::<span class="keyword">require</span>;
+
+<span class="keyword">our</span> <span class="variable-name">$VERSION</span> = <span class="string">&apos;0.01&apos;</span>;
+
+<span class="type">__PACKAGE__</span>-&gt;mk_accessors(<span class="cperl-nonoverridable">qw</span><span class="string">/schema/</span>);
+
+<span class="keyword">sub</span> <span class="function-name">register</span> {
+    <span class="keyword">my</span> ( <span class="variable-name">$self</span>, <span class="variable-name">$c</span> ) = <span class="cperl-array">@_</span>;
+
+    <span class="keyword">unless</span> ( $self-&gt;conf-&gt;{<span class="string">schema_class</span>} <span class="type">and</span> $self-&gt;conf-&gt;{<span class="string">connect_info</span>} ) {
+        $c-&gt;error(<span class="string">&apos;schema_class and connect_info are required&apos;</span>);
+    }
+
+    $self-&gt;conf-&gt;{<span class="string">schema_class</span>}-&gt;<span class="keyword">require</span>
+        <span class="type">or</span> $c-&gt;error(
+        <span class="cperl-nonoverridable">qq</span><span class="string">/Can&apos;t load schema class &quot;@{[ $self-&gt;conf-&gt;{schema_class} ]}&quot;, $!/</span>);
+
+    $self-&gt;schema( $self-&gt;conf-&gt;{<span class="string">schema_class</span>}
+            -&gt;<span class="type">connect</span>( @{ $self-&gt;conf-&gt;{<span class="string">connect_info</span>} } ) );
+
+    $c-&gt;register_hook( $self, <span class="string">&apos;publish.feed&apos;</span> =&gt; \&amp;store, );
+}
+
+<span class="keyword">sub</span> <span class="function-name">store</span> {
+    <span class="keyword">my</span> ( <span class="variable-name">$self</span>, <span class="variable-name">$c</span>, <span class="variable-name">$args</span> ) = <span class="cperl-array">@_</span>;
+
+    <span class="comment-delimiter"># </span><span class="comment">feed
+</span>    <span class="keyword">my</span> <span class="variable-name">$feed</span> = $self-&gt;schema-&gt;resultset(<span class="string">&apos;Feed&apos;</span>)
+        -&gt;find_or_new(
+        { <span class="string">link</span> =&gt; $args-&gt;{<span class="string">feed</span>}-&gt;<span class="type">link</span>, <span class="string">type</span> =&gt; $args-&gt;{<span class="string">feed</span>}-&gt;type } );
+
+    $feed-&gt;$_( $args-&gt;{<span class="string">feed</span>}-&gt;$_ )
+        <span class="keyword">for</span> (<span class="cperl-nonoverridable">qw</span><span class="string">/url image description language author updated/</span>);
+
+    $feed-&gt;insert_or_update;
+
+    <span class="comment-delimiter"># </span><span class="comment">feed meta
+</span>    $feed-&gt;meta-&gt;delete_all;
+    <span class="keyword">for</span> <span class="keyword">my</span> <span class="variable-name">$k</span> ( <span class="cperl-nonoverridable">keys</span> %{ $args-&gt;{<span class="string">feed</span>}-&gt;meta } ) {
+        $feed-&gt;add_to_meta( { <span class="string">key</span> =&gt; $k, <span class="string">value</span> =&gt; $args-&gt;{<span class="string">feed</span>}-&gt;meta-&gt;{$k}, } );
+    }
+
+    <span class="comment-delimiter"># </span><span class="comment">entry
+</span>    <span class="keyword">for</span> <span class="keyword">my</span> <span class="variable-name">$feed_entry</span> ( @{ $args-&gt;{<span class="string">feed</span>}-&gt;entries } ) {
+        <span class="keyword">my</span> <span class="variable-name">$entry</span> = $self-&gt;schema-&gt;resultset(<span class="string">&apos;Entry&apos;</span>)-&gt;find_or_new(
+            {   <span class="string">feed</span> =&gt; $feed-&gt;id,
+                <span class="string">link</span> =&gt; $feed_entry-&gt;<span class="type">link</span>,
+            }
+        );
+        $entry-&gt;$_( $feed_entry-&gt;$_ )
+            <span class="keyword">for</span> <span class="cperl-nonoverridable">qw</span><span class="string">/title author date summary body rate icon/</span>;
+        $entry-&gt;insert_or_update;
+
+        <span class="comment-delimiter"># </span><span class="comment">meta
+</span>        $entry-&gt;meta-&gt;delete_all;
+        <span class="keyword">for</span> <span class="keyword">my</span> <span class="variable-name">$k</span> ( <span class="cperl-nonoverridable">keys</span> %{ $feed_entry-&gt;meta } ) {
+            $entry-&gt;add_to_meta( { <span class="string">key</span> =&gt; $k, <span class="string">value</span> =&gt; $feed_entry-&gt;meta-&gt;{$k}, } );
+        }
+
+        <span class="comment-delimiter"># </span><span class="comment">tag
+</span>        $entry-&gt;tag_mappings-&gt;delete_all;
+        <span class="keyword">for</span> <span class="keyword">my</span> <span class="variable-name">$entry_tag</span> ( @{ $feed_entry-&gt;tags } ) {
+            <span class="keyword">my</span> <span class="variable-name">$tag</span> = $self-&gt;schema-&gt;resultset(<span class="string">&apos;Tag&apos;</span>)
+                -&gt;find_or_create( { <span class="string">name</span> =&gt; $entry_tag } );
+            $entry-&gt;add_to_tag_mappings(
+                { <span class="string">entry</span> =&gt; $entry-&gt;id, <span class="string">tag</span> =&gt; $tag-&gt;id } );
+        }
+    }
+}
+
+1;
+</code></pre>
+<p>config.yaml は</p>
+<pre><code> - module: Store::DBIC
+   config:
+     schema_class: &apos;Plaggerer::Schema&apos;
+     connect_info: [ &apos;dbi:SQLite:/home/murase/plaggerer/db/plaggerer.db&apos; ]
+</code></pre>
+<p>Schema ファイルを置く場所もまた問題。</p>
+<p>この場合はPlugin指定のSchemaしか扱えないから普通にこのプラグイン以下に置けばいいのかも知れんけどなぁ。</p>
+
+  </div>
+
+  <div class="meta">
+    by typester /
+    at <a href="/memo/2006/02/27/4/">2006-02-27T23:35:00</a> /
+    <a href="/memo/tag/perl/">perl</a>
+    &middot; <a href="/memo/tag/plagger/">plagger</a>
+    / <a href="/memo/2006/02/27/4/#disqus_thread">Comment</a>
+  </div>
+</div>
+
+<div class="entry autopagerize_page_element">
+  <h2><a href="/memo/2006/02/26/3/">やりたかったことリスト</a></h2>
+
+  <div class="body">
+    <ul><li>Plugin::Store::DBIC</li><li>Plugin::Publish::SVN</li><li>plagger_backtick.pl</li></ul>
+<p>1個目は Publish のほうがいいんかな、よくわからん。けどとりあえず DBIC で保存する。独自ビューワ作りたい時用。</p>
+<p>2個目はそのまま。permalink 別になんか個別ファイル名作ってそれをコミット。更新されたフィードの diff が取れるようになるというメリット。古いエントリーが新着であがってきたとき何が更新されたんだYO! ってのがあるので欲しい。</p>
+<p>3個目はあれです、screen のやつです。</p>
+
+  </div>
+
+  <div class="meta">
+    by typester /
+    at <a href="/memo/2006/02/26/3/">2006-02-26T21:48:00</a> /
+    <a href="/memo/tag/plagger/">plagger</a>
+    / <a href="/memo/2006/02/26/3/#disqus_thread">Comment</a>
+  </div>
+</div>
+
+
+
+
+<div id="pager" class="autopagerize_insert_before">
+  <p class="pages">
+    <a class="prev" rel="previous" href="/memo/tag/plagger/page/2/">&laquo; Prev</a>
+    <a href="/memo/tag/plagger/">1</a>
+    <a href="/memo/tag/plagger/page/2/">2</a>
+    <span class="current">3</span>
+    <span class="next">Next &raquo;</span>
+  </p>
+  <p class="info">(Page 3 of 3)</p>
+</div>
+
+
+</div>
+
+<p id="footer">
+  Copyright &copy; 2005-2013
+      by <a class="author" href="/about/#me">Daisuke Murase (typester)</a> /
+  Site generated by <a href="https://github.com/typester/nim">nim</a> /
+  Comments powered by <a href="http://disqus.com">DISQUS</a>.
+</p>
+
+</div>
+
+
+<script type="text/javascript">
+//<![CDATA[
+(function() {
+	var links = document.getElementsByTagName('a');
+	var query = '?';
+	for(var i = 0; i < links.length; i++) {
+	if(links[i].href.indexOf('#disqus_thread') >= 0) {
+		query += 'url' + i + '=' + encodeURIComponent(links[i].href) + '&';
+	}
+	}
+	document.write('<script charset="utf-8" type="text/javascript" src="http://disqus.com/forums/unknownplace/get_num_replies.js' + query + '"></' + 'script>');
+})();
+//]]>
+</script>
+
+
+<script type="text/javascript">
+var gaJsHost = (("https:" == document.location.protocol) ? "https://ssl." : "http://www.");
+document.write(unescape("%3Cscript src='" + gaJsHost + "google-analytics.com/ga.js' type='text/javascript'%3E%3C/script%3E"));
+</script>
+<script type="text/javascript">
+try {
+var pageTracker = _gat._getTracker("UA-53067-1");
+pageTracker._trackPageview();
+} catch(err) {}</script>
+
+<script>
+function googleTranslateElementInit() {
+  new google.translate.TranslateElement({
+    pageLanguage: 'ja',
+    gaTrack: true,
+    gaId: 'UA-53067',
+    floatPosition: google.translate.TranslateElement.FloatPosition.BOTTOM_RIGHT
+  });
+}
+</script><script src="//translate.google.com/translate_a/element.js?cb=googleTranslateElementInit"></script>
+
+</body>
+</html>

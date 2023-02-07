@@ -1,0 +1,300 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="ja" xml:lang="ja">
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <title>memo - unknownplace.org</title>
+  <link rel="stylesheet" type="text/css" href="http://yui.yahooapis.com/3.0.0/build/cssreset/reset-min.css" />
+  <link rel="stylesheet" type="text/css" href="http://yui.yahooapis.com/3.0.0/build/cssfonts/fonts-min.css" />
+  <link rel="stylesheet" href="/css/style.css" type="text/css" />
+  <meta property="fb:admins" content="1093631929" />
+  <meta name="robots" content="noindex" />
+  <link rel="alternate" type="application/rss+xml" href="http://unknownplace.org/memo/index.rss" />
+</head>
+<body>
+
+<div id="container">
+<div id="header">
+    <h1><a href="/">unknownplace.org</a></h1> /
+<a href="/memo/">memo</a>
+</div>
+
+<div id="content">
+
+<div class="entry autopagerize_page_element">
+  <h2><a href="/memo/2005/10/19/3/">次期初期画面</a></h2>
+
+  <div class="body">
+    <p><a href="http://dev.thefeed.no/welcome.html">http://dev.thefeed.no/welcome.html</a></p>
+<p>いらねーーー。</p>
+
+  </div>
+
+  <div class="meta">
+    by typester /
+    at <a href="/memo/2005/10/19/3/">2005-10-19T10:00:00</a> /
+    <a href="/memo/tag/catalyst/">catalyst</a>
+    / <a href="/memo/2005/10/19/3/#disqus_thread">Comment</a>
+  </div>
+</div>
+
+<div class="entry autopagerize_page_element">
+  <h2><a href="/memo/2005/10/18/4/">Self restarting test server</a></h2>
+
+  <div class="body">
+    <p>trunk の myapp_server.pl が <code>-r</code> オプションをつけることでファイルの修正に合わせて自動で再起動してくれるようになった模様。</p>
+<p>正直 Wiki の Restarting の tips 見てても。Syntax エラーとかあったときは結局再起しないしかえってめんどいやん、とかおもってたんだけど、</p>
+<blockquote><p>It will monitor your files in a 1 second interval and restart the server when files matching the regex (defaults to &apos;.yml$|.yaml$|.pm$&apos;) are modified.</p><p>Syntax errors are catched and presented in the logs.</p></blockquote>
+<p>てことで、すっげ便利そうな予感。</p>
+
+  </div>
+
+  <div class="meta">
+    by typester /
+    at <a href="/memo/2005/10/18/4/">2005-10-18T10:37:00</a> /
+    <a href="/memo/tag/catalyst/">catalyst</a>
+    / <a href="/memo/2005/10/18/4/#disqus_thread">Comment</a>
+  </div>
+</div>
+
+<div class="entry autopagerize_page_element">
+  <h2><a href="/memo/2005/10/13/4/">Catalyst::Plugin::UploadProgress</a></h2>
+
+  <div class="body">
+    <p>混みいってるなぁ。もっとシンプルにできそだけど。</p>
+
+  </div>
+
+  <div class="meta">
+    by typester /
+    at <a href="/memo/2005/10/13/4/">2005-10-13T00:00:00</a> /
+    <a href="/memo/tag/catalyst/">catalyst</a>
+    / <a href="/memo/2005/10/13/4/#disqus_thread">Comment</a>
+  </div>
+</div>
+
+<div class="entry autopagerize_page_element">
+  <h2><a href="/memo/2005/10/11/6/">Catalyst</a></h2>
+
+  <div class="body">
+    <p><a href="http://search.cpan.org/~agrundma/Catalyst-5.49_01/">search.cpan.org: Andy Grundman / Catalyst-5.49_01</a></p>
+<p>メンテナまた変わったんだ。</p>
+
+  </div>
+
+  <div class="meta">
+    by typester /
+    at <a href="/memo/2005/10/11/6/">2005-10-11T00:00:00</a> /
+    <a href="/memo/tag/perl/">perl</a>
+    &middot; <a href="/memo/tag/cpan/">cpan</a>
+    &middot; <a href="/memo/tag/catalyst/">catalyst</a>
+    / <a href="/memo/2005/10/11/6/#disqus_thread">Comment</a>
+  </div>
+</div>
+
+<div class="entry autopagerize_page_element">
+  <h2><a href="/memo/2005/10/11/5/">Catalyst 5.49_01</a></h2>
+
+  <div class="body">
+    <p>きてますな。5.5RC1。</p>
+<p>変更点で気になるものは</p>
+<ul><li><code>$c-&gt;forward(&apos;/foo/bar&apos;, [qw/arg1 arg2/])</code> の代わりに <code>$c-&gt;forward(&apos;/foo/bar/arg1/arg2&apos;)</code> とかでOKになった</li><li>mod_proxy 経由でバックエンドとして動いていても <code>$c-&gt;req-&gt;base</code> や <code>$c-&gt;req-&gt;address</code> をちゃんと取れるようになった</li><li>myapp_server.pl が fork に対応した</li><li>ストリーミング関係いろいろサポート</li></ul>
+<p>などなど、なかなか良くなっている。</p>
+<p>Apacheエンジンは書き直して <a href="http://search.cpan.org/~agrundma/Catalyst-Engine-Apache/">search.cpan.org: Andy Grundman / Catalyst-Engine-Apache</a> と別パッケージになったらしいので、apacheで利用する場合にはこれも必要。</p>
+
+  </div>
+
+  <div class="meta">
+    by typester /
+    at <a href="/memo/2005/10/11/5/">2005-10-11T00:00:00</a> /
+    <a href="/memo/tag/catalyst/">catalyst</a>
+    / <a href="/memo/2005/10/11/5/#disqus_thread">Comment</a>
+  </div>
+</div>
+
+<div class="entry autopagerize_page_element">
+  <h2><a href="/memo/2005/10/10/1/">SQLiteeeeee</a></h2>
+
+  <div class="body">
+    <p>おそくねー？？？</p>
+<p>txtパースしてハッシュ突っ込むとこまでは一瞬で終わるのにそれをSQLiteに突っ込むと1秒とかかかる。3日分で。</p>
+<p>あー微妙。キャッシュ用とだけだからStorebleとかData::Dumperとかにしたほうが良いかも。</p>
+
+  </div>
+
+  <div class="meta">
+    by typester /
+    at <a href="/memo/2005/10/10/1/">2005-10-10T00:00:00</a> /
+    <a href="/memo/tag/sqlite/">sqlite</a>
+    &middot; <a href="/memo/tag/catalyst/">catalyst</a>
+    &middot; <a href="/memo/tag/clon/">clon</a>
+    / <a href="/memo/2005/10/10/1/#disqus_thread">Comment</a>
+  </div>
+</div>
+
+<div class="entry autopagerize_page_element">
+  <h2><a href="/memo/2005/10/09/3/">ChangeLogメモビューワ</a></h2>
+
+  <div class="body">
+    <p>Catalyst+Markdownでさくっとつくってみよ。</p>
+<p>とりあえずChangelogのtxt読み込んでパースするのは書いた。</p>
+<p>ネーミングに迷う。とりあえずてきとうにCLONとかにしておいた。</p>
+
+  </div>
+
+  <div class="meta">
+    by typester /
+    at <a href="/memo/2005/10/09/3/">2005-10-09T00:00:00</a> /
+    <a href="/memo/tag/clmemo/">clmemo</a>
+    &middot; <a href="/memo/tag/catalyst/">catalyst</a>
+    / <a href="/memo/2005/10/09/3/#disqus_thread">Comment</a>
+  </div>
+</div>
+
+<div class="entry autopagerize_page_element">
+  <h2><a href="/memo/2005/10/08/9/">やっぱり</a></h2>
+
+  <div class="body">
+    <p>NEXT モジュールつかわないと挙動がおかしい。Catalyst は <code>no strict &apos;refs&apos;</code> してモジュールをいろんな名前空間に読んでるからいまだによくわからない。</p>
+<p>もっとソース読まなくちゃ。</p>
+
+  </div>
+
+  <div class="meta">
+    by typester /
+    at <a href="/memo/2005/10/08/9/">2005-10-08T00:00:00</a> /
+    <a href="/memo/tag/catalyst/">catalyst</a>
+    / <a href="/memo/2005/10/08/9/#disqus_thread">Comment</a>
+  </div>
+</div>
+
+<div class="entry autopagerize_page_element">
+  <h2><a href="/memo/2005/10/08/8/">ふむ</a></h2>
+
+  <div class="body">
+    <p>NEXT モジュールを使わず</p>
+<pre><code><span class="keyword">sub</span> <span class="function-name">new</span> {
+    <span class="keyword">my</span> <span class="variable-name">$self</span> = <span class="cperl-nonoverridable">shift</span>;
+
+    $self-&gt;config(<span class="cperl-array">$_</span>[-1]);
+    $self-&gt;SUPER::new(<span class="cperl-array">@_</span>);
+}
+</code></pre>
+<p>としたほうがよさげ。</p>
+
+  </div>
+
+  <div class="meta">
+    by typester /
+    at <a href="/memo/2005/10/08/8/">2005-10-08T00:00:00</a> /
+    <a href="/memo/tag/catalyst/">catalyst</a>
+    / <a href="/memo/2005/10/08/8/#disqus_thread">Comment</a>
+  </div>
+</div>
+
+<div class="entry autopagerize_page_element">
+  <h2><a href="/memo/2005/10/08/7/">Catalyst設定をばらばらに書くのが嫌</a></h2>
+
+  <div class="body">
+    <p>これをすべて MyApp の config で行うには MyApp::(M|V|C)::Foo などというコンポーネントモジュールの new を以下のように定義してやれば良い。</p>
+<pre><code><span class="keyword">sub</span> <span class="function-name">new</span> {
+    <span class="keyword">my</span> <span class="variable-name">$self</span> = <span class="cperl-nonoverridable">shift</span>;
+
+    $self-&gt;config(<span class="cperl-array">$_</span>[-1]);
+    $self-&gt;NEXT::new(<span class="cperl-array">@_</span>);
+}
+</code></pre>
+<p>このようにしておけば MyApp で</p>
+<pre><code>MyApp-&gt;config(
+    &apos;M::Foo&apos; =&gt; {
+        some =&gt; &apos;settings&apos;,
+    },
+);
+</code></pre>
+<p>などとすれば MyApp::M::Foo の設定を MyApp 内で行える。Config::YAML と併用すれば外部ファイルの使用もOK。</p>
+<p>emacsにyaml-modeあれば使う気になるんだけどなぁ。。</p>
+
+  </div>
+
+  <div class="meta">
+    by typester /
+    at <a href="/memo/2005/10/08/7/">2005-10-08T00:00:00</a> /
+    <a href="/memo/tag/catalyst/">catalyst</a>
+    &middot; <a href="/memo/tag/perl/">perl</a>
+    / <a href="/memo/2005/10/08/7/#disqus_thread">Comment</a>
+  </div>
+</div>
+
+
+
+
+<div id="pager" class="autopagerize_insert_before">
+  <p class="pages">
+    <a class="prev" rel="previous" href="/memo/tag/catalyst/page/10/">&laquo; Prev</a>
+    <a href="/memo/tag/catalyst/page/2/">2</a>
+    <a href="/memo/tag/catalyst/page/3/">3</a>
+    <a href="/memo/tag/catalyst/page/4/">4</a>
+    <a href="/memo/tag/catalyst/page/5/">5</a>
+    <a href="/memo/tag/catalyst/page/6/">6</a>
+    <a href="/memo/tag/catalyst/page/7/">7</a>
+    <a href="/memo/tag/catalyst/page/8/">8</a>
+    <a href="/memo/tag/catalyst/page/9/">9</a>
+    <a href="/memo/tag/catalyst/page/10/">10</a>
+    <span class="current">11</span>
+    <span class="next">Next &raquo;</span>
+  </p>
+  <p class="info">(Page 11 of 11)</p>
+</div>
+
+
+</div>
+
+<p id="footer">
+  Copyright &copy; 2005-2013
+      by <a class="author" href="/about/#me">Daisuke Murase (typester)</a> /
+  Site generated by <a href="https://github.com/typester/nim">nim</a> /
+  Comments powered by <a href="http://disqus.com">DISQUS</a>.
+</p>
+
+</div>
+
+
+<script type="text/javascript">
+//<![CDATA[
+(function() {
+	var links = document.getElementsByTagName('a');
+	var query = '?';
+	for(var i = 0; i < links.length; i++) {
+	if(links[i].href.indexOf('#disqus_thread') >= 0) {
+		query += 'url' + i + '=' + encodeURIComponent(links[i].href) + '&';
+	}
+	}
+	document.write('<script charset="utf-8" type="text/javascript" src="http://disqus.com/forums/unknownplace/get_num_replies.js' + query + '"></' + 'script>');
+})();
+//]]>
+</script>
+
+
+<script type="text/javascript">
+var gaJsHost = (("https:" == document.location.protocol) ? "https://ssl." : "http://www.");
+document.write(unescape("%3Cscript src='" + gaJsHost + "google-analytics.com/ga.js' type='text/javascript'%3E%3C/script%3E"));
+</script>
+<script type="text/javascript">
+try {
+var pageTracker = _gat._getTracker("UA-53067-1");
+pageTracker._trackPageview();
+} catch(err) {}</script>
+
+<script>
+function googleTranslateElementInit() {
+  new google.translate.TranslateElement({
+    pageLanguage: 'ja',
+    gaTrack: true,
+    gaId: 'UA-53067',
+    floatPosition: google.translate.TranslateElement.FloatPosition.BOTTOM_RIGHT
+  });
+}
+</script><script src="//translate.google.com/translate_a/element.js?cb=googleTranslateElementInit"></script>
+
+</body>
+</html>

@@ -1,0 +1,287 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="ja" xml:lang="ja">
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <title>2005/12/05 - memo - unknownplace.org</title>
+  <link rel="stylesheet" type="text/css" href="http://yui.yahooapis.com/3.0.0/build/cssreset/reset-min.css" />
+  <link rel="stylesheet" type="text/css" href="http://yui.yahooapis.com/3.0.0/build/cssfonts/fonts-min.css" />
+  <link rel="stylesheet" href="/css/style.css" type="text/css" />
+  <meta property="fb:admins" content="1093631929" />
+  <meta name="robots" content="noindex" />
+  <link rel="alternate" type="application/rss+xml" href="http://unknownplace.org/memo/index.rss" />
+</head>
+<body>
+
+<div id="container">
+<div id="header">
+    <h1><a href="/">unknownplace.org</a></h1> /
+<a href="/memo/">memo</a>
+</div>
+
+<div id="content">
+
+<div class="entry autopagerize_page_element">
+  <h2 id="e020"><a href="/memo/2005/12/05/20/">caption も always</a></h2>
+
+  <div class="body">
+    <p><a href="http://linuxlog.de/viewimage.php?image=images/Deifl_07052005081755_netbar.jpg" title="Deifl_07052005081755_netbar.jpg">これ</a>いい。</p>
+<p>caption も hardstatus もどっちも always !</p>
+
+  </div>
+
+  <div class="meta">
+    by typester /
+    at <a href="/memo/2005/12/05/20/">2005-12-05T22:02:00</a> /
+    <a href="/memo/tag/screen/">screen</a>
+    / <a href="/memo/2005/12/05/20/#disqus_thread">Comment</a>
+  </div>
+</div>
+
+<div class="entry autopagerize_page_element">
+  <h2 id="e019"><a href="/memo/2005/12/05/19/">lighttpd&#39;s load balancer</a></h2>
+
+  <div class="body">
+    <p>lighttpd のロードバランス機能って誰も試してないのかなぁ。</p>
+<p>一応 fair, hash, round-robin と3種類あって、</p>
+<ul><li>fair <ul><li>負荷によって振り分ける(デフォルト)</li></ul></li><li>hash <ul><li>URLのhashで振り分ける(同じURLは必ず同じホストにわけられる)</li><li><a href="http://www.microsoft.com/japan/Proxy/techinfo/carp.asp" title="Microsoft Proxy Server - 技術情報 - Cache Array Routing Protocol (CARP) と Microsoft Proxy Server 2.0">Cache Array Routing Protocol</a> ていうアルゴリズムを使ってるらしい。</li></ul></li><li>round-robin <ul><li>リクエストごとに違うホストへ振り分ける</li></ul></li></ul>
+<p>設定も非常に簡単。</p>
+<pre><code>$HTTP[<span class="string">"host"</span>] == <span class="string">"www.example.org"</span> {
+  proxy.balance = <span class="string">"fair"</span>
+  proxy.server  = ( <span class="string">".pl"</span> =&gt; ( ( <span class="string">"host"</span> =&gt; <span class="string">"192.168.0.2"</span>, <span class="string">"port"</span> =&gt; 8080 ),
+                            ( <span class="string">"host"</span> =&gt; <span class="string">"192.168.0.3"</span> ),
+                            ( <span class="string">"host"</span> =&gt; <span class="string">"192.168.0.4"</span> ),
+                            ( <span class="string">"host"</span> =&gt; <span class="string">"192.168.0.5"</span>, <span class="string">"port"</span> =&gt; 81 ) ) )
+}
+</code></pre>
+<p>みたいな。バックエンドホストでも普通に VirtualHost が使えるのも○</p>
+<p><a href="http://svn.unknownplace.org/public/">svn.unknownplace.org</a>、<a href="http://dev.unknownplace.org/public/">dev.unknownplace.org</a> でも</p>
+<pre><code>$HTTP[<span class="string">"host"</span>] =~ <span class="string">"^(dev|svn)\.|unknownplace\.org)$"</span> {
+    proxy.server = ( <span class="string">"/"</span> =&gt;
+                      ((
+                       <span class="string">"host"</span> =&gt; <span class="string">"127.0.0.1"</span>,
+                       <span class="string">"port"</span> =&gt; 8080,
+                      ))
+    )
+}
+</code></pre>
+<p>とかしてバックエンドの apache2 にそのままとばしてるけど、後ろでも VirtualHost 普通に使えてうまー。</p>
+<p>まぁ、lighttpd の mod_proxy だと svn メソッドとばないので commit できねーのだけど（だめ</p>
+
+  </div>
+
+  <div class="meta">
+    by typester /
+    at <a href="/memo/2005/12/05/19/">2005-12-05T20:48:00</a> /
+    <a href="/memo/tag/lighttpd/">lighttpd</a>
+    / <a href="/memo/2005/12/05/19/#disqus_thread">Comment</a>
+  </div>
+</div>
+
+<div class="entry autopagerize_page_element">
+  <h2 id="e018"><a href="/memo/2005/12/05/18/"></a></h2>
+
+  <div class="body">
+    <p><a href="http://rhyme.33rpm.jp/blosxom/" title="Uno, dos, tres, quatro!">33rpmさん</a>に elisp おしえてもろた！あとで試す。</p>
+<p>ありがとうございます！！</p>
+
+  </div>
+
+  <div class="meta">
+    by typester /
+    at <a href="/memo/2005/12/05/18/">2005-12-05T18:02:00</a> /
+    <a href="/memo/tag/life/">life</a>
+    / <a href="/memo/2005/12/05/18/#disqus_thread">Comment</a>
+  </div>
+</div>
+
+<div class="entry autopagerize_page_element">
+  <h2 id="e017"><a href="/memo/2005/12/05/17/">エントリ</a></h2>
+
+  <div class="body">
+    <p>書くのめんどいなぁ。</p>
+<p>自分にしかわからなくていいこういうメモは本当に楽だね。</p>
+
+  </div>
+
+  <div class="meta">
+    by typester /
+    at <a href="/memo/2005/12/05/17/">2005-12-05T17:06:00</a> /
+    <a href="/memo/tag/life/">life</a>
+    / <a href="/memo/2005/12/05/17/#disqus_thread">Comment</a>
+  </div>
+</div>
+
+<div class="entry autopagerize_page_element">
+  <h2 id="e016"><a href="/memo/2005/12/05/16/">問題</a></h2>
+
+  <div class="body">
+    <ol><li>IRC でキーワード(名前とかね)流れたら hardstatus に出したいけど elisp(riece) わからん。 <ul><li>→ elisp わからんけどログ監視すればできそう</li></ul></li><li>カレントウィンドウの encoding を常に表示しときたい。 <ul><li>→ まったくわからん</li></ul></li></ol>
+<p>ボスケテ</p>
+
+  </div>
+
+  <div class="meta">
+    by typester /
+    at <a href="/memo/2005/12/05/16/">2005-12-05T15:53:00</a> /
+    <a href="/memo/tag/screen/">screen</a>
+    / <a href="/memo/2005/12/05/16/#disqus_thread">Comment</a>
+  </div>
+</div>
+
+<div class="entry autopagerize_page_element">
+  <h2 id="e015"><a href="/memo/2005/12/05/15/">複数 backtick</a></h2>
+
+  <div class="body">
+    <p>hardstatus で <code>%0`</code> とか <code>%1`</code> とかで backtick の ID 指定する。</p>
+
+  </div>
+
+  <div class="meta">
+    by typester /
+    at <a href="/memo/2005/12/05/15/">2005-12-05T15:43:00</a> /
+    <a href="/memo/tag/screen/">screen</a>
+    / <a href="/memo/2005/12/05/15/#disqus_thread">Comment</a>
+  </div>
+</div>
+
+<div class="entry autopagerize_page_element">
+  <h2 id="e014"><a href="/memo/2005/12/05/14/"></a></h2>
+
+  <div class="body">
+    <p><a href="http://www.flickr.com/photos/typester/70383561/" title="Photo Sharing"><img alt="GNU screen hardstatus #2" height="55" src="http://static.flickr.com/29/70383561_99a8acdc83_o.jpg" width="300" /></a></p>
+<p>色変えるようにしてみたり。</p>
+<pre><code>-hardstatus alwayslastline <span class="string">"[%02c] %`%w"</span>
++hardstatus alwayslastline <span class="string">"[%02c] %`%-w%{=b bw}%n %t%{-}%+w"</span>
+</code></pre>
+<p>ボールドにしてるのは PuTTY の色設定との兼ね合い。</p>
+<p>・・メールたまってきた。仕事せねば。</p>
+
+  </div>
+
+  <div class="meta">
+    by typester /
+    at <a href="/memo/2005/12/05/14/">2005-12-05T15:38:00</a> /
+    <a href="/memo/tag/screen/">screen</a>
+    / <a href="/memo/2005/12/05/14/#disqus_thread">Comment</a>
+  </div>
+</div>
+
+<div class="entry autopagerize_page_element">
+  <h2 id="e013"><a href="/memo/2005/12/05/13/"></a></h2>
+
+  <div class="body">
+    <p>イチョウ撮ってきた。</p>
+<p>フィルム最後まで巻ききったときバリッとかっつって根元から切れちゃった模様。カメラごと持ってったら、普段使ってるショボイプリント屋では処理できないとかいわれたのでこわいおっちゃんがいる写真屋で替えカートリッジに入れてもらう。ほんとは現像もやってもらいたかったんだけどこわくていいだせｚ</p>
+<p>昼飯買いに行くついでにカメラもって出たんだけど、昼飯買うの忘れたよ。</p>
+
+  </div>
+
+  <div class="meta">
+    by typester /
+    at <a href="/memo/2005/12/05/13/">2005-12-05T14:53:00</a> /
+    <a href="/memo/tag/life/">life</a>
+    / <a href="/memo/2005/12/05/13/#disqus_thread">Comment</a>
+  </div>
+</div>
+
+<div class="entry autopagerize_page_element">
+  <h2 id="e012"><a href="/memo/2005/12/05/12/">cd -(tab)</a></h2>
+
+  <div class="body">
+    <p>gorou さん教えてもらう。知らなかった。</p>
+<p>便利すぎ！！</p>
+
+  </div>
+
+  <div class="meta">
+    by typester /
+    at <a href="/memo/2005/12/05/12/">2005-12-05T12:48:00</a> /
+    <a href="/memo/tag/zsh/">zsh</a>
+    / <a href="/memo/2005/12/05/12/#disqus_thread">Comment</a>
+  </div>
+</div>
+
+<div class="entry autopagerize_page_element">
+  <h2 id="e011"><a href="/memo/2005/12/05/11/">ユーコンブレンド 100g</a></h2>
+
+  <div class="body">
+    <p>本日のコーヒーきいたらコロンビア（あんまり好きじゃない）だったので。</p>
+<p>今日すっげーいい天気＆なんかイチョウがいい感じ。あとで撮影タイム入れる。</p>
+
+  </div>
+
+  <div class="meta">
+    by typester /
+    at <a href="/memo/2005/12/05/11/">2005-12-05T12:40:00</a> /
+    <a href="/memo/tag/life/">life</a>
+    &middot; <a href="/memo/tag/starbucks/">starbucks</a>
+    / <a href="/memo/2005/12/05/11/#disqus_thread">Comment</a>
+  </div>
+</div>
+
+
+
+
+<div id="pager" class="autopagerize_insert_before">
+  <p class="pages">
+    <span class="prev">&laquo; Prev</span>
+    <span class="current">1</span>
+    <a href="/memo/2005/12/05/page/2/">2</a>
+    <a class="next" rel="next" href="/memo/2005/12/05/page/2/">Next &raquo;</a>
+  </p>
+  <p class="info">(Page 1 of 2)</p>
+</div>
+
+
+</div>
+
+<p id="footer">
+  Copyright &copy; 2005-2013
+      by <a class="author" href="/about/#me">Daisuke Murase (typester)</a> /
+  Site generated by <a href="https://github.com/typester/nim">nim</a> /
+  Comments powered by <a href="http://disqus.com">DISQUS</a>.
+</p>
+
+</div>
+
+
+<script type="text/javascript">
+//<![CDATA[
+(function() {
+	var links = document.getElementsByTagName('a');
+	var query = '?';
+	for(var i = 0; i < links.length; i++) {
+	if(links[i].href.indexOf('#disqus_thread') >= 0) {
+		query += 'url' + i + '=' + encodeURIComponent(links[i].href) + '&';
+	}
+	}
+	document.write('<script charset="utf-8" type="text/javascript" src="http://disqus.com/forums/unknownplace/get_num_replies.js' + query + '"></' + 'script>');
+})();
+//]]>
+</script>
+
+
+<script type="text/javascript">
+var gaJsHost = (("https:" == document.location.protocol) ? "https://ssl." : "http://www.");
+document.write(unescape("%3Cscript src='" + gaJsHost + "google-analytics.com/ga.js' type='text/javascript'%3E%3C/script%3E"));
+</script>
+<script type="text/javascript">
+try {
+var pageTracker = _gat._getTracker("UA-53067-1");
+pageTracker._trackPageview();
+} catch(err) {}</script>
+
+<script>
+function googleTranslateElementInit() {
+  new google.translate.TranslateElement({
+    pageLanguage: 'ja',
+    gaTrack: true,
+    gaId: 'UA-53067',
+    floatPosition: google.translate.TranslateElement.FloatPosition.BOTTOM_RIGHT
+  });
+}
+</script><script src="//translate.google.com/translate_a/element.js?cb=googleTranslateElementInit"></script>
+
+</body>
+</html>

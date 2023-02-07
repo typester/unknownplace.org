@@ -1,0 +1,308 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="ja" xml:lang="ja">
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <title>memo - unknownplace.org</title>
+  <link rel="stylesheet" type="text/css" href="http://yui.yahooapis.com/3.0.0/build/cssreset/reset-min.css" />
+  <link rel="stylesheet" type="text/css" href="http://yui.yahooapis.com/3.0.0/build/cssfonts/fonts-min.css" />
+  <link rel="stylesheet" href="/css/style.css" type="text/css" />
+  <meta property="fb:admins" content="1093631929" />
+  <meta name="robots" content="noindex" />
+  <link rel="alternate" type="application/rss+xml" href="http://unknownplace.org/memo/index.rss" />
+</head>
+<body>
+
+<div id="container">
+<div id="header">
+    <h1><a href="/">unknownplace.org</a></h1> /
+<a href="/memo/">memo</a>
+</div>
+
+<div id="content">
+
+<div class="entry autopagerize_page_element">
+  <h2><a href="/memo/2013/03/08/2/">clmemoを複数ファイルでやる</a></h2>
+
+  <div class="body">
+    <p>SKK導入してて思ったのは、新しい情報がまったくない、ということだ。</p>
+<p>まぁ2013年にもなってSKK導入しようなんて変なやつはいないってのもあるだろうけど、こういうの最近はみんなtwitterとかに流しておわっちゃうっていうパターンが多いからだと思う。 なのでやっぱりこのようにいろいろ作業したことを残すことは重要だなーと思いなおして、先日からやたらエントリが多いわけですw</p>
+<p>それでまぁもっと細目にclmemoつけていくかなーと思ったわけだけど、いま使ってる <code>clmemo.el</code> は、1つのメモファイルしかサポートしていない。 個人的に使うだけだったらそれで十分なんだけど、僕みたいにclmemoをこうして公開してしまっている場合、プライベートなメモもつけられると良い。</p>
+<p>ので、</p>
+<pre><code>(<span class="keyword">defun</span> <span class="function-name">clmemo-with-file</span> (memofile)
+  (interactive <span class="string">&quot;Fclmemo file: &quot;</span>)
+  (<span class="keyword">let</span> ((clmemo-file-name memofile))
+    (call-interactively &apos;clmemo)))
+</code></pre>
+<p>というような関数を書いた。これを <code>clmemo</code> の代わりに呼びだせば、<code>memofile</code> で指定したファイルが代わりに使われるのでウマー、というわけだ。</p>
+<p>まぁ、いまのところあんまりプライベートなメモってないんだけど、evernoteでやってたタスク管理なども、最近あまりevernoteが信用ならなくなってきたこともあり、Emacsでやろうかなと思ったので、ちょっとそういう感じでプライベートclmemoも運用してみようと思う。</p>
+
+  </div>
+
+  <div class="meta">
+    by typester /
+    at <a href="/memo/2013/03/08/2/">2013-03-08T10:07:00</a> /
+    <a href="/memo/tag/emacs/">emacs</a>
+    &middot; <a href="/memo/tag/clmemo/">clmemo</a>
+    / <a href="/memo/2013/03/08/2/#disqus_thread">Comment</a>
+  </div>
+</div>
+
+<div class="entry autopagerize_page_element">
+  <h2><a href="/memo/2009/04/20/1/">my clmemo設定</a></h2>
+
+  <div class="body">
+    <p>このメモは <a href="http://pop-club.hp.infoseek.co.jp/emacs/clmemo.html">clmemo.el</a> で書いてるわけだけど、もっと個人的なメモとるように、MacBookにもインストールしてみた。</p>
+<p>で、<a href="http://unknownplace.org/pub/clmemo.txt">僕のつかってる clmemo</a> のフォーマットは、タイトル行に書いた時間をいれる、本文は Markdown というような物になっていて、この時間を入れるために<a href="http://unknownplace.org/memo/2005/10/14#e005">こんなパッチ</a>を当てていた。</p>
+<p>けど今見てみたらそんなパッチ当てる必要もないことがわかった。</p>
+<p>こんな感じ、</p>
+<pre><code>(<span class="keyword">require</span> &apos;<span class="constant">clmemo</span>)
+
+(setq clmemo-file-name <span class="string">&quot;~/clmemo.txt&quot;</span>)
+(setq clmemo-time-string-with-weekday t)
+
+(setq clmemo-subtitle-char <span class="string">&quot;[&quot;</span>)
+(setq clmemo-subtitle-punctuation-char &apos;(<span class="string">&quot; [&quot;</span> . <span class="string">&quot;]&quot;</span>))
+
+(<span class="keyword">defadvice</span> <span class="function-name">clmemo-get-title</span> (after clmemo-get-title-with-time () activate)
+  (setq ad-return-value (concat (format-time-string <span class="string">&quot;%H:%M &quot;</span>) ad-return-value)))
+</code></pre>
+<p>でやればこのメモのフォーマットになる。いいね！</p>
+<p>clmemo.el のソースも昔は意味不明だったけど今はだいたいわかるし。やっぱり emacs つかうなら elisp 理解できないと損というか、もったいないなぁ。ということがわかった。</p>
+
+  </div>
+
+  <div class="meta">
+    by typester /
+    at <a href="/memo/2009/04/20/1/">2009-04-20T10:31:00</a> /
+    <a href="/memo/tag/clmemo/">clmemo</a>
+    &middot; <a href="/memo/tag/emacs/">emacs</a>
+    / <a href="/memo/2009/04/20/1/#disqus_thread">Comment</a>
+  </div>
+</div>
+
+<div class="entry autopagerize_page_element">
+  <h2><a href="/memo/2006/03/10/3/">clmemo + Markdown</a></h2>
+
+  <div class="body">
+    <p>いややっぱ Markdown と clmemo は相性いいよ。</p>
+<p>ここで使っている素の <a href="http://unknownplace.org/pub/clmemo.txt">clmemo.txt</a> を見てもらえばわかると思うけど、テキストとしても普通に読めちゃう。</p>
+<p>あとこういうテキストパーサー系のものって全部そのルールにのっとって書かなきゃいけないものばかりだけど、Markdown だと普通に html を書くことも出来る。</p>
+<p>たとえば Flickr とかの画像貼ろうと思ったとき Flickr が出してくれる img タグをそのまま貼り付けられたりとか。</p>
+<p><a href="http://www.flickr.com/photos/typester/72680516/" title="Photo Sharing"><img alt="JIZO with muffler" height="100" src="http://static.flickr.com/35/72680516_487271b400_t.jpg" width="71" /></a></p>
+<p>こんな感じで。</p>
+
+  </div>
+
+  <div class="meta">
+    by typester /
+    at <a href="/memo/2006/03/10/3/">2006-03-10T17:44:00</a> /
+    <a href="/memo/tag/clmemo/">clmemo</a>
+    &middot; <a href="/memo/tag/clon/">clon</a>
+    / <a href="/memo/2006/03/10/3/#disqus_thread">Comment</a>
+  </div>
+</div>
+
+<div class="entry autopagerize_page_element">
+  <h2><a href="/memo/2006/02/05/9/">changelogmemo.g.hatena.ne.jp</a></h2>
+
+  <div class="body">
+    <p>あれ？消えてる？</p>
+<h4>追記@ 2006-02-06 17:54</h4>
+<p>ring だよ！ なにいってるの。誰も突っ込んでくれないし＞＜</p>
+<p>気づくのおせぇ。。</p>
+
+  </div>
+
+  <div class="meta">
+    by typester /
+    at <a href="/memo/2006/02/05/9/">2006-02-05T22:25:00</a> /
+    <a href="/memo/tag/life/">life</a>
+    &middot; <a href="/memo/tag/clmemo/">clmemo</a>
+    / <a href="/memo/2006/02/05/9/#disqus_thread">Comment</a>
+  </div>
+</div>
+
+<div class="entry autopagerize_page_element">
+  <h2><a href="/memo/2005/12/06/1/">Clmemo</a></h2>
+
+  <div class="body">
+    <p>clmemo-mode に C-c C-c でタイトルヘッダ行に [s] が入る機能があって、これを改造して [en] とかはいるようにし、そこに英語ログを書くと言うアイデア。</p>
+
+  </div>
+
+  <div class="meta">
+    by typester /
+    at <a href="/memo/2005/12/06/1/">2005-12-06T02:37:00</a> /
+    <a href="/memo/tag/clmemo/">clmemo</a>
+    &middot; <a href="/memo/tag/idea/">idea</a>
+    / <a href="/memo/2005/12/06/1/#disqus_thread">Comment</a>
+  </div>
+</div>
+
+<div class="entry autopagerize_page_element">
+  <h2><a href="/memo/2005/11/24/7/">clmemo multi language</a></h2>
+
+  <div class="body">
+    <p>日本語でメモすると同時に英語でも書いて、Accept-Language みて切り替えるようにしたい。</p>
+<p>んで、問題になるのが、ファイルフォーマット。</p>
+<p>めんどうなので1ファイル、同じclmemo.txtでできるようにしたい。</p>
+
+  </div>
+
+  <div class="meta">
+    by typester /
+    at <a href="/memo/2005/11/24/7/">2005-11-24T23:40:00</a> /
+    <a href="/memo/tag/clmemo/">clmemo</a>
+    &middot; <a href="/memo/tag/clon/">clon</a>
+    / <a href="/memo/2005/11/24/7/#disqus_thread">Comment</a>
+  </div>
+</div>
+
+<div class="entry autopagerize_page_element">
+  <h2><a href="/memo/2005/11/23/5/"></a></h2>
+
+  <div class="body">
+    <blockquote><p><a href="http://at-aka.blogspot.com/2005/11/emacs-w3m-url.html">clmemo@aka: Emacs-w3m で複数 URL をタブで一気に開く</a></p><p>ブログ記事の ChangeLog メモ技術については、まだまだ向上の余地があるので、これからもブログにちょこちょこと書いていきます。</p></blockquote>
+<p>期待age。</p>
+
+  </div>
+
+  <div class="meta">
+    by typester /
+    at <a href="/memo/2005/11/23/5/">2005-11-23T15:36:00</a> /
+    <a href="/memo/tag/clmemo/">clmemo</a>
+    / <a href="/memo/2005/11/23/5/#disqus_thread">Comment</a>
+  </div>
+</div>
+
+<div class="entry autopagerize_page_element">
+  <h2><a href="/memo/2005/11/08/2/">このメモもはじめてはや 1ヶ月</a></h2>
+
+  <div class="body">
+    <p>このエントリを入れて</p>
+<ul><li>エントリを書いた日数: 33 日</li><li>エントリ数: 209</li></ul>
+<p>6.3 エントリ / 日。 すげなぁ。</p>
+
+  </div>
+
+  <div class="meta">
+    by typester /
+    at <a href="/memo/2005/11/08/2/">2005-11-08T00:27:00</a> /
+    <a href="/memo/tag/clmemo/">clmemo</a>
+    / <a href="/memo/2005/11/08/2/#disqus_thread">Comment</a>
+  </div>
+</div>
+
+<div class="entry autopagerize_page_element">
+  <h2><a href="/memo/2005/10/19/4/">Changelogメモ to はてな</a></h2>
+
+  <div class="body">
+    <p>自動化してやったらよさげかもと思った。</p>
+
+  </div>
+
+  <div class="meta">
+    by typester /
+    at <a href="/memo/2005/10/19/4/">2005-10-19T14:54:00</a> /
+    <a href="/memo/tag/clmemo/">clmemo</a>
+    &middot; <a href="/memo/tag/idea/">idea</a>
+    / <a href="/memo/2005/10/19/4/#disqus_thread">Comment</a>
+  </div>
+</div>
+
+<div class="entry autopagerize_page_element">
+  <h2><a href="/memo/2005/10/14/5/">時間</a></h2>
+
+  <div class="body">
+    <p>自動で時間が挿入されるように clmemo.el 弄った。</p>
+<pre><code>--- /home/murase/temp/clmemo.el
++++ /usr/share/emacs/site-lisp/clmemo.el
+
+@@ -334,7 +334,7 @@
+       (end-of-line))
+     ;; <span class="type">Insert</span> <span class="function-name">item</span>-heading separater after title.
+     (unless (string= <span class="string">""</span> title)
+-      (<span class="type">insert</span> <span class="variable-name">title</span> <span class="string">": "</span>))
++      (insert (concat (format-time-string <span class="string">"%H:%M "</span> (current-time)) title <span class="string">": "</span>)))
+     (clmemo-mapc (lambda (func) (funcall <span class="type">func</span> <span class="variable-name">buf</span>)) clmemo-buffer-function-list)
+     (run-hooks <span class="warning">'</span><span class="string">clmemo-new-title-hook)))
+</span></code></pre>
+<p><code>clmemo-titlle-format-function</code> とか <code>clmemo-new-title-hook</code> とかでやろうとしたけど、どっちも微妙にうまくいかないので直接書き換えた。</p>
+<p>Lisp むずいなぁ。。</p>
+
+  </div>
+
+  <div class="meta">
+    by typester /
+    at <a href="/memo/2005/10/14/5/">2005-10-14T15:23:00</a> /
+    <a href="/memo/tag/clmemo/">clmemo</a>
+    / <a href="/memo/2005/10/14/5/#disqus_thread">Comment</a>
+  </div>
+</div>
+
+
+
+
+<div id="pager" class="autopagerize_insert_before">
+  <p class="pages">
+    <span class="prev">&laquo; Prev</span>
+    <span class="current">1</span>
+    <a href="/memo/tag/clmemo/page/2/">2</a>
+    <a class="next" rel="next" href="/memo/tag/clmemo/page/2/">Next &raquo;</a>
+  </p>
+  <p class="info">(Page 1 of 2)</p>
+</div>
+
+
+</div>
+
+<p id="footer">
+  Copyright &copy; 2005-2013
+      by <a class="author" href="/about/#me">Daisuke Murase (typester)</a> /
+  Site generated by <a href="https://github.com/typester/nim">nim</a> /
+  Comments powered by <a href="http://disqus.com">DISQUS</a>.
+</p>
+
+</div>
+
+
+<script type="text/javascript">
+//<![CDATA[
+(function() {
+	var links = document.getElementsByTagName('a');
+	var query = '?';
+	for(var i = 0; i < links.length; i++) {
+	if(links[i].href.indexOf('#disqus_thread') >= 0) {
+		query += 'url' + i + '=' + encodeURIComponent(links[i].href) + '&';
+	}
+	}
+	document.write('<script charset="utf-8" type="text/javascript" src="http://disqus.com/forums/unknownplace/get_num_replies.js' + query + '"></' + 'script>');
+})();
+//]]>
+</script>
+
+
+<script type="text/javascript">
+var gaJsHost = (("https:" == document.location.protocol) ? "https://ssl." : "http://www.");
+document.write(unescape("%3Cscript src='" + gaJsHost + "google-analytics.com/ga.js' type='text/javascript'%3E%3C/script%3E"));
+</script>
+<script type="text/javascript">
+try {
+var pageTracker = _gat._getTracker("UA-53067-1");
+pageTracker._trackPageview();
+} catch(err) {}</script>
+
+<script>
+function googleTranslateElementInit() {
+  new google.translate.TranslateElement({
+    pageLanguage: 'ja',
+    gaTrack: true,
+    gaId: 'UA-53067',
+    floatPosition: google.translate.TranslateElement.FloatPosition.BOTTOM_RIGHT
+  });
+}
+</script><script src="//translate.google.com/translate_a/element.js?cb=googleTranslateElementInit"></script>
+
+</body>
+</html>

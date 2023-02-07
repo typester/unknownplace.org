@@ -1,0 +1,308 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="ja" xml:lang="ja">
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <title>memo - unknownplace.org</title>
+  <link rel="stylesheet" type="text/css" href="http://yui.yahooapis.com/3.0.0/build/cssreset/reset-min.css" />
+  <link rel="stylesheet" type="text/css" href="http://yui.yahooapis.com/3.0.0/build/cssfonts/fonts-min.css" />
+  <link rel="stylesheet" href="/css/style.css" type="text/css" />
+  <meta property="fb:admins" content="1093631929" />
+  <meta name="robots" content="noindex" />
+  <link rel="alternate" type="application/rss+xml" href="http://unknownplace.org/memo/index.rss" />
+</head>
+<body>
+
+<div id="container">
+<div id="header">
+    <h1><a href="/">unknownplace.org</a></h1> /
+<a href="/memo/">memo</a>
+</div>
+
+<div id="content">
+
+<div class="entry autopagerize_page_element">
+  <h2><a href="/memo/2006/03/15/1/"></a></h2>
+
+  <div class="body">
+    <p>でもこんな感じで</p>
+<pre><code><span class="keyword">sub</span> <span class="function-name">get_user</span> {
+    <span class="keyword">my</span> ( <span class="variable-name">$self</span>, <span class="variable-name">$id</span>, <span class="variable-name">$password</span> ) = <span class="cperl-array">@_</span>;
+
+    $self-&gt;{<span class="string">ua</span>} ||= LWP::UserAgent-&gt;new;
+
+    <span class="keyword">my</span> <span class="variable-name">$request</span> = HTTP::Request-&gt;new( <span class="string">HEAD</span> =&gt; $self-&gt;{<span class="string">auth_url</span>} );
+    $request-&gt;headers-&gt;authorization_basic( $id, $password );
+
+    <span class="keyword">my</span> <span class="variable-name">$response</span> = $self-&gt;{<span class="string">ua</span>}-&gt;request( $request );
+
+    <span class="keyword">return</span> <span class="keyword">unless</span> $response-&gt;is_success;
+
+    <span class="keyword">my</span> <span class="variable-name">$user</span> = {
+        <span class="string">id</span> =&gt; $id,
+        <span class="string">password</span> =&gt; $password,
+        <span class="string">store</span> =&gt; <span class="type">ref</span> $self || $self,
+    };
+
+    <span class="keyword">return</span> <span class="type">bless</span> $user, <span class="string">&apos;Catalyst::Plugin::Authentication::User::Hash&apos;</span>;
+}
+</code></pre>
+<p>みたいに Authentication::CDBI::Basic::Remote ぽいのを再実装しようとして詰まった。</p>
+<p>こうやってかけるようにならねーかなぁ。</p>
+
+  </div>
+
+  <div class="meta">
+    by typester /
+    at <a href="/memo/2006/03/15/1/">2006-03-15T02:40:00</a> /
+    <a href="/memo/tag/catalyst/">catalyst</a>
+    / <a href="/memo/2006/03/15/1/#disqus_thread">Comment</a>
+  </div>
+</div>
+
+<div class="entry autopagerize_page_element">
+  <h2><a href="/memo/2006/03/14/2/"></a></h2>
+
+  <div class="body">
+    <p>出社。</p>
+
+  </div>
+
+  <div class="meta">
+    by typester /
+    at <a href="/memo/2006/03/14/2/">2006-03-14T10:48:00</a> /
+    <a href="/memo/tag/life/">life</a>
+    / <a href="/memo/2006/03/14/2/#disqus_thread">Comment</a>
+  </div>
+</div>
+
+<div class="entry autopagerize_page_element">
+  <h2><a href="/memo/2006/03/14/1/"></a></h2>
+
+  <div class="body">
+    <p>退社。</p>
+
+  </div>
+
+  <div class="meta">
+    by typester /
+    at <a href="/memo/2006/03/14/1/">2006-03-14T04:13:00</a> /
+    <a href="/memo/tag/life/">life</a>
+    / <a href="/memo/2006/03/14/1/#disqus_thread">Comment</a>
+  </div>
+</div>
+
+<div class="entry autopagerize_page_element">
+  <h2><a href="/memo/2006/03/13/6/">Yahoo! のブログ検索</a></h2>
+
+  <div class="body">
+    <p>ここも引っかかるな。Google と同じで自動で RSS みつけてるのか。</p>
+<p>すばらしいなぁ。</p>
+
+  </div>
+
+  <div class="meta">
+    by typester /
+    at <a href="/memo/2006/03/13/6/">2006-03-13T19:52:00</a> /
+    <a href="/memo/tag/web/">web</a>
+    / <a href="/memo/2006/03/13/6/#disqus_thread">Comment</a>
+  </div>
+</div>
+
+<div class="entry autopagerize_page_element">
+  <h2><a href="/memo/2006/03/13/5/"></a></h2>
+
+  <div class="body">
+    <p>ingy さんは Changes も YAML か。</p>
+
+  </div>
+
+  <div class="meta">
+    by typester /
+    at <a href="/memo/2006/03/13/5/">2006-03-13T19:35:00</a> /
+    <a href="/memo/tag/life/">life</a>
+    &middot; <a href="/memo/tag/perl/">perl</a>
+    / <a href="/memo/2006/03/13/5/#disqus_thread">Comment</a>
+  </div>
+</div>
+
+<div class="entry autopagerize_page_element">
+  <h2><a href="/memo/2006/03/13/4/">$/</a></h2>
+
+  <div class="body">
+    <p>perldoc perlvar みてたら、$/ とかみっけ。これが undef だとファイルハンドルは slurp モードになるらしい。</p>
+<pre><code><span class="keyword">my</span> <span class="variable-name">$stdin</span> = <span class="type">join</span> <span class="string">&apos;&apos;</span>, &lt;STDIN&gt;;
+</code></pre>
+<p>を</p>
+<pre><code><span class="keyword">my</span> <span class="variable-name">$stdin</span>;
+{
+    <span class="keyword">local</span> <span class="variable-name">$/</span>;
+    $stdin = &lt;STDIN&gt;;
+}
+</code></pre>
+<p>ほー</p>
+
+  </div>
+
+  <div class="meta">
+    by typester /
+    at <a href="/memo/2006/03/13/4/">2006-03-13T19:08:00</a> /
+    <a href="/memo/tag/perl/">perl</a>
+    / <a href="/memo/2006/03/13/4/#disqus_thread">Comment</a>
+  </div>
+</div>
+
+<div class="entry autopagerize_page_element">
+  <h2><a href="/memo/2006/03/13/3/">YAML Support of Module::Build</a></h2>
+
+  <div class="body">
+    <p>YAMLとの相性が悪い問題。最近は大丈夫になったかと思いきや、いまのModule::BuildはインストールするとYAML.pmのバージョンをチェックして新しすぎると</p>
+<pre><code>Feature &apos;YAML_support&apos; disabled because of the following prerequisite failures:
+ * Version 0.58 of YAML is installed, but we need version &lt; 0.49
+</code></pre>
+<p>とかいわれるようだ。このままだと META.yml をうまく作成してもらえない。</p>
+<p>0.58 つかってても Module::Build::ConfigData を <code>&apos;YAML_support&apos; =&gt; 1</code> とかって書き換えれば動くように見えるんだけど。何でこんなことになっているのか。</p>
+<p>C::P::EmailJapanese をアップデートしたら META.yml がおかしなことになってて気づいたよ。。</p>
+
+  </div>
+
+  <div class="meta">
+    by typester /
+    at <a href="/memo/2006/03/13/3/">2006-03-13T15:05:00</a> /
+    <a href="/memo/tag/life/">life</a>
+    &middot; <a href="/memo/tag/perl/">perl</a>
+    / <a href="/memo/2006/03/13/3/#disqus_thread">Comment</a>
+  </div>
+</div>
+
+<div class="entry autopagerize_page_element">
+  <h2><a href="/memo/2006/03/13/2/">Live timing</a></h2>
+
+  <div class="body">
+    <p>テレビ用パソコがお亡くなりになってF1は見えそうになかったので、昨日は公式ページの Live timing をずっと見てたｗ</p>
+<p>普段なら映像なしだとつまんなくなって他ごとしちゃうんだけど昨日のレースはやばすぎる。なんかずっと見てたよ。</p>
+<p>シューというかフェラーリが復活。アロンソより速かった印象。でもピット作戦で負けた。</p>
+<p>ホンダも上位チームと戦える位のレベルにはきたのかな。バリチェロが遅かったのはなんなの？</p>
+<p>ピット出ると常に誰かのすぐ後ろに出るバトン運悪すぎ。あとすぐ前に出られたり。モントーヤ、キミ関係で3度ほどあった気がする。</p>
+<p>キミはすごすぎる。なんだありゃｗ</p>
+<p>タイムが肉薄まくってておもろかったなぁ。あとウィリアムズのルーキー速かった。ファステスト？</p>
+<p>正直 Live timing ないと F1 テレビ見てても面白さが半減する。全員のラップタイムが常に(しかもセクションごとのタイムも)見えてて、状況が一発でわかる。</p>
+<p>Live timing を録画しておいてF1放送時に再生しつつ見たいｗ</p>
+<p>フジが生中継すれば問題ないんだけど。</p>
+
+  </div>
+
+  <div class="meta">
+    by typester /
+    at <a href="/memo/2006/03/13/2/">2006-03-13T14:25:00</a> /
+    <a href="/memo/tag/life/">life</a>
+    &middot; <a href="/memo/tag/f1/">f1</a>
+    / <a href="/memo/2006/03/13/2/#disqus_thread">Comment</a>
+  </div>
+</div>
+
+<div class="entry autopagerize_page_element">
+  <h2><a href="/memo/2006/03/13/1/"></a></h2>
+
+  <div class="body">
+    <p>出社。</p>
+
+  </div>
+
+  <div class="meta">
+    by typester /
+    at <a href="/memo/2006/03/13/1/">2006-03-13T10:24:00</a> /
+    <a href="/memo/tag/life/">life</a>
+    / <a href="/memo/2006/03/13/1/#disqus_thread">Comment</a>
+  </div>
+</div>
+
+<div class="entry autopagerize_page_element">
+  <h2><a href="/memo/2006/03/12/4/"></a></h2>
+
+  <div class="body">
+    <p>zooomr 試してみたけど今は重すぎてだめだ。</p>
+
+  </div>
+
+  <div class="meta">
+    by typester /
+    at <a href="/memo/2006/03/12/4/">2006-03-12T17:51:00</a> /
+    <a href="/memo/tag/web/">web</a>
+    / <a href="/memo/2006/03/12/4/#disqus_thread">Comment</a>
+  </div>
+</div>
+
+
+
+
+<div id="pager" class="autopagerize_insert_before">
+  <p class="pages">
+    <a class="prev" rel="previous" href="/memo/page/125/">&laquo; Prev</a>
+    <a href="/memo/page/122/">122</a>
+    <a href="/memo/page/123/">123</a>
+    <a href="/memo/page/124/">124</a>
+    <a href="/memo/page/125/">125</a>
+    <span class="current">126</span>
+    <a href="/memo/page/127/">127</a>
+    <a href="/memo/page/128/">128</a>
+    <a href="/memo/page/129/">129</a>
+    <a href="/memo/page/130/">130</a>
+    <a href="/memo/page/131/">131</a>
+    <a class="next" rel="next" href="/memo/page/127/">Next &raquo;</a>
+  </p>
+  <p class="info">(Page 126 of 203)</p>
+</div>
+
+
+</div>
+
+<p id="footer">
+  Copyright &copy; 2005-2013
+      by <a class="author" href="/about/#me">Daisuke Murase (typester)</a> /
+  Site generated by <a href="https://github.com/typester/nim">nim</a> /
+  Comments powered by <a href="http://disqus.com">DISQUS</a>.
+</p>
+
+</div>
+
+
+<script type="text/javascript">
+//<![CDATA[
+(function() {
+	var links = document.getElementsByTagName('a');
+	var query = '?';
+	for(var i = 0; i < links.length; i++) {
+	if(links[i].href.indexOf('#disqus_thread') >= 0) {
+		query += 'url' + i + '=' + encodeURIComponent(links[i].href) + '&';
+	}
+	}
+	document.write('<script charset="utf-8" type="text/javascript" src="http://disqus.com/forums/unknownplace/get_num_replies.js' + query + '"></' + 'script>');
+})();
+//]]>
+</script>
+
+
+<script type="text/javascript">
+var gaJsHost = (("https:" == document.location.protocol) ? "https://ssl." : "http://www.");
+document.write(unescape("%3Cscript src='" + gaJsHost + "google-analytics.com/ga.js' type='text/javascript'%3E%3C/script%3E"));
+</script>
+<script type="text/javascript">
+try {
+var pageTracker = _gat._getTracker("UA-53067-1");
+pageTracker._trackPageview();
+} catch(err) {}</script>
+
+<script>
+function googleTranslateElementInit() {
+  new google.translate.TranslateElement({
+    pageLanguage: 'ja',
+    gaTrack: true,
+    gaId: 'UA-53067',
+    floatPosition: google.translate.TranslateElement.FloatPosition.BOTTOM_RIGHT
+  });
+}
+</script><script src="//translate.google.com/translate_a/element.js?cb=googleTranslateElementInit"></script>
+
+</body>
+</html>

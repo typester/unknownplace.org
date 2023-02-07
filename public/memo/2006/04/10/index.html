@@ -1,0 +1,161 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="ja" xml:lang="ja">
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <title>2006/04/10 - memo - unknownplace.org</title>
+  <link rel="stylesheet" type="text/css" href="http://yui.yahooapis.com/3.0.0/build/cssreset/reset-min.css" />
+  <link rel="stylesheet" type="text/css" href="http://yui.yahooapis.com/3.0.0/build/cssfonts/fonts-min.css" />
+  <link rel="stylesheet" href="/css/style.css" type="text/css" />
+  <meta property="fb:admins" content="1093631929" />
+  <meta name="robots" content="noindex" />
+  <link rel="alternate" type="application/rss+xml" href="http://unknownplace.org/memo/index.rss" />
+</head>
+<body>
+
+<div id="container">
+<div id="header">
+    <h1><a href="/">unknownplace.org</a></h1> /
+<a href="/memo/">memo</a>
+</div>
+
+<div id="content">
+
+<div class="entry autopagerize_page_element">
+  <h2 id="e003"><a href="/memo/2006/04/10/3/">さっきかいたの</a></h2>
+
+  <div class="body">
+    <p><strong>PACKAGE</strong>-&gt;inflate_column( query =&gt; { inflate =&gt; sub { my $u = URI-&gt;new; $u-&gt;query(shift);</p>
+<pre><code>            <span class="keyword">my</span> <span class="variable-name">$ret</span> = {};
+            <span class="keyword">for</span> <span class="keyword">my</span> <span class="variable-name">$k</span> ( $u-&gt;query_param ) {
+                <span class="keyword">my</span> <span class="cperl-array">@v</span> = $u-&gt;query_param($k);
+                $ret-&gt;{$k} = <span class="cperl-array">@v</span> &gt; 1 ? [<span class="cperl-array">@v</span>] : <span class="cperl-array">$v</span>[0];
+            }
+
+            $ret;
+        },
+        <span class="string">deflate</span> =&gt; <span class="keyword">sub</span> {
+            <span class="keyword">my</span> <span class="variable-name">$utf8off</span> = <span class="keyword">sub</span> {
+                <span class="keyword">my</span> <span class="variable-name">$str</span> = <span class="cperl-nonoverridable">shift</span>;
+                utf8::encode($str) <span class="keyword">if</span> utf8::is_utf8($str);
+            };
+
+            <span class="keyword">my</span> <span class="variable-name">$hash</span> = <span class="cperl-nonoverridable">shift</span>;
+            <span class="keyword">for</span> ( <span class="cperl-nonoverridable">keys</span> <span class="cperl-hash">%</span><span class="variable-name">$hash</span> ) {
+                <span class="keyword">if</span> ( <span class="type">ref</span> $hash-&gt;{$_} <span class="type">eq</span> <span class="string">&apos;ARRAY&apos;</span> ) {
+                    $utf8off-&gt;($_) <span class="keyword">for</span> @{ $hash-&gt;{$_} };
+                }
+                <span class="keyword">else</span> {
+                    $utf8off-&gt;( $hash-&gt;{$_} );
+                }
+            }
+
+            <span class="keyword">my</span> <span class="variable-name">$u</span> = URI-&gt;new;
+            $u-&gt;query_param(<span class="cperl-hash">%</span><span class="variable-name">$hash</span>);
+            $u-&gt;query;
+        },
+    }
+);
+</code></pre>
+<p><code>foo=bar&amp;baz=blah</code> みたいなクエリを保存するカラムに、ハッシュで保存してハッシュで取り出すというやつ。</p>
+<p>短くかけるかと思って書き始めたら、URIの <code>query_form</code> や <code>query_param</code> にutf8フラグったの渡すとこけたり、<code>foo=bar&amp;foo=baz</code> のように配列になるべきものがうまくハッシュにできなかったりとかしてこんなに長く。</p>
+
+  </div>
+
+  <div class="meta">
+    by typester /
+    at <a href="/memo/2006/04/10/3/">2006-04-10T17:33:00</a> /
+    <a href="/memo/tag/perl/">perl</a>
+    &middot; <a href="/memo/tag/dbic/">dbic</a>
+    / <a href="/memo/2006/04/10/3/#disqus_thread">Comment</a>
+  </div>
+</div>
+
+<div class="entry autopagerize_page_element">
+  <h2 id="e002"><a href="/memo/2006/04/10/2/"></a></h2>
+
+  <div class="body">
+    <p>Jemplate 試してみた。超楽。</p>
+<p>あとTT理解できるデザイナであればjavascriptでつくってるHTMLがすぐわかるってのも利点だなぁ。</p>
+
+  </div>
+
+  <div class="meta">
+    by typester /
+    at <a href="/memo/2006/04/10/2/">2006-04-10T11:14:00</a> /
+    <a href="/memo/tag/life/">life</a>
+    &middot; <a href="/memo/tag/javascript/">javascript</a>
+    &middot; <a href="/memo/tag/jemplate/">jemplate</a>
+    / <a href="/memo/2006/04/10/2/#disqus_thread">Comment</a>
+  </div>
+</div>
+
+<div class="entry autopagerize_page_element">
+  <h2 id="e001"><a href="/memo/2006/04/10/1/"></a></h2>
+
+  <div class="body">
+    <p>出社。おお遅刻じゃない。</p>
+
+  </div>
+
+  <div class="meta">
+    by typester /
+    at <a href="/memo/2006/04/10/1/">2006-04-10T09:59:00</a> /
+    <a href="/memo/tag/life/">life</a>
+    / <a href="/memo/2006/04/10/1/#disqus_thread">Comment</a>
+  </div>
+</div>
+
+
+
+</div>
+
+<p id="footer">
+  Copyright &copy; 2005-2013
+      by <a class="author" href="/about/#me">Daisuke Murase (typester)</a> /
+  Site generated by <a href="https://github.com/typester/nim">nim</a> /
+  Comments powered by <a href="http://disqus.com">DISQUS</a>.
+</p>
+
+</div>
+
+
+<script type="text/javascript">
+//<![CDATA[
+(function() {
+	var links = document.getElementsByTagName('a');
+	var query = '?';
+	for(var i = 0; i < links.length; i++) {
+	if(links[i].href.indexOf('#disqus_thread') >= 0) {
+		query += 'url' + i + '=' + encodeURIComponent(links[i].href) + '&';
+	}
+	}
+	document.write('<script charset="utf-8" type="text/javascript" src="http://disqus.com/forums/unknownplace/get_num_replies.js' + query + '"></' + 'script>');
+})();
+//]]>
+</script>
+
+
+<script type="text/javascript">
+var gaJsHost = (("https:" == document.location.protocol) ? "https://ssl." : "http://www.");
+document.write(unescape("%3Cscript src='" + gaJsHost + "google-analytics.com/ga.js' type='text/javascript'%3E%3C/script%3E"));
+</script>
+<script type="text/javascript">
+try {
+var pageTracker = _gat._getTracker("UA-53067-1");
+pageTracker._trackPageview();
+} catch(err) {}</script>
+
+<script>
+function googleTranslateElementInit() {
+  new google.translate.TranslateElement({
+    pageLanguage: 'ja',
+    gaTrack: true,
+    gaId: 'UA-53067',
+    floatPosition: google.translate.TranslateElement.FloatPosition.BOTTOM_RIGHT
+  });
+}
+</script><script src="//translate.google.com/translate_a/element.js?cb=googleTranslateElementInit"></script>
+
+</body>
+</html>

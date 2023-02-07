@@ -1,0 +1,414 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="ja" xml:lang="ja">
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <title>memo - unknownplace.org</title>
+  <link rel="stylesheet" type="text/css" href="http://yui.yahooapis.com/3.0.0/build/cssreset/reset-min.css" />
+  <link rel="stylesheet" type="text/css" href="http://yui.yahooapis.com/3.0.0/build/cssfonts/fonts-min.css" />
+  <link rel="stylesheet" href="/css/style.css" type="text/css" />
+  <meta property="fb:admins" content="1093631929" />
+  <meta name="robots" content="noindex" />
+  <link rel="alternate" type="application/rss+xml" href="http://unknownplace.org/memo/index.rss" />
+</head>
+<body>
+
+<div id="container">
+<div id="header">
+    <h1><a href="/">unknownplace.org</a></h1> /
+<a href="/memo/">memo</a>
+</div>
+
+<div id="content">
+
+<div class="entry autopagerize_page_element">
+  <h2><a href="/memo/2007/07/17/1/">ps の日付パース</a></h2>
+
+  <div class="body">
+    <p><code>ps</code> の出力をパースしたかったんだけど、日付部分めんどいなと思いきや <code>Date::Manip</code> 使ったら一発だった。覚えててよかった！</p>
+<p><a href="http://bulknews.typepad.com/blog/2006/09/30boxespl_how_i.html">30boxes.pl</a> とかで使われてるやつ。</p>
+
+  </div>
+
+  <div class="meta">
+    by typester /
+    at <a href="/memo/2007/07/17/1/">2007-07-17T17:14:00</a> /
+    <a href="/memo/tag/perl/">perl</a>
+    &middot; <a href="/memo/tag/linux/">linux</a>
+    / <a href="/memo/2007/07/17/1/#disqus_thread">Comment</a>
+  </div>
+</div>
+
+<div class="entry autopagerize_page_element">
+  <h2><a href="/memo/2007/06/15/1/">IP認証とBasic認証を同時に使うCatalystコードサンプル</a></h2>
+
+  <div class="body">
+    <p>Catalystは <code>Authentication::Credential::*</code> プラグインを複数使うことにより、複数の認証方式に対応できる。</p>
+<p>IP認証などのような、Credプラグインが提供されていないものも即席でCredインタフェースにそったモジュールを作ることで簡単に認証方法を追加することができる。</p>
+<p>MyApp.pm はこんな感じ</p>
+<pre><code><span class="keyword">package</span> <span class="function-name">MyApp</span>;
+
+<span class="keyword">use</span> <span class="function-name">strict</span>;
+<span class="keyword">use</span> <span class="function-name">warnings</span>;
+
+<span class="keyword">use</span> <span class="function-name">Catalyst::Runtime</span> <span class="string">&apos;5.70&apos;</span>;
+<span class="keyword">use</span> <span class="function-name">Catalyst</span> <span class="cperl-nonoverridable">qw</span><span class="string">/
+    ConfigLoader
+
+    Authentication
+    Authentication::Credential::HTTP
+    +MyApp::Credential::IP
+    Authentication::Store::DBIC
+    /</span>;
+
+<span class="keyword">our</span> <span class="variable-name">$VERSION</span> = <span class="string">&apos;0.01&apos;</span>;
+
+<span class="type">__PACKAGE__</span>-&gt;setup;
+</code></pre>
+<p><code>Cred::HTTP</code> が Basic 認証用のモジュール。<code>+MyApp::Credential::IP</code> がIP認証用のオリジナルモジュール。</p>
+<p>この <code>MyApp::Credential::IP</code> のコードはこんな感じ。</p>
+<pre><code><span class="keyword">package</span> <span class="function-name">MyApp::Credential::IP</span>;
+<span class="keyword">use</span> <span class="function-name">strict</span>;
+<span class="keyword">use</span> <span class="function-name">warnings</span>;
+<span class="keyword">use</span> <span class="function-name">base</span> <span class="cperl-nonoverridable">qw</span><span class="string">/Catalyst::Plugin::Authentication::Credential::Password/</span>;
+
+<span class="keyword">sub</span> <span class="function-name">authenticate_from_address</span> {
+    <span class="keyword">my</span> <span class="variable-name">$c</span> = <span class="cperl-nonoverridable">shift</span>;
+
+    <span class="keyword">my</span> <span class="variable-name">$ip</span> = $c-&gt;model(<span class="string">&apos;DBIC::UserIp&apos;</span>)-&gt;find({ <span class="string">ip</span> =&gt; $c-&gt;req-&gt;address }, { <span class="string">prefetch</span> =&gt; <span class="string">&apos;user&apos;</span> })
+        <span class="type">or</span> <span class="keyword">return</span>;
+    <span class="keyword">my</span> <span class="variable-name">$user</span> = $c-&gt;get_user( $ip-&gt;user-&gt;username )
+        <span class="type">or</span> <span class="keyword">return</span>;
+
+    $c-&gt;set_authenticated($user);
+
+    1;
+}
+
+1;
+</code></pre>
+<p>こんな短いコードで認証増やせるの。なかなか便利。</p>
+<p>で、実際に利用するのは以下のように、Root Controller の auto アクションに</p>
+<pre><code><span class="keyword">sub</span> <span class="function-name">auto</span> <span class="constant">:Private</span> {
+    <span class="keyword">my</span> (<span class="variable-name">$self</span>, <span class="variable-name">$c</span>) = <span class="cperl-array">@_</span>;
+
+    <span class="comment-delimiter"># </span><span class="comment">basic auth
+</span>    $c-&gt;authenticate_http <span class="type">and</span> <span class="keyword">return</span> 1;
+
+    <span class="comment-delimiter"># </span><span class="comment">ip auth
+</span>    $c-&gt;authenticate_from_address <span class="type">and</span> <span class="keyword">return</span> 1;
+
+    <span class="comment-delimiter"># </span><span class="comment">return basic auth response when no auth success
+</span>    $c-&gt;authorization_required_response( <span class="string">realm</span> =&gt; <span class="string">&apos;Require Authentication&apos;</span> );
+    <span class="keyword">return</span>;
+}
+</code></pre>
+<p>などとする。</p>
+<p>全体に認証かけたいときはルートコントローラの auto に、コントローラ個別に指定したいときは、上記コードを埋め込んだ認証用の親コントローラクラスつくって認証必要なコントローラはそれを継承する。</p>
+<p>パスごとにやりたいときは <code>Authentication::ACL</code> ってのがあるけど僕は使っていない。</p>
+
+  </div>
+
+  <div class="meta">
+    by typester /
+    at <a href="/memo/2007/06/15/1/">2007-06-15T17:07:00</a> /
+    <a href="/memo/tag/perl/">perl</a>
+    &middot; <a href="/memo/tag/catalyst/">catalyst</a>
+    / <a href="/memo/2007/06/15/1/#disqus_thread">Comment</a>
+  </div>
+</div>
+
+<div class="entry autopagerize_page_element">
+  <h2><a href="/memo/2007/05/29/1/">File::Temp</a></h2>
+
+  <div class="body">
+    <p>すげーよく使うわりに使い方を覚えられないので、毎回docみてる。</p>
+<p>APIがわるいんだろうなぁ。ラッパるのがいいんかなぁ。</p>
+
+  </div>
+
+  <div class="meta">
+    by typester /
+    at <a href="/memo/2007/05/29/1/">2007-05-29T16:17:00</a> /
+    <a href="/memo/tag/perl/">perl</a>
+    / <a href="/memo/2007/05/29/1/#disqus_thread">Comment</a>
+  </div>
+</div>
+
+<div class="entry autopagerize_page_element">
+  <h2><a href="/memo/2007/05/18/2/">Class::Accessor::Fast 改</a></h2>
+
+  <div class="body">
+    <p>use base qw/Class::Accessor::Fast/;</p>
+<pre><code>sub new { shift-&gt;SUPER::new( @_ &gt; 1 ? {@_} : $_[0] ); }
+</code></pre>
+<p>っていうだけのモジュールがほしい件。</p>
+
+  </div>
+
+  <div class="meta">
+    by typester /
+    at <a href="/memo/2007/05/18/2/">2007-05-18T15:55:00</a> /
+    <a href="/memo/tag/perl/">perl</a>
+    / <a href="/memo/2007/05/18/2/#disqus_thread">Comment</a>
+  </div>
+</div>
+
+<div class="entry autopagerize_page_element">
+  <h2><a href="/memo/2007/05/07/2/"></a></h2>
+
+  <div class="body">
+    <p>書き忘れたけどさっきの <code>update_schema.pl</code> は</p>
+<pre><code>./script/myapp_update_schema.pl dbi:mysql:tablename username password
+</code></pre>
+<p>見たいな感じで DSN を渡す必要がある。めんどう。</p>
+<p>ここら辺があれでまだヘルパーにはなってない。</p>
+
+  </div>
+
+  <div class="meta">
+    by typester /
+    at <a href="/memo/2007/05/07/2/">2007-05-07T05:16:00</a> /
+    <a href="/memo/tag/perl/">perl</a>
+    &middot; <a href="/memo/tag/dbic/">dbic</a>
+    / <a href="/memo/2007/05/07/2/#disqus_thread">Comment</a>
+  </div>
+</div>
+
+<div class="entry autopagerize_page_element">
+  <h2><a href="/memo/2007/05/07/1/">Schema::Loader 使い方</a></h2>
+
+  <div class="body">
+    <blockquote><p><a href="http://blog.mizzy.org/articles/2007/05/06/dbix-class-schema-loader">mizzy.org : Re: DBICとDBIx::Class::Schema::Loader 僕のいろいろな勘違い</a></p></blockquote>
+<p>僕の中で流行ってる使い方があるのでかぶせて書いておいてみる。mizzy さんの二個目の例を自分ルール化させた感じ？</p>
+<p>作業は一般的なCatalystアプリのディレクトリ構造上であるとして、そこに新しく schema というディレクトリを作成。</p>
+<p>そんで、</p>
+<ul><li>schema/lib/Schema/{TableName}.pm</li></ul>
+<p>に各テーブルのリレーション定義とかメソッドとかを自分で書く。実際にこのライブラリは Catalyst にロードされない。</p>
+<p>上記ファイルを元に <code>Schema::Loader</code> の <code>make_schema_at</code> を使い</p>
+<ul><li>lib/MyApp/Schema.pm</li><li>lib/MyApp/Schema/*.pm</li></ul>
+<p>にコードを自動生成して、そちらをロードするという感じ。こちらのコードは自分では書き換えない。</p>
+<p>コード自動生成は <code>script/myapp_update_schema.pl</code> にこんなのを書いてそれを実行している。</p>
+<pre><code><span class="comment-delimiter">#</span><span class="comment">!/usr/bin/env perl
+</span>
+<span class="keyword">use</span> <span class="function-name">strict</span>;
+<span class="keyword">use</span> <span class="function-name">warnings</span>;
+
+<span class="keyword">use</span> <span class="function-name">FindBin</span>;
+<span class="keyword">use</span> <span class="function-name">File::Spec</span>;
+<span class="keyword">use</span> <span class="function-name">lib</span> File::Spec-&gt;catfile( $FindBin::Bin, <span class="cperl-nonoverridable">qw</span><span class="string">/.. schema lib/</span> );
+
+<span class="keyword">use</span> <span class="function-name">DBIx::Class::Schema::Loader</span> <span class="cperl-nonoverridable">qw</span><span class="string">/make_schema_at/</span>;
+
+<span class="keyword">die</span> <span class="keyword">unless</span> <span class="cperl-array">@ARGV</span>;
+
+make_schema_at(
+    <span class="string">&apos;MyApp::Schema&apos;</span>,
+    {   <span class="string">components</span>     =&gt; [<span class="string">&apos;ResultSetManager&apos;</span>, <span class="string">&apos;UTF8Columns&apos;</span>],
+        <span class="string">dump_directory</span> =&gt; File::Spec-&gt;catfile( $FindBin::Bin, <span class="string">&apos;..&apos;</span>, <span class="string">&apos;lib&apos;</span> ),
+        <span class="string">dump_overwrite</span> =&gt; 1,
+        <span class="string">debug</span> =&gt; 1,
+    },
+    \<span class="cperl-array">@ARGV</span>,
+);
+</code></pre>
+<p><code>@INC</code> に <code>schema/lib</code> をくっつけてから <code>make_schema_at</code> してるだけ。ワンライナーでもできるけど見通しが悪いので。</p>
+<p>これで普通の <code>make_schema_at</code> でつくられる Schema ファイルに自分で schema/lib/Schema/ 以下に書いた定義がくっついて出力されるという寸法。</p>
+<p><code>Schema::Loader</code> でダイナミックロードを使っていると各テーブルクラスにはリレーション定義やメソッド拡張のコードだけをかけばいいのでシンプルになって好きなんだけど、そうすると起動時のオーバーヘッドがあるし、ResultSetManagerがつかえなくていやんというときに、これだとまぁイイとこどりのような感じにできる。</p>
+<p>実際にいじるファイルは schema/lib 以下のファイルで、それらのファイルを更新するたびに update.pl を実行するというのがあれだけどまぁ自動化できる。してないけど。</p>
+<p>難点は、schema/lib 以下のファイルでsyntax errorがあっても何も言われないこと。</p>
+<p>何も言われないというか、syntax error があるファイルは</p>
+<pre><code># Loaded external class definition for &apos;MyApp::Schema::TableName&apos;
+</code></pre>
+<p>ってのが出ないだけという。どこがエラってるのかとかがわからないので、がーーって書いてどこか typo してたりするとはまるかも。</p>
+
+  </div>
+
+  <div class="meta">
+    by typester /
+    at <a href="/memo/2007/05/07/1/">2007-05-07T04:57:00</a> /
+    <a href="/memo/tag/perl/">perl</a>
+    &middot; <a href="/memo/tag/dbic/">dbic</a>
+    / <a href="/memo/2007/05/07/1/#disqus_thread">Comment</a>
+  </div>
+</div>
+
+<div class="entry autopagerize_page_element">
+  <h2><a href="/memo/2007/05/02/1/">X-Sendfile の逆がほしい</a></h2>
+
+  <div class="body">
+    <p>ファイルアップロードしたときに、サーバーが自動でどっかファイルに保存しつつ受信して、fastcgi にはファイルを渡さずファイル名を渡す。</p>
+<p>結構でかいファイルだと Webサーバー &lt;-&gt; FastCGI 間のファイルデータのやり取りに時間かかってすげー無駄だ。</p>
+<p>lighty が実装しねーかなぁ。</p>
+<p>perlbal でできたりするのかな。</p>
+
+  </div>
+
+  <div class="meta">
+    by typester /
+    at <a href="/memo/2007/05/02/1/">2007-05-02T23:41:00</a> /
+    <a href="/memo/tag/perl/">perl</a>
+    &middot; <a href="/memo/tag/catalyst/">catalyst</a>
+    / <a href="/memo/2007/05/02/1/#disqus_thread">Comment</a>
+  </div>
+</div>
+
+<div class="entry autopagerize_page_element">
+  <h2><a href="/memo/2007/05/01/1/">inflate_column + time_zone</a></h2>
+
+  <div class="body">
+    <p>んー</p>
+<pre><code><span class="keyword">for</span> <span class="keyword">my</span> <span class="variable-name">$date_column</span> (<span class="cperl-nonoverridable">qw</span><span class="string">/created_date modified_date/</span>) {
+    <span class="type">__PACKAGE__</span>-&gt;inflate_column(
+        $date_column =&gt; {
+            <span class="string">inflate</span> =&gt; <span class="keyword">sub</span> { DateTime::Format::MySQL-&gt;parse_datetime(<span class="cperl-nonoverridable">shift</span>)-&gt;set_time_zone(<span class="string">&apos;UTC&apos;</span>) },
+            <span class="string">deflate</span> =&gt; <span class="keyword">sub</span> { DateTime::Format::MySQL-&gt;format_datetime(<span class="cperl-nonoverridable">shift</span>-&gt;set_time_zone(<span class="string">&apos;UTC&apos;</span>)) },
+        }
+    );
+
+    {
+        <span class="cperl-nonoverridable">no</span> <span class="function-name">strict</span> <span class="string">&apos;refs&apos;</span>;
+        *{<span class="string">&quot;$date_column\_for&quot;</span>} = <span class="keyword">sub</span> {
+            <span class="keyword">my</span> (<span class="variable-name">$self</span>, <span class="variable-name">$user</span>) = <span class="cperl-array">@_</span>;
+
+            ($user &amp;&amp; $user-&gt;info &amp;&amp; $user-&gt;info-&gt;time_zone)
+                ? $self-&gt;$date_column-&gt;set_time_zone( $user-&gt;info-&gt;time_zone )
+                : $self-&gt;$date_column;
+        }
+    }
+}
+</code></pre>
+
+  </div>
+
+  <div class="meta">
+    by typester /
+    at <a href="/memo/2007/05/01/1/">2007-05-01T08:12:00</a> /
+    <a href="/memo/tag/perl/">perl</a>
+    &middot; <a href="/memo/tag/dbic/">dbic</a>
+    / <a href="/memo/2007/05/01/1/#disqus_thread">Comment</a>
+  </div>
+</div>
+
+<div class="entry autopagerize_page_element">
+  <h2><a href="/memo/2007/04/16/2/">昨日のゲートウェイつかったスクリーンショット</a></h2>
+
+  <div class="body">
+    <p><a href="http://www.flickr.com/photos/typester/460402721/" title="Photo Sharing"><img alt="Twitter on irssi" height="409" src="http://farm1.static.flickr.com/175/460402721_98cc36b399_o.png" width="558" /></a></p>
+<p>こんな感じ。普通にIRCっぽくなる。</p>
+<p>安定してるから nick に @ つけるのはオプションにしてほかのクライアントでもつかえるようにしようかなぁ。</p>
+
+  </div>
+
+  <div class="meta">
+    by typester /
+    at <a href="/memo/2007/04/16/2/">2007-04-16T05:07:00</a> /
+    <a href="/memo/tag/perl/">perl</a>
+    &middot; <a href="/memo/tag/twitter/">twitter</a>
+    &middot; <a href="/memo/tag/irssi/">irssi</a>
+    / <a href="/memo/2007/04/16/2/#disqus_thread">Comment</a>
+  </div>
+</div>
+
+<div class="entry autopagerize_page_element">
+  <h2><a href="/memo/2007/04/15/1/">Yet Another IRC Gateway for Twitter</a></h2>
+
+  <div class="body">
+    <p>作った！</p>
+<p>空前の Twitter - IRC ゲートウェイ作成ブーム。</p>
+<p>ソースこの辺です。ライセンスは GPLv2。(たぶん。PoCo::Jabberのせいです。)</p>
+<blockquote><p><a href="http://svn.unknownplace.org/public/scratch/Twirc/">http://svn.unknownplace.org/public/scratch/Twirc/</a></p></blockquote>
+<p>これの特徴は</p>
+<ul><li>Jabber 使ってるのでリアルタイム性が高い</li><li>nick に @ つけているのでクライアントによってはバグる</li></ul>
+<p>などです。</p>
+<p>二個目は LimeChat でおかしくなることを確認。</p>
+<p>まー僕の使ってる irssi で動けばいいのです。</p>
+<p>irssi は nick の補完ができるので、@ をつけておけばいい感じで twitter 形式のレスができるってわけです。</p>
+<h4>使い方</h4>
+<ol><li>svn co</li><li>yaml いじる (jabberアカウントと、IRCのポートとIRCクライアントの文字コード)</li><li>./script/twirc.pl</li><li>IRCクライアントでつないで #twitter に join</li></ol>
+<p>あと、2で設定するjabber(or gtalk)アカウントはあらかじめtwitterで使えるように設定しておく必要があります。</p>
+
+  </div>
+
+  <div class="meta">
+    by typester /
+    at <a href="/memo/2007/04/15/1/">2007-04-15T05:30:00</a> /
+    <a href="/memo/tag/perl/">perl</a>
+    &middot; <a href="/memo/tag/twitter/">twitter</a>
+    / <a href="/memo/2007/04/15/1/#disqus_thread">Comment</a>
+  </div>
+</div>
+
+
+
+
+<div id="pager" class="autopagerize_insert_before">
+  <p class="pages">
+    <a class="prev" rel="previous" href="/memo/tag/perl/page/9/">&laquo; Prev</a>
+    <a href="/memo/tag/perl/page/6/">6</a>
+    <a href="/memo/tag/perl/page/7/">7</a>
+    <a href="/memo/tag/perl/page/8/">8</a>
+    <a href="/memo/tag/perl/page/9/">9</a>
+    <span class="current">10</span>
+    <a href="/memo/tag/perl/page/11/">11</a>
+    <a href="/memo/tag/perl/page/12/">12</a>
+    <a href="/memo/tag/perl/page/13/">13</a>
+    <a href="/memo/tag/perl/page/14/">14</a>
+    <a href="/memo/tag/perl/page/15/">15</a>
+    <a class="next" rel="next" href="/memo/tag/perl/page/11/">Next &raquo;</a>
+  </p>
+  <p class="info">(Page 10 of 30)</p>
+</div>
+
+
+</div>
+
+<p id="footer">
+  Copyright &copy; 2005-2013
+      by <a class="author" href="/about/#me">Daisuke Murase (typester)</a> /
+  Site generated by <a href="https://github.com/typester/nim">nim</a> /
+  Comments powered by <a href="http://disqus.com">DISQUS</a>.
+</p>
+
+</div>
+
+
+<script type="text/javascript">
+//<![CDATA[
+(function() {
+	var links = document.getElementsByTagName('a');
+	var query = '?';
+	for(var i = 0; i < links.length; i++) {
+	if(links[i].href.indexOf('#disqus_thread') >= 0) {
+		query += 'url' + i + '=' + encodeURIComponent(links[i].href) + '&';
+	}
+	}
+	document.write('<script charset="utf-8" type="text/javascript" src="http://disqus.com/forums/unknownplace/get_num_replies.js' + query + '"></' + 'script>');
+})();
+//]]>
+</script>
+
+
+<script type="text/javascript">
+var gaJsHost = (("https:" == document.location.protocol) ? "https://ssl." : "http://www.");
+document.write(unescape("%3Cscript src='" + gaJsHost + "google-analytics.com/ga.js' type='text/javascript'%3E%3C/script%3E"));
+</script>
+<script type="text/javascript">
+try {
+var pageTracker = _gat._getTracker("UA-53067-1");
+pageTracker._trackPageview();
+} catch(err) {}</script>
+
+<script>
+function googleTranslateElementInit() {
+  new google.translate.TranslateElement({
+    pageLanguage: 'ja',
+    gaTrack: true,
+    gaId: 'UA-53067',
+    floatPosition: google.translate.TranslateElement.FloatPosition.BOTTOM_RIGHT
+  });
+}
+</script><script src="//translate.google.com/translate_a/element.js?cb=googleTranslateElementInit"></script>
+
+</body>
+</html>

@@ -1,0 +1,289 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="ja" xml:lang="ja">
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <title>memo - unknownplace.org</title>
+  <link rel="stylesheet" type="text/css" href="http://yui.yahooapis.com/3.0.0/build/cssreset/reset-min.css" />
+  <link rel="stylesheet" type="text/css" href="http://yui.yahooapis.com/3.0.0/build/cssfonts/fonts-min.css" />
+  <link rel="stylesheet" href="/css/style.css" type="text/css" />
+  <meta property="fb:admins" content="1093631929" />
+  <meta name="robots" content="noindex" />
+  <link rel="alternate" type="application/rss+xml" href="http://unknownplace.org/memo/index.rss" />
+</head>
+<body>
+
+<div id="container">
+<div id="header">
+    <h1><a href="/">unknownplace.org</a></h1> /
+<a href="/memo/">memo</a>
+</div>
+
+<div id="content">
+
+<div class="entry autopagerize_page_element">
+  <h2><a href="/memo/2006/02/06/3/"></a></h2>
+
+  <div class="body">
+    <p><a href="http://unknownplace.org/memo/2006/01/24">こないだ書いた</a> Catalyst の DBIC モデルを外部スクリプトから利用するっていうやつ、DBIx::Class::Schema::Loader つかえばいいね。</p>
+<pre><code><span class="keyword">use</span> <span class="function-name">FindBin</span>;
+<span class="keyword">use</span> <span class="function-name">lib</span> <span class="string">&quot;$FindBin::Bin/../lib&quot;</span>;
+
+{
+    <span class="keyword">package</span> <span class="function-name">MyApp::Model::DBIC</span>;
+    <span class="keyword">use</span> <span class="function-name">base</span> <span class="cperl-nonoverridable">qw</span><span class="string">/DBIx::Class::Schema::Loader/</span>;
+
+    <span class="type">__PACKAGE__</span>-&gt;load_from_connection(
+        <span class="string">dsn</span> =&gt; <span class="string">&apos;dbi:...&apos;</span>,
+    );
+    <span class="type">__PACKAGE__</span>-&gt;load_classes;
+}
+</code></pre>
+<p>こんな感じにすれば、<code>MyApp::Model::DBIC::*</code> をロードしてくれる。</p>
+<p>全部ロードしてもいいなら <code>use MyApp;</code> で終わりなんだけど多分ほとんどの場合外部スクリプトから必要なのはモデル部分だけだと思われる。</p>
+<ins>22:55: `load_classes` 書いてなかったので追記。ロードされてねーよ。</ins>
+
+  </div>
+
+  <div class="meta">
+    by typester /
+    at <a href="/memo/2006/02/06/3/">2006-02-06T04:41:00</a> /
+    <a href="/memo/tag/perl/">perl</a>
+    &middot; <a href="/memo/tag/dbic/">dbic</a>
+    / <a href="/memo/2006/02/06/3/#disqus_thread">Comment</a>
+  </div>
+</div>
+
+<div class="entry autopagerize_page_element">
+  <h2><a href="/memo/2006/02/06/2/"></a></h2>
+
+  <div class="body">
+    <p>RW完全初期化してからやったらいけた。</p>
+<p>smpカーネル入れてsshつなげるようにしたら飽きた。後は暇なときにやろう。。</p>
+
+  </div>
+
+  <div class="meta">
+    by typester /
+    at <a href="/memo/2006/02/06/2/">2006-02-06T04:32:00</a> /
+    <a href="/memo/tag/life/">life</a>
+    / <a href="/memo/2006/02/06/2/#disqus_thread">Comment</a>
+  </div>
+</div>
+
+<div class="entry autopagerize_page_element">
+  <h2><a href="/memo/2006/02/06/1/">放置してたSC430</a></h2>
+
+  <div class="body">
+    <p>に手をつけようかと思ったのだけど、なんかCD-RW読んでくれないんですが！！</p>
+
+  </div>
+
+  <div class="meta">
+    by typester /
+    at <a href="/memo/2006/02/06/1/">2006-02-06T02:37:00</a> /
+    <a href="/memo/tag/life/">life</a>
+    / <a href="/memo/2006/02/06/1/#disqus_thread">Comment</a>
+  </div>
+</div>
+
+<div class="entry autopagerize_page_element">
+  <h2><a href="/memo/2006/02/05/9/">changelogmemo.g.hatena.ne.jp</a></h2>
+
+  <div class="body">
+    <p>あれ？消えてる？</p>
+<h4>追記@ 2006-02-06 17:54</h4>
+<p>ring だよ！ なにいってるの。誰も突っ込んでくれないし＞＜</p>
+<p>気づくのおせぇ。。</p>
+
+  </div>
+
+  <div class="meta">
+    by typester /
+    at <a href="/memo/2006/02/05/9/">2006-02-05T22:25:00</a> /
+    <a href="/memo/tag/life/">life</a>
+    &middot; <a href="/memo/tag/clmemo/">clmemo</a>
+    / <a href="/memo/2006/02/05/9/#disqus_thread">Comment</a>
+  </div>
+</div>
+
+<div class="entry autopagerize_page_element">
+  <h2><a href="/memo/2006/02/05/8/"></a></h2>
+
+  <div class="body">
+    <blockquote><p><a href="http://www.akiyan.com/blog/archives/2006/02/ie7_beta2_previ.html">akiyan.com : IE7 beta2 previewをアンインストール後に、IE6でページが開けなくなってしまったときの対処法</a></p><p>さっそく試してみたところ見事解決！とても助かったので、はてなポイントを進呈させていただきたい思いです。</p></blockquote>
+<p>しまった！ Account Auto-Discovery とかすっかりわすれてた！！</p>
+
+  </div>
+
+  <div class="meta">
+    by typester /
+    at <a href="/memo/2006/02/05/8/">2006-02-05T20:51:00</a> /
+    <a href="/memo/tag/life/">life</a>
+    / <a href="/memo/2006/02/05/8/#disqus_thread">Comment</a>
+  </div>
+</div>
+
+<div class="entry autopagerize_page_element">
+  <h2><a href="/memo/2006/02/05/7/">Data::Clmemo</a></h2>
+
+  <div class="body">
+    <p>CLON の作成にあたり <a href="http://svn.unknownplace.org/public/CLON/branches/CLON2.0/lib/Data/Clmemo.pm">Data::Clmemo</a> などというものができちゃったわけですが、激しくオレフォーマットな Changelog memo しかパースできないため、CLON の公開にはこれの拡張が必至。</p>
+<p>フォーマットの定義を Data::Clmemo::* でやればいいのかね。DBIC::Loader とかのイメージで。</p>
+
+  </div>
+
+  <div class="meta">
+    by typester /
+    at <a href="/memo/2006/02/05/7/">2006-02-05T20:38:00</a> /
+    <a href="/memo/tag/perl/">perl</a>
+    &middot; <a href="/memo/tag/clon/">clon</a>
+    / <a href="/memo/2006/02/05/7/#disqus_thread">Comment</a>
+  </div>
+</div>
+
+<div class="entry autopagerize_page_element">
+  <h2><a href="/memo/2006/02/05/6/">daap_proxy.pl</a></h2>
+
+  <div class="body">
+    <blockquote><p><a href="http://b.hatena.ne.jp/entry/http://unknownplace.org/memo/2006/02/04#e003">はてなブックマーク - updated daap_proxy.pl</a></p><p>クロスフェードを長めにして回避してます。</p></blockquote>
+<p>それだ！</p>
+<p>何で再現する環境とそうじゃない環境があるんだろうとおもったらクロスフェードを有効にしてるかどうかという違いでした。</p>
+<p>iTunes 設定でクロスフェードを有効にしてあると、たとえクロスフェードの長さが 0 であっても次の曲を読みに行くときに TCP コネクションを貼りなおすみたいで、うまく動きます。</p>
+<p>根本的な解決ではないですが、一応はこれで大丈夫みたいです。</p>
+
+  </div>
+
+  <div class="meta">
+    by typester /
+    at <a href="/memo/2006/02/05/6/">2006-02-05T17:26:00</a> /
+    <a href="/memo/tag/trickster/">trickster</a>
+    / <a href="/memo/2006/02/05/6/#disqus_thread">Comment</a>
+  </div>
+</div>
+
+<div class="entry autopagerize_page_element">
+  <h2><a href="/memo/2006/02/05/5/"></a></h2>
+
+  <div class="body">
+    <p>日付がおかしいの直した。日付として扱う DateTime はちゃんと truncate しましょうということ。</p>
+<p>コメントのフィルターおかしいの直した。</p>
+
+  </div>
+
+  <div class="meta">
+    by typester /
+    at <a href="/memo/2006/02/05/5/">2006-02-05T17:13:00</a> /
+    <a href="/memo/tag/clon/">clon</a>
+    / <a href="/memo/2006/02/05/5/#disqus_thread">Comment</a>
+  </div>
+</div>
+
+<div class="entry autopagerize_page_element">
+  <h2><a href="/memo/2006/02/05/4/">コメント実装</a></h2>
+
+  <div class="body">
+    <p>した。</p>
+<p>これで思う存分NDOメソッドれるぜ！</p>
+
+  </div>
+
+  <div class="meta">
+    by typester /
+    at <a href="/memo/2006/02/05/4/">2006-02-05T08:56:00</a> /
+    <a href="/memo/tag/clon/">clon</a>
+    / <a href="/memo/2006/02/05/4/#disqus_thread">Comment</a>
+  </div>
+</div>
+
+<div class="entry autopagerize_page_element">
+  <h2><a href="/memo/2006/02/05/3/">find_or_new</a></h2>
+
+  <div class="body">
+    <p>sub find_or_new { my $class = shift; my $attr = @_ &gt; 1 ? {@<em>} : $</em>[0]; my $exists = $class-&gt;find($attr); return defined $exists ? $exists : $class-&gt;new($attr); }</p>
+<p><code>find_or_create</code> はあるのにこれはないとか謎い。NOT NULL なカラムもってるテーブルだとあんまりつかえねーよ＞<code>find_or_create</code></p>
+
+  </div>
+
+  <div class="meta">
+    by typester /
+    at <a href="/memo/2006/02/05/3/">2006-02-05T04:31:00</a> /
+    <a href="/memo/tag/perl/">perl</a>
+    &middot; <a href="/memo/tag/dbic/">dbic</a>
+    / <a href="/memo/2006/02/05/3/#disqus_thread">Comment</a>
+  </div>
+</div>
+
+
+
+
+<div id="pager" class="autopagerize_insert_before">
+  <p class="pages">
+    <a class="prev" rel="previous" href="/memo/page/141/">&laquo; Prev</a>
+    <a href="/memo/page/138/">138</a>
+    <a href="/memo/page/139/">139</a>
+    <a href="/memo/page/140/">140</a>
+    <a href="/memo/page/141/">141</a>
+    <span class="current">142</span>
+    <a href="/memo/page/143/">143</a>
+    <a href="/memo/page/144/">144</a>
+    <a href="/memo/page/145/">145</a>
+    <a href="/memo/page/146/">146</a>
+    <a href="/memo/page/147/">147</a>
+    <a class="next" rel="next" href="/memo/page/143/">Next &raquo;</a>
+  </p>
+  <p class="info">(Page 142 of 203)</p>
+</div>
+
+
+</div>
+
+<p id="footer">
+  Copyright &copy; 2005-2013
+      by <a class="author" href="/about/#me">Daisuke Murase (typester)</a> /
+  Site generated by <a href="https://github.com/typester/nim">nim</a> /
+  Comments powered by <a href="http://disqus.com">DISQUS</a>.
+</p>
+
+</div>
+
+
+<script type="text/javascript">
+//<![CDATA[
+(function() {
+	var links = document.getElementsByTagName('a');
+	var query = '?';
+	for(var i = 0; i < links.length; i++) {
+	if(links[i].href.indexOf('#disqus_thread') >= 0) {
+		query += 'url' + i + '=' + encodeURIComponent(links[i].href) + '&';
+	}
+	}
+	document.write('<script charset="utf-8" type="text/javascript" src="http://disqus.com/forums/unknownplace/get_num_replies.js' + query + '"></' + 'script>');
+})();
+//]]>
+</script>
+
+
+<script type="text/javascript">
+var gaJsHost = (("https:" == document.location.protocol) ? "https://ssl." : "http://www.");
+document.write(unescape("%3Cscript src='" + gaJsHost + "google-analytics.com/ga.js' type='text/javascript'%3E%3C/script%3E"));
+</script>
+<script type="text/javascript">
+try {
+var pageTracker = _gat._getTracker("UA-53067-1");
+pageTracker._trackPageview();
+} catch(err) {}</script>
+
+<script>
+function googleTranslateElementInit() {
+  new google.translate.TranslateElement({
+    pageLanguage: 'ja',
+    gaTrack: true,
+    gaId: 'UA-53067',
+    floatPosition: google.translate.TranslateElement.FloatPosition.BOTTOM_RIGHT
+  });
+}
+</script><script src="//translate.google.com/translate_a/element.js?cb=googleTranslateElementInit"></script>
+
+</body>
+</html>

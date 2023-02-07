@@ -1,0 +1,279 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="ja" xml:lang="ja">
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <title>memo - unknownplace.org</title>
+  <link rel="stylesheet" type="text/css" href="http://yui.yahooapis.com/3.0.0/build/cssreset/reset-min.css" />
+  <link rel="stylesheet" type="text/css" href="http://yui.yahooapis.com/3.0.0/build/cssfonts/fonts-min.css" />
+  <link rel="stylesheet" href="/css/style.css" type="text/css" />
+  <meta property="fb:admins" content="1093631929" />
+  <meta name="robots" content="noindex" />
+  <link rel="alternate" type="application/rss+xml" href="http://unknownplace.org/memo/index.rss" />
+</head>
+<body>
+
+<div id="container">
+<div id="header">
+    <h1><a href="/">unknownplace.org</a></h1> /
+<a href="/memo/">memo</a>
+</div>
+
+<div id="content">
+
+<div class="entry autopagerize_page_element">
+  <h2><a href="/memo/2012/08/08/1/">Githubの各種イベント通知をPubSubHubbubで受け取るの巻</a></h2>
+
+  <div class="body">
+    <p>tl;dr - 通常のHookではなく<a href="http://developer.github.com/v3/repos/hooks/#pubsubhubbub">PubSubHubbub</a>のほうのHookを使えばGithubの<a href="http://developer.github.com/v3/events/types/">すべてのイベント</a>をひとつのWebHookで受け取ることができる。</p>
+<p>Github の WebHook ではレポジトリの更新しか受け取れず、issue とかも受け取れたら便利なのになーと思いつつ API ドキュメントを見てみると Hook を API から登録したりすることができるようになっていた。 だがこれは所詮は Web から登録できる Hook をいじるもので、この<a href="https://api.github.com/hooks">リスト</a>にあるものしか登録できない。 また、それぞれの Hook について登録できるイベントはリストで定義されている物に制限されているようで、たとえば WebHook だと push イベントしか設定することはできないみたい。（API 経由でも設定できなかった）</p>
+<p>一方、それとは別に用意されている <a href="http://developer.github.com/v3/repos/hooks/#pubsubhubbub">PubSubHubbub</a> の Hook をつかうと、どうやら一つの WebHook URL に任意のイベントを送ることができるようだ。</p>
+<p>やり方は簡単で、<code>https://github.com/typester/p5-UV</code> の <code>push</code> イベントを <code>http://unknownplace.org/webhook</code> で受け取りたいとすると、</p>
+<pre><code>$ curl -u typester -i \
+  https:<span class="comment-delimiter">//</span><span class="comment">api.github.com/hub \
+</span>  -F <span class="string">"hub.mode=subscribe"</span> \
+  -F <span class="string">"hub.topic=https://github.com/typester/p5-UV/events/push"</span> \
+  -F <span class="string">"hub.callback=http://unknownplace.org/webhook"</span>
+</code></pre>
+<p>というような感じで API をたたけば登録完了。これで指定した URL に対してイベントが送られてくるようになる。 他のイベントも受け取りたいというときは、これを受け取りたいイベント分繰り返せば良い。</p>
+<p>Hook に送られてくるのは JSON だが、デフォルトだと通常の <a href="http://help.github.com/post-receive-hooks/">WebHook と同じ</a>ように <code>payload={json}</code> みたいな形で送られてくる。 ドキュメントによれば、<code>-H &quot;Accept: application/json&quot;</code> を上のリクエストにつけるか、イベントタイプを <code>https://github.com/typester/p5-UV/events/push.json</code> みたいに <code>.json</code> を加えてやるかすると、生の JSON が POST されるようになるらしい。が、僕は今までの WebHook スクリプトを流用したのでこれはためしていない。</p>
+<p>登録した Hook の一覧は普通の Hook API で、</p>
+<pre><code>$ curl -u typester -i https://api.github.com/repos/typester/p5-UV/hooks
+</code></pre>
+<p>このようにするとで取得可能っぽい。僕の場合は WebHook と同じ分類で（イベントだけが複数ある）リストに載っていたが、生 JSON を受け取るように設定していた場合どのように載るのかは不明。</p>
+<p>WebHook スクリプトは以下のような通知を受け取ったら IRC に投げる、みたいのを使っている。</p>
+<pre><code><span class="comment-delimiter">#</span><span class="comment">!/usr/bin/env perl
+</span>
+<span class="keyword">use</span> <span class="function-name">strict</span>;
+<span class="keyword">use</span> <span class="function-name">warnings</span>;
+<span class="keyword">use</span> <span class="function-name">utf8</span>;
+
+<span class="keyword">use</span> <span class="function-name">Twiggy::Server</span>;
+<span class="keyword">use</span> <span class="function-name">Getopt::Long</span>;
+<span class="keyword">use</span> File::<span class="type">chdir</span>;
+<span class="keyword">use</span> <span class="function-name">Encode</span>;
+
+<span class="keyword">use</span> <span class="function-name">AnyEvent</span>;
+<span class="keyword">use</span> <span class="function-name">AnyEvent::IRC::Client</span>;
+<span class="keyword">use</span> <span class="function-name">Log::Minimal</span>;
+
+<span class="keyword">use</span> <span class="function-name">Plack</span>;
+<span class="keyword">use</span> <span class="function-name">Plack::Request</span>;
+<span class="keyword">use</span> <span class="function-name">JSON::XS</span>;
+
+<span class="keyword">my</span> <span class="variable-name">$conf</span> = {
+    <span class="string">irc</span> =&gt; {
+        <span class="string">server</span>   =&gt; <span class="string">&apos;irc.example.com&apos;</span>,
+        <span class="string">port</span>     =&gt; 6667,
+        <span class="string">ssl</span>      =&gt; 1,
+        <span class="string">channel</span>  =&gt; <span class="string">&apos;#example-project&apos;</span>,
+        <span class="string">nick</span>     =&gt; <span class="string">&apos;github&apos;</span>,
+    },
+
+    <span class="string">commit_hook</span> =&gt; <span class="keyword">sub</span> {
+        <span class="keyword">my</span> (<span class="variable-name">$branch</span>) = <span class="cperl-array">@_</span>;
+
+        <span class="keyword">if</span> ($branch <span class="type">eq</span> <span class="string">&apos;develop&apos;</span>) {
+            <span class="keyword">local</span> <span class="variable-name">$CWD</span> = <span class="string">&apos;/path/to/project&apos;</span>;
+            <span class="type">system</span> <span class="string">&apos;git&apos;</span>, <span class="cperl-nonoverridable">qw</span><span class="string">!--git-dir=.git pull!</span>;
+            <span class="type">system</span> <span class="string">&apos;curl&apos;</span>, <span class="string">&apos;http://127.0.0.1:8080/jenkins-ci/job/project/build&apos;</span>;
+        }
+    },
+};
+
+GetOptions(
+    \my <span class="cperl-hash">%option</span>,
+    <span class="cperl-nonoverridable">qw</span><span class="string">/host=s port=i/</span>,
+);
+<span class="cperl-hash">$option</span>{<span class="string">host</span>} ||= <span class="string">&apos;0.0.0.0&apos;</span>;
+<span class="cperl-hash">$option</span>{<span class="string">port</span>} ||= 5000;
+
+<span class="keyword">my</span> <span class="variable-name">$cv</span> = AnyEvent-&gt;condvar;
+
+<span class="keyword">my</span> <span class="variable-name">$irc</span> = AnyEvent::IRC::Client-&gt;new;
+$irc-&gt;enable_ssl <span class="keyword">if</span> $conf-&gt;{<span class="string">irc</span>}{<span class="string">ssl</span>};
+
+<span class="keyword">my</span> <span class="variable-name">$connector</span> = <span class="keyword">sub</span> {
+    $irc-&gt;<span class="type">connect</span>($conf-&gt;{<span class="string">irc</span>}{<span class="string">server</span>}, $conf-&gt;{<span class="string">irc</span>}{<span class="string">port</span>}, {
+        <span class="string">nick</span> =&gt; $conf-&gt;{<span class="string">irc</span>}{<span class="string">nick</span>},
+        $conf-&gt;{<span class="string">irc</span>}{<span class="string">password</span>} ? (<span class="string">password</span> =&gt; $conf-&gt;{<span class="string">irc</span>}{<span class="string">password</span>}) : (),
+    });
+};
+
+$irc-&gt;reg_cb(
+    <span class="string">registered</span> =&gt; <span class="keyword">sub</span> {
+        <span class="keyword">my</span> (<span class="variable-name">$irc</span>) = <span class="cperl-array">@_</span>;
+        $irc-&gt;send_srv( <span class="string">JOIN</span> =&gt; $conf-&gt;{<span class="string">irc</span>}{<span class="string">channel</span>} );
+    },
+
+    <span class="string">disconnect</span> =&gt; <span class="keyword">sub</span> {
+        warnf <span class="string">&apos;IRC Disconnected: </span><span class="cperl-hash">%s</span><span class="string">&apos;</span>, <span class="cperl-array">$_</span>[1];
+        $connector-&gt;();
+    },
+
+    <span class="string">debug_send</span> =&gt; <span class="keyword">sub</span> {
+        <span class="keyword">my</span> (<span class="variable-name">$irc</span>, <span class="variable-name">$command</span>, <span class="cperl-array">@params</span>) = <span class="cperl-array">@_</span>;
+        debugf <span class="string">&apos;&gt; </span><span class="cperl-hash">%s</span><span class="string"> </span><span class="cperl-hash">%s</span><span class="string">&apos;</span>, $command, <span class="type">join</span> <span class="string">&apos; &apos;</span>, <span class="cperl-array">@params</span>;
+    },
+    <span class="string">debug_recvd</span> =&gt; <span class="keyword">sub</span> {
+        <span class="keyword">my</span> (<span class="variable-name">$irc</span>, <span class="variable-name">$msg</span>) = <span class="cperl-array">@_</span>;
+        debugf <span class="string">&apos;&lt; </span><span class="cperl-hash">%s</span><span class="string">&apos;</span>, $msg;
+    },
+);
+$connector-&gt;();
+
+<span class="keyword">my</span> <span class="variable-name">$app</span> = <span class="keyword">sub</span> {
+    <span class="keyword">my</span> <span class="variable-name">$req</span> = Plack::Request-&gt;new(<span class="cperl-nonoverridable">shift</span>);
+
+    <span class="keyword">if</span> ($req-&gt;method <span class="type">eq</span> <span class="string">&apos;POST&apos;</span> <span class="type">and</span> <span class="keyword">my</span> <span class="variable-name">$payload</span> = $req-&gt;param(<span class="string">&apos;payload&apos;</span>)) {
+        <span class="keyword">my</span> <span class="variable-name">$json</span>    = decode_json($payload);
+        <span class="keyword">my</span> <span class="variable-name">$channel</span> = $conf-&gt;{<span class="string">irc</span>}{<span class="string">channel</span>};
+
+        <span class="keyword">if</span> ($json-&gt;{<span class="string">commits</span>}) {
+            <span class="comment-delimiter"># </span><span class="comment">push event
+</span>            (<span class="keyword">my</span> <span class="variable-name">$branch</span> = $json-&gt;{<span class="string">ref</span>}) =~ <span class="cperl-nonoverridable">s</span><span class="constant">!</span><span class="string">refs/heads/</span><span class="constant">!!</span>;
+
+            <span class="keyword">if</span> ($channel) {
+                <span class="keyword">for</span> <span class="keyword">my</span> <span class="variable-name">$commit</span> (@{ $json-&gt;{<span class="string">commits</span>} }) {
+                    $irc-&gt;send_srv(
+                        <span class="string">NOTICE</span> =&gt; $channel,
+                        encode_utf8 <span class="type">sprintf</span> <span class="string">&apos;</span><span class="cperl-hash">%s</span><span class="string"> committed to </span><span class="cperl-hash">%s</span><span class="string"> &quot;</span><span class="cperl-hash">%s</span><span class="string">&quot; </span><span class="cperl-hash">%s</span><span class="string">&apos;</span>,
+                        $commit-&gt;{<span class="string">author</span>}{<span class="string">username</span>} || $commit-&gt;{<span class="string">author</span>}{<span class="string">name</span>}, $branch,
+                        $commit-&gt;{<span class="string">message</span>}, $commit-&gt;{<span class="string">url</span>},
+                    );
+                }
+
+                <span class="keyword">my</span> <span class="variable-name">$hook</span> = $conf-&gt;{<span class="string">commit_hook</span>};
+                $hook-&gt;($branch) <span class="keyword">if</span> $hook;
+            }
+        }
+        <span class="keyword">elsif</span> (<span class="keyword">my</span> <span class="variable-name">$issue</span> = $json-&gt;{<span class="string">issue</span>}) {
+            <span class="keyword">my</span> <span class="variable-name">$sender</span> = $json-&gt;{<span class="string">sender</span>};
+
+            <span class="keyword">if</span> (<span class="keyword">my</span> <span class="variable-name">$comment</span> = $json-&gt;{<span class="string">comment</span>}) {
+                <span class="comment-delimiter"># </span><span class="comment">issue comment event
+</span>                <span class="keyword">my</span> (<span class="variable-name">$body</span>) = $comment-&gt;{<span class="string">body</span>} =~ <span class="constant">/</span><span class="function-name">^</span><span class="keyword">(</span><span class="function-name">.</span><span class="builtin">*\</span><span class="type">S</span><span class="function-name">.</span><span class="builtin">*</span><span class="keyword">)</span><span class="function-name">$</span><span class="constant">/</span><span class="cperl-nonoverridable">m</span>;
+
+                $irc-&gt;send_srv(
+                    <span class="string">NOTICE</span> =&gt; $channel,
+                    encode_utf8 <span class="type">sprintf</span> <span class="string">&apos;</span><span class="cperl-hash">%s</span><span class="string"> commented issue #</span><span class="cperl-hash">%d</span><span class="string"> </span><span class="cperl-hash">%s</span><span class="string"> </span><span class="cperl-hash">%s</span><span class="string">&apos;</span>,
+                    $sender-&gt;{<span class="string">login</span>}, $issue-&gt;{<span class="string">number</span>}, $body || <span class="string">&apos;&apos;</span>, $issue-&gt;{<span class="string">html_url</span>},
+                );
+            }
+            <span class="keyword">else</span> {
+                <span class="comment-delimiter"># </span><span class="comment">issues event
+</span>                $irc-&gt;send_srv(
+                    <span class="string">NOTICE</span> =&gt; $channel,
+                    encode_utf8 <span class="type">sprintf</span> <span class="string">&apos;</span><span class="cperl-hash">%s</span><span class="string"> </span><span class="cperl-hash">%s</span><span class="string"> issue #</span><span class="cperl-hash">%d</span><span class="string"> </span><span class="cperl-hash">%s</span><span class="string"> </span><span class="cperl-hash">%s</span><span class="string">&apos;</span>,
+                    $sender-&gt;{<span class="string">login</span>}, $json-&gt;{<span class="string">action</span>}, $issue-&gt;{<span class="string">number</span>}, $issue-&gt;{<span class="string">title</span>}, $issue-&gt;{<span class="string">html_url</span>},
+                );
+            }
+        }
+
+        <span class="keyword">return</span> [200, [], [<span class="string">&apos;&apos;</span>]];
+    }
+
+    <span class="keyword">return</span> [403, [], [<span class="string">&apos;Forbidden&apos;</span>]];
+};
+
+AnyEvent::post_detect {
+    <span class="keyword">if</span> ($AnyEvent::MODEL <span class="type">eq</span> <span class="string">&apos;AnyEvent::Impl::EV&apos;</span>) {
+        <span class="cperl-nonoverridable">no</span> <span class="function-name">warnings</span> <span class="string">&apos;once&apos;</span>;
+        $EV::DIED = <span class="keyword">sub</span> { $cv-&gt;croak($@) };
+    }
+};
+
+<span class="keyword">my</span> <span class="variable-name">$server</span> = Twiggy::Server-&gt;new(<span class="cperl-hash">%option</span>);
+$server-&gt;register_service($app);
+
+$cv-&gt;<span class="type">recv</span>;
+</code></pre>
+<p>現在 push, issues, issue-comment イベントを受け取ってる。 issues とれるとやっぱりだいぶ良い感じ。 あと pullreq 多用しているプロジェクトだとそのイベントもあるので通知させるようにすると捗りそう。</p>
+
+  </div>
+
+  <div class="meta">
+    by typester /
+    at <a href="/memo/2012/08/08/1/">2012-08-08T10:55:00</a> /
+    <a href="/memo/tag/github/">github</a>
+    &middot; <a href="/memo/tag/perl/">perl</a>
+    / <a href="/memo/2012/08/08/1/#disqus_thread">Comment</a>
+  </div>
+</div>
+
+<div class="entry autopagerize_page_element">
+  <h2><a href="/memo/2009/01/27/1/">ローカルのgitレポジトリをgistにアップするgist.pl</a></h2>
+
+  <div class="body">
+    <p>とか作ってみた。</p>
+<blockquote><p><a href="http://gist.github.com/53293">gist.pl</a></p></blockquote>
+<p>git レポジトリのルートで実行するとそのレポジトリの内容を gist にポストし、レポジトリの remote に投稿した gist を追加します。</p>
+<p>いろいろ手抜きなので下に注意事項を書いておきます。</p>
+<ol><li>正確にはレポジトリの中身ではなくてカレントディレクトリ以下のすべてのファイルを投稿しちゃう (.git以下はのぞく)</li><li>git config で github.user と github.token を登録しておく必要がある</li><li>remote 名 は origin きめうち</li><li>プライベートgistとかしらない</li></ol>
+<p>などという感じです。特に1は注意。必要に応じてverupする感じで。</p>
+<p>gisty つかってたんですが、僕は何か作るときとりあえず git init するので、gisty だと gist に投稿したらそれ以降違う場所のレポジトリを使うという設計なのでちょっと面倒だったんですね。</p>
+
+  </div>
+
+  <div class="meta">
+    by typester /
+    at <a href="/memo/2009/01/27/1/">2009-01-27T20:24:00</a> /
+    <a href="/memo/tag/git/">git</a>
+    &middot; <a href="/memo/tag/github/">github</a>
+    / <a href="/memo/2009/01/27/1/#disqus_thread">Comment</a>
+  </div>
+</div>
+
+
+
+</div>
+
+<p id="footer">
+  Copyright &copy; 2005-2013
+      by <a class="author" href="/about/#me">Daisuke Murase (typester)</a> /
+  Site generated by <a href="https://github.com/typester/nim">nim</a> /
+  Comments powered by <a href="http://disqus.com">DISQUS</a>.
+</p>
+
+</div>
+
+
+<script type="text/javascript">
+//<![CDATA[
+(function() {
+	var links = document.getElementsByTagName('a');
+	var query = '?';
+	for(var i = 0; i < links.length; i++) {
+	if(links[i].href.indexOf('#disqus_thread') >= 0) {
+		query += 'url' + i + '=' + encodeURIComponent(links[i].href) + '&';
+	}
+	}
+	document.write('<script charset="utf-8" type="text/javascript" src="http://disqus.com/forums/unknownplace/get_num_replies.js' + query + '"></' + 'script>');
+})();
+//]]>
+</script>
+
+
+<script type="text/javascript">
+var gaJsHost = (("https:" == document.location.protocol) ? "https://ssl." : "http://www.");
+document.write(unescape("%3Cscript src='" + gaJsHost + "google-analytics.com/ga.js' type='text/javascript'%3E%3C/script%3E"));
+</script>
+<script type="text/javascript">
+try {
+var pageTracker = _gat._getTracker("UA-53067-1");
+pageTracker._trackPageview();
+} catch(err) {}</script>
+
+<script>
+function googleTranslateElementInit() {
+  new google.translate.TranslateElement({
+    pageLanguage: 'ja',
+    gaTrack: true,
+    gaId: 'UA-53067',
+    floatPosition: google.translate.TranslateElement.FloatPosition.BOTTOM_RIGHT
+  });
+}
+</script><script src="//translate.google.com/translate_a/element.js?cb=googleTranslateElementInit"></script>
+
+</body>
+</html>

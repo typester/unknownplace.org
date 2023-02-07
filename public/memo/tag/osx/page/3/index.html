@@ -1,0 +1,471 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="ja" xml:lang="ja">
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <title>memo - unknownplace.org</title>
+  <link rel="stylesheet" type="text/css" href="http://yui.yahooapis.com/3.0.0/build/cssreset/reset-min.css" />
+  <link rel="stylesheet" type="text/css" href="http://yui.yahooapis.com/3.0.0/build/cssfonts/fonts-min.css" />
+  <link rel="stylesheet" href="/css/style.css" type="text/css" />
+  <meta property="fb:admins" content="1093631929" />
+  <meta name="robots" content="noindex" />
+  <link rel="alternate" type="application/rss+xml" href="http://unknownplace.org/memo/index.rss" />
+</head>
+<body>
+
+<div id="container">
+<div id="header">
+    <h1><a href="/">unknownplace.org</a></h1> /
+<a href="/memo/">memo</a>
+</div>
+
+<div id="content">
+
+<div class="entry autopagerize_page_element">
+  <h2><a href="/memo/2011/01/04/2/">Cocoa::EventLoop</a></h2>
+
+  <div class="body">
+    <p>そういえば <a href="http://search.cpan.org/dist/Cocoa-EventLoop/">Cocoa::EventLoop</a> と言うモジュールを書いたんでした。</p>
+<p>これはもともと AnyEvent::Impl::NSRunLoop として書いていたイベントループ処理部分だけを単体モジュールとして切り出した物で、 AnyEvent を使わなくても Cocoa のイベントループを Perl から使用できるというものです。</p>
+<p>くわしくはドキュメントを参照してもらうとして、Cocoa::Growl を使ったサンプルを載せてみます：</p>
+<pre><code><span class="keyword">use</span> <span class="function-name">Cocoa::EventLoop</span>;
+<span class="keyword">use</span> <span class="function-name">Cocoa::Growl</span>;
+
+<span class="keyword">my</span> <span class="variable-name">$done</span> = 0;
+growl_notify(
+    <span class="string">name</span>        =&gt; <span class="string">&apos;Notification Name&apos;</span>,
+    <span class="string">title</span>       =&gt; <span class="string">&apos;Hello&apos;</span>,
+    <span class="string">description</span> =&gt; <span class="string">&apos;Cocoa World!&apos;</span>,
+    <span class="string">on_click</span>    =&gt; <span class="keyword">sub</span> {
+        $done++;
+    },
+    <span class="string">on_timeout</span> =&gt; <span class="keyword">sub</span> {
+        $done++;
+    },
+);
+
+Cocoa::EventLoop-&gt;run_while(0.1) <span class="keyword">while</span> <span class="negation-char">!</span>$done;
+</code></pre>
+<p>これを AnyEvent で書くと：</p>
+<pre><code><span class="keyword">use</span> <span class="function-name">AnyEvent</span> 5.30;
+<span class="keyword">use</span> <span class="function-name">Cocoa::EventLoop</span>;
+<span class="keyword">use</span> <span class="function-name">Cocoa::Growl</span>;
+
+<span class="keyword">my</span> <span class="variable-name">$cv</span> = AnyEvent-&gt;condvar;
+growl_notify(
+    <span class="string">name</span>        =&gt; <span class="string">&apos;Notification Name&apos;</span>,
+    <span class="string">title</span>       =&gt; <span class="string">&apos;Hello&apos;</span>,
+    <span class="string">description</span> =&gt; <span class="string">&apos;Cocoa World!&apos;</span>,
+    <span class="string">on_click</span>    =&gt; <span class="keyword">sub</span> {
+        $cv-&gt;<span class="type">send</span>;
+    },
+    <span class="string">on_timeout</span> =&gt; <span class="keyword">sub</span> {
+        $cv-&gt;<span class="type">send</span>;
+    },
+);
+
+$cv-&gt;<span class="type">recv</span>;
+</code></pre>
+<p>ほぼ一緒ですね。 また、この例ではわからないですがtimerやioのインタフェースもAnyEventに合わせてあるのでほとんど同じ感じで使うことができます。</p>
+<p>ただまぁ、AnyEventには豊富なライブラリがあるため、上記のGrowlのサンプル以上に複雑なことをする場合は素直にAnyEventを使うのがいいかと思います。</p>
+
+  </div>
+
+  <div class="meta">
+    by typester /
+    at <a href="/memo/2011/01/04/2/">2011-01-04T10:30:00</a> /
+    <a href="/memo/tag/perl/">perl</a>
+    &middot; <a href="/memo/tag/osx/">osx</a>
+    / <a href="/memo/2011/01/04/2/#disqus_thread">Comment</a>
+  </div>
+</div>
+
+<div class="entry autopagerize_page_element">
+  <h2><a href="/memo/2011/01/04/1/">AnyEvent 5.3 Released</a></h2>
+
+  <div class="body">
+    <p>出てました。気がつきませんでした。</p>
+<p>このバージョンから AnyEvent::Impl::Cocoa が入りました。これは <a href="http://search.cpan.org/dist/Cocoa-EventLoop/">Cocoa::EventLoop</a> を AnyEvent から使うアダプターで、</p>
+<pre><code><span class="keyword">use</span> <span class="function-name">Cocoa::EventLoop</span>;
+</code></pre>
+<p>していると自動的に使われます。したがって、</p>
+<pre><code><span class="keyword">use</span> <span class="function-name">AnyEvent</span>;
+<span class="keyword">use</span> <span class="function-name">Cocoa::EventLoop</span>;
+
+<span class="comment-delimiter"># </span><span class="comment">AnyEventを使用したコード...
+</span></code></pre>
+<p>と言うように書くと自動的に Cocoa のイベントループで AnyEvent が動作するというわけです。 こうしておけば Cocoa::Growl など、Cocoa::EventLoop を必要とするモジュールをシームレスに AnyEvent 内で使うことが出来て便利です。</p>
+<p>なお、<a href="http://unknownplace.org/memo/2010/12/17/1/">AnyEvent::Impl::NSRunLoop</a> は DEPRECATED ってことでとりあえずドキュメントに注意書きを加え、さらに数週間後にはCPANから削除するつもりです。</p>
+
+  </div>
+
+  <div class="meta">
+    by typester /
+    at <a href="/memo/2011/01/04/1/">2011-01-04T10:25:00</a> /
+    <a href="/memo/tag/perl/">perl</a>
+    &middot; <a href="/memo/tag/anyevent/">anyevent</a>
+    &middot; <a href="/memo/tag/osx/">osx</a>
+    / <a href="/memo/2011/01/04/1/#disqus_thread">Comment</a>
+  </div>
+</div>
+
+<div class="entry autopagerize_page_element">
+  <h2><a href="/memo/2010/08/13/1/">ふるいPerlをいれる</a></h2>
+
+  <div class="body">
+    <p>perlbrew を導入したのでもりもりテスト環境を作れるようになったわけですが、perl-5.8.8 をいれようとしたら</p>
+<pre><code>    Can&apos;t open makefile: No such file or directory.
+    Can&apos;t open x2p/makefile: No such file or directory.
+    make: *** No rule to make target `&lt;command-line&gt;&apos;, needed by `miniperlmain.o&apos;.  Stop.
+    make: *** No rule to make target `&lt;command-line&gt;&apos;, needed by `miniperlmain.o&apos;.  Stop.
+</code></pre>
+<p>のように make がこけてしまってインストールできなかった。 ググってみるとどうも新しいgccだと古いPerlはうまくビルドできないらしい。</p>
+<p>解決法としては makefile (OSXではGNUmakefile) の <code>command-line</code> を含む行は消してあげるというのでなんとかなるみたい。</p>
+<p>以下のようにしてみた:</p>
+<pre><code>$ ./Configure -de -Dprefix=$HOME/perl5/perlbrew/perls/5.8.8
+$ perl -i~ -nle &apos;print unless /command-line/&apos; GNUmakefile x2p/GNUmakefile
+$ make
+$ make test
+$ make install
+</code></pre>
+<p>これでちゃんとperlbrewからも認識できてて</p>
+<pre><code>$ perlbrew switch 5.8.8
+</code></pre>
+<p>とかでswitchできました。まる。</p>
+
+  </div>
+
+  <div class="meta">
+    by typester /
+    at <a href="/memo/2010/08/13/1/">2010-08-13T09:05:00</a> /
+    <a href="/memo/tag/osx/">osx</a>
+    &middot; <a href="/memo/tag/perl/">perl</a>
+    / <a href="/memo/2010/08/13/1/#disqus_thread">Comment</a>
+  </div>
+</div>
+
+<div class="entry autopagerize_page_element">
+  <h2><a href="/memo/2010/07/27/1/">ユニバーサルバイナリ作成用シェルスクリプト</a></h2>
+
+  <div class="body">
+    <p>iPhone用にビルドしたライブラリは実機用(armv6/armv7)とシミュレータ用(i386)のユニバーサルバイナリとして作成しておくと使い勝手が良いです。 その分ビルドは面倒になるのですが。。</p>
+<p>僕は通常以下のようにしてユニバーサルバイナリを作成してます。</p>
+<ol><li>まずprefixをそれぞれ <code>~/dev/iphone/lib/curl-7.20.1-armv6</code> <code>~/dev/iphone/lib/curl-7.20.1-armv7</code> <code>~/dev/iphone/lib/curl-7.20.1-i386</code> などとしてそれぞれのアーキテクチャ用にビルドをする</li><li>適当に書いた <a href="http://gist.github.com/491799">bundle.sh</a> でユニバーサルバイナリ化</li></ol>
+<p>この <code>bundle.sh</code> は上の例だと</p>
+<pre><code>./bundle.sh ~/dev/iphone/lib/curl-7.20.1
+</code></pre>
+<p>として実行すると <code>~/dev/iphone/lib/curl-7.20.1-armv6</code> <code>~/dev/iphone/lib/curl-7.20.1-armv7</code> <code>~/dev/iphone/lib/curl-7.20.1-i386</code> が全部がっちゃんこした <code>~/dev/iphone/lib/curl-7.20.1</code> ができるという寸法です。</p>
+<p>この方法だとまだ3つ分手動でビルドするのがめんどくさいので、そこも自動化したいところですね。</p>
+
+  </div>
+
+  <div class="meta">
+    by typester /
+    at <a href="/memo/2010/07/27/1/">2010-07-27T14:52:00</a> /
+    <a href="/memo/tag/osx/">osx</a>
+    &middot; <a href="/memo/tag/iphone/">iphone</a>
+    / <a href="/memo/2010/07/27/1/#disqus_thread">Comment</a>
+  </div>
+</div>
+
+<div class="entry autopagerize_page_element">
+  <h2><a href="/memo/2010/01/08/2/">ライブラリをユニバーサルバイナリでインストールする</a></h2>
+
+  <div class="body">
+    <p>以下のサイトが詳しい</p>
+<blockquote><p><a href="http://macwiki.sourceforge.jp/wiki/index.php/UniversalBinary">http://macwiki.sourceforge.jp/wiki/index.php/UniversalBinary</a></p></blockquote>
+<p><code>Imager</code> に必要な <code>libjpeg</code> などをユニバーサルバイナリにしてみた時のメモ</p>
+<p><code>-M</code> などがついていて <code>-arch</code> が複数指定できない場合以外は</p>
+<pre><code>CFLAGS=&apos;-arch x86_64 -arch i386 -isysroot /Developer/SDKs/MacOSX10.6.sdk&apos; CXXFLAGS=$CFLAGS
+</code></pre>
+<p>とかすればいいということだが、<code>libjpeg</code> は <code>-M</code> られていて無理だったので、amd64 と i386 という二つのディレクトリにソースコードを展開、それぞれ以下のオプションで make まで終わらす：</p>
+<pre><code>$ cd amd64
+$ CFLAGS=&apos;-arch x86_64 -isysroot /Developer/SDKs/MacOSX10.6.sdk&apos; CXXFLAGS=$CFLAGS ./configure ...
+$ make
+
+$ cd ../i386
+$ CFLAGS=&apos;-arch i386 -isysroot /Developer/SDKs/MacOSX10.6.sdk&apos; CXXFLAGS=$CFLAGS ./configure ...
+$ make
+</code></pre>
+<p>make されてできたバイナリを lipo コマンドでユニバーサルバイナリ化する。 上記サイトを参考にして、</p>
+<pre><code>#!/bin/sh
+
+filelist=$(find ./amd64 -type f |grep -v \\.o$ | xargs file | sed -e &apos;s,^\./amd64/,,g&apos; | \
+               grep -E \(Mach-O\)\|\(ar\ archive\) |sed -e &apos;s,:.*,,g&apos; -e &apos;/\for\ architecture/d&apos;)
+
+for i in $filelist
+do
+    echo $i
+    /usr/bin/lipo -create amd64/$i i386/$i -output `basename $i`
+    mv -f `basename $i` amd64/$i
+done
+</code></pre>
+<p>このようなスクリプトを書いて、amd64 などのディレクトリの一つ上の階層で実行すると、amd64 ディレクトリのバイナリがユニバーサルバイナリ化されるという仕組みを作ってみた。</p>
+<p>その後、amd64 のほうで <code>make install</code> してやれば OK。</p>
+
+  </div>
+
+  <div class="meta">
+    by typester /
+    at <a href="/memo/2010/01/08/2/">2010-01-08T11:28:00</a> /
+    <a href="/memo/tag/osx/">osx</a>
+    / <a href="/memo/2010/01/08/2/#disqus_thread">Comment</a>
+  </div>
+</div>
+
+<div class="entry autopagerize_page_element">
+  <h2><a href="/memo/2010/01/08/1/">Snow Leopard の Perl とアーキテクチャ</a></h2>
+
+  <div class="body">
+    <p>Snow Leopard には二つの Perl がインストールされている</p>
+<ul><li>/usr/bin/perl5.10.0</li><li>/usr/bin/perl5.8.9</li></ul>
+<p>デフォルトの <code>/usr/bin/perl</code> は 5.10.0 のほう。それぞれユニバーサルバイナリになっていて、</p>
+<pre><code>$ file /usr/bin/perl5.10.0
+/usr/bin/perl5.10.0: Mach-O universal binary with 3 architectures
+/usr/bin/perl5.10.0 (for architecture x86_64):  Mach-O 64-bit executable x86_64
+/usr/bin/perl5.10.0 (for architecture i386):    Mach-O executable i386
+/usr/bin/perl5.10.0 (for architecture ppc7400): Mach-O executable ppc
+
+$ file /usr/bin/perl5.8.9
+/usr/bin/perl5.8.9: Mach-O universal binary with 2 architectures
+/usr/bin/perl5.8.9 (for architecture i386):     Mach-O executable i386
+/usr/bin/perl5.8.9 (for architecture ppc7400):  Mach-O executable ppc
+</code></pre>
+<p>という感じで、5.10 は 64bit 版があるが、5.8 にはない。</p>
+<p>で、普通に perl を実行すると perl5.10.0 は <code>x86_64</code> で実行され、perl5.8.9 は <code>i386</code> で実行される。</p>
+<p>このアーキテクチャの差が結構くせ者で Snow Leopard 上で普通にライブラリなどを make すると <code>x86_64</code> だけでビルドされてしまうため、そのようにして作ったライブラリはそのままでは perl5.8.9 からは使えないということになる。</p>
+<p>デフォルトの 5.10.0 だけ使っている分にはなにも問題はないのだが、残念なことにこの 5.10.0 というのはいろいろな問題があり、開発に使用することはおすすめできない状況。(せめて 5.10.1 にしてくれればいいのに)</p>
+<p>したがって無用なトラブルを避けるためにも 5.8.9 の方を使用するか、自前でビルドした perl を使用するのが良い。</p>
+<p>またこのように <code>x86_64</code>、<code>i386</code> 両方のアーキテクチャの実行ファイルがあり得る Snow Leopard に対して自分でライブラリをインストールする場合それらもユニバーサルバイナリにしておくと良い。</p>
+<p>念のため追記＠2010-01-08T15:19:23+09:00: もちろんこれは 64bit 対応の CPU の場合の話。そうでない場合はどちらも i386 で実行されるのでこの問題は起こらない。</p>
+
+  </div>
+
+  <div class="meta">
+    by typester /
+    at <a href="/memo/2010/01/08/1/">2010-01-08T10:51:00</a> /
+    <a href="/memo/tag/osx/">osx</a>
+    &middot; <a href="/memo/tag/perl/">perl</a>
+    / <a href="/memo/2010/01/08/1/#disqus_thread">Comment</a>
+  </div>
+</div>
+
+<div class="entry autopagerize_page_element">
+  <h2><a href="/memo/2009/12/18/1/">CocoaEmacsその後</a></h2>
+
+  <div class="body">
+    <p>フルスクリーン化以外にもいじりたくなったのでそれぞれブランチを切った。</p>
+<ul><li><a href="http://github.com/typester/emacs/tree/feature/fullscreen">feature/fullscreen</a> - 今まで作業していたフルスクリーン化対応ブランチ</li><li><a href="http://github.com/typester/emacs/tree/fix/shift_modifier_with_ime">fix/shift_modifier_with_ime</a> - IME経由で入力するときShiftなんちゃらがIMEを素通りするのを直すブランチ</li></ul>
+<p>という感じになっています。 master はこれらの統合ブランチになってますので使ってる人いたら注意です。</p>
+<p>使いながらちょいちょいいじっていて、昨日からの更新としては</p>
+<ul><li>フルスクリーン時に裏にノーマルなウィンドウが残ってしまっていたのを修正</li><li>日本語入力時に Shift なんちゃらが IME をとおらずそのまま Emacs に渡されてしまっているのを修正</li></ul>
+<p>という感じになっております。</p>
+
+  </div>
+
+  <div class="meta">
+    by typester /
+    at <a href="/memo/2009/12/18/1/">2009-12-18T13:03:00</a> /
+    <a href="/memo/tag/emacs/">emacs</a>
+    &middot; <a href="/memo/tag/osx/">osx</a>
+    / <a href="/memo/2009/12/18/1/#disqus_thread">Comment</a>
+  </div>
+</div>
+
+<div class="entry autopagerize_page_element">
+  <h2><a href="/memo/2009/12/17/2/">CocoaEmacsのフォント設定</a></h2>
+
+  <div class="body">
+    <p>現状こんな感じ。以前書いた<a href="http://unknownplace.org/memo/2009/01/20/2/">CarbonEmacsの設定</a>と大して変わってない。unicode コードセットで表示される文字が増えていたのでそれに対応した程度。</p>
+<pre><code>(create-fontset-from-fontset-spec
+ (concat
+  <span class="string">&quot;-*-fixed-medium-r-normal--12-*-*-*-*-*-fontset-tobi&quot;</span>
+  <span class="string">&quot;,ascii:-apple-codingfonttobi-medium-r-normal--16-120-72-72-m-120-*-*&quot;</span>
+  <span class="string">&quot;,japanese-jisx0208:-apple-osaka-*&quot;</span>
+  <span class="string">&quot;,katakana-jisx0201:-apple-osaka-*&quot;</span>
+  <span class="string">&quot;,unicode:-apple-osaka-*&quot;</span>
+  <span class="string">&quot;,chinese-big5-1:-apple-apple ligothic medium-*&quot;</span>
+  ))
+
+(set-default-font <span class="string">&quot;fontset-tobi&quot;</span>)
+</code></pre>
+<p>ascii 用につかってる CodingFontTobi は <a href="http://www.proggyfonts.com/">proggyfonts.com</a> から。</p>
+<p>もちろんビットマップ表示にするため</p>
+<pre><code>$ defaults write org.gnu.Emacs AppleAntiAliasingThreshold 16
+</code></pre>
+<p>としている。</p>
+<pre><code>(setq mac-allow-anti-aliasing nil)
+</code></pre>
+<p>は Snow Leopard では効かないみたいだ。</p>
+
+  </div>
+
+  <div class="meta">
+    by typester /
+    at <a href="/memo/2009/12/17/2/">2009-12-17T23:50:00</a> /
+    <a href="/memo/tag/emacs/">emacs</a>
+    &middot; <a href="/memo/tag/osx/">osx</a>
+    / <a href="/memo/2009/12/17/2/#disqus_thread">Comment</a>
+  </div>
+</div>
+
+<div class="entry autopagerize_page_element">
+  <h2><a href="/memo/2009/12/17/1/">フルスクリーン Cocoa Emacs</a></h2>
+
+  <div class="body">
+    <p>emacs23 が正式にリリースされ、ちまたではウィンドウシステムが Cocoa になったぞ、とか 64bit 対応だぞ、とか multitty だぞ、と盛り上がっていますが、 個人的にほとんど興味のないまま今日まできました。というのも CocoaEmacs は<em>フルスクリーンにできない</em>という僕にとっては致命的な問題があったからです。</p>
+<p>というのも最近は Emacs をフルスクリーンにし縦二分割で使ういわゆる imakado スタイルを実践しているため、それができない CocoaEmacs は眼中になかったのでした。</p>
+<p>そんなわけでずっと CarbonEmacs を使ってきたのですが、 Snow Leopard に移行したのを機に CocoaEmacs に移行し、さらについでにフルスクリーン化できるようにしてみています。 github でやってます。</p>
+<blockquote><p><a href="http://github.com/typester/emacs">typester&apos;s emacs at master - GitHub</a></p></blockquote>
+<p>現状でも若干不具合がありますが、使える段階にはなっていると思います。</p>
+<p>ビルドは</p>
+<pre><code>$ git clone git://github.com/typester/emacs.git
+$ cd emacs
+$ ./configure --with-ns
+$ make bootstrap
+$ make install
+</code></pre>
+<p>こんな感じにすると、<code>nextstep</code> ディレクトリ以下に <code>Emacs.app</code> ができます。フルスクリーンにするには</p>
+<pre><code>M-x ns-toggle-fullscreen
+</code></pre>
+<p>でいけます。キー割り当てておくと便利です。</p>
+<p>対応環境は定かではありませんが、OS X 10.4 と 10.6 で動作確認しております。</p>
+<p>また 10.6 の場合のみ、フルスクリーン時に隠れているメニューバーや Dock 領域にマウスカーソルを移動させると自動的に表示されるようになっています。 CarbonEmacs と違い Dock も自動で表示されるので個人的に非常に便利です。10.6 からの新 API のため、10.5 以前ではフルスクリーン時にメニューバー、Dock は強制オフになります。</p>
+<p>既知の不具合として外部ウィンドウでフルスクリーン化して戻そうとすると落ちるというのが報告されており調査中です。 それ以外は便利に使用できています。この文章もフルスクリーン CocoaEmacs で書いています ;)</p>
+<p>またこのハックをしたことで elisp から C や Objective-C のコードを呼ぶ方法がわかったのでいろいろ夢がひろがりんぐというところです。</p>
+
+  </div>
+
+  <div class="meta">
+    by typester /
+    at <a href="/memo/2009/12/17/1/">2009-12-17T20:27:00</a> /
+    <a href="/memo/tag/emacs/">emacs</a>
+    &middot; <a href="/memo/tag/osx/">osx</a>
+    / <a href="/memo/2009/12/17/1/#disqus_thread">Comment</a>
+  </div>
+</div>
+
+<div class="entry autopagerize_page_element">
+  <h2><a href="/memo/2009/12/03/1/">無線APによって自動でhostsを変える方法</a></h2>
+
+  <div class="body">
+    <p>OSX の LaunchAgents には特定のパスを監視して更新があったらプログラムを起動すると言うことが出来ます。例えば以下のような設定を書いてみると：</p>
+<pre><code><span class="nxml-processing-instruction-delimiter">&lt;?</span><span class="nxml-processing-instruction-target">xml</span> <span class="nxml-attribute-local-name">version</span>=<span class="nxml-attribute-value-delimiter">&quot;</span><span class="nxml-attribute-value">1.0</span><span class="nxml-attribute-value-delimiter">&quot;</span> <span class="nxml-attribute-local-name">encoding</span>=<span class="nxml-attribute-value-delimiter">&quot;</span><span class="nxml-attribute-value">UTF-8</span><span class="nxml-attribute-value-delimiter">&quot;</span><span class="nxml-processing-instruction-delimiter">?&gt;</span>
+<span class="nxml-markup-declaration-delimiter">&lt;!</span><span class="nxml-prolog-keyword">DOCTYPE</span> plist <span class="nxml-prolog-keyword"><span class="nxml-prolog-keyword">PUBLIC</span></span> <span class="nxml-prolog-literal-delimiter">&quot;</span><span class="nxml-prolog-literal-content">-//Apple Computer//DTD PLIST 1.0//EN</span><span class="nxml-prolog-literal-delimiter">&quot;</span>
+          <span class="nxml-prolog-literal-delimiter">&quot;</span><span class="nxml-prolog-literal-content">http://www.apple.com/DTDs/PropertyList-1.0.dtd</span><span class="nxml-prolog-literal-delimiter">&quot;</span><span class="nxml-markup-declaration-delimiter">&gt;</span>
+<span class="nxml-tag-delimiter">&lt;</span><span class="nxml-element-local-name">plist</span> <span class="nxml-attribute-local-name">version</span>=<span class="nxml-attribute-value-delimiter">&quot;</span><span class="nxml-attribute-value">1.0</span><span class="nxml-attribute-value-delimiter">&quot;</span><span class="nxml-tag-delimiter">&gt;</span>
+  <span class="nxml-tag-delimiter">&lt;</span><span class="nxml-element-local-name">dict</span><span class="nxml-tag-delimiter">&gt;</span>
+    <span class="nxml-tag-delimiter">&lt;</span><span class="nxml-element-local-name">key</span><span class="nxml-tag-delimiter">&gt;</span><span class="nxml-text">Label</span><span class="nxml-tag-delimiter">&lt;</span><span class="nxml-tag-slash">/</span><span class="nxml-element-local-name">key</span><span class="nxml-tag-delimiter">&gt;</span>
+    <span class="nxml-tag-delimiter">&lt;</span><span class="nxml-element-local-name">string</span><span class="nxml-tag-delimiter">&gt;</span><span class="nxml-text">org.unknownplace.wifi_switch</span><span class="nxml-tag-delimiter">&lt;</span><span class="nxml-tag-slash">/</span><span class="nxml-element-local-name">string</span><span class="nxml-tag-delimiter">&gt;</span>
+    <span class="nxml-tag-delimiter">&lt;</span><span class="nxml-element-local-name">key</span><span class="nxml-tag-delimiter">&gt;</span><span class="nxml-text">ProgramArguments</span><span class="nxml-tag-delimiter">&lt;</span><span class="nxml-tag-slash">/</span><span class="nxml-element-local-name">key</span><span class="nxml-tag-delimiter">&gt;</span>
+    <span class="nxml-tag-delimiter">&lt;</span><span class="nxml-element-local-name">array</span><span class="nxml-tag-delimiter">&gt;</span>
+      <span class="nxml-tag-delimiter">&lt;</span><span class="nxml-element-local-name">string</span><span class="nxml-tag-delimiter">&gt;</span><span class="nxml-text">/usr/bin/zsh</span><span class="nxml-tag-delimiter">&lt;</span><span class="nxml-tag-slash">/</span><span class="nxml-element-local-name">string</span><span class="nxml-tag-delimiter">&gt;</span>
+      <span class="nxml-tag-delimiter">&lt;</span><span class="nxml-element-local-name">string</span><span class="nxml-tag-delimiter">&gt;</span><span class="nxml-text">-c</span><span class="nxml-tag-delimiter">&lt;</span><span class="nxml-tag-slash">/</span><span class="nxml-element-local-name">string</span><span class="nxml-tag-delimiter">&gt;</span>
+      <span class="nxml-tag-delimiter">&lt;</span><span class="nxml-element-local-name">string</span><span class="nxml-tag-delimiter">&gt;</span><span class="nxml-text">exec perl /Users/typester/dev/scratch/wifi_switch/switch.pl</span><span class="nxml-tag-delimiter">&lt;</span><span class="nxml-tag-slash">/</span><span class="nxml-element-local-name">string</span><span class="nxml-tag-delimiter">&gt;</span>
+    <span class="nxml-tag-delimiter">&lt;</span><span class="nxml-tag-slash">/</span><span class="nxml-element-local-name">array</span><span class="nxml-tag-delimiter">&gt;</span>
+    <span class="nxml-tag-delimiter">&lt;</span><span class="nxml-element-local-name">key</span><span class="nxml-tag-delimiter">&gt;</span><span class="nxml-text">RunAtLoad</span><span class="nxml-tag-delimiter">&lt;</span><span class="nxml-tag-slash">/</span><span class="nxml-element-local-name">key</span><span class="nxml-tag-delimiter">&gt;</span>
+    <span class="nxml-tag-delimiter">&lt;</span><span class="nxml-element-local-name">true</span><span class="nxml-tag-slash">/</span><span class="nxml-tag-delimiter">&gt;</span>
+    <span class="nxml-tag-delimiter">&lt;</span><span class="nxml-element-local-name">key</span><span class="nxml-tag-delimiter">&gt;</span><span class="nxml-text">StandardErrorPath</span><span class="nxml-tag-delimiter">&lt;</span><span class="nxml-tag-slash">/</span><span class="nxml-element-local-name">key</span><span class="nxml-tag-delimiter">&gt;</span>
+    <span class="nxml-tag-delimiter">&lt;</span><span class="nxml-element-local-name">string</span><span class="nxml-tag-delimiter">&gt;</span><span class="nxml-text">/dev/null</span><span class="nxml-tag-delimiter">&lt;</span><span class="nxml-tag-slash">/</span><span class="nxml-element-local-name">string</span><span class="nxml-tag-delimiter">&gt;</span><span class="nxml-comment-delimiter">&lt;!--</span><span class="nxml-comment-content"> &lt;string&gt;/tmp/error&lt;/string&gt; </span><span class="nxml-comment-delimiter">--&gt;</span>
+    <span class="nxml-tag-delimiter">&lt;</span><span class="nxml-element-local-name">key</span><span class="nxml-tag-delimiter">&gt;</span><span class="nxml-text">StandardOutPath</span><span class="nxml-tag-delimiter">&lt;</span><span class="nxml-tag-slash">/</span><span class="nxml-element-local-name">key</span><span class="nxml-tag-delimiter">&gt;</span>
+    <span class="nxml-tag-delimiter">&lt;</span><span class="nxml-element-local-name">string</span><span class="nxml-tag-delimiter">&gt;</span><span class="nxml-text">/dev/null</span><span class="nxml-tag-delimiter">&lt;</span><span class="nxml-tag-slash">/</span><span class="nxml-element-local-name">string</span><span class="nxml-tag-delimiter">&gt;</span>
+    <span class="nxml-tag-delimiter">&lt;</span><span class="nxml-element-local-name">key</span><span class="nxml-tag-delimiter">&gt;</span><span class="nxml-text">WatchPaths</span><span class="nxml-tag-delimiter">&lt;</span><span class="nxml-tag-slash">/</span><span class="nxml-element-local-name">key</span><span class="nxml-tag-delimiter">&gt;</span>
+    <span class="nxml-tag-delimiter">&lt;</span><span class="nxml-element-local-name">array</span><span class="nxml-tag-delimiter">&gt;</span>
+      <span class="nxml-tag-delimiter">&lt;</span><span class="nxml-element-local-name">string</span><span class="nxml-tag-delimiter">&gt;</span><span class="nxml-text">/Library/Preferences/SystemConfiguration/com.apple.airport.preferences.plist</span><span class="nxml-tag-delimiter">&lt;</span><span class="nxml-tag-slash">/</span><span class="nxml-element-local-name">string</span><span class="nxml-tag-delimiter">&gt;</span>
+    <span class="nxml-tag-delimiter">&lt;</span><span class="nxml-tag-slash">/</span><span class="nxml-element-local-name">array</span><span class="nxml-tag-delimiter">&gt;</span>
+  <span class="nxml-tag-delimiter">&lt;</span><span class="nxml-tag-slash">/</span><span class="nxml-element-local-name">dict</span><span class="nxml-tag-delimiter">&gt;</span>
+<span class="nxml-tag-delimiter">&lt;</span><span class="nxml-tag-slash">/</span><span class="nxml-element-local-name">plist</span><span class="nxml-tag-delimiter">&gt;</span>
+</code></pre>
+<p><code>/Library/Preferences/SystemConfiguration/com.apple.airport.preferences.plist</code> を監視しそれが更新されたら <code>/Users/typester/dev/scratch/wifi_switch/switch.pl</code> を実行する。と言うことが実現できます。</p>
+<p>この監視先のファイルは OSX の無線ネットワーク設定なので、これが更新されると言うことは無線通信の状態が変わったときと言うことを意味します。</p>
+<p>これを有効にするにはこのファイルを適当な名前 <code>hoge.plist</code> で <code>/System/Library/LaunchDaemons/</code> 保存すれば次回起動から有効になります。すぐに有効にしたい場合は、</p>
+<pre><code>sudo launchctl load /System/Library/LaunchDaemons/hoge.plist
+</code></pre>
+<p>などとすればOKです。詳しくは launchctl や LaunchAgent/LaunchDaemon のドキュメントを参照のこと。システムレベルの LaunchDaemon を使用しているのは <code>/etc/hosts</code> を書き換えるのに root 権限が必要だからです。</p>
+<p>あとはここで起動されるスクリプト中でからAPの情報を取得しそれをもとに hosts を書き換えればいいわけです。APの情報は</p>
+<pre><code>/System/Library/PrivateFrameworks/Apple80211.framework/Versions/A/Resources/airport -I
+</code></pre>
+<p>と言うコマンドで取得可能なのでそれをパースすればオッケーです。</p>
+<p>以下に僕が実際に使用しているスクリプトを貼っておきます。</p>
+<blockquote><p><a href="http://gist.github.com/247950">http://gist.github.com/247950</a></p></blockquote>
+<p>このスクリプトと同じところに、<code>default.mt</code> と <code>特定のAPのSSID名.mt</code> と言うファイルで hosts を書いておくと、通常は <code>default.mt</code> が <code>/etc/hosts</code> に書き出され、SSIDにマッチするファイルがある場合には <code>SSID名.mt</code> が <code>/etc/hosts</code> に書き出されるという感じです。</p>
+<p>AP によって hosts を変えたいという状況がそんなにあるとは思いませんが、ネットワークの状態によっていろいろ設定を変えると言う目的では便利で使えますので覚えておいて損はないでしょう。</p>
+
+  </div>
+
+  <div class="meta">
+    by typester /
+    at <a href="/memo/2009/12/03/1/">2009-12-03T16:00:00</a> /
+    <a href="/memo/tag/osx/">osx</a>
+    / <a href="/memo/2009/12/03/1/#disqus_thread">Comment</a>
+  </div>
+</div>
+
+
+
+
+<div id="pager" class="autopagerize_insert_before">
+  <p class="pages">
+    <a class="prev" rel="previous" href="/memo/tag/osx/page/2/">&laquo; Prev</a>
+    <a href="/memo/tag/osx/">1</a>
+    <a href="/memo/tag/osx/page/2/">2</a>
+    <span class="current">3</span>
+    <a href="/memo/tag/osx/page/4/">4</a>
+    <a href="/memo/tag/osx/page/5/">5</a>
+    <a class="next" rel="next" href="/memo/tag/osx/page/4/">Next &raquo;</a>
+  </p>
+  <p class="info">(Page 3 of 5)</p>
+</div>
+
+
+</div>
+
+<p id="footer">
+  Copyright &copy; 2005-2013
+      by <a class="author" href="/about/#me">Daisuke Murase (typester)</a> /
+  Site generated by <a href="https://github.com/typester/nim">nim</a> /
+  Comments powered by <a href="http://disqus.com">DISQUS</a>.
+</p>
+
+</div>
+
+
+<script type="text/javascript">
+//<![CDATA[
+(function() {
+	var links = document.getElementsByTagName('a');
+	var query = '?';
+	for(var i = 0; i < links.length; i++) {
+	if(links[i].href.indexOf('#disqus_thread') >= 0) {
+		query += 'url' + i + '=' + encodeURIComponent(links[i].href) + '&';
+	}
+	}
+	document.write('<script charset="utf-8" type="text/javascript" src="http://disqus.com/forums/unknownplace/get_num_replies.js' + query + '"></' + 'script>');
+})();
+//]]>
+</script>
+
+
+<script type="text/javascript">
+var gaJsHost = (("https:" == document.location.protocol) ? "https://ssl." : "http://www.");
+document.write(unescape("%3Cscript src='" + gaJsHost + "google-analytics.com/ga.js' type='text/javascript'%3E%3C/script%3E"));
+</script>
+<script type="text/javascript">
+try {
+var pageTracker = _gat._getTracker("UA-53067-1");
+pageTracker._trackPageview();
+} catch(err) {}</script>
+
+<script>
+function googleTranslateElementInit() {
+  new google.translate.TranslateElement({
+    pageLanguage: 'ja',
+    gaTrack: true,
+    gaId: 'UA-53067',
+    floatPosition: google.translate.TranslateElement.FloatPosition.BOTTOM_RIGHT
+  });
+}
+</script><script src="//translate.google.com/translate_a/element.js?cb=googleTranslateElementInit"></script>
+
+</body>
+</html>

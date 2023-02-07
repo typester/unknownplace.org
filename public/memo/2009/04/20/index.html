@@ -1,0 +1,176 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="ja" xml:lang="ja">
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <title>2009/04/20 - memo - unknownplace.org</title>
+  <link rel="stylesheet" type="text/css" href="http://yui.yahooapis.com/3.0.0/build/cssreset/reset-min.css" />
+  <link rel="stylesheet" type="text/css" href="http://yui.yahooapis.com/3.0.0/build/cssfonts/fonts-min.css" />
+  <link rel="stylesheet" href="/css/style.css" type="text/css" />
+  <meta property="fb:admins" content="1093631929" />
+  <meta name="robots" content="noindex" />
+  <link rel="alternate" type="application/rss+xml" href="http://unknownplace.org/memo/index.rss" />
+</head>
+<body>
+
+<div id="container">
+<div id="header">
+    <h1><a href="/">unknownplace.org</a></h1> /
+<a href="/memo/">memo</a>
+</div>
+
+<div id="content">
+
+<div class="entry autopagerize_page_element">
+  <h2 id="e002"><a href="/memo/2009/04/20/2/">Yokohama.pm Tech Talk #4 行ってきた</a></h2>
+
+  <div class="body">
+    <p>もう4回目か。。</p>
+<h4>qudo x skinny (id:nekokak)</h4>
+<p><code>qudo</code> はクドーと読む。キュードーだと思ってた！(&amp; キュードーのが良いなぁ)</p>
+<p>Skinny は前回(?)も発表したORM。<code>SQL::Parser</code> がしょぼい＆遅いので捨て、ルールベースにしたとのこと。</p>
+<p>それはいいんだけど、DSL まくっててちょっと個人的にはやだなぁ。DSL は覚えるのが大変。DSLは <code>::Declare</code> とかで別途やって欲しい感じ。どちらでも使えるのがいいと思います！</p>
+<p>現状は一部足りないところもあるけど、だいたいのところ(id:nekokakさんが普段使う領域)はうごくレベルらしい。</p>
+<p>Qudo は TheSchwartz みたいなジョブキュー。TheSchwartz の不満なところを直して、欲しかった物をつけた感じの物。</p>
+<ul><li>ORM に依存しない</li><li>DB 以外にも memcached とかキャッシュサーバーをバックエンドにも使える(予定)</li><li>適度なHookポイントをつけてプラッガブル！</li><li>エラー処理管理しやすく (イイネ)</li><li>管理系コマンドも充実 (イイネ)</li><li>テストモジュールも用意 (イイネ)</li></ul>
+<p>というかなり良い感じの物になってるので、TheSchwartz つかってる僕としては触ってみたいなと思った。ORM 対応とかは正直 DBI にさえ対応してくれればいいんだけど。。</p>
+<p>ZIGOROu さんがMacBookになってる！！</p>
+<h4>DI x Perl! (id:lestrrat)</h4>
+<p>DIよくわかってない。</p>
+<p>オブジェクトの自動組み立てのことをいうらしい = 依存関係を満たしつつ初期化。</p>
+<p>。。。というと？</p>
+<p>自分で依存関係を考慮してコーディングしなくていい。なるほど。</p>
+<p>どうやるか？ 普段どおりのクラス定義 + 依存性定義ファイル + アセンブラ(なんだろこれ、前二つを結びつけて組み立てる物)</p>
+<p>Bread::Board の実際のコード例。見てもよくわからん。</p>
+<p>lestrrat化後はどうなるか （今後取り込まれる予定のもの)</p>
+<p>クラス構造使いやすく。（こっちの例はいい感じ）</p>
+<ul><li>Bread::Board (coreモジュール、いままでのようにDSLではない)</li><li>Bread::Board::Declare (いままでのようなDSLインタフェース)</li><li>MooseX::Bread::Board もつくったよ</li></ul>
+<p>lestrrat化したあとのものは僕にとってもわかりやすく、一度試してみたい。依存性を全く考慮することなくコーディングできるなら確かに楽なのかもしれないなぁ。</p>
+<p>やってみないとわからないので、これは取り込まれたら使ってみる。</p>
+<h4>WAF のつくりかた (id:dann)</h4>
+<p>おなかすいた。</p>
+<p>いろんな言語のWAFの特徴。最近Djangoってる僕としてはPythonのWAFについてまったく調べてないんじゃないの！！ と思ってしまったｗ Django 面白い機能いっぱいありますよ。</p>
+<p>で、それらをいいとこ取りしたのが Angelos!</p>
+<p>フックポイントは大文字！ きもい！</p>
+<p>デフォルトセットの概念は良い。 Module::Setup のフレーバーで定義。いいね。</p>
+<h4>amazon の MapReduce エラスティックなんちゃら (id:lopnor)</h4>
+<p>mapper or reducer スクリプトから CPAN モジュールを使用するための方法。</p>
+<p>local::lib して jar でかためて云々すれば普通に使えるらしい。</p>
+<h4>Simo (id:perlcodesample)</h4>
+<p>Moose とかみたいなやつ。Mouse が存在しなかったら触ってみたかも。</p>
+<p>Moose/Mouse との比較があるとよかったかもなぁ。機能比較はもちろんだけど、速度比較とかも。</p>
+<p>機能としては MOP 的なものが全くなさそう(?) なので、Moose/Mouse からの移行はなかなか難しそう。</p>
+<h4>CAPとBASEとEventually Consistent (id:yohei)</h4>
+<p>職業にふいたｗ</p>
+<p>赤ラクダ本とかしらない＞＜ MogileFS とか Perlbal とかの brad プロダクトを使ってるらしい。 MogileFS の運用話は聞いてみたかったけど懇親会で話す機会なかったなぁ。</p>
+<p>CAP定理！ どれもとりたいジレンマ。どれかを妥協せざるを得ない。</p>
+<p>Webアプリだとたいていの場合 C (Consistency) を妥協。</p>
+<p>その C の中の Eventually Consistent というのについての話。これについては「結果整合性」でググれば一番良いページがいちばんうえにくる！ <a href="http://www.hyuki.com/yukiwiki/wiki.cgi?EventuallyConsistent">ここ？</a></p>
+<p>BASE とか CAP とか全く知らなかったけど、Eventually Consistent 的な手法というのは Web 開発においてはよくつかわれていて、全然わかる話ではあった。</p>
+<p>自分の身近では実際の方法論などばかり話されるばかりで、あういう概念的な話は全く出ないので面白かった。もう少し知りたい。</p>
+<p>あわせて読みたい：</p>
+<ul><li><a href="http://yohei-y.blogspot.com/2009/03/cap-base.html">yohei-y:weblog: CAP と BASE について調べたこと</a></li><li><a href="http://yohei-y.blogspot.com/2009/03/capcacidc.html">yohei-y:weblog: CAPのCとACIDのC</a></li></ul>
+<h4>LT</h4>
+<p>MacBookのバッテリー切れてメモがない。</p>
+<p>id:IMAKADO の perl-completion.el の説明。早口で perl-completion ユーザーの僕としても難しかった。非ユーザーは理解できなかったかも。</p>
+<p>ジョブキューは Qudo で良いよって言う結論。(うろ覚え)</p>
+<p>AAFind おもろいｗ やる男がやるプレゼンは新しい。</p>
+<h4>まとめ</h4>
+<p>Django本にサインもらった。うれしい</p>
+
+  </div>
+
+  <div class="meta">
+    by typester /
+    at <a href="/memo/2009/04/20/2/">2009-04-20T20:45:00</a> /
+    <a href="/memo/tag/perl/">perl</a>
+    / <a href="/memo/2009/04/20/2/#disqus_thread">Comment</a>
+  </div>
+</div>
+
+<div class="entry autopagerize_page_element">
+  <h2 id="e001"><a href="/memo/2009/04/20/1/">my clmemo設定</a></h2>
+
+  <div class="body">
+    <p>このメモは <a href="http://pop-club.hp.infoseek.co.jp/emacs/clmemo.html">clmemo.el</a> で書いてるわけだけど、もっと個人的なメモとるように、MacBookにもインストールしてみた。</p>
+<p>で、<a href="http://unknownplace.org/pub/clmemo.txt">僕のつかってる clmemo</a> のフォーマットは、タイトル行に書いた時間をいれる、本文は Markdown というような物になっていて、この時間を入れるために<a href="http://unknownplace.org/memo/2005/10/14#e005">こんなパッチ</a>を当てていた。</p>
+<p>けど今見てみたらそんなパッチ当てる必要もないことがわかった。</p>
+<p>こんな感じ、</p>
+<pre><code>(<span class="keyword">require</span> &apos;<span class="constant">clmemo</span>)
+
+(setq clmemo-file-name <span class="string">&quot;~/clmemo.txt&quot;</span>)
+(setq clmemo-time-string-with-weekday t)
+
+(setq clmemo-subtitle-char <span class="string">&quot;[&quot;</span>)
+(setq clmemo-subtitle-punctuation-char &apos;(<span class="string">&quot; [&quot;</span> . <span class="string">&quot;]&quot;</span>))
+
+(<span class="keyword">defadvice</span> <span class="function-name">clmemo-get-title</span> (after clmemo-get-title-with-time () activate)
+  (setq ad-return-value (concat (format-time-string <span class="string">&quot;%H:%M &quot;</span>) ad-return-value)))
+</code></pre>
+<p>でやればこのメモのフォーマットになる。いいね！</p>
+<p>clmemo.el のソースも昔は意味不明だったけど今はだいたいわかるし。やっぱり emacs つかうなら elisp 理解できないと損というか、もったいないなぁ。ということがわかった。</p>
+
+  </div>
+
+  <div class="meta">
+    by typester /
+    at <a href="/memo/2009/04/20/1/">2009-04-20T10:31:00</a> /
+    <a href="/memo/tag/clmemo/">clmemo</a>
+    &middot; <a href="/memo/tag/emacs/">emacs</a>
+    / <a href="/memo/2009/04/20/1/#disqus_thread">Comment</a>
+  </div>
+</div>
+
+
+
+</div>
+
+<p id="footer">
+  Copyright &copy; 2005-2013
+      by <a class="author" href="/about/#me">Daisuke Murase (typester)</a> /
+  Site generated by <a href="https://github.com/typester/nim">nim</a> /
+  Comments powered by <a href="http://disqus.com">DISQUS</a>.
+</p>
+
+</div>
+
+
+<script type="text/javascript">
+//<![CDATA[
+(function() {
+	var links = document.getElementsByTagName('a');
+	var query = '?';
+	for(var i = 0; i < links.length; i++) {
+	if(links[i].href.indexOf('#disqus_thread') >= 0) {
+		query += 'url' + i + '=' + encodeURIComponent(links[i].href) + '&';
+	}
+	}
+	document.write('<script charset="utf-8" type="text/javascript" src="http://disqus.com/forums/unknownplace/get_num_replies.js' + query + '"></' + 'script>');
+})();
+//]]>
+</script>
+
+
+<script type="text/javascript">
+var gaJsHost = (("https:" == document.location.protocol) ? "https://ssl." : "http://www.");
+document.write(unescape("%3Cscript src='" + gaJsHost + "google-analytics.com/ga.js' type='text/javascript'%3E%3C/script%3E"));
+</script>
+<script type="text/javascript">
+try {
+var pageTracker = _gat._getTracker("UA-53067-1");
+pageTracker._trackPageview();
+} catch(err) {}</script>
+
+<script>
+function googleTranslateElementInit() {
+  new google.translate.TranslateElement({
+    pageLanguage: 'ja',
+    gaTrack: true,
+    gaId: 'UA-53067',
+    floatPosition: google.translate.TranslateElement.FloatPosition.BOTTOM_RIGHT
+  });
+}
+</script><script src="//translate.google.com/translate_a/element.js?cb=googleTranslateElementInit"></script>
+
+</body>
+</html>

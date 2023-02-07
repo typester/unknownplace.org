@@ -1,0 +1,404 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="ja" xml:lang="ja">
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <title>memo - unknownplace.org</title>
+  <link rel="stylesheet" type="text/css" href="http://yui.yahooapis.com/3.0.0/build/cssreset/reset-min.css" />
+  <link rel="stylesheet" type="text/css" href="http://yui.yahooapis.com/3.0.0/build/cssfonts/fonts-min.css" />
+  <link rel="stylesheet" href="/css/style.css" type="text/css" />
+  <meta property="fb:admins" content="1093631929" />
+  <meta name="robots" content="noindex" />
+  <link rel="alternate" type="application/rss+xml" href="http://unknownplace.org/memo/index.rss" />
+</head>
+<body>
+
+<div id="container">
+<div id="header">
+    <h1><a href="/">unknownplace.org</a></h1> /
+<a href="/memo/">memo</a>
+</div>
+
+<div id="content">
+
+<div class="entry autopagerize_page_element">
+  <h2><a href="/memo/2006/09/09/8/">Helper::Lighttpd #4</a></h2>
+
+  <div class="body">
+    <p><code>MIME::Types</code> が入ってたらそっからがーって mimetype.assign をはくようにした。</p>
+<p>てけとう。</p>
+<p>でも、mime-typeが指定されてなくて困るのは、FirefoxでCSSが適用されないってぐらいな気がするというかそんな感じなのでとりあえずこれで。</p>
+
+  </div>
+
+  <div class="meta">
+    by typester /
+    at <a href="/memo/2006/09/09/8/">2006-09-09T16:19:00</a> /
+    <a href="/memo/tag/perl/">perl</a>
+    &middot; <a href="/memo/tag/catalyst/">catalyst</a>
+    &middot; <a href="/memo/tag/lighttpd/">lighttpd</a>
+    / <a href="/memo/2006/09/09/8/#disqus_thread">Comment</a>
+  </div>
+</div>
+
+<div class="entry autopagerize_page_element">
+  <h2><a href="/memo/2006/09/09/6/">Helper::Lighttpd #3</a></h2>
+
+  <div class="body">
+    <p><code>-d</code>オプションもつけた。<code>-Debug</code> してなくてもデバッグ出力できるやつ。まぁ<code>server.pl</code>と同じ。</p>
+<pre><code>$ ./script/myapp_lighttpd.pl -l /usr/sbin/lighttpd -d
+2006-09-09 15:45:39: &#7;(log.c.75) <span class="type">server</span> <span class="variable-name">started</span>
+[debug] Debug messages enabled
+[debug] Loaded plugins:
+.----------------------------------------------------------------------------.
+| Catalyst::Plugin::ConfigLoader  0.13                                       |
+| Catalyst::Plugin::Static::Simple  0.14                                     |
+<span class="string">'----------------------------------------------------------------------------'</span>
+
+[debug] Loaded dispatcher <span class="string">"Catalyst::Dispatcher"</span>
+[debug] Loaded engine <span class="string">"Catalyst::Engine::FastCGI"</span>
+[debug] Found home <span class="string">"/home/typester/tmp/MyApp"</span>
+[debug] Loaded Config <span class="string">"/home/typester/tmp/MyApp/myapp.yml"</span>
+[debug] Loaded components:
+.-----------------------------------------------------------------+----------.
+| Class                                                           | Type     |
++-----------------------------------------------------------------+----------+
+| MyApp::Controller::Root                                         | instance |
+<span class="string">'-----------------------------------------------------------------+----------'</span>
+
+[debug] Loaded Private actions:
+.----------------------+--------------------------------------+--------------.
+| Private              | Class                                | Method       |
++----------------------+--------------------------------------+--------------+
+| /<span class="keyword">default</span>             | MyApp::Controller::Root              | <span class="keyword">default</span>      |
+| /end                 | MyApp::Controller::Root              | end          |
+<span class="string">'----------------------+--------------------------------------+--------------'</span>
+
+[info] MyApp powered by Catalyst 5.7001
+</code></pre>
+<p>Yes! YEs!</p>
+<p>あとは静的ファイルの mime-types をちゃんとサポートすれば、server.plいらない気がする。</p>
+<p>perl -d するとき以外は。</p>
+
+  </div>
+
+  <div class="meta">
+    by typester /
+    at <a href="/memo/2006/09/09/6/">2006-09-09T15:49:00</a> /
+    <a href="/memo/tag/perl/">perl</a>
+    &middot; <a href="/memo/tag/catalyst/">catalyst</a>
+    &middot; <a href="/memo/tag/lighttpd/">lighttpd</a>
+    / <a href="/memo/2006/09/09/6/#disqus_thread">Comment</a>
+  </div>
+</div>
+
+<div class="entry autopagerize_page_element">
+  <h2><a href="/memo/2006/09/09/5/">error-handler-404 で指定したスクリプトで 404 返すと</a></h2>
+
+  <div class="body">
+    <p>2006-09-09 14:58:36: (connections.c.1422) Warning: Either the error-handler returned status 404 or the error-handler itself was not found: /script/myapp_fastcgi.pl 2006-09-09 14:58:36: (connections.c.1424) returning the original status 404 2006-09-09 14:58:36: (connections.c.1426) If this is a rails app: check your production.log</p>
+<p>とか言われるわけだが、404を返す正しい方法が何かあるのだろうか？</p>
+
+  </div>
+
+  <div class="meta">
+    by typester /
+    at <a href="/memo/2006/09/09/5/">2006-09-09T15:00:00</a> /
+    <a href="/memo/tag/perl/">perl</a>
+    &middot; <a href="/memo/tag/lighttpd/">lighttpd</a>
+    / <a href="/memo/2006/09/09/5/#disqus_thread">Comment</a>
+  </div>
+</div>
+
+<div class="entry autopagerize_page_element">
+  <h2><a href="/memo/2006/09/09/3/">Helper::Lighttpd #2</a></h2>
+
+  <div class="body">
+    <p>昨日のやつ、</p>
+<blockquote><p><a href="http://typester.vox.com/library/post/fixes-enginecgi-for-lighttpd.html">Fixes Engine::CGI for Lighttpd - typester&apos;s vox</a></p></blockquote>
+<p>このパッチ当てないとうまく動かんよ、って書くの忘れてた。</p>
+<p>あと、myapp_lighttpd.pl に -p オプションつけるとlighttpdの設定を標準出力に出すようにしてみた。</p>
+<p>これで、lighttpd.confで</p>
+<pre><code>include_shell <span class="string">"/path/to/myapp_lighttpd.pl -p -approot /myapp/"</span>
+</code></pre>
+<p>とか書くだけで設定完了みたいな。</p>
+<p>まだオプション足りなくて設定きめうちで微妙だけど、なんかいいアイデアな気がする。</p>
+
+  </div>
+
+  <div class="meta">
+    by typester /
+    at <a href="/memo/2006/09/09/3/">2006-09-09T11:39:00</a> /
+    <a href="/memo/tag/perl/">perl</a>
+    &middot; <a href="/memo/tag/catalyst/">catalyst</a>
+    / <a href="/memo/2006/09/09/3/#disqus_thread">Comment</a>
+  </div>
+</div>
+
+<div class="entry autopagerize_page_element">
+  <h2><a href="/memo/2006/09/08/3/">Catalyst::Helper::Lighttpd</a></h2>
+
+  <div class="body">
+    <p>とか作った。</p>
+<blockquote><p><a href="http://svn.unknownplace.org/public/library/perl/trunk/Catalyst-Helper-Lighttpd/">http://svn.unknownplace.org/public/library/perl/trunk/Catalyst-Helper-Lighttpd/</a></p></blockquote>
+<p>これいれると、</p>
+<pre><code>./script/myapp_create.pl Lighttpd
+</code></pre>
+<p>でscriptディレクトリにmyapp_lighttpd.plができる。これがlighty使ったテストサーバー。</p>
+<p>lighttpdにPath通ってれば</p>
+<pre><code>./script/myapp_lighttpd.pl
+</code></pre>
+<p>叩くだけでOK。デフォポートは3000。他オプションは<code>-h</code>で。</p>
+
+  </div>
+
+  <div class="meta">
+    by typester /
+    at <a href="/memo/2006/09/08/3/">2006-09-08T18:34:00</a> /
+    <a href="/memo/tag/perl/">perl</a>
+    &middot; <a href="/memo/tag/catalyst/">catalyst</a>
+    / <a href="/memo/2006/09/08/3/#disqus_thread">Comment</a>
+  </div>
+</div>
+
+<div class="entry autopagerize_page_element">
+  <h2><a href="/memo/2006/09/08/2/">FastCGIでテストサーバーしたい！</a></h2>
+
+  <div class="body">
+    <p>$ CATALYST_DEBUG=1 ./script/myapp_fastcgi.pl -l :3001 [debug] Debug messages enabled [debug] Loaded plugins: .----------------------------------------------------------------------------. | Catalyst::Plugin::ConfigLoader 0.13 | | Catalyst::Plugin::Static::Simple 0.14 | &apos;----------------------------------------------------------------------------&apos;</p>
+<pre><code>[debug] Loaded dispatcher <span class="string">&quot;Catalyst::Dispatcher&quot;</span>
+[debug] Loaded engine <span class="string">&quot;Catalyst::Engine::FastCGI&quot;</span>
+[debug] Found home <span class="string">&quot;/home/typester/tmp/MyApp&quot;</span>
+[debug] Loaded Config <span class="string">&quot;/home/typester/tmp/MyApp/myapp.yml&quot;</span>
+[debug] Loaded components:
+.-----------------------------------------------------------------+----------.
+| <span class="type">Class</span>                                                           | Type     |
++-----------------------------------------------------------------+----------+
+| MyApp::Controller::Root                                         | instance |
+<span class="string">&apos;-----------------------------------------------------------------+----------&apos;</span>
+
+[debug] Loaded Private actions:
+.----------------------+--------------------------------------+--------------.
+| Private              | <span class="type">Class</span>                                | Method       |
++----------------------+--------------------------------------+--------------+
+| /<span class="keyword">default</span>             | MyApp::Controller::Root              | <span class="keyword">default</span>      |
+| /end                 | MyApp::Controller::Root              | end          |
+<span class="string">&apos;----------------------+--------------------------------------+--------------&apos;</span>
+
+[info] MyApp powered by Catalyst 5.7001
+FastCGI: manager (pid 3003): initialized
+FastCGI: server (pid 3004): initialized
+FastCGI: manager (pid 3003): server (pid 3004) started
+</code></pre>
+<p>こんな感じで、CatalystのFastCGIプロセスをDebugモードでかつデーモンじゃなく起動して、組み込みのテストサーバー代わりにしたいのだけど、上記以降の出力は全部lighttpdのログのほうに吐き出されてしまうのでびみょい。</p>
+<p>なんとかなんないかなぁと、田中さんに相談中。</p>
+
+  </div>
+
+  <div class="meta">
+    by typester /
+    at <a href="/memo/2006/09/08/2/">2006-09-08T13:08:00</a> /
+    <a href="/memo/tag/perl/">perl</a>
+    &middot; <a href="/memo/tag/catalyst/">catalyst</a>
+    / <a href="/memo/2006/09/08/2/#disqus_thread">Comment</a>
+  </div>
+</div>
+
+<div class="entry autopagerize_page_element">
+  <h2><a href="/memo/2006/09/04/2/">Larryのフィギュア</a></h2>
+
+  <div class="body">
+    <blockquote><p><a href="http://d.hatena.ne.jp/charsbar/20060903/1157211559">Charsbar::Note - Larry Wallのフィギュア</a></p></blockquote>
+<p>おー、ingyとかaudreyとかのフィギュアもあわせてsubtech入りたいを再現したい。</p>
+
+  </div>
+
+  <div class="meta">
+    by typester /
+    at <a href="/memo/2006/09/04/2/">2006-09-04T17:03:00</a> /
+    <a href="/memo/tag/perl/">perl</a>
+    / <a href="/memo/2006/09/04/2/#disqus_thread">Comment</a>
+  </div>
+</div>
+
+<div class="entry autopagerize_page_element">
+  <h2><a href="/memo/2006/09/02/8/">Chained</a></h2>
+
+  <div class="body">
+    <p>Chainedアクションを使って、<code>/ユーザー名/...</code> だとそのユーザーのエントリを表示。</p>
+<p><code>/...</code> だと全員のエントリを表示するアプリケーションの例。</p>
+<p>最後にはてなっぽく <code>/ユーザー名/profile</code> もつけてある。</p>
+<pre><code><span class="keyword">package</span> <span class="function-name">MyApp::Controller::UserView</span>;
+
+<span class="keyword">use</span> <span class="function-name">strict</span>;
+<span class="keyword">use</span> <span class="function-name">warnings</span>;
+<span class="keyword">use</span> <span class="function-name">base</span> <span class="string">&apos;Catalyst::Controller&apos;</span>;
+
+<span class="keyword">sub</span> <span class="function-name">user_detect</span> <span class="constant">:Chained</span><span class="string">(&apos;/&apos;)</span> <span class="constant">:PathPart</span><span class="string">(&apos;&apos;)</span> <span class="constant">:CaptureArgs</span><span class="string">(1)</span> {
+    <span class="keyword">my</span> (<span class="variable-name">$self</span>, <span class="variable-name">$c</span>, <span class="variable-name">$user</span>) = <span class="cperl-array">@_</span>;
+    $c-&gt;stash-&gt;{<span class="string">user</span>} = $c-&gt;model(<span class="string">&apos;DBIC::User&apos;</span>)-&gt;find({ <span class="string">username</span> =&gt; $user })
+        <span class="type">or</span> $c-&gt;detach(<span class="string">&apos;/default&apos;</span>);
+}
+
+<span class="keyword">sub</span> <span class="function-name">user_root</span> <span class="constant">:Chained</span><span class="string">(&apos;user_detect&apos;)</span> <span class="constant">:PathPart</span><span class="string">(&apos;&apos;)</span> <span class="constant">:Args</span><span class="string">(0)</span> {
+    <span class="keyword">my</span> (<span class="variable-name">$self</span>, <span class="variable-name">$c</span>) = <span class="cperl-array">@_</span>;
+    $c-&gt;forward(<span class="string">&apos;/view/index&apos;</span>);
+}
+
+<span class="keyword">sub</span> <span class="function-name">user_tag</span> <span class="constant">:Chained</span><span class="string">(&apos;user_detect&apos;)</span> <span class="constant">:PathPart</span><span class="string">(&apos;tag&apos;)</span> <span class="constant">:Args</span><span class="string">(1)</span> {
+    <span class="keyword">my</span> (<span class="variable-name">$self</span>, <span class="variable-name">$c</span>, <span class="variable-name">$tags</span>) = <span class="cperl-array">@_</span>;
+    $c-&gt;forward(<span class="string">&apos;/view/tag&apos;</span>);
+}
+
+<span class="keyword">sub</span> <span class="function-name">user_year</span> <span class="constant">:Chained</span><span class="string">(&apos;user_detect&apos;)</span> <span class="constant">:PathPart</span><span class="string">(&apos;&apos;)</span> <span class="constant">:Args</span><span class="string">(1)</span> {
+    <span class="keyword">my</span> (<span class="variable-name">$self</span>, <span class="variable-name">$c</span>, <span class="variable-name">$year</span>) = <span class="cperl-array">@_</span>;
+    $c-&gt;forward(<span class="string">&apos;/view/year&apos;</span>);
+}
+
+<span class="keyword">sub</span> <span class="function-name">user_month</span> <span class="constant">:Chained</span><span class="string">(&apos;user_detect&apos;)</span> <span class="constant">:PathPart</span><span class="string">(&apos;&apos;)</span> <span class="constant">:Args</span><span class="string">(2)</span> {
+    <span class="keyword">my</span> (<span class="variable-name">$self</span>, <span class="variable-name">$c</span>, <span class="variable-name">$year</span>, <span class="variable-name">$month</span>) = <span class="cperl-array">@_</span>;
+    $c-&gt;forward(<span class="string">&apos;/view/month&apos;</span>);
+}
+
+<span class="keyword">sub</span> <span class="function-name">user_day</span> <span class="constant">:Chained</span><span class="string">(&apos;user_detect&apos;)</span> <span class="constant">:PathPart</span><span class="string">(&apos;&apos;)</span> <span class="constant">:Args</span><span class="string">(3)</span> {
+    <span class="keyword">my</span> (<span class="variable-name">$self</span>, <span class="variable-name">$c</span>, <span class="variable-name">$year</span>, <span class="variable-name">$month</span>, <span class="variable-name">$day</span>) = <span class="cperl-array">@_</span>;
+    $c-&gt;forward(<span class="string">&apos;/view/day&apos;</span>);
+}
+
+<span class="keyword">sub</span> <span class="function-name">user_permalink</span> <span class="constant">:Chained</span><span class="string">(&apos;user_detect&apos;)</span> <span class="constant">:PathPart</span><span class="string">(&apos;&apos;)</span> <span class="constant">:Args</span><span class="string">(4)</span> {
+    <span class="keyword">my</span> (<span class="variable-name">$self</span>, <span class="variable-name">$c</span>, <span class="variable-name">$year</span>, <span class="variable-name">$month</span>, <span class="variable-name">$day</span>, <span class="variable-name">$id</span>) = <span class="cperl-array">@_</span>;
+    $c-&gt;forward(<span class="string">&apos;/view/permalink&apos;</span>);
+}
+
+<span class="keyword">sub</span> <span class="function-name">user_profile</span> <span class="constant">:Chained</span><span class="string">(&apos;user_detect&apos;)</span> <span class="constant">:PathPart</span><span class="string">(&apos;profile&apos;)</span> <span class="constant">:Args</span><span class="string">(0)</span> {
+    <span class="keyword">my</span> (<span class="variable-name">$self</span>, <span class="variable-name">$c</span>) = <span class="cperl-array">@_</span>;
+
+    $c-&gt;stash-&gt;{<span class="string">template</span>} = <span class="string">&apos;user/profile.tt&apos;</span>;
+}
+
+1;
+</code></pre>
+<p>うーん、微妙ｗ</p>
+<pre><code>:Chained(&apos;/&apos;) :PathPart(&apos;&apos;)
+</code></pre>
+<p>はあんまりやらないほうがよさげ。</p>
+
+  </div>
+
+  <div class="meta">
+    by typester /
+    at <a href="/memo/2006/09/02/8/">2006-09-02T22:13:00</a> /
+    <a href="/memo/tag/perl/">perl</a>
+    &middot; <a href="/memo/tag/catalyst/">catalyst</a>
+    / <a href="/memo/2006/09/02/8/#disqus_thread">Comment</a>
+  </div>
+</div>
+
+<div class="entry autopagerize_page_element">
+  <h2><a href="/memo/2006/09/02/6/">Chainedアクションを覚えた</a></h2>
+
+  <div class="body">
+    <p>便利ねー。これで Plugin::Flavour の半分はいらなくなったから削ってシンプルにしようかと思う。</p>
+<p>CaptureArgsやArgsをRegexで指定できたらもっとあついなぁ。</p>
+<p>引数の数は同じだけど振り分けられる的な。</p>
+
+  </div>
+
+  <div class="meta">
+    by typester /
+    at <a href="/memo/2006/09/02/6/">2006-09-02T16:29:00</a> /
+    <a href="/memo/tag/perl/">perl</a>
+    &middot; <a href="/memo/tag/catalyst/">catalyst</a>
+    / <a href="/memo/2006/09/02/6/#disqus_thread">Comment</a>
+  </div>
+</div>
+
+<div class="entry autopagerize_page_element">
+  <h2><a href="/memo/2006/09/02/4/">Text::Tags::Parser</a></h2>
+
+  <div class="body">
+    <p>いつも名前忘れるなぁ。</p>
+
+  </div>
+
+  <div class="meta">
+    by typester /
+    at <a href="/memo/2006/09/02/4/">2006-09-02T12:42:00</a> /
+    <a href="/memo/tag/perl/">perl</a>
+    / <a href="/memo/2006/09/02/4/#disqus_thread">Comment</a>
+  </div>
+</div>
+
+
+
+
+<div id="pager" class="autopagerize_insert_before">
+  <p class="pages">
+    <a class="prev" rel="previous" href="/memo/tag/perl/page/15/">&laquo; Prev</a>
+    <a href="/memo/tag/perl/page/12/">12</a>
+    <a href="/memo/tag/perl/page/13/">13</a>
+    <a href="/memo/tag/perl/page/14/">14</a>
+    <a href="/memo/tag/perl/page/15/">15</a>
+    <span class="current">16</span>
+    <a href="/memo/tag/perl/page/17/">17</a>
+    <a href="/memo/tag/perl/page/18/">18</a>
+    <a href="/memo/tag/perl/page/19/">19</a>
+    <a href="/memo/tag/perl/page/20/">20</a>
+    <a href="/memo/tag/perl/page/21/">21</a>
+    <a class="next" rel="next" href="/memo/tag/perl/page/17/">Next &raquo;</a>
+  </p>
+  <p class="info">(Page 16 of 30)</p>
+</div>
+
+
+</div>
+
+<p id="footer">
+  Copyright &copy; 2005-2013
+      by <a class="author" href="/about/#me">Daisuke Murase (typester)</a> /
+  Site generated by <a href="https://github.com/typester/nim">nim</a> /
+  Comments powered by <a href="http://disqus.com">DISQUS</a>.
+</p>
+
+</div>
+
+
+<script type="text/javascript">
+//<![CDATA[
+(function() {
+	var links = document.getElementsByTagName('a');
+	var query = '?';
+	for(var i = 0; i < links.length; i++) {
+	if(links[i].href.indexOf('#disqus_thread') >= 0) {
+		query += 'url' + i + '=' + encodeURIComponent(links[i].href) + '&';
+	}
+	}
+	document.write('<script charset="utf-8" type="text/javascript" src="http://disqus.com/forums/unknownplace/get_num_replies.js' + query + '"></' + 'script>');
+})();
+//]]>
+</script>
+
+
+<script type="text/javascript">
+var gaJsHost = (("https:" == document.location.protocol) ? "https://ssl." : "http://www.");
+document.write(unescape("%3Cscript src='" + gaJsHost + "google-analytics.com/ga.js' type='text/javascript'%3E%3C/script%3E"));
+</script>
+<script type="text/javascript">
+try {
+var pageTracker = _gat._getTracker("UA-53067-1");
+pageTracker._trackPageview();
+} catch(err) {}</script>
+
+<script>
+function googleTranslateElementInit() {
+  new google.translate.TranslateElement({
+    pageLanguage: 'ja',
+    gaTrack: true,
+    gaId: 'UA-53067',
+    floatPosition: google.translate.TranslateElement.FloatPosition.BOTTOM_RIGHT
+  });
+}
+</script><script src="//translate.google.com/translate_a/element.js?cb=googleTranslateElementInit"></script>
+
+</body>
+</html>

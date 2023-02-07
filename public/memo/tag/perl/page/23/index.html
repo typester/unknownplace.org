@@ -1,0 +1,327 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="ja" xml:lang="ja">
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <title>memo - unknownplace.org</title>
+  <link rel="stylesheet" type="text/css" href="http://yui.yahooapis.com/3.0.0/build/cssreset/reset-min.css" />
+  <link rel="stylesheet" type="text/css" href="http://yui.yahooapis.com/3.0.0/build/cssfonts/fonts-min.css" />
+  <link rel="stylesheet" href="/css/style.css" type="text/css" />
+  <meta property="fb:admins" content="1093631929" />
+  <meta name="robots" content="noindex" />
+  <link rel="alternate" type="application/rss+xml" href="http://unknownplace.org/memo/index.rss" />
+</head>
+<body>
+
+<div id="container">
+<div id="header">
+    <h1><a href="/">unknownplace.org</a></h1> /
+<a href="/memo/">memo</a>
+</div>
+
+<div id="content">
+
+<div class="entry autopagerize_page_element">
+  <h2><a href="/memo/2006/03/17/4/"></a></h2>
+
+  <div class="body">
+    <p><code>qr/\.(css|js|swf)$/</code> みたいなのを YAML で書くにはどうしたらいいのだろうとおもって、とりあえず YAML モジュールを使って</p>
+<pre><code><span class="keyword">use</span> <span class="function-name">YAML</span>;
+
+<span class="keyword">my</span> <span class="variable-name">$data</span> = {
+    <span class="string">regex</span> =&gt; <span class="cperl-nonoverridable">qr</span><span class="constant">/</span><span class="builtin">\</span><span class="string">.</span><span class="keyword">(</span><span class="string">css</span><span class="keyword">|</span><span class="string">js</span><span class="keyword">|</span><span class="string">swf</span><span class="keyword">)</span><span class="function-name">$</span><span class="constant">/</span>,
+};
+
+<span class="cperl-nonoverridable">print</span> Dump( $data );
+</code></pre>
+<p>こんなのをしてみる。</p>
+<p>結果。</p>
+<pre><code>---
+regex: !perl/regexp:
+  REGEXP: \.(css|js|swf)$
+</code></pre>
+<p>こんな風に書くのか。これを LoadFile しても</p>
+<pre><code>$VAR1 = {
+          &apos;regex&apos; =&gt; qr/(?-xism:(?:\.(css|js|swf)$))/
+        };
+</code></pre>
+<p>となるのでちゃんと使えるようだ。</p>
+<p>でも YAML::Syck だと Load Dump ともにうまく動かない。</p>
+
+  </div>
+
+  <div class="meta">
+    by typester /
+    at <a href="/memo/2006/03/17/4/">2006-03-17T14:53:00</a> /
+    <a href="/memo/tag/perl/">perl</a>
+    &middot; <a href="/memo/tag/yaml/">yaml</a>
+    / <a href="/memo/2006/03/17/4/#disqus_thread">Comment</a>
+  </div>
+</div>
+
+<div class="entry autopagerize_page_element">
+  <h2><a href="/memo/2006/03/15/8/">Authentication::Store::HTTP #2</a></h2>
+
+  <div class="body">
+    <p>0.04 で変なことしないで実装した。ロードする順番もいつでもOK。</p>
+<p>trunk にあるコードは get_user にすべてのパラメータを渡してくれるようになっているのでそもそも昨日からの悩みは無用だったらしい。と、 nothingmuch が教えてくれた。</p>
+
+  </div>
+
+  <div class="meta">
+    by typester /
+    at <a href="/memo/2006/03/15/8/">2006-03-15T23:46:00</a> /
+    <a href="/memo/tag/perl/">perl</a>
+    &middot; <a href="/memo/tag/catalyst/">catalyst</a>
+    / <a href="/memo/2006/03/15/8/#disqus_thread">Comment</a>
+  </div>
+</div>
+
+<div class="entry autopagerize_page_element">
+  <h2><a href="/memo/2006/03/15/7/"></a></h2>
+
+  <div class="body">
+    <p>あー、login 上書きしなくても出来るや。</p>
+
+  </div>
+
+  <div class="meta">
+    by typester /
+    at <a href="/memo/2006/03/15/7/">2006-03-15T18:38:00</a> /
+    <a href="/memo/tag/perl/">perl</a>
+    &middot; <a href="/memo/tag/catalyst/">catalyst</a>
+    / <a href="/memo/2006/03/15/7/#disqus_thread">Comment</a>
+  </div>
+</div>
+
+<div class="entry autopagerize_page_element">
+  <h2><a href="/memo/2006/03/15/6/">Authentication::Store::HTTP</a></h2>
+
+  <div class="body">
+    <p>作った。</p>
+<p><a href="http://unknownplace.org/memo/2006/03/15#e001" title="CLON - 2006/03/15">昨日の夜書いた問題</a>により、<code>$c-&gt;login</code> のオーバーライドという暴挙に出ているため、Credential 系プラグインよりも先にロードする必要がありますｗ</p>
+<p>Cred プラグインを選べるので、::Basic::Remote よりは良くなってはいる。</p>
+
+  </div>
+
+  <div class="meta">
+    by typester /
+    at <a href="/memo/2006/03/15/6/">2006-03-15T16:51:00</a> /
+    <a href="/memo/tag/perl/">perl</a>
+    &middot; <a href="/memo/tag/catalyst/">catalyst</a>
+    / <a href="/memo/2006/03/15/6/#disqus_thread">Comment</a>
+  </div>
+</div>
+
+<div class="entry autopagerize_page_element">
+  <h2><a href="/memo/2006/03/13/5/"></a></h2>
+
+  <div class="body">
+    <p>ingy さんは Changes も YAML か。</p>
+
+  </div>
+
+  <div class="meta">
+    by typester /
+    at <a href="/memo/2006/03/13/5/">2006-03-13T19:35:00</a> /
+    <a href="/memo/tag/life/">life</a>
+    &middot; <a href="/memo/tag/perl/">perl</a>
+    / <a href="/memo/2006/03/13/5/#disqus_thread">Comment</a>
+  </div>
+</div>
+
+<div class="entry autopagerize_page_element">
+  <h2><a href="/memo/2006/03/13/4/">$/</a></h2>
+
+  <div class="body">
+    <p>perldoc perlvar みてたら、$/ とかみっけ。これが undef だとファイルハンドルは slurp モードになるらしい。</p>
+<pre><code><span class="keyword">my</span> <span class="variable-name">$stdin</span> = <span class="type">join</span> <span class="string">&apos;&apos;</span>, &lt;STDIN&gt;;
+</code></pre>
+<p>を</p>
+<pre><code><span class="keyword">my</span> <span class="variable-name">$stdin</span>;
+{
+    <span class="keyword">local</span> <span class="variable-name">$/</span>;
+    $stdin = &lt;STDIN&gt;;
+}
+</code></pre>
+<p>ほー</p>
+
+  </div>
+
+  <div class="meta">
+    by typester /
+    at <a href="/memo/2006/03/13/4/">2006-03-13T19:08:00</a> /
+    <a href="/memo/tag/perl/">perl</a>
+    / <a href="/memo/2006/03/13/4/#disqus_thread">Comment</a>
+  </div>
+</div>
+
+<div class="entry autopagerize_page_element">
+  <h2><a href="/memo/2006/03/13/3/">YAML Support of Module::Build</a></h2>
+
+  <div class="body">
+    <p>YAMLとの相性が悪い問題。最近は大丈夫になったかと思いきや、いまのModule::BuildはインストールするとYAML.pmのバージョンをチェックして新しすぎると</p>
+<pre><code>Feature &apos;YAML_support&apos; disabled because of the following prerequisite failures:
+ * Version 0.58 of YAML is installed, but we need version &lt; 0.49
+</code></pre>
+<p>とかいわれるようだ。このままだと META.yml をうまく作成してもらえない。</p>
+<p>0.58 つかってても Module::Build::ConfigData を <code>&apos;YAML_support&apos; =&gt; 1</code> とかって書き換えれば動くように見えるんだけど。何でこんなことになっているのか。</p>
+<p>C::P::EmailJapanese をアップデートしたら META.yml がおかしなことになってて気づいたよ。。</p>
+
+  </div>
+
+  <div class="meta">
+    by typester /
+    at <a href="/memo/2006/03/13/3/">2006-03-13T15:05:00</a> /
+    <a href="/memo/tag/life/">life</a>
+    &middot; <a href="/memo/tag/perl/">perl</a>
+    / <a href="/memo/2006/03/13/3/#disqus_thread">Comment</a>
+  </div>
+</div>
+
+<div class="entry autopagerize_page_element">
+  <h2><a href="/memo/2006/03/09/4/">Catalyst::Plugin::Unicode</a></h2>
+
+  <div class="body">
+    <p>とかあったんだ！ ほとんど同じやつ作ってた。</p>
+<p>入れ替えた。</p>
+<blockquote><p><a href="http://blog.nomadscafe.jp/archives/000630.html">HTML::FillInForm::ForceUTF8 : blog.nomadscafe.jp</a></p><p>ただ、Catalyst::Plugin::UnicodeやDBIx::Class::UTF8Columns、Class::DBI::utf8などを使っている場合、必要ないかも。</p></blockquote>
+<p>必要ないんですが、プラグインのロード順に気をつける必要があります。</p>
+<p>というのも Unicode も FillInForm もどちらも finalize をオーバーライドしているので、Unicode のほうがあとに実行されるように</p>
+<pre><code>use Catalyst qw/FillInForm Unicode/;
+</code></pre>
+<p>と FillInForm よりも後ろに書いておく必要があります。</p>
+<p>BKだなぁ。</p>
+<p>kazeburo さんのやつをつかえばこれに気をつける必要もなくなるのでいいかも。</p>
+
+  </div>
+
+  <div class="meta">
+    by typester /
+    at <a href="/memo/2006/03/09/4/">2006-03-09T21:36:00</a> /
+    <a href="/memo/tag/perl/">perl</a>
+    &middot; <a href="/memo/tag/catalyst/">catalyst</a>
+    / <a href="/memo/2006/03/09/4/#disqus_thread">Comment</a>
+  </div>
+</div>
+
+<div class="entry autopagerize_page_element">
+  <h2><a href="/memo/2006/03/07/2/">ForceUTF8</a></h2>
+
+  <div class="body">
+    <p>lyokato さんの View::TT::ForceUTF8 とか UTF8Columns とかいろいろ使って、今のプロジェクトを UTF8 化中。</p>
+<p>さっき Catalyst::Plugin::Email::Japanese の ForceUTF8 対応版をうぷしといた。</p>
+<p>なんかそれぞればらばらに設定しててめんどいなーこれ。</p>
+<p>あと <code>$c-&gt;req-&gt;parameters</code> などを ForceUTF8 する奴も作ってつかっているのだけど、激しく適当で間に合わせもいいところ。これはもう少し仕様考えてから誰も作ってなかったらリリースする。</p>
+
+  </div>
+
+  <div class="meta">
+    by typester /
+    at <a href="/memo/2006/03/07/2/">2006-03-07T00:29:00</a> /
+    <a href="/memo/tag/perl/">perl</a>
+    &middot; <a href="/memo/tag/catalyst/">catalyst</a>
+    / <a href="/memo/2006/03/07/2/#disqus_thread">Comment</a>
+  </div>
+</div>
+
+<div class="entry autopagerize_page_element">
+  <h2><a href="/memo/2006/03/03/2/">DBIC::UTF8Columns</a></h2>
+
+  <div class="body">
+    <p>昨日のやつ、<a href="http://dev.catalyst.perl.org/repos/bast/">bast</a> のほうにコミット。次のDBICのリリースに含まれちゃうよ＞＜</p>
+<p>使い方はテーブルクラスで</p>
+<pre><code><span class="type">__PACKAGE__</span>-&gt;load_components(<span class="cperl-nonoverridable">qw</span><span class="string">/UTF8Columns Core/</span>);
+</code></pre>
+<p>とかしてロードしておき、</p>
+<pre><code><span class="type">__PACKAGE__</span>-&gt;utf8_columns(<span class="cperl-nonoverridable">qw</span><span class="string">/name description/</span>);
+</code></pre>
+<p>と文字列カラムを指定。</p>
+<p>こうすると <code>$table-&gt;name</code> や <code>$table-&gt;get_column(&apos;name&apos;)</code> でとってくる値は utf-8 フラグが自動的にたつ。</p>
+<p>逆に <code>$table-&gt;name( $name );</code> とかでは utf-8 フラグが落とされてから保存される。</p>
+<p>utf8_columns で自分で指定するだけじゃなく、テーブル単位で文字列カラムにすべてに対して有効になる機能もあるといいかも？</p>
+
+  </div>
+
+  <div class="meta">
+    by typester /
+    at <a href="/memo/2006/03/03/2/">2006-03-03T14:11:00</a> /
+    <a href="/memo/tag/perl/">perl</a>
+    &middot; <a href="/memo/tag/dbic/">dbic</a>
+    / <a href="/memo/2006/03/03/2/#disqus_thread">Comment</a>
+  </div>
+</div>
+
+
+
+
+<div id="pager" class="autopagerize_insert_before">
+  <p class="pages">
+    <a class="prev" rel="previous" href="/memo/tag/perl/page/22/">&laquo; Prev</a>
+    <a href="/memo/tag/perl/page/19/">19</a>
+    <a href="/memo/tag/perl/page/20/">20</a>
+    <a href="/memo/tag/perl/page/21/">21</a>
+    <a href="/memo/tag/perl/page/22/">22</a>
+    <span class="current">23</span>
+    <a href="/memo/tag/perl/page/24/">24</a>
+    <a href="/memo/tag/perl/page/25/">25</a>
+    <a href="/memo/tag/perl/page/26/">26</a>
+    <a href="/memo/tag/perl/page/27/">27</a>
+    <a href="/memo/tag/perl/page/28/">28</a>
+    <a class="next" rel="next" href="/memo/tag/perl/page/24/">Next &raquo;</a>
+  </p>
+  <p class="info">(Page 23 of 30)</p>
+</div>
+
+
+</div>
+
+<p id="footer">
+  Copyright &copy; 2005-2013
+      by <a class="author" href="/about/#me">Daisuke Murase (typester)</a> /
+  Site generated by <a href="https://github.com/typester/nim">nim</a> /
+  Comments powered by <a href="http://disqus.com">DISQUS</a>.
+</p>
+
+</div>
+
+
+<script type="text/javascript">
+//<![CDATA[
+(function() {
+	var links = document.getElementsByTagName('a');
+	var query = '?';
+	for(var i = 0; i < links.length; i++) {
+	if(links[i].href.indexOf('#disqus_thread') >= 0) {
+		query += 'url' + i + '=' + encodeURIComponent(links[i].href) + '&';
+	}
+	}
+	document.write('<script charset="utf-8" type="text/javascript" src="http://disqus.com/forums/unknownplace/get_num_replies.js' + query + '"></' + 'script>');
+})();
+//]]>
+</script>
+
+
+<script type="text/javascript">
+var gaJsHost = (("https:" == document.location.protocol) ? "https://ssl." : "http://www.");
+document.write(unescape("%3Cscript src='" + gaJsHost + "google-analytics.com/ga.js' type='text/javascript'%3E%3C/script%3E"));
+</script>
+<script type="text/javascript">
+try {
+var pageTracker = _gat._getTracker("UA-53067-1");
+pageTracker._trackPageview();
+} catch(err) {}</script>
+
+<script>
+function googleTranslateElementInit() {
+  new google.translate.TranslateElement({
+    pageLanguage: 'ja',
+    gaTrack: true,
+    gaId: 'UA-53067',
+    floatPosition: google.translate.TranslateElement.FloatPosition.BOTTOM_RIGHT
+  });
+}
+</script><script src="//translate.google.com/translate_a/element.js?cb=googleTranslateElementInit"></script>
+
+</body>
+</html>

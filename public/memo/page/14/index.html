@@ -1,0 +1,397 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="ja" xml:lang="ja">
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <title>memo - unknownplace.org</title>
+  <link rel="stylesheet" type="text/css" href="http://yui.yahooapis.com/3.0.0/build/cssreset/reset-min.css" />
+  <link rel="stylesheet" type="text/css" href="http://yui.yahooapis.com/3.0.0/build/cssfonts/fonts-min.css" />
+  <link rel="stylesheet" href="/css/style.css" type="text/css" />
+  <meta property="fb:admins" content="1093631929" />
+  <meta name="robots" content="noindex" />
+  <link rel="alternate" type="application/rss+xml" href="http://unknownplace.org/memo/index.rss" />
+</head>
+<body>
+
+<div id="container">
+<div id="header">
+    <h1><a href="/">unknownplace.org</a></h1> /
+<a href="/memo/">memo</a>
+</div>
+
+<div id="content">
+
+<div class="entry autopagerize_page_element">
+  <h2><a href="/memo/2009/02/19/1/">VirtualBoxのゲストでNATネットワーク使ってるときの設定メモ</a></h2>
+
+  <div class="body">
+    <p>いままではゲストにWindowsとかしかいれてなかったので、ホストからゲストにネットワークがつながってなくてもよかったけど、さっき Linux いれたら ssh できねーってこまった。</p>
+<p>マニュアル読んだら書いてあったがめんどうなのでメモ。</p>
+<p>NAT 接続の場合は VirtualBox 側でポートフォワードでゲストにつなげられるようにする機能がついてるけど、GUIがないのでコマンドたたくしかない。ホストの 2222 ポートをゲストの 22 ポートにする場合は</p>
+<pre><code><span class="type">VBoxManage</span> <span class="variable-name">setextradata</span> <span class="string">"debian"</span> <span class="string">"VBoxInternal/Devices/pcnet/0/LUN#0/Config/guestssh/Protocol"</span> TCP
+VBoxManage setextradata <span class="string">"debian"</span> <span class="string">"VBoxInternal/Devices/pcnet/0/LUN#0/Config/guestssh/GuestPort"</span> 22
+VBoxManage setextradata <span class="string">"debian"</span> <span class="string">"VBoxInternal/Devices/pcnet/0/LUN#0/Config/guestssh/HostPort"</span> 2222
+</code></pre>
+<p>とするればいいみたい。<code>&quot;debian&quot;</code> は VM の名前で、pcnet というのは使用しているインタフェースの名前。<code>Intel PRO/1000</code> 使ってる人はここを <code>e1000</code> とするらしい。guestsshってのは適当な名前を自分でつければいいのかな。</p>
+<p>設定を消すときは最後の引数を消したのをもう一度実行すればいいようだ。ちょっとめんどうだなぁ。</p>
+<p>そんで、sshのポート番号とかたぶんすぐわすれるので、<code>~/.ssh/config</code> に</p>
+<pre><code>Host vbox
+  Port 2222
+  HostName 127.0.0.1
+</code></pre>
+<p>とかしといた。しかし、vbox という名前を忘れたらどうしよう。。</p>
+
+  </div>
+
+  <div class="meta">
+    by typester /
+    at <a href="/memo/2009/02/19/1/">2009-02-19T12:13:00</a> /
+    <a href="/memo/tag/virtualbox/">virtualbox</a>
+    / <a href="/memo/2009/02/19/1/#disqus_thread">Comment</a>
+  </div>
+</div>
+
+<div class="entry autopagerize_page_element">
+  <h2><a href="/memo/2009/02/12/1/">モダンPerl入門</a></h2>
+
+  <div class="body">
+    <div class="amazlet-box" style="margin-bottom:0px;"><div class="amazlet-image" style="float:left;"><a href="http://www.amazon.co.jp/exec/obidos/ASIN/4798119172/unknownplace-22/ref=nosim/" name="amazletlink" target="_blank"><img alt="モダンPerl入門 (CodeZine BOOKS)" src="http://ecx.images-amazon.com/images/I/417K6qXAgvL._SL160_.jpg" style="border: none;" /></a></div><div class="amazlet-info" style="float:left;margin-left:15px;line-height:120%"><div class="amazlet-name" style="margin-bottom:10px;line-height:120%"><a href="http://www.amazon.co.jp/exec/obidos/ASIN/4798119172/unknownplace-22/ref=nosim/" name="amazletlink" target="_blank">モダンPerl入門 (CodeZine BOOKS)</a><div class="amazlet-powered-date" style="font-size:7pt;margin-top:5px;font-family:verdana;line-height:120%">posted with <a href="http://www.amazlet.com/browse/ASIN/4798119172/unknownplace-22/ref=nosim/" target="_blank" title="モダンPerl入門 (CodeZine BOOKS)">amazlet</a> at 09.02.12</div></div><div class="amazlet-detail">牧 大輔 <br />翔泳社 <br />売り上げランキング: 468<br /></div><div class="amazlet-link" style="margin-top: 5px"><a href="http://www.amazon.co.jp/exec/obidos/ASIN/4798119172/unknownplace-22/ref=nosim/" name="amazletlink" target="_blank">Amazon.co.jp で詳細を見る</a></div></div><div class="amazlet-footer" style="clear: left"></div><p></p></div>
+<p>読了！</p>
+<p>第1章は今風のperlのオブジェクト指向について。最近の流れ知らない人にはいいですね。</p>
+<p>第2章はその今風な書き方でのデザインパターン。ここが個人的にはすごく参考になった。やっぱりいつもかいてるようなコードで説明されるとわかりやすい。</p>
+<p>3，4章でDBやWAFについて。Catalystのロジック分離のところは、自分の説明が下手でなかなか伝わらないことが多いので、今度からはここを読めと勧めることにする。</p>
+<p>5章はシステム周り。デーモンの作成とか、そんなのdaemontoolsにまかせちゃうしなーとかおもっていたらちゃんとそこも説明されていた。さすがｗ</p>
+<p>ジョブキュー関係まで扱っていてやっぱりモダンだなぁ、と感じたのだけど、ジョブキューをどうして使うかというところの説明はもう少しあってもいいのかもと思った。時間のかかる処理をmod_perlやfcgi内でやるとどういうことになるのかとか。</p>
+<p>6章はテスト。テストの考え方と基本的な書き方。<code>Apache::Test</code> とかまで書いてる割には、あまり突っ込んだ書き方を説明してないところは少し残念。テスト用のライブラリとかmockの作り方くらいはあるといいのかなー。</p>
+<p>7章で最適化の話。<code>qr//</code> の話は知らなかったなー。</p>
+<p>8章はXS! いままで筆者が話してきたことの総括みたいな感じ。ここまでまとまってる本はないと思う。すばらしい！</p>
+<p>9章はCPANとか基礎知識の説明。おまけ的な感じ。</p>
+<p>というわけで、全体としてとてもよくまとまっていてすばらしいです。perl書く人すべてにおすすめ。</p>
+
+  </div>
+
+  <div class="meta">
+    by typester /
+    at <a href="/memo/2009/02/12/1/">2009-02-12T23:59:00</a> /
+    <a href="/memo/tag/perl/">perl</a>
+    / <a href="/memo/2009/02/12/1/#disqus_thread">Comment</a>
+  </div>
+</div>
+
+<div class="entry autopagerize_page_element">
+  <h2><a href="/memo/2009/02/06/1/">Hiveminder.app</a></h2>
+
+  <div class="body">
+    <p>お気に入りのタスク管理ツール <a href="http://hiveminder.com/">Hiveminder</a> をちょっとハックして自分好みにしてみた。</p>
+<p><a href="http://www.flickr.com/photos/typester/3257131671/" title="Hiveminder.app by typester, on Flickr"><img alt="Hiveminder.app" height="554" src="http://farm4.static.flickr.com/3347/3257131671_4449115c2c_o.png" width="505" /></a></p>
+<ul><li>Fluid でアプリケーション的に使えるように</li><li>ページ内の jGrowl の通知を本物の Growl 使うように変更</li><li>いまやってるタスクのタイムをカウント出来る機能</li><li>でそれ(いまやるべきこと)を10分間隔で Growl 通知する機能</li></ul>
+<p>など。すぐに他ごとしてしまう僕のような人には一番最後の機能がなかなか有効なはず。</p>
+<p>スクリプトのダウンロード、使い方などはgithubにアップしたのでそっち見てくださいませ。</p>
+<blockquote><p><a href="http://github.com/typester/hiveminder-local-timetrack/tree/master">typester&apos;s hiveminder-local-timetrack at master - GitHub</a></p></blockquote>
+<p>余談。</p>
+<p>そんなに Hiveminder がいいの？ と聞かれると返答に困るわけですが、<a href="http://search.cpan.org/dist/App-Todo/bin/todo.pl">todo.pl</a> からのブレインダンプでのタスク登録 (todo.pl braindump) とか、指定した日付になるまでタスクリストからタスクを隠せる機能 ([hide until next monday]) だとか、タスクにアイデア的に登録したものをやんないよなーってものは永久に隠せたり（隠してるのはいつでも表示させることが出来るので過去のアイデアリストとして使える）とか他にはない気に入ってるところがたくさんあるので使い続けてます。</p>
+<p>@obra++ bestpractical++</p>
+<p>ってとこですかね！</p>
+<p>あと、いつものように、自分の必要な最小限の機能しかつくってないので、興味ある人いらっしゃいましたら是非とも一緒にハックしましょう。</p>
+
+  </div>
+
+  <div class="meta">
+    by typester /
+    at <a href="/memo/2009/02/06/1/">2009-02-06T20:37:00</a> /
+    <a href="/memo/tag/osx/">osx</a>
+    &middot; <a href="/memo/tag/hiveminder/">hiveminder</a>
+    / <a href="/memo/2009/02/06/1/#disqus_thread">Comment</a>
+  </div>
+</div>
+
+<div class="entry autopagerize_page_element">
+  <h2><a href="/memo/2009/02/03/1/">iPhone野良レポジトリの作り方</a></h2>
+
+  <div class="body">
+    <p><a href="http://coderepos.org/share/">coderepos</a> で野良レポジトリホストしたらいいんじゃね、っと思ったのでちょっとやり方をメモ。</p>
+<p>iPhone の野良レポジトリは Debian の apt ベースになってるので、開発者が作った .deb ファイルをホストする感じになるのかな。なのでとりあえずここでは .deb の作り方は省く。</p>
+<p>ホストの仕方は簡単で、.deb を同じディレクトリにつっこんでおいて、そのディレクトリ内で Debian の <code>dpkg-dev</code> パッケージをインストールすると入る <code>dpkg-scanpackages</code> コマンドを使って</p>
+<pre><code>dpkg-scanpackages -m . &gt; Packages
+</code></pre>
+<p>とやるとそのディレクトリの .deb をなめてパッケージ一覧を作ってくれる。これを bzip2 して Packages.bz2 にすれば最低限のレポジトリが完成する。簡単ですね！</p>
+<p>ただ、iPhone野良アプリの.debには独自のメタデータがあるので、 <code>dpkg-scanpackages</code> にそれを理解させるためにちょっと変更する必要はある。</p>
+<pre><code>--- <span class="constant">/</span><span class="string">usr</span><span class="constant">/</span><span class="cperl-nonoverridable">bin</span>/dpkg-scanpackages  2008-12-29 13:46:45.000000000 +0900
++++ dpkg-scanpackages   2008-12-10 14:12:55.000000000 +0900
+@@ -25,7 +25,9 @@
+
+ <span class="keyword">my</span> <span class="cperl-array">@fieldpri</span> = (<span class="cperl-nonoverridable">qw</span><span class="string">(Package Package-Type Source Version Kernel-Version
+                    Architecture Subarchitecture Essential Origin Bugs
+-                   Maintainer Installed-Size Installer-Menu-Item)</span>,
++                   Maintainer Installed-Size Installer-Menu-Item
++                  Name Author Homepage Icon
++               ),
+                 <span class="cperl-array">@pkg_dep_fields</span>, <span class="cperl-nonoverridable">qw</span><span class="string">(Filename Size MD5sum Section Priority
+                    Homepage Description Tag)</span>);
+</code></pre>
+<p>僕の環境(Debian Lenny)ではこんな感じ。</p>
+<p>この <code>dpkg-scanpackages</code> でつくった Packages.bz2 があるだけで一応レポジトリとしては機能するけど、どうせなのでレポジトリのメタデータなどを置きたいかと思います。</p>
+<p>それは同じところに <code>Release</code> というファイル名で</p>
+<pre><code>Origin: Saurik&apos;s Example for Cydia
+Label: Cydia Example
+Suite: stable
+Version: 0.9
+Codename: tangelo
+Architectures: iphoneos-arm
+Components: main
+Description: An Example Repository from HowTo Instructions
+</code></pre>
+<p>こういうのを置いておけばOKです。各項目の説明は <a href="http://www.saurik.com/id/7">saurik 先生のエントリ</a>の Step 4: Repository Metadata (Optional) というところを見るといいと思います。</p>
+<p>しかし coderepos は debian ベースではなかった気がするから、どういう場合はどうやるんでしょうね。。</p>
+
+  </div>
+
+  <div class="meta">
+    by typester /
+    at <a href="/memo/2009/02/03/1/">2009-02-03T13:38:00</a> /
+    <a href="/memo/tag/iphone/">iphone</a>
+    / <a href="/memo/2009/02/03/1/#disqus_thread">Comment</a>
+  </div>
+</div>
+
+<div class="entry autopagerize_page_element">
+  <h2><a href="/memo/2009/01/27/1/">ローカルのgitレポジトリをgistにアップするgist.pl</a></h2>
+
+  <div class="body">
+    <p>とか作ってみた。</p>
+<blockquote><p><a href="http://gist.github.com/53293">gist.pl</a></p></blockquote>
+<p>git レポジトリのルートで実行するとそのレポジトリの内容を gist にポストし、レポジトリの remote に投稿した gist を追加します。</p>
+<p>いろいろ手抜きなので下に注意事項を書いておきます。</p>
+<ol><li>正確にはレポジトリの中身ではなくてカレントディレクトリ以下のすべてのファイルを投稿しちゃう (.git以下はのぞく)</li><li>git config で github.user と github.token を登録しておく必要がある</li><li>remote 名 は origin きめうち</li><li>プライベートgistとかしらない</li></ol>
+<p>などという感じです。特に1は注意。必要に応じてverupする感じで。</p>
+<p>gisty つかってたんですが、僕は何か作るときとりあえず git init するので、gisty だと gist に投稿したらそれ以降違う場所のレポジトリを使うという設計なのでちょっと面倒だったんですね。</p>
+
+  </div>
+
+  <div class="meta">
+    by typester /
+    at <a href="/memo/2009/01/27/1/">2009-01-27T20:24:00</a> /
+    <a href="/memo/tag/git/">git</a>
+    &middot; <a href="/memo/tag/github/">github</a>
+    / <a href="/memo/2009/01/27/1/#disqus_thread">Comment</a>
+  </div>
+</div>
+
+<div class="entry autopagerize_page_element">
+  <h2><a href="/memo/2009/01/26/3/"></a></h2>
+
+  <div class="body">
+    <p>EmacsWiki のコードが冗長なので短くしてみた。</p>
+<pre><code>(setq erc-prompt (<span class="keyword">lambda</span> ()
+                   (<span class="keyword">let*</span> ((buffer (buffer-name))
+                          (channel (<span class="keyword">when</span> (string-match <span class="string">&quot;</span><span class="string"><span class="regexp-grouping-backslash">\\</span></span><span class="string"><span class="regexp-grouping-construct">(</span></span><span class="string">#[</span><span class="string"><span class="negation-char">^</span></span><span class="string">@]+</span><span class="string"><span class="regexp-grouping-backslash">\\</span></span><span class="string"><span class="regexp-grouping-construct">)</span></span><span class="string">&quot;</span> buffer)
+                                       (match-string 1 buffer))))
+                     (erc-propertize
+                      (concat
+                       (or channel
+                           (<span class="keyword">if</span> (and (boundp &apos;erc-default-recipients) (erc-default-target))
+                               (erc-default-target)
+                             <span class="string">&quot;ERC&quot;</span>))
+                       <span class="string">&quot;&gt;&quot;</span>)
+                      &apos;read-only t &apos;rear-nonsticky t &apos;front-nonsticky t))))
+</code></pre>
+<p>elisp的にはこういうのどうかくのが良いのかわからんけどとりあえず短くはなった。</p>
+
+  </div>
+
+  <div class="meta">
+    by typester /
+    at <a href="/memo/2009/01/26/3/">2009-01-26T14:52:00</a> /
+    <a href="/memo/tag/emacs/">emacs</a>
+    / <a href="/memo/2009/01/26/3/#disqus_thread">Comment</a>
+  </div>
+</div>
+
+<div class="entry autopagerize_page_element">
+  <h2><a href="/memo/2009/01/26/2/"></a></h2>
+
+  <div class="body">
+    <p><a href="http://d.hatena.ne.jp/IMAKADO/">id:IMAKADO</a> さんにバッファ作らずに使わずに正規表現マッチする方法教えてもらったのでちょっと短くできた。</p>
+<pre><code>(setq erc-prompt (<span class="keyword">lambda</span> ()
+                   (<span class="keyword">let*</span> ((buffer (buffer-name))
+                          (channel (<span class="keyword">when</span> (string-match <span class="string">&quot;</span><span class="string"><span class="regexp-grouping-backslash">\\</span></span><span class="string"><span class="regexp-grouping-construct">(</span></span><span class="string">#[</span><span class="string"><span class="negation-char">^</span></span><span class="string">@]+</span><span class="string"><span class="regexp-grouping-backslash">\\</span></span><span class="string"><span class="regexp-grouping-construct">)</span></span><span class="string">&quot;</span> buffer)
+                                       (match-string 1 buffer))))
+                     (<span class="keyword">if</span> channel
+                         (erc-propertize (concat channel <span class="string">&quot;&gt;&quot;</span>) &apos;read-only t &apos;rear-nonsticky t &apos;front-nonsticky t)
+                       (<span class="keyword">if</span> (and (boundp &apos;erc-default-recipients) (erc-default-target))
+                           (erc-propertize (concat (erc-default-target) <span class="string">&quot;&gt;&quot;</span>) &apos;read-only t &apos;rear-nonsticky t &apos;front-nonsticky t)
+                         (erc-propertize (concat <span class="string">&quot;ERC&gt;&quot;</span>) &apos;read-only t &apos;rear-nonsticky t &apos;front-nonsticky t))))))
+</code></pre>
+
+  </div>
+
+  <div class="meta">
+    by typester /
+    at <a href="/memo/2009/01/26/2/">2009-01-26T14:41:00</a> /
+    <a href="/memo/tag/emacs/">emacs</a>
+    / <a href="/memo/2009/01/26/2/#disqus_thread">Comment</a>
+  </div>
+</div>
+
+<div class="entry autopagerize_page_element">
+  <h2><a href="/memo/2009/01/26/1/">ERCのプロンプトにチャンネル名表示</a></h2>
+
+  <div class="body">
+    <p>というネタは <a href="http://www.emacswiki.org/emacs/ErcConfiguration">EmacsWiki: Erc Configuration</a> の Channel-specific prompts に書いてあるんだけど、そこにも書いてあるとおり、初回表示時にはチャンネル名にならないのでこんな感じにハック。</p>
+<pre><code>(setq erc-prompt (<span class="keyword">lambda</span> ()
+                   (<span class="keyword">let*</span> ((buffer (buffer-name))
+                          (channel (<span class="keyword">with-temp-buffer</span>
+                                     (insert buffer)
+                                     (beginning-of-buffer)
+                                     (<span class="keyword">when</span> (re-search-forward <span class="string">&quot;</span><span class="string"><span class="regexp-grouping-backslash">\\</span></span><span class="string"><span class="regexp-grouping-construct">(</span></span><span class="string">#[</span><span class="string"><span class="negation-char">^</span></span><span class="string">@]+</span><span class="string"><span class="regexp-grouping-backslash">\\</span></span><span class="string"><span class="regexp-grouping-construct">)</span></span><span class="string">&quot;</span> nil t)
+                                       (match-string 1)))))
+                     (<span class="keyword">if</span> channel
+                         (erc-propertize (concat channel <span class="string">&quot;&gt;&quot;</span>) &apos;read-only t &apos;rear-nonsticky t &apos;front-nonsticky t)
+                       (<span class="keyword">if</span> (and (boundp &apos;erc-default-recipients) (erc-default-target))
+                           (erc-propertize (concat (erc-default-target) <span class="string">&quot;&gt;&quot;</span>) &apos;read-only t &apos;rear-nonsticky t &apos;front-nonsticky t)
+                         (erc-propertize (concat <span class="string">&quot;ERC&gt;&quot;</span>) &apos;read-only t &apos;rear-nonsticky t &apos;front-nonsticky t))))))
+</code></pre>
+<p>バッファ名からチャンネル名部分とるようにした感じ。</p>
+<p>1:1 トークとかどうなるかわからないのでとりあえず EmacsWiki のルーチンも書いておいた。</p>
+
+  </div>
+
+  <div class="meta">
+    by typester /
+    at <a href="/memo/2009/01/26/1/">2009-01-26T11:41:00</a> /
+    <a href="/memo/tag/emacs/">emacs</a>
+    / <a href="/memo/2009/01/26/1/#disqus_thread">Comment</a>
+  </div>
+</div>
+
+<div class="entry autopagerize_page_element">
+  <h2><a href="/memo/2009/01/23/1/">dopplr.el</a></h2>
+
+  <div class="body">
+    <p>最近 <a href="http://www.emacswiki.org/emacs/?action=browse;oldid=EmacsIRCClient;id=ERC">ERC</a> つかって IRC も emacs でやるようにしたのだけど、昔 irssi 用に作った <a href="http://unknownplace.org/memo/2008/03/21#e002">dopplr.pl</a> とおなじことが emacs でもしたくなったのでちょっと書いてみたりした。</p>
+<blockquote><p><a href="http://gist.github.com/50900">dopplr.el</a></p></blockquote>
+<p>使い方は <a href="http://unknownplace.org/memo/2008/03/21#e002">dopplr.pl</a> と同じで最初に</p>
+<pre><code>(setq dopplr-api-token <span class="string">&quot;your api token&quot;</span>) <span class="comment-delimiter">; </span><span class="comment">M-x customize-group RET dopplr でもできる
+</span></code></pre>
+<p>しておいて、あとは</p>
+<pre><code>M-x dopplr-local-clock RET miyagawa
+</code></pre>
+<p>するという感じになっています。</p>
+<p>dopplr.el などとたいそうな名前ですがまだこれしか作ってません。</p>
+<p>はじめて設定以外で elisp 書いたけどむずかしい。すごいぐちゃぐちゃになってしまった。絶対もっとうまく書けるはず。</p>
+
+  </div>
+
+  <div class="meta">
+    by typester /
+    at <a href="/memo/2009/01/23/1/">2009-01-23T14:38:00</a> /
+    <a href="/memo/tag/emacs/">emacs</a>
+    &middot; <a href="/memo/tag/elisp/">elisp</a>
+    / <a href="/memo/2009/01/23/1/#disqus_thread">Comment</a>
+  </div>
+</div>
+
+<div class="entry autopagerize_page_element">
+  <h2><a href="/memo/2009/01/21/1/">OSXで快適ビットマップフォント生活</a></h2>
+
+  <div class="body">
+    <p>OSX の良いところの一つにアンチエイリアスの効いたきれいなフォントがあげられると思います。</p>
+<p>ただ、ターミナルやエディタなどでそう言うフォントを使用するとどうしても視認性の問題から文字サイズを大きくする必要があり、1画面あたりの情報量が減ってしまいます。</p>
+<p>また単純に僕がビットマップフォントが好きだという理由もあり、ずっと OSX でもビットマップフォントで開発したいなーと思ってました。</p>
+<p>しかし、Terminal.app や iTerm できれいに日本語を表示できるビットマップフォントを見つけられず、やむを得ずアンチエイリアスしてました。 Osaka フォントとか、CarbonEmacs だとビットマップ表示で日本語きれいにひょうじできるのにTerminal.app やiTerm だとガタガタになってしまうし。。</p>
+<p>で、あきらめてたんですが、モトヤシーダというフォントならいけるよという話を聞いて設定してみたところわりときれいに表示させることが出来ました。</p>
+<p>モトヤシーダは</p>
+<blockquote><p><a href="http://www.motoyafont.jp/">http://www.motoyafont.jp/</a></p></blockquote>
+<p>こちらのサイトで販売されているのですが、お試しフリーフォントというところに入っていますのでとりあえず無料で試せます。僕はWin版をダウンロードしてCrossOver Macで自己解凍exeを展開しました。ただのlhaの自己解凍形式のようなのでlhaコマンドでも行けるそうです。</p>
+<p>そんなわけで Terminal.app + iTerm から CarbonEmacs + iTerm に移行しました。</p>
+<p>僕が愛用している CodingFontTobi というフォントは ttf 版だとなぜか 16pt 設定で 11pt 相当の表示というなぞの状態になっていて、日本語をうまく混在表示させるためにはasciiとそれ以外で違うフォント設定を使えるアプリケーションを使う必要があります。</p>
+<p>CarbonEmacsとiTermならそれができるということですね。CodingFontTobi 16pt + モトヤシーダ(EmacsではOsaka) 11pt という設定にしてます。</p>
+<p>これでやっと OSX でも満足行く表示になりました。やっぱりこっちのほうがいいですなー。</p>
+<p><a href="http://farm4.static.flickr.com/3328/3214539860_d7f5df4081_o.png" title="CodingFontTobi by typester, on Flickr"><img alt="CodingFontTobi" height="313" src="http://farm4.static.flickr.com/3328/3214539860_f7b3899110.jpg" width="500" /></a></p>
+<del>スクリーンショットを貼ろうと思ったんですが、なぜかスクリーンショットとるとアンチエイリアスがかかってしまうという罠がありあきらめました。これはなんなんだろう。。</del>
+<ins>Flickrでリサイズされてるだけだった。。</ins>
+<p>また、他にもいいビットマップフォントをご存じの方いらっしゃいましたら是非とも教えてください！！</p>
+
+  </div>
+
+  <div class="meta">
+    by typester /
+    at <a href="/memo/2009/01/21/1/">2009-01-21T11:23:00</a> /
+    <a href="/memo/tag/osx/">osx</a>
+    / <a href="/memo/2009/01/21/1/#disqus_thread">Comment</a>
+  </div>
+</div>
+
+
+
+
+<div id="pager" class="autopagerize_insert_before">
+  <p class="pages">
+    <a class="prev" rel="previous" href="/memo/page/13/">&laquo; Prev</a>
+    <a href="/memo/page/10/">10</a>
+    <a href="/memo/page/11/">11</a>
+    <a href="/memo/page/12/">12</a>
+    <a href="/memo/page/13/">13</a>
+    <span class="current">14</span>
+    <a href="/memo/page/15/">15</a>
+    <a href="/memo/page/16/">16</a>
+    <a href="/memo/page/17/">17</a>
+    <a href="/memo/page/18/">18</a>
+    <a href="/memo/page/19/">19</a>
+    <a class="next" rel="next" href="/memo/page/15/">Next &raquo;</a>
+  </p>
+  <p class="info">(Page 14 of 203)</p>
+</div>
+
+
+</div>
+
+<p id="footer">
+  Copyright &copy; 2005-2013
+      by <a class="author" href="/about/#me">Daisuke Murase (typester)</a> /
+  Site generated by <a href="https://github.com/typester/nim">nim</a> /
+  Comments powered by <a href="http://disqus.com">DISQUS</a>.
+</p>
+
+</div>
+
+
+<script type="text/javascript">
+//<![CDATA[
+(function() {
+	var links = document.getElementsByTagName('a');
+	var query = '?';
+	for(var i = 0; i < links.length; i++) {
+	if(links[i].href.indexOf('#disqus_thread') >= 0) {
+		query += 'url' + i + '=' + encodeURIComponent(links[i].href) + '&';
+	}
+	}
+	document.write('<script charset="utf-8" type="text/javascript" src="http://disqus.com/forums/unknownplace/get_num_replies.js' + query + '"></' + 'script>');
+})();
+//]]>
+</script>
+
+
+<script type="text/javascript">
+var gaJsHost = (("https:" == document.location.protocol) ? "https://ssl." : "http://www.");
+document.write(unescape("%3Cscript src='" + gaJsHost + "google-analytics.com/ga.js' type='text/javascript'%3E%3C/script%3E"));
+</script>
+<script type="text/javascript">
+try {
+var pageTracker = _gat._getTracker("UA-53067-1");
+pageTracker._trackPageview();
+} catch(err) {}</script>
+
+<script>
+function googleTranslateElementInit() {
+  new google.translate.TranslateElement({
+    pageLanguage: 'ja',
+    gaTrack: true,
+    gaId: 'UA-53067',
+    floatPosition: google.translate.TranslateElement.FloatPosition.BOTTOM_RIGHT
+  });
+}
+</script><script src="//translate.google.com/translate_a/element.js?cb=googleTranslateElementInit"></script>
+
+</body>
+</html>

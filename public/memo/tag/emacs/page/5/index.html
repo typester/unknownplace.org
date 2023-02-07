@@ -1,0 +1,610 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="ja" xml:lang="ja">
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <title>memo - unknownplace.org</title>
+  <link rel="stylesheet" type="text/css" href="http://yui.yahooapis.com/3.0.0/build/cssreset/reset-min.css" />
+  <link rel="stylesheet" type="text/css" href="http://yui.yahooapis.com/3.0.0/build/cssfonts/fonts-min.css" />
+  <link rel="stylesheet" href="/css/style.css" type="text/css" />
+  <meta property="fb:admins" content="1093631929" />
+  <meta name="robots" content="noindex" />
+  <link rel="alternate" type="application/rss+xml" href="http://unknownplace.org/memo/index.rss" />
+</head>
+<body>
+
+<div id="container">
+<div id="header">
+    <h1><a href="/">unknownplace.org</a></h1> /
+<a href="/memo/">memo</a>
+</div>
+
+<div id="content">
+
+<div class="entry autopagerize_page_element">
+  <h2><a href="/memo/2006/09/21/6/">emacs マニュアル</a></h2>
+
+  <div class="body">
+    <p>はてのくんの真似してemacsマニュアルをひまなとき眺めてみることにしてみるかもしれない。</p>
+<p>iswitchbとかuniquifyとかもemacsマニュアルに載ってたんだなぁ。ちゃんと読んだらだいぶ違いそうだ。</p>
+
+  </div>
+
+  <div class="meta">
+    by typester /
+    at <a href="/memo/2006/09/21/6/">2006-09-21T23:36:00</a> /
+    <a href="/memo/tag/life/">life</a>
+    &middot; <a href="/memo/tag/emacs/">emacs</a>
+    / <a href="/memo/2006/09/21/6/#disqus_thread">Comment</a>
+  </div>
+</div>
+
+<div class="entry autopagerize_page_element">
+  <h2><a href="/memo/2006/09/20/2/">.emacs</a></h2>
+
+  <div class="body">
+    <p>しょうがないのでさらすよ。colinux version。日本語のコメントはいまつけたもの。</p>
+<p>結構短いな。でもかなり汚いｗ</p>
+<p>性格が出るのかねー。部屋が汚い人はdotfilesも汚い法則。</p>
+<pre><code>;(require <span class="warning">'</span><span class="string">browse-kill-ring) ; &#20170;&#20351;&#12387;&#12390;&#12394;&#12356;
+;(require '</span>mutt) ; <span class="type">autoload</span> <span class="variable-name">&#12395;&#12375;&#12383;</span>
+
+; <span class="type">clmemo</span> <span class="function-name">&#29992;&#12398;&#35373;&#23450;</span>
+(<span class="type">setq</span> <span class="variable-name">user</span>-full-name <span class="string">"Daisuke Murase"</span>)
+(<span class="type">setq</span> <span class="variable-name">user</span>-mail-address <span class="string">"murase@kayac.com"</span>)
+
+; emacsclient&#29992;&#12398;&#35373;&#23450;&#12290;~/tmp/emacsclient-caller &#12395;&#12399;emacsclient&#12434;&#21628;&#12403;&#20986;&#12375;&#12383;screen&#12398;&#12454;&#12451;&#12531;&#12489;&#12454;&#30058;&#21495;&#12364;&#26684;&#32013;&#12375;&#12390;&#12354;&#12427;
+; &#12398;&#12391;&#33258;&#21205;&#30340;&#12395;&#12418;&#12392;&#12398;&#12454;&#12451;&#12531;&#12489;&#12454;&#12408;&#25147;&#12427;&#12290;&#35443;&#12375;&#12367;&#12399;&#12371;&#12398;&#12456;&#12531;&#12488;&#12522;&#12398;&#19968;&#30058;&#19979;&#12395;&#26360;&#12356;&#12383;&#12522;&#12531;&#12463;&#12434;&#35211;&#12427;&#12392;&#12356;&#12356;&#12363;&#12418;
+(server-start)
+(add-hook <span class="string">'after-init-hook '</span>server-start)
+(add-hook <span class="warning">'</span><span class="string">server-done-hook
+          (lambda ()
+        (shell-command
+         "screen -r -X select `cat ~/tmp/emacsclient-caller`")))
+
+; &#12414;&#12394;&#12435;&#12363;&#35211;&#12383;&#30446;&#12363;&#12360;&#12383;&#12426;
+(menu-bar-mode 0)
+(column-number-mode t)
+(line-number-mode t) ; default
+; &#26368;&#36817;&#38283;&#12356;&#12383;&#12501;&#12449;&#12452;&#12523;&#38283;&#12369;&#12427;&#12424;&#12358;&#12395;
+(recentf-mode)
+
+; color ; &#33394;&#12388;&#12369;&#12392;&#12363;&#12397;
+(global-font-lock-mode t)
+(setq-default transient-mark-mode t)
+
+; input method ; anthy&#20351;&#12358;&#33258;&#39894;&#29992;
+;(set-language-environment "Japanese")
+;(setq default-input-method "japanese-anthy")
+;(autoload '</span>uim-mode <span class="string">"uim"</span> nil t)
+;(global-set-key <span class="string">"\C-o"</span> <span class="warning">'</span><span class="string">uim-mode)
+
+; load library
+;(require '</span>svk-ediff) ; &#20351;&#12356;&#12383;&#12356;&#12369;&#12393;&#12358;&#12414;&#12367;&#21205;&#12363;&#12435;
+(require <span class="warning">'</span><span class="string">yaml-mode)  ; &#26368;&#39640; clouder++
+(autoload '</span>javascript-mode <span class="string">"javascript"</span> <span class="string">"JavaScript mode"</span> t) ; ecmascript-mode&#12424;&#12426;&#12452;&#12452;&#12493; higepon++
+;(autoload <span class="warning">'</span><span class="string">ecmascript-mode "ecmascript-mode" "ECMAScript mode" t)
+;(autoload '</span>pod-mode <span class="string">"pod-mode"</span> <span class="string">"pod mode"</span> t)
+;(autoload <span class="warning">'</span><span class="string">navi2ch "navi2ch" "Navigator for 2ch for Emacs" t) ; &#26132;&#20351;&#12387;&#12390;&#12383;&#12471;&#12522;&#12540;&#12474;
+
+; backup and autosave ; &#12394;&#12435;&#12384;&#12387;&#12369;&#12371;&#12428; #foo.txt# &#12501;&#12449;&#12452;&#12523;&#12392;&#12363;&#12398;&#12420;&#12388;&#12384;&#12387;&#12387;&#12369;&#12290;&#12431;&#12377;&#12428;&#12383;
+(setq auto-save-default nil)
+(setq auto-save-list-file-prefix "~/.autosave/")
+
+(defun make-backup-file-name (filename) ; &#12496;&#12483;&#12463;&#12450;&#12483;&#12503;&#12501;&#12449;&#12452;&#12523;&#12399;&#36949;&#12358;&#12487;&#12451;&#12524;&#12463;&#12488;&#12522;&#12395;&#20445;&#23384;&#12377;&#12427;&#12424;
+  (expand-file-name
+   (concat "~/.backup/" (file-name-nondirectory filename) "~")
+   (file-name-directory filename)))
+
+(require '</span><span class="keyword">auto</span>-save-buffers) ; &#33258;&#21205;&#12475;&#12540;&#12502;&#12398;&#12420;&#12388;&#12290;&#12414;&#12353;&#24517;&#38920;&#12290;&#12391;&#12418;&#20316;&#26989;&#12487;&#12451;&#12524;&#12463;&#12488;&#12522;&#12391;&#12384;&#12369;&#26377;&#21177;&#12395;&#12375;&#12390;&#12427;&#12424;
+(run-with-idle-timer 0.5 t <span class="warning">'</span><span class="string">auto-save-buffers "^(/mnt)?/home/typester/workdir/" "^$")
+(define-key ctl-x-map "as" '</span><span class="keyword">auto</span>-save-buffers-toggle) ; &#19968;&#24540;&#12507;&#12483;&#12488;&#12461;&#12540;&#12391;&#12488;&#12464;&#12523;&#12391;&#12365;&#12427;&#12424;&#12358;&#12395;&#12375;&#12390;&#12383;&#12425;&#12375;&#12356;&#12290;&#20170;&#24605;&#12356;&#20986;&#12375;&#12383;
+
+; riece ; <span class="type">&#26132;&#20351;&#12387;&#12390;&#12383;&#12471;&#12522;&#12540;&#12474;2</span> <span class="variable-name">&#37325;&#12356;&#12375;&#12354;&#12435;&#12414;&#12426;&#33391;&#12367;&#12394;&#12356;</span>&#12290;irssi&#12398;&#12364;&#33391;&#12356;&#12424;
+;(<span class="type">setq</span> <span class="variable-name">load</span>-path
+;      (append (list <span class="string">"/usr/share/emacs/site-lisp/riece/"</span>) load-path))
+;(require <span class="warning">'</span><span class="string">riece)
+
+; mew ; &#26132;&#20351;&#12387;&#12390;&#12383;&#12471;&#12522;&#12540;&#12474;3 &#21106;&#12392;&#22909;&#12365;&#12394;&#12513;&#12540;&#12521;&#12290;&#26368;&#36817;&#12398;&#12496;&#12540;&#12472;&#12519;&#12531;&#12391;HyperEstraier&#12418;&#20351;&#12360;&#12427;&#12424;&#12358;&#12395;&#12394;&#12387;&#12383;&#12425;&#12375;&#12356;&#12375;&#12289;&#12414;&#12383;&#20351;&#12358;&#12363;&#12418;
+(setq load-path
+      (cons "/usr/share/emacs/site-lisp/mew/" load-path))
+(autoload '</span>mew <span class="string">"mew"</span> nil t)
+(autoload <span class="warning">'</span><span class="string">mew-send "mew" nil t)
+
+; completer ; by kentaro zsh&#12415;&#12383;&#12356;&#12395;C-x C-f&#12391;&#12501;&#12449;&#12452;&#12523;&#21517;&#35036;&#23436;&#12391;&#12365;&#12427;&#12425;&#12375;&#12356;&#12364;&#12358;&#12372;&#12363;&#12435;&#12435;&#12435;&#12435;&#65358;
+;(require '</span>completer)
+;(<span class="type">setq</span> <span class="variable-name">completer</span>-words <span class="string">"---. &lt;_"</span>)
+
+; windmove ; riece&#12398;&#12392;&#12365;&#12398;&#12459;&#12540;&#12477;&#12523;&#31227;&#21205;&#29992;&#12461;&#12540;&#12496;&#12452;&#12531;&#12489;&#12290;&#20170;&#12399;&#12414;&#12387;&#12383;&#12367;&#20351;&#12387;&#12390;&#12394;&#12356;
+(require <span class="warning">'</span><span class="string">windmove)
+(setq windmove-wrap-around t)
+(global-set-key "\C-\M-h" '</span>windmove-left)
+(global-set-key <span class="string">"\C-\M-j"</span> <span class="warning">'</span><span class="string">windmove-down)
+(global-set-key "\C-\M-k" '</span>windmove-up)
+(global-set-key <span class="string">"\C-\M-l"</span> <span class="warning">'</span><span class="string">windmove-right)
+
+; dabbrev ; &#21205;&#30340;&#35036;&#23436;&#12290;&#12487;&#12501;&#12457;&#12461;&#12540;&#12399;&#25276;&#12375;&#12389;&#12425;&#12377;&#12366;&#12427;&#12398;&#12391;&#12290;M-space&#12395;&#12418;&#25361;&#25126;&#12375;&#12383;&#12364;&#12371;&#12387;&#12385;&#12398;&#12364;&#12424;&#12363;&#12387;&#12383;
+(global-set-key "\M-o" '</span>dabbrev-expand)
+(<span class="type">setq</span> <span class="variable-name">dabbrev</span>-<span class="keyword">case</span>-fold-search nil)
+
+(global-set-key <span class="string">"\C-h"</span> <span class="warning">'</span><span class="string">delete-backward-char) ; &#12496;&#12483;&#12463;&#12473;&#12506;&#12540;&#12473;&#12392;&#12363;&#36960;&#12356;
+
+; Changelog memo mode ; Changelog memo &#33258;&#39894;&#12391;&#20351;&#12387;&#12390;&#12356;&#12427;
+;(autoload '</span>clmemo <span class="string">"clmemo"</span> <span class="string">"ChangeLog memo mode."</span> t)
+;(<span class="type">setq</span> <span class="variable-name">clmemo</span>-file-name <span class="string">"~/public_html/pub/clmemo.txt"</span>)
+;(global-set-key <span class="string">"\C-xM"</span> <span class="warning">'</span><span class="string">clmemo)
+;(setq clmemo-subtitle-char "["
+;      clmemo-subtitle-punctuation-char '</span>(<span class="string">" ["</span> . <span class="string">"]"</span>)
+;      clmemo-time-string-with-weekday t)
+
+;(<span class="type">defun</span> <span class="variable-name">my</span>-clmemo-title-formatting (title)
+;  (<span class="type">setq</span> <span class="variable-name">title</span> (concat (format-time-string <span class="string">"(%T) "</span> (current-time)) title)))
+;(<span class="type">setq</span> <span class="variable-name">clmemo</span>-title-format-function <span class="warning">'</span><span class="string">my-clmemo-title-formatting)
+
+
+; ELscreen ; &#20351;&#12387;&#12390;&#12394;&#12356;&#12471;&#12522;&#12540;&#12474;4
+(global-set-key "\C-t" nil)
+(setq elscreen-prefix-key "\C-t")
+(setq elscreen-display-tab nil)
+(load "elscreen" "ElScreen" t)
+
+; auto mode ; &#33258;&#21205;&#12514;&#12540;&#12489;&#35373;&#23450;&#12383;&#12385;
+(setq auto-mode-alist
+      (append '</span>((<span class="string">"\\.as\\'"</span> . javascript-mode)
+        (<span class="string">"\\.js\\'"</span> . javascript-mode)
+        (<span class="string">"\\.tt\\'"</span> . xml-mode)
+        (<span class="string">"\\.pod\\'"</span> . pod-mode)
+        (<span class="string">"mutt-[a-z0-9]+-[0-9]+-[0-9]+\\'"</span> . mutt-mode)
+        (<span class="string">"\\.ya?ml\\'"</span> . yaml-mode))
+        <span class="keyword">auto</span>-mode-alist))
+
+; mode ;&#12514;&#12540;&#12489;&#21029;&#35373;&#23450;
+(<span class="type">setq</span> <span class="variable-name">cssm</span>-indent-function #<span class="warning">'</span><span class="string">cssm-c-style-indenter) ; CSS&#12514;&#12540;&#12489;
+(setq javascript-indent-level 4) ; Javascript&#12514;&#12540;&#12489;
+
+(defalias '</span>perl-mode <span class="warning">'</span><span class="string">cperl-mode) ; cperl&#12514;&#12540;&#12489;
+(setq cperl-indent-level 4)
+(setq cperl-continued-statement-offset 4)
+(setq cperl-brace-offset -4)
+(setq cperl-label-offset -4)
+(setq cperl-indent-parens-as-block t)
+(setq cperl-close-paren-offset -4)
+(setq cperl-tab-always-indent t)
+;(setq cperl-invalid-face nil)
+(setq cperl-highlight-variables-indiscriminately t)
+; test
+(setq fill-column 78) ; &#12371;&#12428;&#26360;&#12356;&#12390;&#12415;&#12383;&#12369;&#12393;&#12358;&#12372;&#12363;&#12397;&#12290;&#12393;&#12358;&#12391;&#12418;&#12356;&#12356;&#12398;&#12391;&#25918;&#32622;&#12375;&#12390;&#12354;&#12427;
+(setq auto-fill-mode t)
+
+; mmm-mode ; &#25361;&#25126;&#12375;&#12383;&#12369;&#12393;&#12358;&#12414;&#12367;&#12358;&#12372;&#12363;&#12394;&#12363;&#12387;&#12383;&#12471;&#12522;&#12540;&#12474;
+;(require '</span>mmm-mode)
+;(require <span class="warning">'</span><span class="string">mmm-auto)
+;(setq mmm-global-mode t)
+;(setq mmm-submode-decoration-level 2)
+;
+;(mmm-add-classes
+; '</span>((html-javascript
+;    :submode ecmascript-mode
+;    :front <span class="string">"&lt;script[^&gt;]*&gt;"</span>
+;    :back <span class="string">"&lt;/script&gt;"</span>)))
+;(mmm-add-mode-ext-class nil <span class="string">"\\.tt\\'"</span> <span class="warning">'</span><span class="string">html-javascript)
+
+; cperl tidy func ; perltidy-region&#12290; &#24517;&#38920;&#12384;&#12397;
+(defun perltidy-region ()
+  "Run perltidy on the current region."
+  (interactive)
+  (save-excursion
+    (shell-command-on-region (point) (mark) "perltidy -q" nil t)))
+(defun perltidy-defun ()
+  "Run perltidy on the current defun."
+  (interactive)
+  (save-excursion (mark-defun)
+  (perltidy-region)))
+
+; mode-hook ; &#12514;&#12540;&#12489;&#12501;&#12483;&#12463;&#31995;
+(defun my-ecmascript-mode-hook () ; javascript&#12514;&#12540;&#12489;&#12395;&#12377;&#12427;&#12414;&#12391;&#20351;&#12387;&#12390;&#12383;
+  (c-set-style "cc-mode")
+  (setq tab-width 4)
+  (setq indent-tabs-mode nil))
+(add-hook '</span>ecmascript-mode-hook <span class="warning">'</span><span class="string">my-ecmascript-mode-hook)
+
+(defun my-javascript-mode-hook () ; &#20170;&#12399;&#12371;&#12387;&#12385;
+  (setq tab-width 4)
+  (setq indent-tabs-mode nil))
+(add-hook '</span>javascript-mode-hook <span class="warning">'</span><span class="string">my-javascript-mode-hook)
+
+(defun my-php-mode-hook () ; &#26132;&#19968;&#30636;&#20351;&#12387;&#12383;&#31995;&#12290;&#12356;&#12414;&#12399;php-mode&#12377;&#12425;&#20837;&#12387;&#12390;&#12394;&#12356;
+  (c-set-style "cc-mode")
+  (setq tab-width 4)
+  (setq indent-tabs-mode nil))
+(add-hook '</span>php-mode-hook <span class="warning">'</span><span class="string">my-php-mode-hook)
+
+;(defun my-perl-mode-hook () ; perl-mode&#20351;&#12387;&#12390;&#12383;&#12392;&#12365;&#12398;&#35373;&#23450;&#12363;&#12394;&#65311;&#35226;&#12360;&#12390;&#12394;&#12356;&#12420;
+;;  (c-set-style "cc-mode")
+;  (setq indent-level 4)
+;  (setq tab-width 4)
+;  (setq indent-tabs-mode nil)
+;  (setq continued-statement-offset 4)
+;  (setq brase-offset -4)
+;  (setq label-offset -4))
+;(add-hook '</span>perl-mode-hook <span class="warning">'</span><span class="string">my-perl-mode-hook)
+
+(defun my-cperl-mode-hook () ; &#20170;&#12399;cperl-mode
+  (setq indent-tabs-mode nil)
+  ; BestPractices
+  (setq fill-column 78) ; &#12467;&#12524;&#12418;&#12358;&#12372;&#12363;&#12435;&#12431;&#12353;
+  (setq auto-fill-mode t))
+(add-hook '</span>cperl-mode-hook <span class="warning">'</span><span class="string">my-cperl-mode-hook)
+
+(defun my-w3m-mode-hook ()
+  (setq w3m-use-filter nil)) ; &#12424;&#12367;&#35226;&#12360;&#12390;&#12394;&#12356;&#12289;&#12394;&#12435;&#12384;&#12387;&#12369;&#12363;
+(add-hook '</span>w3m-mode-hook <span class="warning">'</span><span class="string">my-w3m-mode-hook)
+
+; from Best Practices ; Vim&#12387;&#12413;&#12367; % &#12391;&#23550;&#24540;&#12377;&#12427;&#25324;&#24359;&#12408;&#39131;&#12409;&#12427;&#12420;&#12388; BestPractices&#12395;&#36617;&#12387;&#12390;&#12383;&#12467;&#12540;&#12489;&#12399;&#21205;&#12363;&#12435;&#12398;&#12391;&#12393;&#12387;&#12363;&#12363;&#12425;&#12401;&#12367;&#12387;&#12383;&#12398; .tt &#26360;&#12367;&#12392;&#12365;&#21106;&#12392;&#37034;&#39764;&#12395;&#12394;&#12427;&#12398;&#12364;&#29577;&#12395;&#12461;&#12474;
+; Use % to match various kinds of brackets...
+;(defun match-paren (arg)
+;  "Go to the matching paren if on a paren; otherwide insert %."
+;  (interactive "p")
+;  (let ((prev-char (char-to-string (preceding-char)))
+;   (next-char (char-to-string (following-char))))
+;    (cond ((string-match "[[{(&lt;]" next-char) (forward-sexp 1))
+;     ((string-match "[\]})&gt;" prev-char) (backward-sexp 1))
+;     (t (self-insert-command (or arg 1))))))
+(defun match-paren (arg)
+  "Go to the matching paren if on a paren; otherwise insert %."
+  (interactive "p")
+  (cond ((looking-at "\\s\(") (forward-list 1) (backward-char 1))
+    ((looking-at "\\s\)") (forward-char 1) (backward-list 1))
+    (t (self-insert-command (or arg 1)))))
+(global-set-key "%" '</span>match-paren)
+
+(<span class="type">defun</span> <span class="variable-name">my</span>-insert-date () ; &#26085;&#20184;&#20837;&#12428;&#12427;&#38306;&#25968;&#12290;perl&#12514;&#12472;&#12517;&#12540;&#12523;&#12398;Changes&#26360;&#12367;&#12392;&#12365;&#12395;&#20027;&#12395;&#20351;&#29992;
+  (interactive)
+  (insert (format-time-string <span class="string">"%Y-%m-%dT%R:%S+09:00"</span> (current-time))))
+
+; <span class="type">my</span> <span class="variable-name">keys</span> ;&#12356;&#12429;&#12356;&#12429;&#12461;&#12540;&#35373;&#23450;
+(global-set-key <span class="string">"\C-cu"</span> <span class="warning">'</span><span class="string">w3m-browse-url) ; &#26132;&#20351;&#12387;&#12390;&#12383;&#12363;&#12418;
+(global-set-key "\C-cr" '</span>replace-string) ; &#32622;&#25563;&#12397;
+(global-set-key <span class="string">"\C-c\C-r"</span> <span class="warning">'</span><span class="string">recentf-open-files) ; &#26368;&#36817;&#38283;&#12356;&#12383;&#12501;&#12449;&#12452;&#12523;&#19968;&#35239;
+(global-set-key "\C-c\C-y" '</span>browse-kill-ring) ; &#20351;&#12387;&#12390;&#12397;
+
+(global-set-key <span class="string">"\C-cd"</span> <span class="warning">'</span><span class="string">my-insert-date) ; &#26085;&#20184;&#25407;&#20837;
+
+(global-set-key "\C-ct" '</span>perltidy-region) ; perl&#12467;&#12540;&#12489;&#25972;&#24418;&#12289;&#24517;&#38920;&#12290;&#12391;&#12418;mode-hook&#12391;&#12420;&#12428;&#12400;&#12356;&#12356;&#12394;
+(global-set-key <span class="string">"\C-c\C-t"</span> <span class="warning">'</span><span class="string">perltidy-defun) ; &#12371;&#12387;&#12385;&#12399;&#12388;&#12363;&#12387;&#12390;&#12394;&#12356;&#12420;
+
+; colors ; &#12371;&#12387;&#12363;&#12425;&#12459;&#12521;&#12540;&#12398;&#35373;&#23450;&#12384;&#12369;&#12393;&#12371;&#12428;&#12399;Meadow&#20351;&#12387;&#12390;&#12383;&#12392;&#12365;&#12398;&#35373;&#23450;&#12290;&#12467;&#12531;&#12477;&#12540;&#12523;&#12391;&#12399;&#24847;&#21619;&#12394;&#12356;(256&#33394;&#12514;&#12540;&#12489;&#20351;&#12387;&#12390;&#12394;&#12356;&#12398;&#12391;)
+(require '</span>font-lock)
+(set-face-foreground <span class="warning">'</span><span class="string">font-lock-comment-face "red")
+
+; colors for Tab and Space
+(defface my-face-b-1 '</span>((t (:background <span class="string">"gray"</span>))) nil)
+(<span class="type">defface</span> <span class="variable-name">my</span>-face-b-2 <span class="warning">'</span><span class="string">((t (:background "gray26"))) nil)
+(defface my-face-u-1 '</span>((t (:foreground <span class="string">"SteelBlue"</span> :underline t))) nil)
+(<span class="type">defvar</span> <span class="variable-name">my</span>-face-b-1 <span class="warning">'</span><span class="string">my-face-b-1)
+(defvar my-face-b-2 '</span>my-face-b-2)
+(<span class="type">defvar</span> <span class="variable-name">my</span>-face-u-1 <span class="warning">'</span><span class="string">my-face-u-1)
+
+; &#12479;&#12502;&#12392;&#20840;&#35282;&#12473;&#12506;&#12540;&#12473;&#12398;&#33394;&#12363;&#12360;&#12427;
+(defadvice font-lock-mode (before my-font-lock-mode ())
+  (font-lock-add-keywords
+   major-mode
+   '</span>((<span class="string">"\t"</span> 0 my-face-b-2 append)
+     (<span class="string">"&#12288;"</span> 0 my-face-b-1 append)
+     (<span class="string">"[ \t]+$"</span> 0 my-face-u-1 append)
+     )))
+(ad-enable-advice <span class="string">'font-lock-mode '</span>before <span class="warning">'</span><span class="string">my-font-lock-mode)
+(ad-activate '</span>font-lock-mode)
+
+; <span class="type">test</span> <span class="variable-name">scroll</span> ; &#19968;&#34892;&#12378;&#12388;&#12473;&#12463;&#12525;&#12540;&#12523;&#12377;&#12427;&#12424;&#12290;&#12487;&#12501;&#12457;&#12523;&#12488;&#12398;&#12363;&#12367;&#12363;&#12367;&#12473;&#12463;&#12525;&#12540;&#12523;&#12399;&#12461;&#12514;&#12452;
+; <span class="type">clouder</span> <span class="function-name">&#12363;&#12393;&#12387;&#12363;&#12395;&#12418;&#12387;&#12392;&#12473;&#12510;&#12540;&#12488;&#12395;&#21516;&#12376;&#12371;&#12392;&#12377;&#12427;&#12398;&#12364;&#36617;&#12387;&#12390;&#12390;</span>&#12289;&#12381;&#12428;&#12395;&#22793;&#12360;&#12424;&#12358;&#12392;&#24605;&#12387;&#12390;&#12383;&#12369;&#12393;&#24536;&#12428;&#12390;&#12383;&#12290;&#20170;&#24605;&#12356;&#20986;&#12375;&#12383;
+(<span class="type">defun</span> <span class="variable-name">sane</span>-next-line (arg)
+  <span class="string">"Goto next line by ARG steps with scrolling sanely if needed."</span>
+  (interactive <span class="string">"p"</span>)
+  ;;(let ((newpt (save-excursion (line-move arg) (point))))
+  (let ((newpt (save-excursion (next-line arg) (point))))
+    (<span class="keyword">while</span> (null (pos-visible-in-window-p newpt))
+      (<span class="keyword">if</span> (&lt; arg 0) (scroll-down 1) (scroll-up 1)))
+    (<span class="keyword">goto</span>-<span class="type">char</span> newpt)
+    (<span class="type">setq</span> <span class="variable-name">this</span>-command <span class="warning">'</span><span class="string">next-line)
+    ()))
+
+(defun sane-previous-line (arg)
+  "Goto previous line by ARG steps with scrolling back sanely if needed."
+  (interactive "p")
+  (sane-next-line (- arg))
+  (setq this-command '</span>previous-line)
+  ())
+
+(<span class="type">defun</span> <span class="variable-name">sane</span>-newline (arg)
+  <span class="string">"Put newline\(s\) by ARG with scrolling sanely if needed."</span>
+  (interactive <span class="string">"p"</span>)
+  (let ((newpt (save-excursion (<span class="type">newline</span> <span class="variable-name">arg</span>) (indent-according-to-mode) (point))))
+    (<span class="keyword">while</span> (null (pos-visible-in-window-p newpt)) (scroll-up 1))
+    (<span class="keyword">goto</span>-<span class="type">char</span> newpt)
+    (<span class="type">setq</span> <span class="variable-name">this</span>-command <span class="warning">'</span><span class="string">newline)
+    ()))
+
+(global-set-key [up] '</span>sane-previous-line)
+(global-set-key [down] <span class="warning">'</span><span class="string">sane-next-line)
+;(global-set-key "\C-m" '</span>sane-newline)
+(define-key global-map <span class="string">"\C-n"</span> <span class="warning">'</span><span class="string">sane-next-line)
+(define-key global-map "\C-p" '</span>sane-previous-line)
+
+; &#12452;&#12531;&#12463;&#12522;&#12513;&#12531;&#12479;&#12523;&#12395;&#12496;&#12483;&#12501;&#12449;&#12365;&#12426;&#12363;&#12360;&#12425;&#12428;&#12427;&#12420;&#12388;&#12290;&#24517;&#38920;&#12377;&#12366;
+;(iswitchb-<span class="keyword">default</span>-keybindings) ; emacs21&#12398;&#20154;&#12399;&#12371;&#12387;&#12385;
+(iswitchb-mode 1) ; emacs22&#12398;&#20154;&#12399;&#12371;&#12387;&#12385;
+
+; &#21516;&#12376;&#21517;&#21069;&#12398;&#12496;&#12483;&#12501;&#12449;&#12364;&#12354;&#12387;&#12383;&#22580;&#21512;&#19978;&#12398;&#38542;&#23652;&#12398;&#12487;&#12451;&#12524;&#12463;&#12488;&#12522;&#12392;&#12363;&#12418;&#19968;&#32210;&#12395;&#20986;&#12375;&#12390;&#21306;&#21029;&#12391;&#12365;&#12427;&#12424;&#12358;&#12395;&#12518;&#12491;&#12540;&#12463;&#12394;&#12496;&#12483;&#12501;&#12449;&#21517;&#12395;&#12375;&#12390;&#12367;&#12428;&#12427;&#12420;&#12388;
+; &#12467;&#12524;&#12418;&#24517;&#38920;
+(require <span class="warning">'</span><span class="string">uniquify)
+(setq uniquify-buffer-name-style '</span>post-forward-angle-brackets)
+</code></pre>
+<p>こう見ると、あんまりカスタマってないなぁ。perl書く分にはこれでまぁ満足。</p>
+<p>この中で必須なのはscreenとの連携部と、cperl-modeの設定、perltidy-region、iswitchb&amp;uniquify、C-hでバックスペースくらいかな。</p>
+<p>次点でjavascript-mode、一行ずつのスクロールとかか。</p>
+<p>.zshrcもさらそうと思ったけどこれ以上にごちゃってるうえにプライベートな関数多いからやめた。</p>
+<p>screenとの連携部分は<a href="http://unknownplace.org/memo/2005/12/11#e006" title="CLON - 2005/12/11 - EmacsClient with screen">ココ</a>とか<a href="http://unknownplace.org/memo/2005/12/11#e003" title="CLON - 2005/12/11 - emacsclient で emacs のウィンドウをアクティブに">ココ</a>に書いたっぽい。</p>
+
+  </div>
+
+  <div class="meta">
+    by typester /
+    at <a href="/memo/2006/09/20/2/">2006-09-20T02:21:00</a> /
+    <a href="/memo/tag/emacs/">emacs</a>
+    / <a href="/memo/2006/09/20/2/#disqus_thread">Comment</a>
+  </div>
+</div>
+
+<div class="entry autopagerize_page_element">
+  <h2><a href="/memo/2006/04/02/2/">hackathon #3</a></h2>
+
+  <div class="body">
+    <p>miyagawa さんの emacs さばきをみていてなんかバッファの切り替えが違うぞと思って聞いたところ、iswitchb とかいうのを使ってると教えてもらった。</p>
+<p>emacs21なら</p>
+<pre><code>(iswitchb-default-keybindings)
+</code></pre>
+<p>22 なら</p>
+<pre><code>(iswitchb-mode 1)
+</code></pre>
+<p>で C-x b がインクリメンタルに。やべぇぇえぇ。ありえないほど便利。</p>
+
+  </div>
+
+  <div class="meta">
+    by typester /
+    at <a href="/memo/2006/04/02/2/">2006-04-02T18:56:00</a> /
+    <a href="/memo/tag/life/">life</a>
+    &middot; <a href="/memo/tag/yapc/">yapc</a>
+    &middot; <a href="/memo/tag/emacs/">emacs</a>
+    / <a href="/memo/2006/04/02/2/#disqus_thread">Comment</a>
+  </div>
+</div>
+
+<div class="entry autopagerize_page_element">
+  <h2><a href="/memo/2006/02/13/1/">mmm-mode 悪戦苦闘</a></h2>
+
+  <div class="body">
+    <p>みやーんととくひろむが教えてくれた mmm-mode をためしてるのだけど、html-mode 内で ecmascript-mode 使おうとするとエラーる。</p>
+<p>mmm-mode-on して C-c % C-r してリージョンを ecmascript-mode にしてからその中で Tab かなんかで整形させようとすると</p>
+<pre><code>c-looking-at-decl-block: Wrong type argument: stringp, nil
+</code></pre>
+<p>こんなのでる。</p>
+<p>うう、cc-mode の何かとの関係？ 全然わからん。</p>
+<p>ちなみに同じく html-mode 内で css-mode ならちゃんと動く。</p>
+<p>CSS とかまったくインラインでかかねっつの！！ もう眠いので今度にしよう。</p>
+
+  </div>
+
+  <div class="meta">
+    by typester /
+    at <a href="/memo/2006/02/13/1/">2006-02-13T05:22:00</a> /
+    <a href="/memo/tag/emacs/">emacs</a>
+    / <a href="/memo/2006/02/13/1/#disqus_thread">Comment</a>
+  </div>
+</div>
+
+<div class="entry autopagerize_page_element">
+  <h2><a href="/memo/2005/12/11/6/">EmacsClient with screen</a></h2>
+
+  <div class="body">
+    <p>EmacsWiki に載ってたよ。</p>
+<blockquote><p><a href="http://www.emacswiki.org/cgi-bin/wiki/EmacsClient#toc6" title="EmacsWiki: EmacsClient">Using EmacsClient with screen</a></p></blockquote>
+
+  </div>
+
+  <div class="meta">
+    by typester /
+    at <a href="/memo/2005/12/11/6/">2005-12-11T21:16:00</a> /
+    <a href="/memo/tag/emacs/">emacs</a>
+    &middot; <a href="/memo/tag/screen/">screen</a>
+    / <a href="/memo/2005/12/11/6/#disqus_thread">Comment</a>
+  </div>
+</div>
+
+<div class="entry autopagerize_page_element">
+  <h2><a href="/memo/2005/12/11/3/">emacsclient で emacs のウィンドウをアクティブに</a></h2>
+
+  <div class="body">
+    <p>↓の zshrc の case で処理わけているところに</p>
+<pre><code>emacsclient)
+    screen -X eval <span class="string">"select 1"</span>
+    <span class="keyword">return</span>
+    ;;
+</code></pre>
+<p>とか追加してみる。僕は emacs は常に window 1 で開くので、select 1 でおｋ。</p>
+<p>んでこのあと <code>C-x #</code> したら元のウィンドウにもどってくれたらかっけーんだけど、elisp で <code>screen -X other</code> とかよべばいいかなとか思ったけど、emacs 画面いってからファイル閉じる間にウィンドウ切り替えしたらうまく動かんし。どーやるんだろう。</p>
+<p><code>alias ec=&apos;emacsclient -n&apos;</code> とかしててほとんどこっちしか使わないので戻んなくてもいいのだけど、svn(k) コミット時とかで便利そうだなぁ。</p>
+
+  </div>
+
+  <div class="meta">
+    by typester /
+    at <a href="/memo/2005/12/11/3/">2005-12-11T14:31:00</a> /
+    <a href="/memo/tag/emacs/">emacs</a>
+    &middot; <a href="/memo/tag/screen/">screen</a>
+    / <a href="/memo/2005/12/11/3/#disqus_thread">Comment</a>
+  </div>
+</div>
+
+<div class="entry autopagerize_page_element">
+  <h2><a href="/memo/2005/12/11/1/">perltidy-region</a></h2>
+
+  <div class="body">
+    <p><code>indent-region</code> じゃ vim の整形にかてなそうだったので、perltidy-region を導入した。</p>
+<pre><code>(<span class="keyword">defun</span> <span class="function-name">perltidy-region</span> ()
+  <span class="doc">&quot;Run perltidy on the current region.&quot;</span>
+  (interactive)
+  (<span class="keyword">save-excursion</span>
+    (shell-command-on-region (point) (mark) <span class="string">&quot;perltidy -q&quot;</span> nil t)))
+</code></pre>
+<p>これを <code>\C-ct</code> とかに割り振っておいた。ちょーーー便利なんだけど！</p>
+<p>perltidy の<del>パラメータ</del><ins>設定</ins>は Best Practices 参照。</p>
+
+  </div>
+
+  <div class="meta">
+    by typester /
+    at <a href="/memo/2005/12/11/1/">2005-12-11T00:45:00</a> /
+    <a href="/memo/tag/emacs/">emacs</a>
+    / <a href="/memo/2005/12/11/1/#disqus_thread">Comment</a>
+  </div>
+</div>
+
+<div class="entry autopagerize_page_element">
+  <h2><a href="/memo/2005/11/24/4/">ignore case</a></h2>
+
+  <div class="body">
+    <p>zsh とか emacs の補完で大文字小文字区別しないようにする設定よくみるからちょっとやってみたけど、うざくね？</p>
+<p>たとえば OSX とかで /Users と /usr とか見に行こうとすると、もうっ！ってなる。</p>
+
+  </div>
+
+  <div class="meta">
+    by typester /
+    at <a href="/memo/2005/11/24/4/">2005-11-24T16:49:00</a> /
+    <a href="/memo/tag/zsh/">zsh</a>
+    &middot; <a href="/memo/tag/emacs/">emacs</a>
+    / <a href="/memo/2005/11/24/4/#disqus_thread">Comment</a>
+  </div>
+</div>
+
+<div class="entry autopagerize_page_element">
+  <h2><a href="/memo/2005/11/20/2/">ファイル変数</a></h2>
+
+  <div class="body">
+    <p>昨日の <a href="http://unknownplace.org/memo/2005/11/19#e005" title="CLON - 23:35  CLON">emacs の文字化けの件</a>についてメールをもらった。</p>
+<p>ファイル変数で文字コードを指定してやればいいのではないか、とのこと。</p>
+<p>試してみたが、だめだった。やっぱ化ける。( PuTTY では ? とみえる) そもそも <del><code>C-f Enter c</code></del><ins><code>C-x Enter c</code></ins> して utf-8 を指定してから開いた場合でも化けるので、文字コード判別にしっぱいとかじゃなくなんかもっと根本的な理由なきもする。</p>
+<p>でもファイル変数自体を知らなかったのでよかった（だめ</p>
+<p>あと、CLON もファイル変数かかれててもそれまでパースしちゃわないようにした。 (空行以外でかつタブで始まっていない行を無視するようにしただけだけど)</p>
+
+  </div>
+
+  <div class="meta">
+    by typester /
+    at <a href="/memo/2005/11/20/2/">2005-11-20T04:31:00</a> /
+    <a href="/memo/tag/emacs/">emacs</a>
+    / <a href="/memo/2005/11/20/2/#disqus_thread">Comment</a>
+  </div>
+</div>
+
+<div class="entry autopagerize_page_element">
+  <h2><a href="/memo/2005/11/07/4/">ぎゃーー</a></h2>
+
+  <div class="body">
+    <p>自鯖の emacs のバージョン古くて、cperl-mode でコメント(pod部分)いろわけされねー。もーなんだよ。</p>
+<p>関数ごとに</p>
+<pre><code>=item name
+
+=cut
+</code></pre>
+<p>とかつけてるから、これすげみにく。リビルドっすかリビルドっすか。</p>
+<p>ちなみに今の自鯖に入ってるのは</p>
+<pre><code>GNU Emacs 22.0.50.3 (i686-pc-linux-gnu) of 2005-04-19
+</code></pre>
+<p>colinux のは</p>
+<pre><code>GNU Emacs 22.0.50.1 (i486-pc-linux-gnu, X toolkit, Xaw3d scroll bars) of 2005-11-04 on pacem, modified by Debian
+</code></pre>
+<p>あれ。。？</p>
+
+  </div>
+
+  <div class="meta">
+    by typester /
+    at <a href="/memo/2005/11/07/4/">2005-11-07T09:11:00</a> /
+    <a href="/memo/tag/life/">life</a>
+    &middot; <a href="/memo/tag/emacs/">emacs</a>
+    / <a href="/memo/2005/11/07/4/#disqus_thread">Comment</a>
+  </div>
+</div>
+
+
+
+
+<div id="pager" class="autopagerize_insert_before">
+  <p class="pages">
+    <a class="prev" rel="previous" href="/memo/tag/emacs/page/4/">&laquo; Prev</a>
+    <a href="/memo/tag/emacs/">1</a>
+    <a href="/memo/tag/emacs/page/2/">2</a>
+    <a href="/memo/tag/emacs/page/3/">3</a>
+    <a href="/memo/tag/emacs/page/4/">4</a>
+    <span class="current">5</span>
+    <a href="/memo/tag/emacs/page/6/">6</a>
+    <a class="next" rel="next" href="/memo/tag/emacs/page/6/">Next &raquo;</a>
+  </p>
+  <p class="info">(Page 5 of 6)</p>
+</div>
+
+
+</div>
+
+<p id="footer">
+  Copyright &copy; 2005-2013
+      by <a class="author" href="/about/#me">Daisuke Murase (typester)</a> /
+  Site generated by <a href="https://github.com/typester/nim">nim</a> /
+  Comments powered by <a href="http://disqus.com">DISQUS</a>.
+</p>
+
+</div>
+
+
+<script type="text/javascript">
+//<![CDATA[
+(function() {
+	var links = document.getElementsByTagName('a');
+	var query = '?';
+	for(var i = 0; i < links.length; i++) {
+	if(links[i].href.indexOf('#disqus_thread') >= 0) {
+		query += 'url' + i + '=' + encodeURIComponent(links[i].href) + '&';
+	}
+	}
+	document.write('<script charset="utf-8" type="text/javascript" src="http://disqus.com/forums/unknownplace/get_num_replies.js' + query + '"></' + 'script>');
+})();
+//]]>
+</script>
+
+
+<script type="text/javascript">
+var gaJsHost = (("https:" == document.location.protocol) ? "https://ssl." : "http://www.");
+document.write(unescape("%3Cscript src='" + gaJsHost + "google-analytics.com/ga.js' type='text/javascript'%3E%3C/script%3E"));
+</script>
+<script type="text/javascript">
+try {
+var pageTracker = _gat._getTracker("UA-53067-1");
+pageTracker._trackPageview();
+} catch(err) {}</script>
+
+<script>
+function googleTranslateElementInit() {
+  new google.translate.TranslateElement({
+    pageLanguage: 'ja',
+    gaTrack: true,
+    gaId: 'UA-53067',
+    floatPosition: google.translate.TranslateElement.FloatPosition.BOTTOM_RIGHT
+  });
+}
+</script><script src="//translate.google.com/translate_a/element.js?cb=googleTranslateElementInit"></script>
+
+</body>
+</html>

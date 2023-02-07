@@ -1,0 +1,283 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="ja" xml:lang="ja">
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <title>memo - unknownplace.org</title>
+  <link rel="stylesheet" type="text/css" href="http://yui.yahooapis.com/3.0.0/build/cssreset/reset-min.css" />
+  <link rel="stylesheet" type="text/css" href="http://yui.yahooapis.com/3.0.0/build/cssfonts/fonts-min.css" />
+  <link rel="stylesheet" href="/css/style.css" type="text/css" />
+  <meta property="fb:admins" content="1093631929" />
+  <meta name="robots" content="noindex" />
+  <link rel="alternate" type="application/rss+xml" href="http://unknownplace.org/memo/index.rss" />
+</head>
+<body>
+
+<div id="container">
+<div id="header">
+    <h1><a href="/">unknownplace.org</a></h1> /
+<a href="/memo/">memo</a>
+</div>
+
+<div id="content">
+
+<div class="entry autopagerize_page_element">
+  <h2><a href="/memo/2006/04/04/2/"></a></h2>
+
+  <div class="body">
+    <p>退社。</p>
+
+  </div>
+
+  <div class="meta">
+    by typester /
+    at <a href="/memo/2006/04/04/2/">2006-04-04T02:43:00</a> /
+    <a href="/memo/tag/life/">life</a>
+    / <a href="/memo/2006/04/04/2/#disqus_thread">Comment</a>
+  </div>
+</div>
+
+<div class="entry autopagerize_page_element">
+  <h2><a href="/memo/2006/04/04/1/"></a></h2>
+
+  <div class="body">
+    <p>SVK のローカルコピーを複数の場所に checkout して作業してるとなんかおかしくなるなぁ。</p>
+<p>pull するとコンフリクトまくったり。そこで push ろうとするとやばげな感じ。-C したらなんか G マークいっぱい出たのでローカルコピー作り直したんだけど。</p>
+
+  </div>
+
+  <div class="meta">
+    by typester /
+    at <a href="/memo/2006/04/04/1/">2006-04-04T02:01:00</a> /
+    <a href="/memo/tag/life/">life</a>
+    &middot; <a href="/memo/tag/svk/">svk</a>
+    / <a href="/memo/2006/04/04/1/#disqus_thread">Comment</a>
+  </div>
+</div>
+
+<div class="entry autopagerize_page_element">
+  <h2><a href="/memo/2006/04/03/1/"></a></h2>
+
+  <div class="body">
+    <p>社会復帰。</p>
+
+  </div>
+
+  <div class="meta">
+    by typester /
+    at <a href="/memo/2006/04/03/1/">2006-04-03T11:01:00</a> /
+    <a href="/memo/tag/life/">life</a>
+    / <a href="/memo/2006/04/03/1/#disqus_thread">Comment</a>
+  </div>
+</div>
+
+<div class="entry autopagerize_page_element">
+  <h2><a href="/memo/2006/04/02/2/">hackathon #3</a></h2>
+
+  <div class="body">
+    <p>miyagawa さんの emacs さばきをみていてなんかバッファの切り替えが違うぞと思って聞いたところ、iswitchb とかいうのを使ってると教えてもらった。</p>
+<p>emacs21なら</p>
+<pre><code>(iswitchb-default-keybindings)
+</code></pre>
+<p>22 なら</p>
+<pre><code>(iswitchb-mode 1)
+</code></pre>
+<p>で C-x b がインクリメンタルに。やべぇぇえぇ。ありえないほど便利。</p>
+
+  </div>
+
+  <div class="meta">
+    by typester /
+    at <a href="/memo/2006/04/02/2/">2006-04-02T18:56:00</a> /
+    <a href="/memo/tag/life/">life</a>
+    &middot; <a href="/memo/tag/yapc/">yapc</a>
+    &middot; <a href="/memo/tag/emacs/">emacs</a>
+    / <a href="/memo/2006/04/02/2/#disqus_thread">Comment</a>
+  </div>
+</div>
+
+<div class="entry autopagerize_page_element">
+  <h2><a href="/memo/2006/04/02/1/">hackathon #2</a></h2>
+
+  <div class="body">
+    <p>perldoc ブラウザをつくっていたけどめんどくて飽きたので、YAPC 終わったら使い方まとめるとかいってた Plagger::Plugin::Store::DBIC に取り組む。</p>
+<p>そのうち Plagger 本体もDB対応するということらしいのでそれまでの野良プラギン。とりあえず僕の<a href="http://svn.unknownplace.org/public/library/perl/trunk/Plagger-Plugin-Store-DBIC/" title="Plagger-Plugin-Store-DBIC">レポジトリ</a>にUP。</p>
+<p>使い方は sql ディレクトリにはいってる plagger.sqlite.sql から</p>
+<pre><code>$ sqlite3 plagger.db &lt; sql/plagger.sqlite.sql
+</code></pre>
+<p>などとしてDBをつくって</p>
+<pre><code>  - module: Store::DBIC
+    config:
+      schema_class: Plagger::Schema::SQLite
+      connect_info: [ &apos;dbi:SQLite:/path/to/plagger.db&apos;, ]
+</code></pre>
+<p>などと設定ファイルを作ればOK。</p>
+<p>schema_class はめんどいから SQLite 用しかつくってないよ。</p>
+
+  </div>
+
+  <div class="meta">
+    by typester /
+    at <a href="/memo/2006/04/02/1/">2006-04-02T05:57:00</a> /
+    <a href="/memo/tag/plagger/">plagger</a>
+    &middot; <a href="/memo/tag/yapc/">yapc</a>
+    / <a href="/memo/2006/04/02/1/#disqus_thread">Comment</a>
+  </div>
+</div>
+
+<div class="entry autopagerize_page_element">
+  <h2><a href="/memo/2006/04/01/2/">hackathon</a></h2>
+
+  <div class="body">
+    <p>とりあえず <a href="http://unknownplace.org/cpanrecent/author/-ingy">-ingy</a> 実装。</p>
+
+  </div>
+
+  <div class="meta">
+    by typester /
+    at <a href="/memo/2006/04/01/2/">2006-04-01T23:32:00</a> /
+    <a href="/memo/tag/life/">life</a>
+    &middot; <a href="/memo/tag/yapc/">yapc</a>
+    / <a href="/memo/2006/04/01/2/#disqus_thread">Comment</a>
+  </div>
+</div>
+
+<div class="entry autopagerize_page_element">
+  <h2><a href="/memo/2006/04/01/1/"></a></h2>
+
+  <div class="body">
+    <p>退社。</p>
+<p>YAPC でたまりまくった未読フィードやっと消化完了。</p>
+
+  </div>
+
+  <div class="meta">
+    by typester /
+    at <a href="/memo/2006/04/01/1/">2006-04-01T01:37:00</a> /
+    <a href="/memo/tag/life/">life</a>
+    / <a href="/memo/2006/04/01/1/#disqus_thread">Comment</a>
+  </div>
+</div>
+
+<div class="entry autopagerize_page_element">
+  <h2><a href="/memo/2006/03/31/2/"></a></h2>
+
+  <div class="body">
+    <p>出社。</p>
+<p>なんか人がいっぱいいる。</p>
+
+  </div>
+
+  <div class="meta">
+    by typester /
+    at <a href="/memo/2006/03/31/2/">2006-03-31T13:01:00</a> /
+    <a href="/memo/tag/life/">life</a>
+    / <a href="/memo/2006/03/31/2/#disqus_thread">Comment</a>
+  </div>
+</div>
+
+<div class="entry autopagerize_page_element">
+  <h2><a href="/memo/2006/03/31/1/"></a></h2>
+
+  <div class="body">
+    <p>退社。</p>
+
+  </div>
+
+  <div class="meta">
+    by typester /
+    at <a href="/memo/2006/03/31/1/">2006-03-31T02:34:00</a> /
+    <a href="/memo/tag/life/">life</a>
+    / <a href="/memo/2006/03/31/1/#disqus_thread">Comment</a>
+  </div>
+</div>
+
+<div class="entry autopagerize_page_element">
+  <h2><a href="/memo/2006/03/30/3/"></a></h2>
+
+  <div class="body">
+    <p>帰社。</p>
+
+  </div>
+
+  <div class="meta">
+    by typester /
+    at <a href="/memo/2006/03/30/3/">2006-03-30T22:41:00</a> /
+    <a href="/memo/tag/life/">life</a>
+    / <a href="/memo/2006/03/30/3/#disqus_thread">Comment</a>
+  </div>
+</div>
+
+
+
+
+<div id="pager" class="autopagerize_insert_before">
+  <p class="pages">
+    <a class="prev" rel="previous" href="/memo/page/119/">&laquo; Prev</a>
+    <a href="/memo/page/116/">116</a>
+    <a href="/memo/page/117/">117</a>
+    <a href="/memo/page/118/">118</a>
+    <a href="/memo/page/119/">119</a>
+    <span class="current">120</span>
+    <a href="/memo/page/121/">121</a>
+    <a href="/memo/page/122/">122</a>
+    <a href="/memo/page/123/">123</a>
+    <a href="/memo/page/124/">124</a>
+    <a href="/memo/page/125/">125</a>
+    <a class="next" rel="next" href="/memo/page/121/">Next &raquo;</a>
+  </p>
+  <p class="info">(Page 120 of 203)</p>
+</div>
+
+
+</div>
+
+<p id="footer">
+  Copyright &copy; 2005-2013
+      by <a class="author" href="/about/#me">Daisuke Murase (typester)</a> /
+  Site generated by <a href="https://github.com/typester/nim">nim</a> /
+  Comments powered by <a href="http://disqus.com">DISQUS</a>.
+</p>
+
+</div>
+
+
+<script type="text/javascript">
+//<![CDATA[
+(function() {
+	var links = document.getElementsByTagName('a');
+	var query = '?';
+	for(var i = 0; i < links.length; i++) {
+	if(links[i].href.indexOf('#disqus_thread') >= 0) {
+		query += 'url' + i + '=' + encodeURIComponent(links[i].href) + '&';
+	}
+	}
+	document.write('<script charset="utf-8" type="text/javascript" src="http://disqus.com/forums/unknownplace/get_num_replies.js' + query + '"></' + 'script>');
+})();
+//]]>
+</script>
+
+
+<script type="text/javascript">
+var gaJsHost = (("https:" == document.location.protocol) ? "https://ssl." : "http://www.");
+document.write(unescape("%3Cscript src='" + gaJsHost + "google-analytics.com/ga.js' type='text/javascript'%3E%3C/script%3E"));
+</script>
+<script type="text/javascript">
+try {
+var pageTracker = _gat._getTracker("UA-53067-1");
+pageTracker._trackPageview();
+} catch(err) {}</script>
+
+<script>
+function googleTranslateElementInit() {
+  new google.translate.TranslateElement({
+    pageLanguage: 'ja',
+    gaTrack: true,
+    gaId: 'UA-53067',
+    floatPosition: google.translate.TranslateElement.FloatPosition.BOTTOM_RIGHT
+  });
+}
+</script><script src="//translate.google.com/translate_a/element.js?cb=googleTranslateElementInit"></script>
+
+</body>
+</html>

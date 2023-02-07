@@ -1,0 +1,148 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="ja" xml:lang="ja">
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <title>Text::MicroTemplate を拡張してみた - unknownplace.org</title>
+  <link rel="stylesheet" type="text/css" href="http://yui.yahooapis.com/3.0.0/build/cssreset/reset-min.css" />
+  <link rel="stylesheet" type="text/css" href="http://yui.yahooapis.com/3.0.0/build/cssfonts/fonts-min.css" />
+  <link rel="stylesheet" href="/css/style.css" type="text/css" />
+  <meta property="fb:admins" content="1093631929" />
+  <link rel="alternate" type="application/rss+xml" href="http://unknownplace.org/memo/index.rss" />
+</head>
+<body>
+
+<div id="container">
+<div id="header">
+    <h1><a href="/">unknownplace.org</a></h1> /
+<a href="/memo/">memo</a>
+</div>
+
+<div id="content">
+<div class="entry autopagerize_page_element">
+  <h2><a href="/memo/2009/06/25/1/">Text::MicroTemplate を拡張してみた</a></h2>
+
+  <div class="body">
+    <p>最近は <a href="http://search.cpan.org/dist/Text-MicroTemplate/">Text::MicroTemplate (TMT)</a> をよく利用するようになったのですが、使用するにつれ不満なところが出てきたのでそれを解決するために少し拡張してみました。</p>
+<p>実際には拡張したのは Text::MicroTemplate ではなく、Text::MicroTemplate::File です。</p>
+<blockquote><p><a href="http://github.com/typester/text-microtemplate-extended-perl/tree/master">http://github.com/typester/text-microtemplate-extended-perl/tree/master</a></p></blockquote>
+<p>現在二つの機能を追加してあるのでそれを以下にまとめておきます。</p>
+<h4>テンプレートの継承機能を追加</h4>
+<p>テンプレートを分割するような規模になってくると現状の TMT では</p>
+<pre><code><span class="string">&lt;?=r $self-&gt;</span><span class="cperl-nonoverridable">render_file</span>(<span class="string">&apos;header.mt&apos;</span>) ?&gt;
+
+ここにコンテンツ
+
+&lt;?=r $self-&gt;render_file(<span class="string">&apos;footer.mt&apos;</span>) ?&gt;
+</code></pre>
+<p>などのように書くことになりますが、これは <a href="http://search.cpan.org/dist/Template-Toolkit/">TT</a> の wrapper 機能などに慣れていると少しめんどくさい。</p>
+<ins>追記： TMTでもwrapperはつかえるみたいです。＞ $mtf-&gt;wrapper_file</ins>
+<p>そこで、TMT でも wrapper 機能をつかえるように！！ ・・・しようかと思ったのですがやめて、代わりに Django のテンプレートなどで採用されている継承という仕組みを実装してみました。</p>
+<p>詳しい説明は <a href="http://djangoproject.jp/doc/ja/1.0/topics/templates.html#template-inheritance">Django のテンプレートのドキュメント</a>がとても詳しいのでそちらを参照するといいと思います。</p>
+<p>で、上記の Django ドキュメントにあるテンプレート継承の例をこの拡張版 TMT で書くとどうなるかというと、base.html (base.mt) が</p>
+<pre><code><span class="nxml-markup-declaration-delimiter">&lt;!</span><span class="nxml-prolog-keyword">DOCTYPE</span> html <span class="nxml-prolog-keyword"><span class="nxml-prolog-keyword">PUBLIC</span></span> <span class="nxml-prolog-literal-delimiter">&quot;</span><span class="nxml-prolog-literal-content">-//W3C//DTD XHTML 1.0 Transitional//EN</span><span class="nxml-prolog-literal-delimiter">&quot;</span>
+    <span class="nxml-prolog-literal-delimiter">&quot;</span><span class="nxml-prolog-literal-content">http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd</span><span class="nxml-prolog-literal-delimiter">&quot;</span><span class="nxml-markup-declaration-delimiter">&gt;</span>
+<span class="nxml-tag-delimiter">&lt;</span><span class="nxml-element-local-name">html</span> <span class="nxml-namespace-attribute-xmlns">xmlns</span>=<span class="nxml-namespace-attribute-value-delimiter">&quot;</span><span class="nxml-namespace-attribute-value">http://www.w3.org/1999/xhtml</span><span class="nxml-namespace-attribute-value-delimiter">&quot;</span> <span class="nxml-attribute-prefix">xml</span><span class="nxml-attribute-colon">:</span><span class="nxml-attribute-local-name">lang</span>=<span class="nxml-attribute-value-delimiter">&quot;</span><span class="nxml-attribute-value">en</span><span class="nxml-attribute-value-delimiter">&quot;</span> <span class="nxml-attribute-local-name">lang</span>=<span class="nxml-attribute-value-delimiter">&quot;</span><span class="nxml-attribute-value">en</span><span class="nxml-attribute-value-delimiter">&quot;</span><span class="nxml-tag-delimiter">&gt;</span>
+<span class="nxml-tag-delimiter">&lt;</span><span class="nxml-element-local-name">head</span><span class="nxml-tag-delimiter">&gt;</span>
+    <span class="nxml-tag-delimiter">&lt;</span><span class="nxml-element-local-name">link</span> <span class="nxml-attribute-local-name">rel</span>=<span class="nxml-attribute-value-delimiter">&quot;</span><span class="nxml-attribute-value">stylesheet</span><span class="nxml-attribute-value-delimiter">&quot;</span> <span class="nxml-attribute-local-name">href</span>=<span class="nxml-attribute-value-delimiter">&quot;</span><span class="nxml-attribute-value">style.css</span><span class="nxml-attribute-value-delimiter">&quot;</span> <span class="nxml-tag-slash">/</span><span class="nxml-tag-delimiter">&gt;</span>
+    <span class="nxml-tag-delimiter">&lt;</span><span class="nxml-element-local-name">title</span><span class="nxml-tag-delimiter">&gt;</span><span class="nxml-processing-instruction-delimiter">&lt;?</span> <span class="nxml-processing-instruction-content">block title =&gt; sub { </span><span class="nxml-processing-instruction-delimiter">?&gt;</span><span class="nxml-text">My amazing site</span><span class="nxml-processing-instruction-delimiter">&lt;?</span> <span class="nxml-processing-instruction-content">} </span><span class="nxml-processing-instruction-delimiter">?&gt;</span><span class="nxml-tag-delimiter">&lt;</span><span class="nxml-tag-slash">/</span><span class="nxml-element-local-name">title</span><span class="nxml-tag-delimiter">&gt;</span>
+<span class="nxml-tag-delimiter">&lt;</span><span class="nxml-tag-slash">/</span><span class="nxml-element-local-name">head</span><span class="nxml-tag-delimiter">&gt;</span>
+
+<span class="nxml-tag-delimiter">&lt;</span><span class="nxml-element-local-name">body</span><span class="nxml-tag-delimiter">&gt;</span>
+    <span class="nxml-tag-delimiter">&lt;</span><span class="nxml-element-local-name">div</span> <span class="nxml-attribute-local-name">id</span>=<span class="nxml-attribute-value-delimiter">&quot;</span><span class="nxml-attribute-value">sidebar</span><span class="nxml-attribute-value-delimiter">&quot;</span><span class="nxml-tag-delimiter">&gt;</span>
+        <span class="nxml-processing-instruction-delimiter">&lt;?</span> <span class="nxml-processing-instruction-content">block sidebar =&gt; sub { </span><span class="nxml-processing-instruction-delimiter">?&gt;</span>
+        <span class="nxml-tag-delimiter">&lt;</span><span class="nxml-element-local-name">ul</span><span class="nxml-tag-delimiter">&gt;</span>
+            <span class="nxml-tag-delimiter">&lt;</span><span class="nxml-element-local-name">li</span><span class="nxml-tag-delimiter">&gt;</span><span class="nxml-tag-delimiter">&lt;</span><span class="nxml-element-local-name">a</span> <span class="nxml-attribute-local-name">href</span>=<span class="nxml-attribute-value-delimiter">&quot;</span><span class="nxml-attribute-value">/</span><span class="nxml-attribute-value-delimiter">&quot;</span><span class="nxml-tag-delimiter">&gt;</span><span class="nxml-text">Home</span><span class="nxml-tag-delimiter">&lt;</span><span class="nxml-tag-slash">/</span><span class="nxml-element-local-name">a</span><span class="nxml-tag-delimiter">&gt;</span><span class="nxml-tag-delimiter">&lt;</span><span class="nxml-tag-slash">/</span><span class="nxml-element-local-name">li</span><span class="nxml-tag-delimiter">&gt;</span>
+            <span class="nxml-tag-delimiter">&lt;</span><span class="nxml-element-local-name">li</span><span class="nxml-tag-delimiter">&gt;</span><span class="nxml-tag-delimiter">&lt;</span><span class="nxml-element-local-name">a</span> <span class="nxml-attribute-local-name">href</span>=<span class="nxml-attribute-value-delimiter">&quot;</span><span class="nxml-attribute-value">/blog/</span><span class="nxml-attribute-value-delimiter">&quot;</span><span class="nxml-tag-delimiter">&gt;</span><span class="nxml-text">Blog</span><span class="nxml-tag-delimiter">&lt;</span><span class="nxml-tag-slash">/</span><span class="nxml-element-local-name">a</span><span class="nxml-tag-delimiter">&gt;</span><span class="nxml-tag-delimiter">&lt;</span><span class="nxml-tag-slash">/</span><span class="nxml-element-local-name">li</span><span class="nxml-tag-delimiter">&gt;</span>
+        <span class="nxml-tag-delimiter">&lt;</span><span class="nxml-tag-slash">/</span><span class="nxml-element-local-name">ul</span><span class="nxml-tag-delimiter">&gt;</span>
+        <span class="nxml-processing-instruction-delimiter">&lt;?</span> <span class="nxml-processing-instruction-content">} </span><span class="nxml-processing-instruction-delimiter">?&gt;</span>
+    <span class="nxml-tag-delimiter">&lt;</span><span class="nxml-tag-slash">/</span><span class="nxml-element-local-name">div</span><span class="nxml-tag-delimiter">&gt;</span>
+
+    <span class="nxml-tag-delimiter">&lt;</span><span class="nxml-element-local-name">div</span> <span class="nxml-attribute-local-name">id</span>=<span class="nxml-attribute-value-delimiter">&quot;</span><span class="nxml-attribute-value">content</span><span class="nxml-attribute-value-delimiter">&quot;</span><span class="nxml-tag-delimiter">&gt;</span>
+        <span class="nxml-processing-instruction-delimiter">&lt;?</span> <span class="nxml-processing-instruction-content">block content =&gt; sub {} </span><span class="nxml-processing-instruction-delimiter">?&gt;</span>
+    <span class="nxml-tag-delimiter">&lt;</span><span class="nxml-tag-slash">/</span><span class="nxml-element-local-name">div</span><span class="nxml-tag-delimiter">&gt;</span>
+<span class="nxml-tag-delimiter">&lt;</span><span class="nxml-tag-slash">/</span><span class="nxml-element-local-name">body</span><span class="nxml-tag-delimiter">&gt;</span>
+<span class="nxml-tag-delimiter">&lt;</span><span class="nxml-tag-slash">/</span><span class="nxml-element-local-name">html</span><span class="nxml-tag-delimiter">&gt;</span>
+</code></pre>
+<p>child.html (child.mt) は：</p>
+<pre><code>text</code></pre>
+<p>のようになります。</p>
+<p>TT のような wrapper という方式と、このような継承という仕組みはどちらも一長一短ありますが、柔軟にテンプレートを定義できるのは継承の方かなぁと感じてます。</p>
+<p>ちなみに Django テンプレートに実装されている <code>block.super</code> 相当の機能はまだ実装できていません。</p>
+<h4>テンプレートに名前付き引数を渡せる機能を追加</h4>
+<p>もう一つ、テンプレートに名前付きで値を渡せる機能も追加しました。オブジェクトを作成するときに</p>
+<pre><code>Text::MicroTemplate::Extended-&gt;new( include_path =&gt; [&apos;.&apos;], template_args =&gt; { foo =&gt; &apos;bar&apos; } );
+</code></pre>
+<p>などのように template_args パラメータにハッシュリファレンスを渡しておくと、テンプレート中でこのハッシュのキーを</p>
+<pre><code>&lt;?= $foo ?&gt; # =&gt; bar
+</code></pre>
+<p>と参照することができるようになるという機能です。</p>
+
+  </div>
+
+  <div class="meta">
+    by typester /
+    at <a href="/memo/2009/06/25/1/">2009-06-25T18:11:00</a> /
+    <a href="/memo/tag/perl/">perl</a>
+    / <a href="/memo/2009/06/25/1/#disqus_thread">Comments(0)</a>
+  </div>
+</div>
+
+<div id="disqus_thread"></div>
+
+<script type="text/javascript">
+    var disqus_url = location.protocol + "//" + location.host + "/memo/2009/06/25/1/";
+</script>
+<script type="text/javascript" src="http://disqus.com/forums/unknownplace/embed.js"></script>
+
+</div>
+
+<p id="footer">
+  Copyright &copy; 2005-2013
+      by <a class="author" href="/about/#me">Daisuke Murase (typester)</a> /
+  Site generated by <a href="https://github.com/typester/nim">nim</a> /
+  Comments powered by <a href="http://disqus.com">DISQUS</a>.
+</p>
+
+</div>
+
+
+<script type="text/javascript">
+//<![CDATA[
+(function() {
+	var links = document.getElementsByTagName('a');
+	var query = '?';
+	for(var i = 0; i < links.length; i++) {
+	if(links[i].href.indexOf('#disqus_thread') >= 0) {
+		query += 'url' + i + '=' + encodeURIComponent(links[i].href) + '&';
+	}
+	}
+	document.write('<script charset="utf-8" type="text/javascript" src="http://disqus.com/forums/unknownplace/get_num_replies.js' + query + '"></' + 'script>');
+})();
+//]]>
+</script>
+
+
+<script type="text/javascript">
+var gaJsHost = (("https:" == document.location.protocol) ? "https://ssl." : "http://www.");
+document.write(unescape("%3Cscript src='" + gaJsHost + "google-analytics.com/ga.js' type='text/javascript'%3E%3C/script%3E"));
+</script>
+<script type="text/javascript">
+try {
+var pageTracker = _gat._getTracker("UA-53067-1");
+pageTracker._trackPageview();
+} catch(err) {}</script>
+
+<script>
+function googleTranslateElementInit() {
+  new google.translate.TranslateElement({
+    pageLanguage: 'ja',
+    gaTrack: true,
+    gaId: 'UA-53067',
+    floatPosition: google.translate.TranslateElement.FloatPosition.BOTTOM_RIGHT
+  });
+}
+</script><script src="//translate.google.com/translate_a/element.js?cb=googleTranslateElementInit"></script>
+
+</body>
+</html>

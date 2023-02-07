@@ -1,0 +1,185 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="ja" xml:lang="ja">
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <title>2005/10/26 - memo - unknownplace.org</title>
+  <link rel="stylesheet" type="text/css" href="http://yui.yahooapis.com/3.0.0/build/cssreset/reset-min.css" />
+  <link rel="stylesheet" type="text/css" href="http://yui.yahooapis.com/3.0.0/build/cssfonts/fonts-min.css" />
+  <link rel="stylesheet" href="/css/style.css" type="text/css" />
+  <meta property="fb:admins" content="1093631929" />
+  <meta name="robots" content="noindex" />
+  <link rel="alternate" type="application/rss+xml" href="http://unknownplace.org/memo/index.rss" />
+</head>
+<body>
+
+<div id="container">
+<div id="header">
+    <h1><a href="/">unknownplace.org</a></h1> /
+<a href="/memo/">memo</a>
+</div>
+
+<div id="content">
+
+<div class="entry autopagerize_page_element">
+  <h2 id="e005"><a href="/memo/2005/10/26/5/">Catalyst 5.5RC2</a></h2>
+
+  <div class="body">
+    <p>またメンテナかわてる。。 どゆことなんだろうかｗ</p>
+
+  </div>
+
+  <div class="meta">
+    by typester /
+    at <a href="/memo/2005/10/26/5/">2005-10-26T13:10:00</a> /
+    <a href="/memo/tag/catalyst/">catalyst</a>
+    / <a href="/memo/2005/10/26/5/#disqus_thread">Comment</a>
+  </div>
+</div>
+
+<div class="entry autopagerize_page_element">
+  <h2 id="e004"><a href="/memo/2005/10/26/4/"></a></h2>
+
+  <div class="body">
+    <p>出社。</p>
+
+  </div>
+
+  <div class="meta">
+    by typester /
+    at <a href="/memo/2005/10/26/4/">2005-10-26T10:49:00</a> /
+    <a href="/memo/tag/life/">life</a>
+    / <a href="/memo/2005/10/26/4/#disqus_thread">Comment</a>
+  </div>
+</div>
+
+<div class="entry autopagerize_page_element">
+  <h2 id="e003"><a href="/memo/2005/10/26/3/">複数設定切り替え</a></h2>
+
+  <div class="body">
+    <p>ほぼすべての設定を複数つかいわけられる（多分</p>
+<pre><code>(setq mew-config-alist
+      &apos;((<span class="string">&quot;gmail&quot;</span>
+         (<span class="string">&quot;name&quot;</span> . <span class="string">&quot;typester&quot;</span>)
+         (<span class="string">&quot;user&quot;</span> . <span class="string">&quot;typester&quot;</span>)
+         (<span class="string">&quot;mail-domain&quot;</span> . <span class="string">&quot;gmail.com&quot;</span>))
+        (<span class="string">&quot;perl&quot;</span>
+         (<span class="string">&quot;name&quot;</span> . <span class="string">&quot;Daisuke Murase&quot;</span>)
+         (<span class="string">&quot;user&quot;</span> . <span class="string">&quot;typester&quot;</span>)
+         (<span class="string">&quot;mail-domain&quot;</span> . <span class="string">&quot;cpan.org&quot;</span>))
+        (<span class="string">&quot;priv&quot;</span>
+         (<span class="string">&quot;name&quot;</span> . <span class="string">&quot;murase&quot;</span>)
+         (<span class="string">&quot;user&quot;</span> . <span class="string">&quot;typester&quot;</span>)
+         (<span class="string">&quot;mail-domain&quot;</span> . <span class="string">&quot;unknownplace.org&quot;</span>))
+       ))
+</code></pre>
+<p>こんなんで default 以外の設定を定義できる。この中では default の <code>mew-user</code> とかの mew- をとったものを指定するらしい。</p>
+<p>切り替えるには Summary/Virtual モードでは C で、メール編集時には C-c C-o で、それぞれ切り替えられる。</p>
+
+  </div>
+
+  <div class="meta">
+    by typester /
+    at <a href="/memo/2005/10/26/3/">2005-10-26T03:40:00</a> /
+    <a href="/memo/tag/mew/">mew</a>
+    / <a href="/memo/2005/10/26/3/#disqus_thread">Comment</a>
+  </div>
+</div>
+
+<div class="entry autopagerize_page_element">
+  <h2 id="e002"><a href="/memo/2005/10/26/2/"></a></h2>
+
+  <div class="body">
+    <p>退社。</p>
+
+  </div>
+
+  <div class="meta">
+    by typester /
+    at <a href="/memo/2005/10/26/2/">2005-10-26T02:33:00</a> /
+    <a href="/memo/tag/life/">life</a>
+    / <a href="/memo/2005/10/26/2/#disqus_thread">Comment</a>
+  </div>
+</div>
+
+<div class="entry autopagerize_page_element">
+  <h2 id="e001"><a href="/memo/2005/10/26/1/">mew</a></h2>
+
+  <div class="body">
+    <p>思ったよりはいいかも。</p>
+<pre><code>(setq mew-mailbox-type &apos;mbox)
+(setq mew-mbox-command <span class="string">&quot;incm&quot;</span>)
+(setq mew-mbox-command-arg <span class="string">&quot;-d /home/typester/Maildir&quot;</span>)
+</code></pre>
+<p>とかしたら Maildir のほうの新着メールが消えて焦った。</p>
+<pre><code>(setq mew-mailbox-type &apos;mbox)
+(setq mew-mbox-command <span class="string">&quot;incm&quot;</span>)
+(setq mew-mbox-command-arg <span class="string">&quot;-b -d /home/typester/Maildir&quot;</span>)
+</code></pre>
+<p>としておいた。この辺は <code>man incm</code> 参照。</p>
+<p>実際は Maildir からコピーしてこずに直で Maildir 内のメール読めるといいんだけど。 (できないこともないんだが inbox に 30,000 通以上溜め込んでる今の状況じゃ mew だとつらげ)</p>
+<p>メーラとしては全然満足だねぃ。ちょっとメインで使ってみる。</p>
+
+  </div>
+
+  <div class="meta">
+    by typester /
+    at <a href="/memo/2005/10/26/1/">2005-10-26T01:31:00</a> /
+    <a href="/memo/tag/mew/">mew</a>
+    / <a href="/memo/2005/10/26/1/#disqus_thread">Comment</a>
+  </div>
+</div>
+
+
+
+</div>
+
+<p id="footer">
+  Copyright &copy; 2005-2013
+      by <a class="author" href="/about/#me">Daisuke Murase (typester)</a> /
+  Site generated by <a href="https://github.com/typester/nim">nim</a> /
+  Comments powered by <a href="http://disqus.com">DISQUS</a>.
+</p>
+
+</div>
+
+
+<script type="text/javascript">
+//<![CDATA[
+(function() {
+	var links = document.getElementsByTagName('a');
+	var query = '?';
+	for(var i = 0; i < links.length; i++) {
+	if(links[i].href.indexOf('#disqus_thread') >= 0) {
+		query += 'url' + i + '=' + encodeURIComponent(links[i].href) + '&';
+	}
+	}
+	document.write('<script charset="utf-8" type="text/javascript" src="http://disqus.com/forums/unknownplace/get_num_replies.js' + query + '"></' + 'script>');
+})();
+//]]>
+</script>
+
+
+<script type="text/javascript">
+var gaJsHost = (("https:" == document.location.protocol) ? "https://ssl." : "http://www.");
+document.write(unescape("%3Cscript src='" + gaJsHost + "google-analytics.com/ga.js' type='text/javascript'%3E%3C/script%3E"));
+</script>
+<script type="text/javascript">
+try {
+var pageTracker = _gat._getTracker("UA-53067-1");
+pageTracker._trackPageview();
+} catch(err) {}</script>
+
+<script>
+function googleTranslateElementInit() {
+  new google.translate.TranslateElement({
+    pageLanguage: 'ja',
+    gaTrack: true,
+    gaId: 'UA-53067',
+    floatPosition: google.translate.TranslateElement.FloatPosition.BOTTOM_RIGHT
+  });
+}
+</script><script src="//translate.google.com/translate_a/element.js?cb=googleTranslateElementInit"></script>
+
+</body>
+</html>

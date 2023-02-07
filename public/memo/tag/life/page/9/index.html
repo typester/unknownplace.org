@@ -1,0 +1,291 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="ja" xml:lang="ja">
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <title>memo - unknownplace.org</title>
+  <link rel="stylesheet" type="text/css" href="http://yui.yahooapis.com/3.0.0/build/cssreset/reset-min.css" />
+  <link rel="stylesheet" type="text/css" href="http://yui.yahooapis.com/3.0.0/build/cssfonts/fonts-min.css" />
+  <link rel="stylesheet" href="/css/style.css" type="text/css" />
+  <meta property="fb:admins" content="1093631929" />
+  <meta name="robots" content="noindex" />
+  <link rel="alternate" type="application/rss+xml" href="http://unknownplace.org/memo/index.rss" />
+</head>
+<body>
+
+<div id="container">
+<div id="header">
+    <h1><a href="/">unknownplace.org</a></h1> /
+<a href="/memo/">memo</a>
+</div>
+
+<div id="content">
+
+<div class="entry autopagerize_page_element">
+  <h2><a href="/memo/2007/07/24/1/">夢</a></h2>
+
+  <div class="body">
+    <p>なぜかkentaroさんと二人で渡米する夢を見た。</p>
+<p>行きの飛行機の中で二人で英会話の練習。</p>
+<p>僕はコーヒーを頼んだらコーラが出てきて、kentaroさんはオレンジジュースを頼んだらトマトジュースが出てきていた。</p>
+
+  </div>
+
+  <div class="meta">
+    by typester /
+    at <a href="/memo/2007/07/24/1/">2007-07-24T11:08:00</a> /
+    <a href="/memo/tag/life/">life</a>
+    / <a href="/memo/2007/07/24/1/#disqus_thread">Comment</a>
+  </div>
+</div>
+
+<div class="entry autopagerize_page_element">
+  <h2><a href="/memo/2007/07/12/1/">そろそろはてグのスタイル何とかするかと思って環境作ってみた</a></h2>
+
+  <div class="body">
+    <p>はてグで書いてるモンハン日記のスタイルがデフォルトのままであれなので変えようと思ってちょっとCSSいじろうとしてみたら <code>@import</code> がつかえなくてズーンってなったのでローカルプロクシの環境をなんとかすることにした。</p>
+<p>普段の開発では、ローカルにすべて環境作れるものばかりなのであまり使わないのだけど、前につくったperl製のプロクシの性能が悪すぎるのもあり、なんとかしたいとおもってた。</p>
+<p>今回は <a href="http://www.fiddler2.com/fiddler2/">fiddler2</a> をためした。</p>
+<p>起動して Rules -&gt; Customize Rules... するとエディタが立ち上がるのでそこのうえのほうに</p>
+<pre><code><span class="type">public</span> <span class="keyword">static</span> RulesOption(<span class="string">"Replace Hatena Group CSS"</span>)
+var m_HATENAGROUPCSS: boolean = <span class="constant">false</span>;
+</code></pre>
+<p>とかかく、つぎに、<code>static function OnBeforeRequest(oSession: Session)</code> の中に</p>
+<pre><code>if ( m_HATENAGROUPCSS &amp;&amp; oSession.hostname.match(/\w+\.g\.hatena\.ne\.jp/) &amp;&amp; oSession.PathAndQuery.match(/^\/headerstyle/) ) {
+    oSession.hostname = &apos;static.murase.dev&apos;;
+    oSession.PathAndQuery = &apos;/mh/mh.css&apos;;
+}
+</code></pre>
+<p>とかいれる。</p>
+<p>これで、RuleメニューにReplace Hatena Group CSSとか言うのが追加されるので、それONにするとCSSが自分のにかわるという。</p>
+<p>結構お手軽でいいね。パフォーマンスが自前のやつより全然いいのが何よりいい。</p>
+
+  </div>
+
+  <div class="meta">
+    by typester /
+    at <a href="/memo/2007/07/12/1/">2007-07-12T16:51:00</a> /
+    <a href="/memo/tag/life/">life</a>
+    / <a href="/memo/2007/07/12/1/#disqus_thread">Comment</a>
+  </div>
+</div>
+
+<div class="entry autopagerize_page_element">
+  <h2><a href="/memo/2007/07/11/1/">Webcam買いました</a></h2>
+
+  <div class="body">
+    <p>手元ライブはじめます！</p>
+<p><embed height="261" src="http://www.ustream.tv/grvNDbE1,e9eBm2tXSSBsw.usc" type="application/x-shockwave-flash" width="320" wmode="transparent" /></p>
+<p>どういう形で置こうかは検討中。twitterと組み合すと面白そうではあるけど。</p>
+
+  </div>
+
+  <div class="meta">
+    by typester /
+    at <a href="/memo/2007/07/11/1/">2007-07-11T09:57:00</a> /
+    <a href="/memo/tag/life/">life</a>
+    / <a href="/memo/2007/07/11/1/#disqus_thread">Comment</a>
+  </div>
+</div>
+
+<div class="entry autopagerize_page_element">
+  <h2><a href="/memo/2007/06/28/1/">Teach them to fish, don&#39;t feed them</a></h2>
+
+  <div class="body">
+    <p>とかDBICのチャンネルで言っててへーと思った。</p>
+<p>むずかしいね。</p>
+
+  </div>
+
+  <div class="meta">
+    by typester /
+    at <a href="/memo/2007/06/28/1/">2007-06-28T20:15:00</a> /
+    <a href="/memo/tag/life/">life</a>
+    / <a href="/memo/2007/06/28/1/#disqus_thread">Comment</a>
+  </div>
+</div>
+
+<div class="entry autopagerize_page_element">
+  <h2><a href="/memo/2007/06/11/2/">というわけで</a></h2>
+
+  <div class="body">
+    <blockquote><p><a href="http://monsterhunter.g.hatena.ne.jp/typester/">モンスターハンター - typesterの日記</a></p></blockquote>
+<p>はじめました。記法は使いながら覚える。</p>
+<p>MHP2とかグループキーワードなはずなのにリンクされないのはなぜなんだぜ？</p>
+
+  </div>
+
+  <div class="meta">
+    by typester /
+    at <a href="/memo/2007/06/11/2/">2007-06-11T19:00:00</a> /
+    <a href="/memo/tag/life/">life</a>
+    / <a href="/memo/2007/06/11/2/#disqus_thread">Comment</a>
+  </div>
+</div>
+
+<div class="entry autopagerize_page_element">
+  <h2><a href="/memo/2007/06/11/1/">はてなモンハングループ</a></h2>
+
+  <div class="body">
+    <blockquote><p><a href="http://monsterhunter.g.hatena.ne.jp/">モンスターハンター</a></p></blockquote>
+<p>参加申請してみた。でも、はてな記法になじめないからどうだろうな。</p>
+<p>ケンタッキー食えないのにたまに挑戦してみたくなって食べてみるけどやっぱりだめだった、的な感じに似ている。</p>
+
+  </div>
+
+  <div class="meta">
+    by typester /
+    at <a href="/memo/2007/06/11/1/">2007-06-11T07:21:00</a> /
+    <a href="/memo/tag/life/">life</a>
+    / <a href="/memo/2007/06/11/1/#disqus_thread">Comment</a>
+  </div>
+</div>
+
+<div class="entry autopagerize_page_element">
+  <h2><a href="/memo/2007/06/08/1/">Sansa Express</a></h2>
+
+  <div class="body">
+    <p><a href="http://www.flickr.com/photos/typester/535600404/" title="Photo Sharing"><img alt="Sansa Express" height="333" src="http://farm1.static.flickr.com/219/535600404_6df30f6d21.jpg" width="500" /></a></p>
+<p>USB メモリタイプのオーディオプレーヤー。3月くらいに注文してたのがやっと届いた。</p>
+<p>何も考えずに Windows 機の USB ポートにさすとポータブルデバイスとして認識されて、USBメモリとしては使えない。</p>
+<p>あせったけど、あわてずにデバイスマネージャを開いてドライバをインストールしなおせばよかった。</p>
+<p>互換性のあるドライバ一覧のところで二つ出るので汎用ディスクドライブ、みたいのほう。要するに最初から入るのじゃないほう。</p>
+<p>mp3 と wma しか再生できないのだけど、僕は iTunes 使うようになってからは aac で取り込んでるので最近の音楽ファイルはそのままじゃつかえなかったりとかありますが、なかなか満足。</p>
+
+  </div>
+
+  <div class="meta">
+    by typester /
+    at <a href="/memo/2007/06/08/1/">2007-06-08T16:10:00</a> /
+    <a href="/memo/tag/life/">life</a>
+    / <a href="/memo/2007/06/08/1/#disqus_thread">Comment</a>
+  </div>
+</div>
+
+<div class="entry autopagerize_page_element">
+  <h2><a href="/memo/2007/06/07/1/">モンハン</a></h2>
+
+  <div class="body">
+    <p>昨日やっとこ HR6 に！ ティガ二頭とか僕は無理すぎるので見てるだけでしたが＞＜</p>
+<p>しかし、こんなに長続きするゲームは初めてかも？ いまだに飽きていない。</p>
+<p>XLink Kai 持ってる人いたら一緒に遊びませしょう！</p>
+
+  </div>
+
+  <div class="meta">
+    by typester /
+    at <a href="/memo/2007/06/07/1/">2007-06-07T15:54:00</a> /
+    <a href="/memo/tag/life/">life</a>
+    / <a href="/memo/2007/06/07/1/#disqus_thread">Comment</a>
+  </div>
+</div>
+
+<div class="entry autopagerize_page_element">
+  <h2><a href="/memo/2007/06/04/1/">スタバのタンブラー</a></h2>
+
+  <div class="body">
+    <p>ちょっと前に陶器製の取っ手のついたタンブラーっぽいものがうっていて、アイスコーヒー飲むのによさそう買おう！ とか思ったんだけど、もうお店から消えている。。</p>
+<p>なんだよー＞＜</p>
+
+  </div>
+
+  <div class="meta">
+    by typester /
+    at <a href="/memo/2007/06/04/1/">2007-06-04T11:50:00</a> /
+    <a href="/memo/tag/life/">life</a>
+    / <a href="/memo/2007/06/04/1/#disqus_thread">Comment</a>
+  </div>
+</div>
+
+<div class="entry autopagerize_page_element">
+  <h2><a href="/memo/2007/05/30/1/">vmware 容量拡張</a></h2>
+
+  <div class="body">
+    <p>初期 8GB じゃきびしくなってきたけど、ファイル整理するのめんどくさいので、</p>
+<pre><code>vmware-vdiskmanager.exe -x 20Gb Debian.vmdk
+</code></pre>
+<p>としイメージファイル拡張。その後 parted で ext3 領域も拡張して完了。</p>
+
+  </div>
+
+  <div class="meta">
+    by typester /
+    at <a href="/memo/2007/05/30/1/">2007-05-30T19:57:00</a> /
+    <a href="/memo/tag/life/">life</a>
+    / <a href="/memo/2007/05/30/1/#disqus_thread">Comment</a>
+  </div>
+</div>
+
+
+
+
+<div id="pager" class="autopagerize_insert_before">
+  <p class="pages">
+    <a class="prev" rel="previous" href="/memo/tag/life/page/8/">&laquo; Prev</a>
+    <a href="/memo/tag/life/page/5/">5</a>
+    <a href="/memo/tag/life/page/6/">6</a>
+    <a href="/memo/tag/life/page/7/">7</a>
+    <a href="/memo/tag/life/page/8/">8</a>
+    <span class="current">9</span>
+    <a href="/memo/tag/life/page/10/">10</a>
+    <a href="/memo/tag/life/page/11/">11</a>
+    <a href="/memo/tag/life/page/12/">12</a>
+    <a href="/memo/tag/life/page/13/">13</a>
+    <a href="/memo/tag/life/page/14/">14</a>
+    <a class="next" rel="next" href="/memo/tag/life/page/10/">Next &raquo;</a>
+  </p>
+  <p class="info">(Page 9 of 120)</p>
+</div>
+
+
+</div>
+
+<p id="footer">
+  Copyright &copy; 2005-2013
+      by <a class="author" href="/about/#me">Daisuke Murase (typester)</a> /
+  Site generated by <a href="https://github.com/typester/nim">nim</a> /
+  Comments powered by <a href="http://disqus.com">DISQUS</a>.
+</p>
+
+</div>
+
+
+<script type="text/javascript">
+//<![CDATA[
+(function() {
+	var links = document.getElementsByTagName('a');
+	var query = '?';
+	for(var i = 0; i < links.length; i++) {
+	if(links[i].href.indexOf('#disqus_thread') >= 0) {
+		query += 'url' + i + '=' + encodeURIComponent(links[i].href) + '&';
+	}
+	}
+	document.write('<script charset="utf-8" type="text/javascript" src="http://disqus.com/forums/unknownplace/get_num_replies.js' + query + '"></' + 'script>');
+})();
+//]]>
+</script>
+
+
+<script type="text/javascript">
+var gaJsHost = (("https:" == document.location.protocol) ? "https://ssl." : "http://www.");
+document.write(unescape("%3Cscript src='" + gaJsHost + "google-analytics.com/ga.js' type='text/javascript'%3E%3C/script%3E"));
+</script>
+<script type="text/javascript">
+try {
+var pageTracker = _gat._getTracker("UA-53067-1");
+pageTracker._trackPageview();
+} catch(err) {}</script>
+
+<script>
+function googleTranslateElementInit() {
+  new google.translate.TranslateElement({
+    pageLanguage: 'ja',
+    gaTrack: true,
+    gaId: 'UA-53067',
+    floatPosition: google.translate.TranslateElement.FloatPosition.BOTTOM_RIGHT
+  });
+}
+</script><script src="//translate.google.com/translate_a/element.js?cb=googleTranslateElementInit"></script>
+
+</body>
+</html>

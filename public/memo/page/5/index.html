@@ -1,0 +1,562 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="ja" xml:lang="ja">
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <title>memo - unknownplace.org</title>
+  <link rel="stylesheet" type="text/css" href="http://yui.yahooapis.com/3.0.0/build/cssreset/reset-min.css" />
+  <link rel="stylesheet" type="text/css" href="http://yui.yahooapis.com/3.0.0/build/cssfonts/fonts-min.css" />
+  <link rel="stylesheet" href="/css/style.css" type="text/css" />
+  <meta property="fb:admins" content="1093631929" />
+  <meta name="robots" content="noindex" />
+  <link rel="alternate" type="application/rss+xml" href="http://unknownplace.org/memo/index.rss" />
+</head>
+<body>
+
+<div id="container">
+<div id="header">
+    <h1><a href="/">unknownplace.org</a></h1> /
+<a href="/memo/">memo</a>
+</div>
+
+<div id="content">
+
+<div class="entry autopagerize_page_element">
+  <h2><a href="/memo/2011/12/05/1/">Objective-C で AUTOLOAD （あるいは method_missing ）</a></h2>
+
+  <div class="body">
+    <p><code>forwardInvocation</code> とかを使えば出来るみたい。</p>
+<pre><code><span class="preprocessor">#import</span> &lt;Foundation/Foundation.h&gt;
+
+@interface Foo : NSObject;
+-(<span class="type">void</span>)call:(<span class="type">NSString</span>*)sel;
+@end
+
+@implementation Foo
+
+-(<span class="type">void</span>)call:(<span class="type">NSString</span>*)sel {
+    NSLog(@<span class="string">"call: %@"</span>, sel);
+}
+
+-(<span class="type">void</span>)forwardInvocation:(<span class="type">NSInvocation</span> *)invocation {
+    [self call:NSStringFromSelector([invocation selector])];
+}
+
+-(<span class="type">NSMethodSignature</span>*)methodSignatureForSelector:(<span class="type">SEL</span>)sel {
+    <span class="type">NSMethodSignature</span>* <span class="variable-name">sig</span> = [super methodSignatureForSelector:sel];
+    <span class="keyword">if</span> (sig) <span class="keyword">return</span> sig;
+
+    <span class="keyword">return</span> [[self class] instanceMethodSignatureForSelector:@selector(call:)];
+}
+
+@end
+
+<span class="type">int</span> main() {
+    <span class="type">NSAutoreleasePool</span>* <span class="variable-name">pool</span> = [[NSAutoreleasePool alloc] init];
+
+    <span class="type">Foo</span>* <span class="variable-name">foo</span> = [[Foo alloc] init];
+
+    [foo bar];
+    [foo buzz];
+
+    [foo release];
+
+    [pool drain];
+    <span class="keyword">return</span> 0;
+}
+
+<span class="comment-delimiter">// </span><span class="comment">gcc -framework Foundation foo.m
+</span></code></pre>
+<p>詳細は Objective-C Runtime Programming Guide にある。</p>
+
+  </div>
+
+  <div class="meta">
+    by typester /
+    at <a href="/memo/2011/12/05/1/">2011-12-05T20:32:00</a> /
+    <a href="/memo/tag/iphone/">iphone</a>
+    &middot; <a href="/memo/tag/objc/">objc</a>
+    / <a href="/memo/2011/12/05/1/#disqus_thread">Comment</a>
+  </div>
+</div>
+
+<div class="entry autopagerize_page_element">
+  <h2><a href="/memo/2011/12/01/1/">libuv の Perl バインディング</a></h2>
+
+  <div class="body">
+    <p>気分転換プロジェクトとして、<a href="https://github.com/joyent/libuv">libuv</a>のPerlバインディングを書いている。</p>
+<blockquote><p><a href="https://github.com/typester/p5-UV">typester/p5-UV - GitHub</a></p></blockquote>
+<p>現状、timerとtcp周りを一通り実装したところ。</p>
+<p>実装は愚直にlibuvの関数とperlの関数を1:1に（<code>uv_tcp_init(...)</code>を<code>UV::tcp_init(...)</code>というような形で）マッピングしている。 この実装はlow level APIと位置づけ、その上に使いやすい高レベルなインタフェースをPerl上で用意したいつもり。</p>
+<p>このlow level APIをつかったTCP echo serverはこんな感じになる:</p>
+<pre><code><span class="keyword">use</span> <span class="function-name">strict</span>;
+<span class="keyword">use</span> <span class="function-name">warnings</span>;
+
+<span class="keyword">use</span> <span class="function-name">UV</span>;
+
+<span class="keyword">my</span> <span class="variable-name">$server</span> = UV::tcp_init();
+UV::tcp_bind($server, <span class="string">&apos;0.0.0.0&apos;</span>, 3000)
+    &amp;&amp; <span class="keyword">die</span> <span class="string">&apos;bind error: &apos;</span>, UV::strerror(UV::last_error());
+
+UV::<span class="type">listen</span>($server, 10, <span class="keyword">sub</span> {
+    <span class="keyword">my</span> <span class="variable-name">$client</span> = UV::tcp_init();
+    UV::<span class="type">accept</span>($server, $client) &amp;&amp; <span class="keyword">die</span> <span class="string">&apos;accept failed: &apos;</span>, UV::strerror(UV::last_error());
+
+    UV::read_start($client, <span class="keyword">sub</span> {
+        <span class="keyword">my</span> (<span class="variable-name">$nread</span>, <span class="variable-name">$buf</span>) = <span class="cperl-array">@_</span>;
+
+        <span class="keyword">if</span> ($nread &lt; 0) {
+            <span class="keyword">my</span> <span class="variable-name">$err</span> = UV::last_error();
+            <span class="keyword">if</span> ($err <span class="negation-char">!</span>= UV::EOF) {
+                <span class="type">warn</span> <span class="string">&apos;client read error: &apos;</span>, UV::strerror($err);
+            }
+            UV::<span class="type">close</span>($client);
+        }
+        <span class="keyword">elsif</span> ($nread == 0) {
+            <span class="comment-delimiter"># </span><span class="comment">nothing to read
+</span>        }
+        <span class="keyword">else</span> {
+            UV::<span class="type">write</span>($client, $buf, <span class="keyword">sub</span> {
+                <span class="keyword">my</span> (<span class="variable-name">$status</span>) = <span class="cperl-array">@_</span>;
+
+                <span class="keyword">if</span> ($status) {
+                    <span class="type">warn</span> <span class="string">&apos;client write error: &apos;</span>, UV::strerror(UV::last_error());
+                    UV::<span class="type">close</span>($client);
+                }
+            });
+        }
+    });
+
+}) &amp;&amp; <span class="keyword">die</span> <span class="string">&apos;listen error: &apos;</span>, UV::strerror(UV::last_error());
+
+UV::run();
+</code></pre>
+<p>見てわかるようにperlモジュールとしての使いかってはわるいが、libuvを使い慣れた人なら迷いなく使うことが出来るようになっている。 これは僕にとっては発見だった。</p>
+<p>また、このサンプルをみてもわかるように<code>listen</code>とか<code>accept</code>とかまでラップしている関係上、libuvをAnyEventのバックエンドとしてつかうのは現状は無理そう。</p>
+<p>libuv自体はWindowsでも動くはずだが、メインマシンをAirにして以来Windows環境を仮想環境でも持ち歩いていないため確認できていない。 Windows対応してくれる人募集！</p>
+<p>開発を始めるためのステップ：</p>
+<pre><code>$ cpanm Module::Install
+$ cpanm Module::Install::XSUtil
+
+$ git clone git://github.com/typester/p5-UV.git
+$ cd p5-UV
+$ git submodule update --init
+$ perl Makefile.PL
+$ make
+$ make test
+</code></pre>
+
+  </div>
+
+  <div class="meta">
+    by typester /
+    at <a href="/memo/2011/12/01/1/">2011-12-01T11:38:00</a> /
+    <a href="/memo/tag/perl/">perl</a>
+    &middot; <a href="/memo/tag/libuv/">libuv</a>
+    / <a href="/memo/2011/12/01/1/#disqus_thread">Comment</a>
+  </div>
+</div>
+
+<div class="entry autopagerize_page_element">
+  <h2><a href="/memo/2011/11/18/1/">Growl 1.3.1 と Skype</a></h2>
+
+  <div class="body">
+    <p>ひさしぶりにMacを再起動したらSkypeがGrowlを認識しなくなった。</p>
+<p>そういえばGrowlを1.3.1にしてから再起動していなかった。原因はそれだろうと<a href="http://community.skype.com/t5/Skype-5-4-Beta-for-Mac/Growl-1-3-amp-Skype/td-p/195142">Support Forum</a>をのぞいてみると同様の問題を持った人がいっぱいいて、そこに解決法も書かれていた。</p>
+<p>Skypeに内蔵されてるGrowl.frameworkが古いからそれをアップデートしてやればOKということらしい。</p>
+<p>フレームワークのアップデートは自分でファイルを置き換えても良いが、Growl公式サイトでそれ用のツール、Growl Version Detectiveが配布されているのでそれを使用すると良い。</p>
+<blockquote><p><a href="http://growl.info/downloads">Growl - Downloads</a></p></blockquote>
+<p>アプリはこんな感じで、</p>
+<p><a href="http://www.flickr.com/photos/typester/6356048657/" title="Growl Version Detective by typester, on Flickr"><img alt="Growl Version Detective" height="683" src="http://farm7.static.flickr.com/6044/6356048657_1884a847a0_o.png" width="814" /></a></p>
+<p>Skypeを選択してUpdate FWを押すだけで入れ替わる。</p>
+
+  </div>
+
+  <div class="meta">
+    by typester /
+    at <a href="/memo/2011/11/18/1/">2011-11-18T10:23:00</a> /
+    <a href="/memo/tag/osx/">osx</a>
+    / <a href="/memo/2011/11/18/1/#disqus_thread">Comment</a>
+  </div>
+</div>
+
+<div class="entry autopagerize_page_element">
+  <h2><a href="/memo/2011/11/16/1/">オレオレバッファ</a></h2>
+
+  <div class="body">
+    <p>C でなんか書くときに、 lighttpd の buffer.c をコピペ（＆若干改変）したのをずっと使いまわしてきたけど、コピペして使い回すのがめんどくなってきたので submodule として使えるように github にアップした。</p>
+<blockquote><p><a href="https://github.com/typester/buffer">typester/buffer - GitHub</a></p></blockquote>
+<p>上げるついでにテスト書いたけど、全部テスト書くのが面倒だったので、使ってなかった関数郡はごっそり削除。 必要になったら追加する方針に。</p>
+<p>こういうのってどっかに定番でみんな使うようなのあるんかなー。</p>
+
+  </div>
+
+  <div class="meta">
+    by typester /
+    at <a href="/memo/2011/11/16/1/">2011-11-16T16:35:00</a> /
+    <a href="/memo/tag/c/">c</a>
+    / <a href="/memo/2011/11/16/1/#disqus_thread">Comment</a>
+  </div>
+</div>
+
+<div class="entry autopagerize_page_element">
+  <h2><a href="/memo/2011/11/15/1/">ngx-queue.h</a></h2>
+
+  <div class="body">
+    <p>libuv のソースを見ていたら、<code>ngx_queue_*</code> という API が出てきてびっくり。どうやら nginx から <code>ngx-queue.h</code> っていうリンクドリストの実装を持ってきているようだ。</p>
+<blockquote><p><a href="https://github.com/joyent/libuv/blob/master/include/uv-private/ngx-queue.h">include/uv-private/ngx-queue.h at master from joyent/libuv - GitHub</a></p></blockquote>
+<p>なかなかおもしろい。これ、いろんなところで使えそうなので手元でも試してみた。</p>
+<pre><code><span class="preprocessor">#include</span> <span class="string">&lt;stdio.h&gt;</span>
+<span class="preprocessor">#include</span> <span class="string">&lt;assert.h&gt;</span>
+<span class="preprocessor">#include</span> <span class="string">&lt;stdlib.h&gt;</span>
+<span class="preprocessor">#include</span> <span class="string">&lt;string.h&gt;</span>
+<span class="preprocessor">#include</span> <span class="string">&lt;stddef.h&gt;</span>
+
+<span class="preprocessor">#include</span> <span class="string">"ngx-queue.h"</span>
+
+<span class="keyword">typedef</span> <span class="keyword">struct</span> {
+    <span class="type">ngx_queue_t</span> <span class="variable-name">queue</span>;
+    <span class="type">char</span>* <span class="variable-name">data</span>;
+} <span class="variable-name">chunk_t</span>;
+
+<span class="type">chunk_t</span>* <span class="function-name">chunk_init</span>(<span class="keyword">const</span> <span class="type">char</span>* <span class="variable-name">data</span>, <span class="type">size_t</span> <span class="variable-name">len</span>) {
+    <span class="type">chunk_t</span>* <span class="variable-name">c</span> = malloc(<span class="keyword">sizeof</span>(chunk_t));
+    assert(c);
+
+    ngx_queue_init(&amp;c-&gt;queue);
+
+    c-&gt;data = malloc(len + 1);
+    assert(c-&gt;data);
+    memcpy(c-&gt;data, data, len);
+    c-&gt;data[len] = <span class="string">'\0'</span>;
+
+    <span class="keyword">return</span> c;
+}
+
+<span class="type">void</span> <span class="function-name">chunk_delete</span>(<span class="type">chunk_t</span>* <span class="variable-name">c</span>) {
+    ngx_queue_remove(&amp;c-&gt;queue);
+    free(c-&gt;data);
+    free(c);
+}
+
+<span class="type">int</span> <span class="function-name">main</span>(<span class="type">int</span> <span class="variable-name">argc</span>, <span class="type">char</span>** <span class="variable-name">argv</span>) {
+    <span class="type">ngx_queue_t</span> <span class="variable-name">queue</span>;
+    <span class="type">chunk_t</span>* <span class="variable-name">chunk</span>;
+
+    ngx_queue_init(&amp;queue);
+
+    chunk = chunk_init(<span class="string">"foo"</span>, 3);
+    ngx_queue_insert_tail(&amp;queue, &amp;chunk-&gt;queue);
+
+    chunk = chunk_init(<span class="string">"bar"</span>, 3);
+    ngx_queue_insert_tail(&amp;queue, &amp;chunk-&gt;queue);
+
+    chunk = chunk_init(<span class="string">"buz"</span>, 3);
+    ngx_queue_insert_tail(&amp;queue, &amp;chunk-&gt;queue);
+
+    <span class="keyword">while</span> (<span class="negation-char">!</span>ngx_queue_empty(&amp;queue)) {
+        <span class="type">ngx_queue_t</span>* <span class="variable-name">q</span> = ngx_queue_head(&amp;queue);
+        <span class="type">chunk_t</span>* <span class="variable-name">c</span> = ngx_queue_data(q, chunk_t, queue);
+
+        printf(<span class="string">"data: %s\n"</span>, c-&gt;data);
+
+        chunk_delete(c);
+    }
+
+
+    chunk = chunk_init(<span class="string">"foo"</span>, 3);
+    ngx_queue_insert_tail(&amp;queue, &amp;chunk-&gt;queue);
+
+    chunk = chunk_init(<span class="string">"bar"</span>, 3);
+    ngx_queue_insert_tail(&amp;queue, &amp;chunk-&gt;queue);
+
+    chunk = chunk_init(<span class="string">"buz"</span>, 3);
+    ngx_queue_insert_tail(&amp;queue, &amp;chunk-&gt;queue);
+
+    <span class="keyword">while</span> (<span class="negation-char">!</span>ngx_queue_empty(&amp;queue)) {
+        <span class="type">ngx_queue_t</span>* <span class="variable-name">q</span> = ngx_queue_last(&amp;queue);
+        <span class="type">chunk_t</span>* <span class="variable-name">c</span> = ngx_queue_data(q, chunk_t, queue);
+
+        printf(<span class="string">"data: %s\n"</span>, c-&gt;data);
+
+        chunk_delete(c);
+    }
+
+    <span class="keyword">return</span> 0;
+}
+</code></pre>
+<p>出力は</p>
+<pre><code>$ ./a.out
+data: foo
+data: bar
+data: buz
+data: buz
+data: bar
+data: foo
+</code></pre>
+<p>これは使えるなぁ。</p>
+
+  </div>
+
+  <div class="meta">
+    by typester /
+    at <a href="/memo/2011/11/15/1/">2011-11-15T17:38:00</a> /
+    <a href="/memo/tag/libuv/">libuv</a>
+    &middot; <a href="/memo/tag/nginx/">nginx</a>
+    / <a href="/memo/2011/11/15/1/#disqus_thread">Comment</a>
+  </div>
+</div>
+
+<div class="entry autopagerize_page_element">
+  <h2><a href="/memo/2011/11/14/1/">テラスモール湘南に行ってきた</a></h2>
+
+  <div class="body">
+    <p>11月11日に辻堂駅前にオープンしたばかりの湘南地区最大級のショッピングモール、<a href="http://terracemall-shonan.com/">テラスモール湘南</a>に行ってみた。</p>
+<p>我らが<a href="http://bowls-cafe.jp/">鎌倉bowls</a>も出店しているからその様子見もかねて。</p>
+<blockquote><p><a href="http://okazu.bowls-cafe.jp/">楽しいおかず by鎌倉bowls</a></p><p>テラスモール湘南のデリカテッセンのお店。いつもの家庭の食卓にサプライズと笑顔をお届け！</p></blockquote>
+<p>個人的には、109シネマズ（もちろんIMAXシアター付き）が入っているというのが最大のポイント。いままでは川崎まで見に行っていたからね。</p>
+<p>ただ、懸念点は交通事情。あのあたりってそんなに道も大きくないような気がしたし、テラスモール湘南自体は2500台収容の駐車場があるらしいけど周りの交通が麻痺してしまっていたら意味がない。</p>
+<p>実際に行ってみるとそんなに心配することもなかった。到着したのはたぶん1番混んでると思われる14時台だったけど、テラスモール湘南の少し手前から駐車場に入る列が出来ている程度の渋滞しかなかった。 ただ駐車場は屋上以外はほとんど満車状態だったから、雨の日など屋根付きのところへ駐車したいという場合には早めか遅めの時間帯に行くようにした方がいいだろう。</p>
+<p>鎌倉から向かうには海沿いをずっと行って浜見山交番前を右折、あとはずっとまっすぐ行くとテラスモールの真ん前に出るから1番楽だと思う。帰りはそのルートは混むので模索中…。</p>
+<p>今回は映画を見るわけでもなく施設内をぶらぶらしただけだったけど、なかなか好印象。湘南地区の人たちは横浜や都内に出る機会がだいぶ減るんじゃないかな。ここで事足りるっていう意味で。 次回は映画を見に行こうと思う。</p>
+
+  </div>
+
+  <div class="meta">
+    by typester /
+    at <a href="/memo/2011/11/14/1/">2011-11-14T10:20:00</a> /
+    <a href="/memo/tag/life/">life</a>
+    / <a href="/memo/2011/11/14/1/#disqus_thread">Comment</a>
+  </div>
+</div>
+
+<div class="entry autopagerize_page_element">
+  <h2><a href="/memo/2011/11/10/2/">libuv を iOS 対応した件</a></h2>
+
+  <div class="body">
+    <p>だいぶ前から iPhone アプリ作成でネットワーク系の機能を作るときには <a href="http://software.schmorp.de/pkg/libev.html">libev</a> を愛用してるのだが、今日 node をいじっていたら <a href="https://github.com/joyent/libuv">libuv</a> がなかなかよさそうに感じた。</p>
+<p>libuv は libev が Windows で動かないからっていう理由で始まったプロジェクトだとおもうけど、Linux などの環境においても libev をラップしつつ、より便利な機能が追加されていていわば C でネットワークプログラミングするためのフレームワークといえるくらいになってる、みたい。（まだ詳しく見たわけじゃないけど）</p>
+<p>libev は基本的に io 監視と timer のみで、socket の生成などは基本的に自分で syscall 呼んでつくる必要があるけど、libuv は <code>uv_tcp_*</code> とか <code>uv_udp_*</code> といったAPI郡をもってて便利そう。 あと、非同期 DNS ルックアップがサポートされてるのはうれしい。これ、 libev になくて不便だった。</p>
+<p>そういうとこまでラップしないと同じコードを Windows でも動かすってのは無理だからそうなったんだとおもうけど、結果として大変便利なライブラリになっているのではないか。</p>
+<p>あと、テストケースが充実しているので、（たぶん）すべての機能のサンプルコードがテストを見ればOKっていうのもうれしい。</p>
+<p>っていうわけで iOS 対応のパッチを書きました。</p>
+<blockquote><p><a href="https://github.com/joyent/libuv/pull/243">#243: Added experimental iOS support by typester for joyent/libuv - Pull Request - GitHub</a></p></blockquote>
+<p>iOS で動かない理由はハードウェア時間をnano秒で取得してる関数が iOS にはない CoreServices.framework に依存しちゃってるからってことだけなので、それを使わないように修正をした。</p>
+<p>現状のパッチは iOS 用にビルドするときのみ CoreServices 非依存のコードを使うようにしているけど、これに依存してることで uv.a を組み込むだけじゃなくて、 CoreServices.framework に別途リンクする必要があってめんどいからパフォーマンスや精度が問題なければ非依存のコードの方に統一してしまった方がいいと思う。っていうようなことは pull req に返信が来たら伝えようとは思っている。</p>
+<p>とりあえず、これで使えるようになったから。さっそく今作ってるアプリに組み込んでにようと思う。</p>
+
+  </div>
+
+  <div class="meta">
+    by typester /
+    at <a href="/memo/2011/11/10/2/">2011-11-10T20:51:00</a> /
+    <a href="/memo/tag/libuv/">libuv</a>
+    &middot; <a href="/memo/tag/iphone/">iphone</a>
+    / <a href="/memo/2011/11/10/2/#disqus_thread">Comment</a>
+  </div>
+</div>
+
+<div class="entry autopagerize_page_element">
+  <h2><a href="/memo/2011/11/10/1/">node.js を iPhone アプリから動かす</a></h2>
+
+  <div class="body">
+    <p>結論から言うと、 jailbreak してないと動きません。詳細はこの辺：</p>
+<blockquote><p><a href="http://code.google.com/p/v8/issues/detail?id=1312">Issue 1312 - v8 - It&apos;s time to get iOS supported! - V8 JavaScript Engine - Google Project Hosting</a></p></blockquote>
+<p>というわけでターゲットがデベロッパー用に絞られてしまいますがやってみましょう！</p>
+<h4>Node ダウンロード</h4>
+<p>今回はリリースされたばかりの 0.6.0 を使いました。</p>
+<blockquote><p><a href="http://nodejs.org/#download">http://nodejs.org/#download</a></p></blockquote>
+<p>からダウンロードして展開しましょう</p>
+<h4>libuv にパッチを当てる</h4>
+<p>libev はなにもしないでもそのまま iOS で動きますが、 libuv はそうではないようです。</p>
+<pre><code>$ cd deps/uv
+$ wget --no-check-certificate https://raw.github.com/gist/1354552/cfb4e9a544185bdbda1a8374aaf1cd5cc812c070/libuv-ios.patch
+$ patch -p1 &lt; libuv-ios.patch
+</code></pre>
+<p>なお、このパッチは本家に pull req 送っておきました。取り込まれると良いですね。</p>
+<h4>V8 にパッチを当てる</h4>
+<p>V8 自体は ARM に対応しているようですが、iOS SDK でクロスコンパイルしようとすると </p>
+<blockquote><p>ARM EABI support is required.</p></blockquote>
+<p>とか言われてしまいます。iPhone の ARM が EABI をサポートしてないためでしょうか。</p>
+<p>ただ、最初にリンクした Goole Code の issue 内で iOS 対応のパッチを投稿している人がいて、そのパッチを当てることでビルド可能になる模様。</p>
+<pre><code>$ cd deps/v8/src
+$ patch -p0 &lt; ~/Downloads/v8-ios.patch
+</code></pre>
+<h4>Node にパッチを当てる</h4>
+<p>プロセスリストにでるプロセス名を設定する機能が Carbon をつかっているので関数殺しちゃいます。iOS でプロセス名かえられても誰得ですよね。具体的には</p>
+<pre><code>process.title = <span class="string">"hoge"</span>;
+</code></pre>
+<p>が動かなくなります。</p>
+<pre><code>$ wget --no-check-certificate https://raw.github.com/gist/1354570/0c28584c07f0410c5e5608d4e2e9ea68e6d5dbc4/node-ios.patch
+$ patch -p1 &lt; node-ios.patch
+</code></pre>
+<h4>ビルド</h4>
+<p>まずもろもろ環境変数をセットし:</p>
+<pre><code><span class="type">export</span> <span class="variable-name">CC</span>=/Developer/Platforms/iPhoneOS.platform/Developer/usr/bin/gcc
+export CFLAGS=<span class="string">"-arch armv7 -isysroot /Developer/Platforms/iPhoneOS.platform/Developer/SDKs/iPhoneOS5.0.sdk -I$HOME/dev/iphone/lib/openssl/include"</span>
+export CXX=/Developer/Platforms/iPhoneOS.platform/Developer/usr/bin/g++
+export CXXFLAGS=$CFLAGS
+export CPP=/Developer/Platforms/iPhoneOS.platform/Developer/usr/bin/cpp
+export AR=/Developer/Platforms/iPhoneOS.platform/Developer/usr/bin/ar
+export LINKFLAGS=<span class="string">"-arch armv7 -isysroot /Developer/Platforms/iPhoneOS.platform/Developer/SDKs/iPhoneOS5.0.sdk -L$HOME/dev/iphone/lib/openssl/lib"</span>
+</code></pre>
+<p>ビルド:</p>
+<pre><code>./tools/waf-light configure build --product-type=cstaticlib --dest-cpu=arm --without-snapshot
+</code></pre>
+<p>ひっそり、前もってビルド済みの openssl を参照していますが、ない場合は <code>--without-ssl</code> を追加すればいけるはずです。</p>
+<p>成功すると</p>
+<pre><code>./out/Release/deps/uv/uv.a
+./out/Release/libnode.a
+./out/Release/libv8.a
+./out/Release/libv8preparser.a
+</code></pre>
+<p>といった静的ライブラリが出来てると思うんで、これらをアプリに埋め込んであげればいいわけですね。</p>
+<p>armv6, armv7, i386 用それぞれビルドし、<code>lipo</code> でユニバーサルバイナリに仕上げるのが iOS 用静的ライブラリ作成のセオリーですが、ここではめんどいので省略します。</p>
+<h3>アプリ</h3>
+<p>だいぶ適当ですが、サンプル作ってみました。</p>
+<blockquote><p><a href="https://github.com/typester/ios-node-test">https://github.com/typester/ios-node-test</a></p></blockquote>
+<p>lib ディレクトリにさっきビルドした .a ファイルを突っ込んであげる必要があります。 また <code>node.h</code> の参照元を nave でインストールした node のパスを設定してあるので、違う環境の人は Header Search Path を環境に合わせて書き換える必要もあります。</p>
+<p><a href="http://www.flickr.com/photos/typester/6331671816/" title="20111110195319 by typester, on Flickr"><img alt="20111110195319" height="500" src="http://farm7.static.flickr.com/6228/6331671816_f2b04eb55f.jpg" width="333" /></a></p>
+<p>こんな感じの画面が出るんで、適当にコード書いて Run おせば動かすことが出来ます。</p>
+<h3>注意</h3>
+<p>コードみてもらえばわかりますがだいぶ適当につくっておりまして、node の標準出力などをうけとっておりません。また、二回目実行しようとするとアプリが落ちますw</p>
+<p>直していただける方お待ちしております！</p>
+
+  </div>
+
+  <div class="meta">
+    by typester /
+    at <a href="/memo/2011/11/10/1/">2011-11-10T19:12:00</a> /
+    <a href="/memo/tag/node/">node</a>
+    &middot; <a href="/memo/tag/iphone/">iphone</a>
+    / <a href="/memo/2011/11/10/1/#disqus_thread">Comment</a>
+  </div>
+</div>
+
+<div class="entry autopagerize_page_element">
+  <h2><a href="/memo/2011/11/08/1/">nginx で lighttpd のようにユーザーをトラッキングする方法</a></h2>
+
+  <div class="body">
+    <p>lighttpd では mod_fastcgi や mod_proxy 経由でアプリケーションが、</p>
+<pre><code>X-Lighttpd-Hogehoge: foobar
+</code></pre>
+<p>のような <code>X-Lighttpd-</code> ではじまるヘッダーを返してもそれをクライアントに送り返さないという仕組みがあり、 たとえばそれを利用してアプリからユーザーIDを返してあげたりすると、それをクライアントに送ることなく lighttpd のアクセスログにだけ記録する、といったようなことが出来て便利なのですが、 同じようなことを nginx でやりたかったのでしらべてみた。</p>
+<p>アプリから</p>
+<pre><code>X-MyApp-User: foobar
+</code></pre>
+<p>みたいなのを返してそれをクライアントに送ることなくアクセスログに記録したい場合、まずクライアントに送らないように、</p>
+<pre><code>proxy_hide_header X-MyApp-User;
+</code></pre>
+<p>とし、さらに accesslog のフォーマット設定 <code>log_format</code> に</p>
+<pre><code>$upstream_http_x_myapp_user
+</code></pre>
+<p>を追加することで記録が行えました。まる。</p>
+<h4>追記＠2011-11-08T16:22:26+09:00</h4>
+<del>$upstream_http_myapp_user</del>
+<ins>$upstream_http_x_myapp_user</ins>
+<p></p>
+<p>だったので修正。</p>
+
+  </div>
+
+  <div class="meta">
+    by typester /
+    at <a href="/memo/2011/11/08/1/">2011-11-08T13:46:00</a> /
+    <a href="/memo/tag/nginx/">nginx</a>
+    / <a href="/memo/2011/11/08/1/#disqus_thread">Comment</a>
+  </div>
+</div>
+
+<div class="entry autopagerize_page_element">
+  <h2><a href="/memo/2011/10/27/1/">iPhone4S とか iOS5 とか Xcode 4.2 とか</a></h2>
+
+  <div class="body">
+    <p>iPhone4S は予約しようと思ってたけど、予約開始日がちょうど F1 日本 GP とかぶっていたので初日予約はあきらめ、暇なときに予約しに行こうと思っていて今に至る…。</p>
+<p>iOS5 は開発者用のものを前から使っていたけど、通知で邪魔されないようになったのがすごい大きい。 いままではカーナビとして使っている最中に Push 通知が来てしまうと通知を消すまでカーナビとしての役割をはたさないようになってしまっていたからね。</p>
+<p>で、こういうApple製品リリースの中で一番ライフチェインジングだったのが Xcode 4.2！ ARC (Automatic Reference Counting) と Storyboard が便利すぎて iOS アプリの開発速度いままでの何倍にもなります。ただ Storyboard つかっちゃうと iOS5 以降限定になっちゃうってのが…。</p>
+<p>ARC も zeroing weak 変数(破棄されたらnilになってるって保証されてるweak変数)使おうとすると iOS5 限定になっちゃうみたいだし。 zeroing ってなんて訳せば良いんだろ。</p>
+<p>そんなこんなで、次のアプリから iOS5 のみで良いかなとか考えてる最中。</p>
+
+  </div>
+
+  <div class="meta">
+    by typester /
+    at <a href="/memo/2011/10/27/1/">2011-10-27T18:03:00</a> /
+    <a href="/memo/tag/iphone/">iphone</a>
+    / <a href="/memo/2011/10/27/1/#disqus_thread">Comment</a>
+  </div>
+</div>
+
+
+
+
+<div id="pager" class="autopagerize_insert_before">
+  <p class="pages">
+    <a class="prev" rel="previous" href="/memo/page/4/">&laquo; Prev</a>
+    <a href="/memo/">1</a>
+    <a href="/memo/page/2/">2</a>
+    <a href="/memo/page/3/">3</a>
+    <a href="/memo/page/4/">4</a>
+    <span class="current">5</span>
+    <a href="/memo/page/6/">6</a>
+    <a href="/memo/page/7/">7</a>
+    <a href="/memo/page/8/">8</a>
+    <a href="/memo/page/9/">9</a>
+    <a href="/memo/page/10/">10</a>
+    <a class="next" rel="next" href="/memo/page/6/">Next &raquo;</a>
+  </p>
+  <p class="info">(Page 5 of 203)</p>
+</div>
+
+
+</div>
+
+<p id="footer">
+  Copyright &copy; 2005-2013
+      by <a class="author" href="/about/#me">Daisuke Murase (typester)</a> /
+  Site generated by <a href="https://github.com/typester/nim">nim</a> /
+  Comments powered by <a href="http://disqus.com">DISQUS</a>.
+</p>
+
+</div>
+
+
+<script type="text/javascript">
+//<![CDATA[
+(function() {
+	var links = document.getElementsByTagName('a');
+	var query = '?';
+	for(var i = 0; i < links.length; i++) {
+	if(links[i].href.indexOf('#disqus_thread') >= 0) {
+		query += 'url' + i + '=' + encodeURIComponent(links[i].href) + '&';
+	}
+	}
+	document.write('<script charset="utf-8" type="text/javascript" src="http://disqus.com/forums/unknownplace/get_num_replies.js' + query + '"></' + 'script>');
+})();
+//]]>
+</script>
+
+
+<script type="text/javascript">
+var gaJsHost = (("https:" == document.location.protocol) ? "https://ssl." : "http://www.");
+document.write(unescape("%3Cscript src='" + gaJsHost + "google-analytics.com/ga.js' type='text/javascript'%3E%3C/script%3E"));
+</script>
+<script type="text/javascript">
+try {
+var pageTracker = _gat._getTracker("UA-53067-1");
+pageTracker._trackPageview();
+} catch(err) {}</script>
+
+<script>
+function googleTranslateElementInit() {
+  new google.translate.TranslateElement({
+    pageLanguage: 'ja',
+    gaTrack: true,
+    gaId: 'UA-53067',
+    floatPosition: google.translate.TranslateElement.FloatPosition.BOTTOM_RIGHT
+  });
+}
+</script><script src="//translate.google.com/translate_a/element.js?cb=googleTranslateElementInit"></script>
+
+</body>
+</html>

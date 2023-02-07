@@ -1,0 +1,135 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="ja" xml:lang="ja">
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <title>無線APによって自動でhostsを変える方法 - unknownplace.org</title>
+  <link rel="stylesheet" type="text/css" href="http://yui.yahooapis.com/3.0.0/build/cssreset/reset-min.css" />
+  <link rel="stylesheet" type="text/css" href="http://yui.yahooapis.com/3.0.0/build/cssfonts/fonts-min.css" />
+  <link rel="stylesheet" href="/css/style.css" type="text/css" />
+  <meta property="fb:admins" content="1093631929" />
+  <link rel="alternate" type="application/rss+xml" href="http://unknownplace.org/memo/index.rss" />
+</head>
+<body>
+
+<div id="container">
+<div id="header">
+    <h1><a href="/">unknownplace.org</a></h1> /
+<a href="/memo/">memo</a>
+</div>
+
+<div id="content">
+<div class="entry autopagerize_page_element">
+  <h2><a href="/memo/2009/12/03/1/">無線APによって自動でhostsを変える方法</a></h2>
+
+  <div class="body">
+    <p>OSX の LaunchAgents には特定のパスを監視して更新があったらプログラムを起動すると言うことが出来ます。例えば以下のような設定を書いてみると：</p>
+<pre><code><span class="nxml-processing-instruction-delimiter">&lt;?</span><span class="nxml-processing-instruction-target">xml</span> <span class="nxml-attribute-local-name">version</span>=<span class="nxml-attribute-value-delimiter">&quot;</span><span class="nxml-attribute-value">1.0</span><span class="nxml-attribute-value-delimiter">&quot;</span> <span class="nxml-attribute-local-name">encoding</span>=<span class="nxml-attribute-value-delimiter">&quot;</span><span class="nxml-attribute-value">UTF-8</span><span class="nxml-attribute-value-delimiter">&quot;</span><span class="nxml-processing-instruction-delimiter">?&gt;</span>
+<span class="nxml-markup-declaration-delimiter">&lt;!</span><span class="nxml-prolog-keyword">DOCTYPE</span> plist <span class="nxml-prolog-keyword"><span class="nxml-prolog-keyword">PUBLIC</span></span> <span class="nxml-prolog-literal-delimiter">&quot;</span><span class="nxml-prolog-literal-content">-//Apple Computer//DTD PLIST 1.0//EN</span><span class="nxml-prolog-literal-delimiter">&quot;</span>
+          <span class="nxml-prolog-literal-delimiter">&quot;</span><span class="nxml-prolog-literal-content">http://www.apple.com/DTDs/PropertyList-1.0.dtd</span><span class="nxml-prolog-literal-delimiter">&quot;</span><span class="nxml-markup-declaration-delimiter">&gt;</span>
+<span class="nxml-tag-delimiter">&lt;</span><span class="nxml-element-local-name">plist</span> <span class="nxml-attribute-local-name">version</span>=<span class="nxml-attribute-value-delimiter">&quot;</span><span class="nxml-attribute-value">1.0</span><span class="nxml-attribute-value-delimiter">&quot;</span><span class="nxml-tag-delimiter">&gt;</span>
+  <span class="nxml-tag-delimiter">&lt;</span><span class="nxml-element-local-name">dict</span><span class="nxml-tag-delimiter">&gt;</span>
+    <span class="nxml-tag-delimiter">&lt;</span><span class="nxml-element-local-name">key</span><span class="nxml-tag-delimiter">&gt;</span><span class="nxml-text">Label</span><span class="nxml-tag-delimiter">&lt;</span><span class="nxml-tag-slash">/</span><span class="nxml-element-local-name">key</span><span class="nxml-tag-delimiter">&gt;</span>
+    <span class="nxml-tag-delimiter">&lt;</span><span class="nxml-element-local-name">string</span><span class="nxml-tag-delimiter">&gt;</span><span class="nxml-text">org.unknownplace.wifi_switch</span><span class="nxml-tag-delimiter">&lt;</span><span class="nxml-tag-slash">/</span><span class="nxml-element-local-name">string</span><span class="nxml-tag-delimiter">&gt;</span>
+    <span class="nxml-tag-delimiter">&lt;</span><span class="nxml-element-local-name">key</span><span class="nxml-tag-delimiter">&gt;</span><span class="nxml-text">ProgramArguments</span><span class="nxml-tag-delimiter">&lt;</span><span class="nxml-tag-slash">/</span><span class="nxml-element-local-name">key</span><span class="nxml-tag-delimiter">&gt;</span>
+    <span class="nxml-tag-delimiter">&lt;</span><span class="nxml-element-local-name">array</span><span class="nxml-tag-delimiter">&gt;</span>
+      <span class="nxml-tag-delimiter">&lt;</span><span class="nxml-element-local-name">string</span><span class="nxml-tag-delimiter">&gt;</span><span class="nxml-text">/usr/bin/zsh</span><span class="nxml-tag-delimiter">&lt;</span><span class="nxml-tag-slash">/</span><span class="nxml-element-local-name">string</span><span class="nxml-tag-delimiter">&gt;</span>
+      <span class="nxml-tag-delimiter">&lt;</span><span class="nxml-element-local-name">string</span><span class="nxml-tag-delimiter">&gt;</span><span class="nxml-text">-c</span><span class="nxml-tag-delimiter">&lt;</span><span class="nxml-tag-slash">/</span><span class="nxml-element-local-name">string</span><span class="nxml-tag-delimiter">&gt;</span>
+      <span class="nxml-tag-delimiter">&lt;</span><span class="nxml-element-local-name">string</span><span class="nxml-tag-delimiter">&gt;</span><span class="nxml-text">exec perl /Users/typester/dev/scratch/wifi_switch/switch.pl</span><span class="nxml-tag-delimiter">&lt;</span><span class="nxml-tag-slash">/</span><span class="nxml-element-local-name">string</span><span class="nxml-tag-delimiter">&gt;</span>
+    <span class="nxml-tag-delimiter">&lt;</span><span class="nxml-tag-slash">/</span><span class="nxml-element-local-name">array</span><span class="nxml-tag-delimiter">&gt;</span>
+    <span class="nxml-tag-delimiter">&lt;</span><span class="nxml-element-local-name">key</span><span class="nxml-tag-delimiter">&gt;</span><span class="nxml-text">RunAtLoad</span><span class="nxml-tag-delimiter">&lt;</span><span class="nxml-tag-slash">/</span><span class="nxml-element-local-name">key</span><span class="nxml-tag-delimiter">&gt;</span>
+    <span class="nxml-tag-delimiter">&lt;</span><span class="nxml-element-local-name">true</span><span class="nxml-tag-slash">/</span><span class="nxml-tag-delimiter">&gt;</span>
+    <span class="nxml-tag-delimiter">&lt;</span><span class="nxml-element-local-name">key</span><span class="nxml-tag-delimiter">&gt;</span><span class="nxml-text">StandardErrorPath</span><span class="nxml-tag-delimiter">&lt;</span><span class="nxml-tag-slash">/</span><span class="nxml-element-local-name">key</span><span class="nxml-tag-delimiter">&gt;</span>
+    <span class="nxml-tag-delimiter">&lt;</span><span class="nxml-element-local-name">string</span><span class="nxml-tag-delimiter">&gt;</span><span class="nxml-text">/dev/null</span><span class="nxml-tag-delimiter">&lt;</span><span class="nxml-tag-slash">/</span><span class="nxml-element-local-name">string</span><span class="nxml-tag-delimiter">&gt;</span><span class="nxml-comment-delimiter">&lt;!--</span><span class="nxml-comment-content"> &lt;string&gt;/tmp/error&lt;/string&gt; </span><span class="nxml-comment-delimiter">--&gt;</span>
+    <span class="nxml-tag-delimiter">&lt;</span><span class="nxml-element-local-name">key</span><span class="nxml-tag-delimiter">&gt;</span><span class="nxml-text">StandardOutPath</span><span class="nxml-tag-delimiter">&lt;</span><span class="nxml-tag-slash">/</span><span class="nxml-element-local-name">key</span><span class="nxml-tag-delimiter">&gt;</span>
+    <span class="nxml-tag-delimiter">&lt;</span><span class="nxml-element-local-name">string</span><span class="nxml-tag-delimiter">&gt;</span><span class="nxml-text">/dev/null</span><span class="nxml-tag-delimiter">&lt;</span><span class="nxml-tag-slash">/</span><span class="nxml-element-local-name">string</span><span class="nxml-tag-delimiter">&gt;</span>
+    <span class="nxml-tag-delimiter">&lt;</span><span class="nxml-element-local-name">key</span><span class="nxml-tag-delimiter">&gt;</span><span class="nxml-text">WatchPaths</span><span class="nxml-tag-delimiter">&lt;</span><span class="nxml-tag-slash">/</span><span class="nxml-element-local-name">key</span><span class="nxml-tag-delimiter">&gt;</span>
+    <span class="nxml-tag-delimiter">&lt;</span><span class="nxml-element-local-name">array</span><span class="nxml-tag-delimiter">&gt;</span>
+      <span class="nxml-tag-delimiter">&lt;</span><span class="nxml-element-local-name">string</span><span class="nxml-tag-delimiter">&gt;</span><span class="nxml-text">/Library/Preferences/SystemConfiguration/com.apple.airport.preferences.plist</span><span class="nxml-tag-delimiter">&lt;</span><span class="nxml-tag-slash">/</span><span class="nxml-element-local-name">string</span><span class="nxml-tag-delimiter">&gt;</span>
+    <span class="nxml-tag-delimiter">&lt;</span><span class="nxml-tag-slash">/</span><span class="nxml-element-local-name">array</span><span class="nxml-tag-delimiter">&gt;</span>
+  <span class="nxml-tag-delimiter">&lt;</span><span class="nxml-tag-slash">/</span><span class="nxml-element-local-name">dict</span><span class="nxml-tag-delimiter">&gt;</span>
+<span class="nxml-tag-delimiter">&lt;</span><span class="nxml-tag-slash">/</span><span class="nxml-element-local-name">plist</span><span class="nxml-tag-delimiter">&gt;</span>
+</code></pre>
+<p><code>/Library/Preferences/SystemConfiguration/com.apple.airport.preferences.plist</code> を監視しそれが更新されたら <code>/Users/typester/dev/scratch/wifi_switch/switch.pl</code> を実行する。と言うことが実現できます。</p>
+<p>この監視先のファイルは OSX の無線ネットワーク設定なので、これが更新されると言うことは無線通信の状態が変わったときと言うことを意味します。</p>
+<p>これを有効にするにはこのファイルを適当な名前 <code>hoge.plist</code> で <code>/System/Library/LaunchDaemons/</code> 保存すれば次回起動から有効になります。すぐに有効にしたい場合は、</p>
+<pre><code>sudo launchctl load /System/Library/LaunchDaemons/hoge.plist
+</code></pre>
+<p>などとすればOKです。詳しくは launchctl や LaunchAgent/LaunchDaemon のドキュメントを参照のこと。システムレベルの LaunchDaemon を使用しているのは <code>/etc/hosts</code> を書き換えるのに root 権限が必要だからです。</p>
+<p>あとはここで起動されるスクリプト中でからAPの情報を取得しそれをもとに hosts を書き換えればいいわけです。APの情報は</p>
+<pre><code>/System/Library/PrivateFrameworks/Apple80211.framework/Versions/A/Resources/airport -I
+</code></pre>
+<p>と言うコマンドで取得可能なのでそれをパースすればオッケーです。</p>
+<p>以下に僕が実際に使用しているスクリプトを貼っておきます。</p>
+<blockquote><p><a href="http://gist.github.com/247950">http://gist.github.com/247950</a></p></blockquote>
+<p>このスクリプトと同じところに、<code>default.mt</code> と <code>特定のAPのSSID名.mt</code> と言うファイルで hosts を書いておくと、通常は <code>default.mt</code> が <code>/etc/hosts</code> に書き出され、SSIDにマッチするファイルがある場合には <code>SSID名.mt</code> が <code>/etc/hosts</code> に書き出されるという感じです。</p>
+<p>AP によって hosts を変えたいという状況がそんなにあるとは思いませんが、ネットワークの状態によっていろいろ設定を変えると言う目的では便利で使えますので覚えておいて損はないでしょう。</p>
+
+  </div>
+
+  <div class="meta">
+    by typester /
+    at <a href="/memo/2009/12/03/1/">2009-12-03T16:00:00</a> /
+    <a href="/memo/tag/osx/">osx</a>
+    / <a href="/memo/2009/12/03/1/#disqus_thread">Comments(0)</a>
+  </div>
+</div>
+
+<div id="disqus_thread"></div>
+
+<script type="text/javascript">
+    var disqus_url = location.protocol + "//" + location.host + "/memo/2009/12/03/1/";
+</script>
+<script type="text/javascript" src="http://disqus.com/forums/unknownplace/embed.js"></script>
+
+</div>
+
+<p id="footer">
+  Copyright &copy; 2005-2013
+      by <a class="author" href="/about/#me">Daisuke Murase (typester)</a> /
+  Site generated by <a href="https://github.com/typester/nim">nim</a> /
+  Comments powered by <a href="http://disqus.com">DISQUS</a>.
+</p>
+
+</div>
+
+
+<script type="text/javascript">
+//<![CDATA[
+(function() {
+	var links = document.getElementsByTagName('a');
+	var query = '?';
+	for(var i = 0; i < links.length; i++) {
+	if(links[i].href.indexOf('#disqus_thread') >= 0) {
+		query += 'url' + i + '=' + encodeURIComponent(links[i].href) + '&';
+	}
+	}
+	document.write('<script charset="utf-8" type="text/javascript" src="http://disqus.com/forums/unknownplace/get_num_replies.js' + query + '"></' + 'script>');
+})();
+//]]>
+</script>
+
+
+<script type="text/javascript">
+var gaJsHost = (("https:" == document.location.protocol) ? "https://ssl." : "http://www.");
+document.write(unescape("%3Cscript src='" + gaJsHost + "google-analytics.com/ga.js' type='text/javascript'%3E%3C/script%3E"));
+</script>
+<script type="text/javascript">
+try {
+var pageTracker = _gat._getTracker("UA-53067-1");
+pageTracker._trackPageview();
+} catch(err) {}</script>
+
+<script>
+function googleTranslateElementInit() {
+  new google.translate.TranslateElement({
+    pageLanguage: 'ja',
+    gaTrack: true,
+    gaId: 'UA-53067',
+    floatPosition: google.translate.TranslateElement.FloatPosition.BOTTOM_RIGHT
+  });
+}
+</script><script src="//translate.google.com/translate_a/element.js?cb=googleTranslateElementInit"></script>
+
+</body>
+</html>

@@ -1,0 +1,302 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="ja" xml:lang="ja">
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <title>memo - unknownplace.org</title>
+  <link rel="stylesheet" type="text/css" href="http://yui.yahooapis.com/3.0.0/build/cssreset/reset-min.css" />
+  <link rel="stylesheet" type="text/css" href="http://yui.yahooapis.com/3.0.0/build/cssfonts/fonts-min.css" />
+  <link rel="stylesheet" href="/css/style.css" type="text/css" />
+  <meta property="fb:admins" content="1093631929" />
+  <meta name="robots" content="noindex" />
+  <link rel="alternate" type="application/rss+xml" href="http://unknownplace.org/memo/index.rss" />
+</head>
+<body>
+
+<div id="container">
+<div id="header">
+    <h1><a href="/">unknownplace.org</a></h1> /
+<a href="/memo/">memo</a>
+</div>
+
+<div id="content">
+
+<div class="entry autopagerize_page_element">
+  <h2><a href="/memo/2006/04/25/1/"></a></h2>
+
+  <div class="body">
+    <p>出社。</p>
+
+  </div>
+
+  <div class="meta">
+    by typester /
+    at <a href="/memo/2006/04/25/1/">2006-04-25T14:39:00</a> /
+    <a href="/memo/tag/life/">life</a>
+    / <a href="/memo/2006/04/25/1/#disqus_thread">Comment</a>
+  </div>
+</div>
+
+<div class="entry autopagerize_page_element">
+  <h2><a href="/memo/2006/04/24/2/"></a></h2>
+
+  <div class="body">
+    <p>退社。</p>
+
+  </div>
+
+  <div class="meta">
+    by typester /
+    at <a href="/memo/2006/04/24/2/">2006-04-24T23:17:00</a> /
+    <a href="/memo/tag/life/">life</a>
+    / <a href="/memo/2006/04/24/2/#disqus_thread">Comment</a>
+  </div>
+</div>
+
+<div class="entry autopagerize_page_element">
+  <h2><a href="/memo/2006/04/24/1/">はてな認証API</a></h2>
+
+  <div class="body">
+    <p>GJ!</p>
+<p>さっそく <a href="http://svn.unknownplace.org/public/library/perl/trunk/Catalyst-Plugin-Authentication-Credential-Hatena/">Cred::Hatena</a> を作ってみた。</p>
+<p>ここにも導入しようかな。</p>
+
+  </div>
+
+  <div class="meta">
+    by typester /
+    at <a href="/memo/2006/04/24/1/">2006-04-24T20:45:00</a> /
+    <a href="/memo/tag/web/">web</a>
+    &middot; <a href="/memo/tag/hatena/">hatena</a>
+    / <a href="/memo/2006/04/24/1/#disqus_thread">Comment</a>
+  </div>
+</div>
+
+<div class="entry autopagerize_page_element">
+  <h2><a href="/memo/2006/04/23/3/">linkage.xrea.jp</a></h2>
+
+  <div class="body">
+    <p>が見えなくなっちゃってる。ここにミラーされていた <a href="http://linkage.xrea.jp/ref/xhtml_ref/">XHTML リファレンス</a>に依存しまくっていたので困りまくる。</p>
+<p>とりあえず webarchive.org でみれた。</p>
+<p><a href="http://web.archive.org/web/20050207151033/http://linkage.xrea.jp/ref/xhtml_ref/">XHTML リファレンス [WEB ARCHIVES REPRINT]</a></p>
+<p>と思いきやアーカイブされてないページもあるなぁ。</p>
+
+  </div>
+
+  <div class="meta">
+    by typester /
+    at <a href="/memo/2006/04/23/3/">2006-04-23T18:32:00</a> /
+    <a href="/memo/tag/life/">life</a>
+    &middot; <a href="/memo/tag/web/">web</a>
+    / <a href="/memo/2006/04/23/3/#disqus_thread">Comment</a>
+  </div>
+</div>
+
+<div class="entry autopagerize_page_element">
+  <h2><a href="/memo/2006/04/23/2/">Root コントローラ #2</a></h2>
+
+  <div class="body">
+    <p>今までのルートコントローラは MyApp.pm 自体だった。</p>
+<p>でもこれだと YAPC でちょろっと話したように Catalyst は自分自身も Plugin も MyApp の親としてロードされるようになっているため、ルートコントローラと Catalyst 自身やプラグインの名前空間が干渉する。</p>
+<p>いわゆる sub login 問題ですが、普通に prepare とかいうアクション定義すると Catalyst の prepare 呼ばれなくなってアボンとかいうことになってて、かなり微妙な感じだった。</p>
+<p>なので 5.66 から MyApp::Controller::Root に外付けできるようになった。一応まえと同じ書き方でも動くけど、Root.pm 推奨という流れ。</p>
+<p>とか書いておいてみる。</p>
+
+  </div>
+
+  <div class="meta">
+    by typester /
+    at <a href="/memo/2006/04/23/2/">2006-04-23T15:40:00</a> /
+    <a href="/memo/tag/perl/">perl</a>
+    &middot; <a href="/memo/tag/catalyst/">catalyst</a>
+    / <a href="/memo/2006/04/23/2/#disqus_thread">Comment</a>
+  </div>
+</div>
+
+<div class="entry autopagerize_page_element">
+  <h2><a href="/memo/2006/04/23/1/">Root コントローラ</a></h2>
+
+  <div class="body">
+    <p>いつの話題だよｗ</p>
+
+  </div>
+
+  <div class="meta">
+    by typester /
+    at <a href="/memo/2006/04/23/1/">2006-04-23T15:37:00</a> /
+    <a href="/memo/tag/perl/">perl</a>
+    &middot; <a href="/memo/tag/catalyst/">catalyst</a>
+    / <a href="/memo/2006/04/23/1/#disqus_thread">Comment</a>
+  </div>
+</div>
+
+<div class="entry autopagerize_page_element">
+  <h2><a href="/memo/2006/04/22/2/">MOTHER3</a></h2>
+
+  <div class="body">
+    <p>1章終わったー。</p>
+
+  </div>
+
+  <div class="meta">
+    by typester /
+    at <a href="/memo/2006/04/22/2/">2006-04-22T17:15:00</a> /
+    <a href="/memo/tag/life/">life</a>
+    &middot; <a href="/memo/tag/game/">game</a>
+    / <a href="/memo/2006/04/22/2/#disqus_thread">Comment</a>
+  </div>
+</div>
+
+<div class="entry autopagerize_page_element">
+  <h2><a href="/memo/2006/04/22/1/"></a></h2>
+
+  <div class="body">
+    <p>退社。</p>
+
+  </div>
+
+  <div class="meta">
+    by typester /
+    at <a href="/memo/2006/04/22/1/">2006-04-22T01:54:00</a> /
+    <a href="/memo/tag/life/">life</a>
+    / <a href="/memo/2006/04/22/1/#disqus_thread">Comment</a>
+  </div>
+</div>
+
+<div class="entry autopagerize_page_element">
+  <h2><a href="/memo/2006/04/21/4/"></a></h2>
+
+  <div class="body">
+    <p><a href="http://www.flickr.com/photos/typester/132250877/" title="Photo Sharing"><img alt="MOTHER3" height="161" src="http://static.flickr.com/51/132250877_9629e7f320_m.jpg" width="240" /></a></p>
+<p>昨日寝る前に20分くらいやった。</p>
+<p>おもろそうな予感がした。</p>
+
+  </div>
+
+  <div class="meta">
+    by typester /
+    at <a href="/memo/2006/04/21/4/">2006-04-21T16:59:00</a> /
+    <a href="/memo/tag/life/">life</a>
+    &middot; <a href="/memo/tag/game/">game</a>
+    / <a href="/memo/2006/04/21/4/#disqus_thread">Comment</a>
+  </div>
+</div>
+
+<div class="entry autopagerize_page_element">
+  <h2><a href="/memo/2006/04/21/3/">API関係</a></h2>
+
+  <div class="body">
+    <p>現在 <code>Catalyst::Plugin::RPC</code> という RPC の統合プラグインを作成してます。</p>
+<p>以下のような感じ。</p>
+<pre><code>use Catalyst qw/
+    RPC
+    RPC::Serializer::URIQuery
+    RPC::Serializer::XML
+    RPC::Serializer::JSON
+    /;
+</code></pre>
+<p>などと RPC と一緒に使いたいプロトコルのシリアライザをロードしておくと</p>
+<pre><code><span class="comment-delimiter"># </span><span class="comment">endpoint
+</span><span class="keyword">sub</span> <span class="function-name">rpc</span> <span class="constant">:</span> <span class="constant">Global</span> {
+    <span class="keyword">my</span> ( <span class="variable-name">$self</span>, <span class="variable-name">$c</span> ) = <span class="cperl-array">@_</span>;
+    $c-&gt;rpc;
+}
+
+<span class="keyword">sub</span> <span class="function-name">echo</span> <span class="constant">:</span> <span class="constant">RPC</span><span class="string">(&apos;myapp.echo&apos;)</span> {
+    <span class="keyword">my</span> ( <span class="variable-name">$self</span>, <span class="variable-name">$c</span>, <span class="cperl-array">@args</span> ) = <span class="cperl-array">@_</span>;
+
+    <span class="cperl-array">@args</span>;
+}
+</code></pre>
+<p>というような RPC アクションが利用できるようになるというものです。</p>
+<p>deserializer はリクエストの Content-Type から自動的に判別されるため、同じアクションを複数のプロトコルで共有できます。(このあたりはmiyagawaさんインスパイア)</p>
+<p>serializer はデフォルトでは deserializer と同じになりますが、format=json などとクエリで渡し指定することも可能となっています。</p>
+<p>Plugin::Flavour と組み合わせて /rpc.js 等とアクセスすれば Serializer::JSON が使われるようにもできますかね。これはどうしようかな。</p>
+<p>とりあえず今はRPCプラグイン本体を大まかに実装して、sri のコードコピペして Serializer::XML 作って XMLRPC のみ動くようになった段階。</p>
+<p>なんか同じようなことしてる人がいるっぽいので情報共有もかねて書いてみるｗ</p>
+<p>フィードバックフィードバック！</p>
+
+  </div>
+
+  <div class="meta">
+    by typester /
+    at <a href="/memo/2006/04/21/3/">2006-04-21T16:03:00</a> /
+    <a href="/memo/tag/life/">life</a>
+    &middot; <a href="/memo/tag/catalyst/">catalyst</a>
+    / <a href="/memo/2006/04/21/3/#disqus_thread">Comment</a>
+  </div>
+</div>
+
+
+
+
+<div id="pager" class="autopagerize_insert_before">
+  <p class="pages">
+    <a class="prev" rel="previous" href="/memo/page/112/">&laquo; Prev</a>
+    <a href="/memo/page/109/">109</a>
+    <a href="/memo/page/110/">110</a>
+    <a href="/memo/page/111/">111</a>
+    <a href="/memo/page/112/">112</a>
+    <span class="current">113</span>
+    <a href="/memo/page/114/">114</a>
+    <a href="/memo/page/115/">115</a>
+    <a href="/memo/page/116/">116</a>
+    <a href="/memo/page/117/">117</a>
+    <a href="/memo/page/118/">118</a>
+    <a class="next" rel="next" href="/memo/page/114/">Next &raquo;</a>
+  </p>
+  <p class="info">(Page 113 of 203)</p>
+</div>
+
+
+</div>
+
+<p id="footer">
+  Copyright &copy; 2005-2013
+      by <a class="author" href="/about/#me">Daisuke Murase (typester)</a> /
+  Site generated by <a href="https://github.com/typester/nim">nim</a> /
+  Comments powered by <a href="http://disqus.com">DISQUS</a>.
+</p>
+
+</div>
+
+
+<script type="text/javascript">
+//<![CDATA[
+(function() {
+	var links = document.getElementsByTagName('a');
+	var query = '?';
+	for(var i = 0; i < links.length; i++) {
+	if(links[i].href.indexOf('#disqus_thread') >= 0) {
+		query += 'url' + i + '=' + encodeURIComponent(links[i].href) + '&';
+	}
+	}
+	document.write('<script charset="utf-8" type="text/javascript" src="http://disqus.com/forums/unknownplace/get_num_replies.js' + query + '"></' + 'script>');
+})();
+//]]>
+</script>
+
+
+<script type="text/javascript">
+var gaJsHost = (("https:" == document.location.protocol) ? "https://ssl." : "http://www.");
+document.write(unescape("%3Cscript src='" + gaJsHost + "google-analytics.com/ga.js' type='text/javascript'%3E%3C/script%3E"));
+</script>
+<script type="text/javascript">
+try {
+var pageTracker = _gat._getTracker("UA-53067-1");
+pageTracker._trackPageview();
+} catch(err) {}</script>
+
+<script>
+function googleTranslateElementInit() {
+  new google.translate.TranslateElement({
+    pageLanguage: 'ja',
+    gaTrack: true,
+    gaId: 'UA-53067',
+    floatPosition: google.translate.TranslateElement.FloatPosition.BOTTOM_RIGHT
+  });
+}
+</script><script src="//translate.google.com/translate_a/element.js?cb=googleTranslateElementInit"></script>
+
+</body>
+</html>

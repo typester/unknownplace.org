@@ -1,0 +1,319 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="ja" xml:lang="ja">
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <title>memo - unknownplace.org</title>
+  <link rel="stylesheet" type="text/css" href="http://yui.yahooapis.com/3.0.0/build/cssreset/reset-min.css" />
+  <link rel="stylesheet" type="text/css" href="http://yui.yahooapis.com/3.0.0/build/cssfonts/fonts-min.css" />
+  <link rel="stylesheet" href="/css/style.css" type="text/css" />
+  <meta property="fb:admins" content="1093631929" />
+  <meta name="robots" content="noindex" />
+  <link rel="alternate" type="application/rss+xml" href="http://unknownplace.org/memo/index.rss" />
+</head>
+<body>
+
+<div id="container">
+<div id="header">
+    <h1><a href="/">unknownplace.org</a></h1> /
+<a href="/memo/">memo</a>
+</div>
+
+<div id="content">
+
+<div class="entry autopagerize_page_element">
+  <h2><a href="/memo/2005/12/08/2/">盗聴</a></h2>
+
+  <div class="body">
+    <p>if ( defined $fh ) { binmode $fh; $c-&gt;res-&gt;body( $fh ); }</p>
+
+  </div>
+
+  <div class="meta">
+    by typester /
+    at <a href="/memo/2005/12/08/2/">2005-12-08T02:25:00</a> /
+    <a href="/memo/tag/catalyst/">catalyst</a>
+    / <a href="/memo/2005/12/08/2/#disqus_thread">Comment</a>
+  </div>
+</div>
+
+<div class="entry autopagerize_page_element">
+  <h2><a href="/memo/2005/12/07/1/">flavour on Catalyst</a></h2>
+
+  <div class="body">
+    <p>URLパスの一番最初を <a href="http://www.blosxom.com/">Blosxom</a> でいう flavour のように使ってみるという試み。</p>
+<pre><code><span class="keyword">sub</span> <span class="function-name">prepare_action</span> {
+    <span class="keyword">my</span> <span class="variable-name">$c</span> = <span class="cperl-nonoverridable">shift</span>;
+
+    <span class="keyword">if</span> ( <span class="keyword">my</span> <span class="variable-name">$path</span> = $c-&gt;req-&gt;path ) {
+        <span class="keyword">my</span> (<span class="variable-name">$flavour</span>) = $path =~ <span class="cperl-nonoverridable">m</span><span class="constant">!</span><span class="function-name">^</span><span class="keyword">(</span><span class="function-name">[</span><span class="function-name"><span class="negation-char">^</span></span><span class="string">/</span><span class="function-name">]</span><span class="builtin">+</span><span class="keyword">)</span><span class="constant">!</span>;
+
+        <span class="keyword">if</span> ( $flavour <span class="negation-char">!</span>~ <span class="constant">/</span><span class="function-name">^</span><span class="keyword">(</span><span class="string">search</span><span class="keyword">|</span><span class="string">tag</span><span class="keyword">|</span><span class="builtin">\</span><span class="type">d</span><span class="builtin">{4}</span><span class="keyword">)</span><span class="function-name">$</span><span class="constant">/</span> ) {
+            $c-&gt;stash-&gt;{<span class="string">flavour</span>} = $flavour;
+            $c-&gt;stash-&gt;{<span class="string">_path</span>}   = $c-&gt;req-&gt;path;
+
+            $path =~ <span class="cperl-nonoverridable">s</span><span class="constant">!</span><span class="function-name">^</span><span class="variable-name">$flavour</span><span class="string">/</span><span class="builtin">+</span><span class="constant">!!</span>;
+            $c-&gt;req-&gt;path( $path );
+        }
+    }
+
+    $c-&gt;NEXT::prepare_action(<span class="cperl-array">@_</span>);
+
+    $c-&gt;req-&gt;path( <span class="cperl-nonoverridable">delete</span> $c-&gt;stash-&gt;{<span class="string">_path</span>} ) <span class="keyword">if</span> $c-&gt;stash-&gt;{<span class="string">_path</span>};
+    $c-&gt;stash-&gt;{<span class="string">flavour</span>} ||= $c-&gt;config-&gt;{<span class="string">default_flavour</span>} || <span class="string">&apos;html&apos;</span>;
+}
+</code></pre>
+<p>こんな感じ？</p>
+<p>これで、パスが search, tag, 2005 とか以外は flavour としてあつかわれて、</p>
+<pre><code>/flavour/tag/clon
+</code></pre>
+<p>とかでも /tag/clon と同じコントローラが呼ばれる。わかりにく！</p>
+<p>Blosxom は index.flavour とか拡張子で切り分けてたけど、なんか変な flavour 作ると URL がダサいので。</p>
+<p>でもこっちはコントローラで使ってる文字を使えないというのもあるし。</p>
+
+  </div>
+
+  <div class="meta">
+    by typester /
+    at <a href="/memo/2005/12/07/1/">2005-12-07T01:13:00</a> /
+    <a href="/memo/tag/clon/">clon</a>
+    &middot; <a href="/memo/tag/catalyst/">catalyst</a>
+    / <a href="/memo/2005/12/07/1/#disqus_thread">Comment</a>
+  </div>
+</div>
+
+<div class="entry autopagerize_page_element">
+  <h2><a href="/memo/2005/11/30/6/">Catalyst Authentication</a></h2>
+
+  <div class="body">
+    <p>もろもろつくったやつ、新しいので書き直すか。</p>
+
+  </div>
+
+  <div class="meta">
+    by typester /
+    at <a href="/memo/2005/11/30/6/">2005-11-30T20:52:00</a> /
+    <a href="/memo/tag/catalyst/">catalyst</a>
+    / <a href="/memo/2005/11/30/6/#disqus_thread">Comment</a>
+  </div>
+</div>
+
+<div class="entry autopagerize_page_element">
+  <h2><a href="/memo/2005/11/22/5/"></a></h2>
+
+  <div class="body">
+    <p>んーやっぱ HTTP::Body のバグだな。。</p>
+<p>$self-&gt;add したときに $self-&gt;{buffer} に append してるのに、File::Temp には毎回全部書き込んじゃってるという。</p>
+
+  </div>
+
+  <div class="meta">
+    by typester /
+    at <a href="/memo/2005/11/22/5/">2005-11-22T22:59:00</a> /
+    <a href="/memo/tag/catalyst/">catalyst</a>
+    / <a href="/memo/2005/11/22/5/#disqus_thread">Comment</a>
+  </div>
+</div>
+
+<div class="entry autopagerize_page_element">
+  <h2><a href="/memo/2005/11/22/4/">C::P::AtomPP 0.05_01</a></h2>
+
+  <div class="body">
+    <p>5.49世代からずっと <code>$c-&gt;req-&gt;body</code> の調子がおかしいわけですよ。</p>
+<p>でかい Content のときなんか変な値が入ってる。</p>
+<p>5.57 時点でもだめだから気づいてねーんだろな。おうのめんでー。HTTP::Body のバグな気がするけど。</p>
+<p>とりあえず <code>prepare_body_chunk</code> を上書きして、<code>$c-&gt;req-&gt;body</code> とは別に HTTP::Body つかわずに値を格納しておいてそれを使うようにしたVerを仮リリース。</p>
+
+  </div>
+
+  <div class="meta">
+    by typester /
+    at <a href="/memo/2005/11/22/4/">2005-11-22T20:58:00</a> /
+    <a href="/memo/tag/catalyst/">catalyst</a>
+    / <a href="/memo/2005/11/22/4/#disqus_thread">Comment</a>
+  </div>
+</div>
+
+<div class="entry autopagerize_page_element">
+  <h2><a href="/memo/2005/11/22/3/"></a></h2>
+
+  <div class="body">
+    <p><a href="http://d.hatena.ne.jp/naoya/20051122/1132656350">naoyaのはてなダイアリー - Catalyst::Engine::HTTP::Resterter における自動再起動サーバーの実装</a></p>
+<p>こういうの、途中経過をウォッチするのも楽しい。この自動再起動サーバーの実装のときは、File::Find に文句言ったり、vim でタイプするごとに一時ファイル(?)の mtime を更新する(?)のがうんこだけど、それに対応するためにディレクトリの mtime を見るようにしたりとか。</p>
+<p>また、せばすちゃんがはっきり意見いいまくりなのもおもしろい。</p>
+<p>下記は <code>$c-&gt;dump_these</code> の名前決めのとき</p>
+<pre><code>&lt;nothingmuch&gt; $c-&gt;dumped_on_error ?
+&lt;sri&gt; ugly
+&lt;nothingmuch&gt; hmm
+&lt;mst&gt; $c-&gt;dump_self ?
+&lt;sri&gt; ugly
+&lt;nothingmuch&gt; dumped_objs ?
+&lt;sri&gt; ugly
+</code></pre>
+
+  </div>
+
+  <div class="meta">
+    by typester /
+    at <a href="/memo/2005/11/22/3/">2005-11-22T20:30:00</a> /
+    <a href="/memo/tag/catalyst/">catalyst</a>
+    / <a href="/memo/2005/11/22/3/#disqus_thread">Comment</a>
+  </div>
+</div>
+
+<div class="entry autopagerize_page_element">
+  <h2><a href="/memo/2005/11/18/2/">遅レスにまじれす</a></h2>
+
+  <div class="body">
+    <p><a href="http://d.hatena.ne.jp/babie/20051117#p6">Rails びいきの Catalyst ファースト・インプレッション</a> にこっそりコメントしてみる。</p>
+<blockquote><p>開発スピードがめっちゃ速い</p></blockquote>
+<p>なんつっても開発者がにーｔ</p>
+<blockquote><p>非互換あるし。lib/appname/C/ -&gt; lib/appname/Controller/ とか。</p></blockquote>
+<p>C → Controller てのは Helper で生成されるデフォルトのものが変わっただけで、今も昔もどちらの名前でもちゃんと使える。</p>
+<p><code>-short</code> オプションつければ従来どおり。</p>
+<p>5.33 → 5.5 は Catalyst 本体内部をいじってるようなプログラム以外のアプリであれば問題なくそのまま動く。</p>
+<blockquote><p>人柱感</p></blockquote>
+<p>まだまだ開発者がすさまじくアクティブなので仕様がかわりまくるというのがありますね</p>
+<blockquote><p>なんでスクリプトに appname が全部ついているんだろう？　だるー。いらんだろ。</p></blockquote>
+<p>make install したとき用です。でも正直やるやついねーので微妙です。</p>
+<p>このへんはもう少し話し合うべき。Catalystアプリのインストールと配布方法について。(今のMakefileはひどすぎる)</p>
+<blockquote><p>root以下云々</p></blockquote>
+<p>ファイル名を省略するようなプラグインもあるし、暗黙の了解とかもないよ。好きなように使うよ。</p>
+<blockquote><p>URI とファイルパス・関数名が連動してない。</p></blockquote>
+<p>これも人それぞれですよね。連動さすこともできるし、全部1パッケージに収めることもできるし。</p>
+<p>そんな感じで。</p>
+<p>Rails びいきっていうわりにあんまりたたいてない！</p>
+
+  </div>
+
+  <div class="meta">
+    by typester /
+    at <a href="/memo/2005/11/18/2/">2005-11-18T01:20:00</a> /
+    <a href="/memo/tag/perl/">perl</a>
+    &middot; <a href="/memo/tag/catalyst/">catalyst</a>
+    / <a href="/memo/2005/11/18/2/#disqus_thread">Comment</a>
+  </div>
+</div>
+
+<div class="entry autopagerize_page_element">
+  <h2><a href="/memo/2005/11/11/6/">LocalRegex</a></h2>
+
+  <div class="body">
+    <p>個人的には、Regex と LocalRegex より、GlobalRegex と Regex のがいいなぁ。</p>
+
+  </div>
+
+  <div class="meta">
+    by typester /
+    at <a href="/memo/2005/11/11/6/">2005-11-11T14:03:00</a> /
+    <a href="/memo/tag/catalyst/">catalyst</a>
+    / <a href="/memo/2005/11/11/6/#disqus_thread">Comment</a>
+  </div>
+</div>
+
+<div class="entry autopagerize_page_element">
+  <h2><a href="/memo/2005/11/11/2/">Catalyst 5.49_04</a></h2>
+
+  <div class="body">
+    <p>もうソース見るとぜんぜんちがってて、あれげ。</p>
+<p>週末みなおす。だいぶかっこよくなってることはたしか。</p>
+
+  </div>
+
+  <div class="meta">
+    by typester /
+    at <a href="/memo/2005/11/11/2/">2005-11-11T01:44:00</a> /
+    <a href="/memo/tag/catalyst/">catalyst</a>
+    / <a href="/memo/2005/11/11/2/#disqus_thread">Comment</a>
+  </div>
+</div>
+
+<div class="entry autopagerize_page_element">
+  <h2><a href="/memo/2005/11/06/3/">LocalRegex</a></h2>
+
+  <div class="body">
+    <p>キター</p>
+
+  </div>
+
+  <div class="meta">
+    by typester /
+    at <a href="/memo/2005/11/06/3/">2005-11-06T08:53:00</a> /
+    <a href="/memo/tag/catalyst/">catalyst</a>
+    / <a href="/memo/2005/11/06/3/#disqus_thread">Comment</a>
+  </div>
+</div>
+
+
+
+
+<div id="pager" class="autopagerize_insert_before">
+  <p class="pages">
+    <a class="prev" rel="previous" href="/memo/tag/catalyst/page/8/">&laquo; Prev</a>
+    <a href="/memo/tag/catalyst/page/2/">2</a>
+    <a href="/memo/tag/catalyst/page/3/">3</a>
+    <a href="/memo/tag/catalyst/page/4/">4</a>
+    <a href="/memo/tag/catalyst/page/5/">5</a>
+    <a href="/memo/tag/catalyst/page/6/">6</a>
+    <a href="/memo/tag/catalyst/page/7/">7</a>
+    <a href="/memo/tag/catalyst/page/8/">8</a>
+    <span class="current">9</span>
+    <a href="/memo/tag/catalyst/page/10/">10</a>
+    <a href="/memo/tag/catalyst/page/11/">11</a>
+    <a class="next" rel="next" href="/memo/tag/catalyst/page/10/">Next &raquo;</a>
+  </p>
+  <p class="info">(Page 9 of 11)</p>
+</div>
+
+
+</div>
+
+<p id="footer">
+  Copyright &copy; 2005-2013
+      by <a class="author" href="/about/#me">Daisuke Murase (typester)</a> /
+  Site generated by <a href="https://github.com/typester/nim">nim</a> /
+  Comments powered by <a href="http://disqus.com">DISQUS</a>.
+</p>
+
+</div>
+
+
+<script type="text/javascript">
+//<![CDATA[
+(function() {
+	var links = document.getElementsByTagName('a');
+	var query = '?';
+	for(var i = 0; i < links.length; i++) {
+	if(links[i].href.indexOf('#disqus_thread') >= 0) {
+		query += 'url' + i + '=' + encodeURIComponent(links[i].href) + '&';
+	}
+	}
+	document.write('<script charset="utf-8" type="text/javascript" src="http://disqus.com/forums/unknownplace/get_num_replies.js' + query + '"></' + 'script>');
+})();
+//]]>
+</script>
+
+
+<script type="text/javascript">
+var gaJsHost = (("https:" == document.location.protocol) ? "https://ssl." : "http://www.");
+document.write(unescape("%3Cscript src='" + gaJsHost + "google-analytics.com/ga.js' type='text/javascript'%3E%3C/script%3E"));
+</script>
+<script type="text/javascript">
+try {
+var pageTracker = _gat._getTracker("UA-53067-1");
+pageTracker._trackPageview();
+} catch(err) {}</script>
+
+<script>
+function googleTranslateElementInit() {
+  new google.translate.TranslateElement({
+    pageLanguage: 'ja',
+    gaTrack: true,
+    gaId: 'UA-53067',
+    floatPosition: google.translate.TranslateElement.FloatPosition.BOTTOM_RIGHT
+  });
+}
+</script><script src="//translate.google.com/translate_a/element.js?cb=googleTranslateElementInit"></script>
+
+</body>
+</html>

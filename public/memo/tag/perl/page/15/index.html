@@ -1,0 +1,525 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="ja" xml:lang="ja">
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <title>memo - unknownplace.org</title>
+  <link rel="stylesheet" type="text/css" href="http://yui.yahooapis.com/3.0.0/build/cssreset/reset-min.css" />
+  <link rel="stylesheet" type="text/css" href="http://yui.yahooapis.com/3.0.0/build/cssfonts/fonts-min.css" />
+  <link rel="stylesheet" href="/css/style.css" type="text/css" />
+  <meta property="fb:admins" content="1093631929" />
+  <meta name="robots" content="noindex" />
+  <link rel="alternate" type="application/rss+xml" href="http://unknownplace.org/memo/index.rss" />
+</head>
+<body>
+
+<div id="container">
+<div id="header">
+    <h1><a href="/">unknownplace.org</a></h1> /
+<a href="/memo/">memo</a>
+</div>
+
+<div id="content">
+
+<div class="entry autopagerize_page_element">
+  <h2><a href="/memo/2006/09/20/1/"></a></h2>
+
+  <div class="body">
+    <p>やっぱりワードリストは <code>qw//</code> だよな。</p>
+<p>左右対称とかDASEEEE</p>
+
+  </div>
+
+  <div class="meta">
+    by typester /
+    at <a href="/memo/2006/09/20/1/">2006-09-20T02:03:00</a> /
+    <a href="/memo/tag/perl/">perl</a>
+    / <a href="/memo/2006/09/20/1/#disqus_thread">Comment</a>
+  </div>
+</div>
+
+<div class="entry autopagerize_page_element">
+  <h2><a href="/memo/2006/09/19/8/">MogileFS summit</a></h2>
+
+  <div class="body">
+    <p>おもろそうだなぁ、いいなぁ。</p>
+
+  </div>
+
+  <div class="meta">
+    by typester /
+    at <a href="/memo/2006/09/19/8/">2006-09-19T19:48:00</a> /
+    <a href="/memo/tag/perl/">perl</a>
+    &middot; <a href="/memo/tag/mogilefs/">mogilefs</a>
+    / <a href="/memo/2006/09/19/8/#disqus_thread">Comment</a>
+  </div>
+</div>
+
+<div class="entry autopagerize_page_element">
+  <h2><a href="/memo/2006/09/19/6/"></a></h2>
+
+  <div class="body">
+    <blockquote><p><a href="http://d.hatena.ne.jp/lestrrat/20060919#1158627963">D-5 出張版 - DBIx::Classページングのドツボ</a></p></blockquote>
+<p>おーそうだったんだ。あぶねー。</p>
+<p>同じような使い方してたけど、たまたまページ指定は最後にしていた。</p>
+
+  </div>
+
+  <div class="meta">
+    by typester /
+    at <a href="/memo/2006/09/19/6/">2006-09-19T18:15:00</a> /
+    <a href="/memo/tag/perl/">perl</a>
+    &middot; <a href="/memo/tag/dbic/">dbic</a>
+    / <a href="/memo/2006/09/19/6/#disqus_thread">Comment</a>
+  </div>
+</div>
+
+<div class="entry autopagerize_page_element">
+  <h2><a href="/memo/2006/09/15/4/"></a></h2>
+
+  <div class="body">
+    <p>今日からワードリストを <code>qw()</code> でかく。いままでは <code>qw//</code> 。</p>
+<p>なんとなく。</p>
+
+  </div>
+
+  <div class="meta">
+    by typester /
+    at <a href="/memo/2006/09/15/4/">2006-09-15T14:09:00</a> /
+    <a href="/memo/tag/perl/">perl</a>
+    / <a href="/memo/2006/09/15/4/#disqus_thread">Comment</a>
+  </div>
+</div>
+
+<div class="entry autopagerize_page_element">
+  <h2><a href="/memo/2006/09/15/3/">plaggerライクなHTTP::Proxyフロントエンドスクリプト</a></h2>
+
+  <div class="body">
+    <p>を書いた。会社のrepos内にアップしてしまったのでここに貼り付けちゃう。</p>
+<pre><code><span class="comment-delimiter">#</span><span class="comment">!/usr/bin/env perl
+</span>
+<span class="keyword">use</span> <span class="function-name">strict</span>;
+<span class="keyword">use</span> <span class="function-name">warnings</span>;
+
+<span class="keyword">use</span> <span class="function-name">File::Spec</span>;
+<span class="keyword">use</span> <span class="function-name">File::Find::Rule</span>;
+<span class="keyword">use</span> <span class="function-name">FindBin</span>;
+<span class="keyword">use</span> <span class="function-name">Getopt::Long</span>;
+<span class="keyword">use</span> <span class="function-name">Pod::Usage</span>;
+
+<span class="keyword">use</span> <span class="function-name">HTTP::Proxy</span>;
+<span class="keyword">use</span> <span class="function-name">YAML</span>;
+
+<span class="comment-delimiter"># </span><span class="comment">load config
+</span><span class="keyword">my</span> <span class="variable-name">$config</span> = <span class="keyword">do</span> {
+    <span class="keyword">my</span> <span class="variable-name">$config_file</span> = File::Spec-&gt;catfile( $FindBin::Bin, <span class="string">&apos;config.yml&apos;</span> );
+    <span class="keyword">my</span> <span class="variable-name">$port</span>        = 0;
+    <span class="keyword">my</span> <span class="variable-name">$host</span>        = <span class="string">&apos;&apos;</span>;
+    <span class="keyword">my</span> <span class="variable-name">$help</span>        = 0;
+
+    GetOptions(
+        <span class="string">&apos;port|p=s&apos;</span>   =&gt; \$port,
+        <span class="string">&apos;host|h=s&apos;</span>   =&gt; \$host,
+        <span class="string">&apos;config|c=s&apos;</span> =&gt; \$config_file,
+        <span class="string">&apos;help|?&apos;</span>     =&gt; \$help,
+    );
+    pod2usage(1) <span class="keyword">if</span> $help;
+
+    <span class="keyword">my</span> <span class="variable-name">$config</span> = YAML::LoadFile($config_file);
+    $config-&gt;{<span class="string">global</span>} ||= {};
+    $config-&gt;{<span class="string">global</span>}{<span class="string">port</span>} = $port <span class="keyword">if</span> $port;
+    $config-&gt;{<span class="string">global</span>}{<span class="string">host</span>} = $host <span class="keyword">if</span> $host;
+
+    $config;
+};
+
+<span class="keyword">my</span> <span class="variable-name">$proxy</span> = HTTP::Proxy-&gt;new;
+$proxy-&gt;port( $config-&gt;{<span class="string">global</span>}{<span class="string">port</span>} || 3000 );
+$proxy-&gt;host( $config-&gt;{<span class="string">global</span>}{<span class="string">host</span>} || <span class="string">&apos;&apos;</span> );
+
+<span class="comment-delimiter"># </span><span class="comment">find plugins
+</span><span class="keyword">my</span> <span class="cperl-hash">%plugins</span>;
+<span class="keyword">for</span> <span class="keyword">my</span> <span class="variable-name">$plugin_dir</span> ( @{ $config-&gt;{<span class="string">global</span>}{<span class="string">plugins_dir</span>} } ) {
+    <span class="keyword">my</span> <span class="cperl-array">@files</span> = File::Find::Rule-&gt;file-&gt;name(<span class="string">&apos;*.pm&apos;</span>)-&gt;in($plugin_dir);
+    <span class="keyword">for</span> <span class="keyword">my</span> <span class="variable-name">$file</span> (<span class="cperl-array">@files</span>) {
+        ( <span class="keyword">my</span> <span class="variable-name">$module</span> = $file ) =~ <span class="cperl-nonoverridable">s</span><span class="constant">!</span><span class="keyword">(</span><span class="function-name">^</span><span class="variable-name">$plugin_dir</span><span class="string">/</span><span class="builtin">?</span><span class="keyword">|</span><span class="builtin">\</span><span class="string">.pm</span><span class="function-name">$</span><span class="keyword">)</span><span class="constant">!!</span><span class="cperl-nonoverridable">g</span>;
+        $module =~ <span class="cperl-nonoverridable">s</span><span class="constant">!</span><span class="string">/</span><span class="constant">!</span><span class="string">::</span><span class="constant">!</span><span class="cperl-nonoverridable">g</span>;
+        <span class="cperl-hash">$plugins</span>{<span class="string">&quot;HTTP::Proxy::Plugin::$module&quot;</span>} = $file;
+    }
+}
+
+<span class="comment-delimiter"># </span><span class="comment">load and initialize plugins
+</span><span class="keyword">for</span> <span class="keyword">my</span> <span class="variable-name">$plugin</span> ( @{ $config-&gt;{<span class="string">plugins</span>} } ) {
+    <span class="keyword">my</span> <span class="variable-name">$class</span> = <span class="string">&quot;HTTP::Proxy::Plugin::$plugin-&gt;{module}&quot;</span>;
+    <span class="keyword">my</span> <span class="variable-name">$file</span> = <span class="cperl-hash">$plugins</span>{$class} || $class;
+
+    <span class="keyword">eval</span> { <span class="keyword">require</span> <span class="string">&quot;$file&quot;</span>; };
+    <span class="keyword">die</span> $@ <span class="keyword">if</span> $@;
+
+    <span class="keyword">my</span> <span class="variable-name">$module</span> = $class-&gt;new( $plugin-&gt;{<span class="string">config</span>} || {} );
+    $module-&gt;register($proxy);
+}
+
+<span class="comment-delimiter"># </span><span class="comment">set log levels
+</span><span class="keyword">my</span> <span class="variable-name">$log_mask</span> = 0;
+<span class="keyword">for</span> <span class="keyword">my</span> <span class="variable-name">$log_level</span> (@{ $config-&gt;{<span class="string">global</span>}{<span class="string">log</span>}{<span class="string">mask</span>} || [] }) {
+    <span class="cperl-nonoverridable">no</span> <span class="function-name">strict</span> <span class="string">&apos;refs&apos;</span>;
+    $log_mask |= &amp;{<span class="string">&quot;HTTP::Proxy::$log_level&quot;</span>};
+}
+$proxy-&gt;logmask($log_mask);
+
+<span class="comment-delimiter"># </span><span class="comment">start daemon
+</span>$proxy-&gt;start;
+</code></pre>
+<p>HTTP::Proxy自体がすばらしくて、perlユーザーであればこんなことものを使わなくても、自分でさくさくフィルタがかけるのであまり必要はなかったりする。</p>
+<p>ただ再利用性とかperl知らない人用に考えると結構いい感じかもしれない。</p>
+<p>プラグインの例:</p>
+<pre><code><span class="keyword">package</span> <span class="function-name">HTTP::Proxy::Plugin::Rewrite::Host</span>;
+<span class="keyword">use</span> <span class="function-name">strict</span>;
+<span class="keyword">use</span> <span class="function-name">warnings</span>;
+<span class="keyword">use</span> <span class="function-name">base</span> <span class="cperl-nonoverridable">qw</span><span class="string">(HTTP::Proxy::HeaderFilter)</span>;
+
+<span class="keyword">use</span> <span class="function-name">List::Util</span> <span class="cperl-nonoverridable">qw</span><span class="string">(first)</span>;
+
+<span class="keyword">sub</span> <span class="function-name">new</span> {
+    <span class="keyword">my</span> ( <span class="variable-name">$class</span>, <span class="variable-name">$config</span> ) = <span class="cperl-array">@_</span>;
+    <span class="keyword">my</span> <span class="variable-name">$self</span> = <span class="type">bless</span> { <span class="string">rewrites</span> =&gt; $config }, $class;
+}
+
+<span class="keyword">sub</span> <span class="function-name">register</span> {
+    <span class="keyword">my</span> ( <span class="variable-name">$self</span>, <span class="variable-name">$context</span> ) = <span class="cperl-array">@_</span>;
+    $context-&gt;push_filter( <span class="string">request</span> =&gt; $self );
+}
+
+<span class="keyword">sub</span> <span class="function-name">filter</span> {
+    <span class="keyword">my</span> ( <span class="variable-name">$self</span>, <span class="variable-name">$content</span>, <span class="variable-name">$req</span> ) = <span class="cperl-array">@_</span>;
+
+    <span class="keyword">my</span> <span class="variable-name">$host</span> = first { $req-&gt;uri-&gt;host <span class="type">eq</span> $_ } <span class="cperl-nonoverridable">keys</span> %{ $self-&gt;{<span class="string">rewrites</span>} }
+        <span class="type">or</span> <span class="keyword">return</span>;
+
+    $host = $self-&gt;{<span class="string">rewrites</span>}-&gt;{$host};
+
+    <span class="keyword">if</span> ($host <span class="type">and</span> <span class="type">ref</span> $host <span class="type">eq</span> <span class="string">&apos;ARRAY&apos;</span>) {
+        <span class="keyword">my</span> <span class="variable-name">$path</span> = $req-&gt;uri-&gt;path || <span class="string">&apos;/&apos;</span>;
+
+        <span class="keyword">my</span> <span class="variable-name">$target</span> = first { $path =~ <span class="constant">/</span><span class="function-name">^</span><span class="variable-name">$_</span><span class="string">-&gt;{path}</span><span class="constant">/</span> } <span class="cperl-array">@</span><span class="variable-name">$host</span>
+            <span class="type">or</span> <span class="keyword">return</span>;
+
+        <span class="keyword">if</span> ($target-&gt;{<span class="string">host</span>}) {
+            $path =~ <span class="cperl-nonoverridable">s</span><span class="constant">/</span><span class="function-name">^</span><span class="variable-name">$target</span><span class="string">-&gt;{path}</span><span class="constant">//</span>;
+            $req-&gt;uri-&gt;path( $path );
+            $req-&gt;uri-&gt;host( $target-&gt;{<span class="string">host</span>} );
+        }
+    }
+    <span class="keyword">elsif</span> ($host) {
+        $req-&gt;uri-&gt;host($host);
+    }
+};
+
+1;
+</code></pre>
+<p>特定のホストへのリクエストを別ホストへ転送するプラグイン</p>
+<p>これを使う設定yamlはこんな感じ</p>
+<pre><code>global:
+  host: &apos;&apos;
+  port: 3000
+  plugins_dir:
+    - /home/typester/workdir/httpproxy/plugins
+  log:
+    mask:
+      - ALL
+
+plugins:
+  - module: Rewrite::Host
+    config:
+      www.example.com: localhost:3001
+      www2.example.com: localhost:3002
+      www3.example.com:
+        - path: /subbdir
+          host: localhost:3003
+        - path: /
+          host: localhost:3004
+</code></pre>
+<p>これで</p>
+<ul><li>www.example.com へのリクエストは localhost:3001 へのリクエストに</li><li>www2.example.com へのリクエストは localhost:3002 へのリクエストに</li><li>www3.example.com へのリクエストで、パスが <code>/subdir*</code> にマッチするものは localhost:3003 へ、それ以外は localhost:3004 へのリクエストに</li></ul>
+<p>なります。</p>
+<p>パスみて変えるところはプラグインわけたほうがヨサゲではある。</p>
+<p>追記@2006-09-15T14:43:21+09:00: plugin例が間違ってたので修正した。</p>
+
+  </div>
+
+  <div class="meta">
+    by typester /
+    at <a href="/memo/2006/09/15/3/">2006-09-15T13:56:00</a> /
+    <a href="/memo/tag/perl/">perl</a>
+    / <a href="/memo/2006/09/15/3/#disqus_thread">Comment</a>
+  </div>
+</div>
+
+<div class="entry autopagerize_page_element">
+  <h2><a href="/memo/2006/09/14/5/">Text::Hatena</a></h2>
+
+  <div class="body">
+    <p>入れようとしたらテストこけた。</p>
+<p><code>use strict</code> のクラス名がsysPreProcではなく<code>sysStatement</code>になってるのがだめぽいが、これはText::VimColorの問題？vim自体？</p>
+<pre><code><span class="nxml-text">[MSG] [Thu Sep 14 21:48:15 2006] Writing Makefile for Text::Hatena
+
+[MSG] [Thu Sep 14 21:48:16 2006] make: Warning: File `Makefile&apos; has modification time 0.31 s in the future
+Manifying blib/man3/Text::Hatena::AutoLink.3pm
+Manifying blib/man3/Text::Hatena.3pm
+make: warning:  Clock skew detected.  Your build may be incomplete.
+
+[ERROR] [Thu Sep 14 21:48:25 2006] MAKE TEST failed: Bad file descriptor PERL_DL_NONLAZY=1 /usr/bin/perl &quot;-MExtUtils::Command::MM&quot; &quot;-e&quot; &quot;test_harness(0, &apos;blib/lib&apos;, &apos;blib/arch&apos;)&quot; t/*.t
+t/00_text_hatena................Use of uninitialized value in string eq at /home/typester/.cpanplus/5.8.8/build/Text-Hatena-0.15/blib/lib/Text/Hatena/HTMLFilter.pm line 52, </span><span class="nxml-tag-delimiter">&lt;</span><span class="nxml-element-local-name">DATA</span><span class="nxml-tag-delimiter">&gt;</span><span class="nxml-text"> line 855.
+
+#   Failed test in t/00_text_hatena.t at line 292.
+#          got: &apos;</span><span class="nxml-tag-delimiter">&lt;</span><span class="nxml-element-local-name">div</span> <span class="nxml-attribute-local-name">class</span>=<span class="nxml-attribute-value-delimiter">&quot;</span><span class="nxml-attribute-value">section</span><span class="nxml-attribute-value-delimiter">&quot;</span><span class="nxml-tag-delimiter">&gt;</span><span class="nxml-text">
+#   </span><span class="nxml-tag-delimiter">&lt;</span><span class="nxml-element-local-name">pre</span> <span class="nxml-attribute-local-name">class</span>=<span class="nxml-attribute-value-delimiter">&quot;</span><span class="nxml-attribute-value">hatena-super-pre</span><span class="nxml-attribute-value-delimiter">&quot;</span><span class="nxml-tag-delimiter">&gt;</span><span class="nxml-text">
+# </span><span class="nxml-tag-delimiter">&lt;</span><span class="nxml-element-local-name">span</span> <span class="nxml-attribute-local-name">class</span>=<span class="nxml-attribute-value-delimiter">&quot;</span><span class="nxml-attribute-value">synPreProc</span><span class="nxml-attribute-value-delimiter">&quot;</span><span class="nxml-tag-delimiter">&gt;</span><span class="nxml-text">#!/usr/bin/perl -w</span><span class="nxml-tag-delimiter">&lt;</span><span class="nxml-tag-slash">/</span><span class="nxml-element-local-name">span</span><span class="nxml-tag-delimiter">&gt;</span><span class="nxml-text">
+# </span><span class="nxml-tag-delimiter">&lt;</span><span class="nxml-element-local-name">span</span> <span class="nxml-attribute-local-name">class</span>=<span class="nxml-attribute-value-delimiter">&quot;</span><span class="nxml-attribute-value">synPreProc</span><span class="nxml-attribute-value-delimiter">&quot;</span><span class="nxml-tag-delimiter">&gt;</span><span class="nxml-text">use strict</span><span class="nxml-tag-delimiter">&lt;</span><span class="nxml-tag-slash">/</span><span class="nxml-element-local-name">span</span><span class="nxml-tag-delimiter">&gt;</span><span class="nxml-text">;
+# 
+# </span><span class="nxml-tag-delimiter">&lt;</span><span class="nxml-element-local-name">span</span> <span class="nxml-attribute-local-name">class</span>=<span class="nxml-attribute-value-delimiter">&quot;</span><span class="nxml-attribute-value">synStatement</span><span class="nxml-attribute-value-delimiter">&quot;</span><span class="nxml-tag-delimiter">&gt;</span><span class="nxml-text">my</span><span class="nxml-tag-delimiter">&lt;</span><span class="nxml-tag-slash">/</span><span class="nxml-element-local-name">span</span><span class="nxml-tag-delimiter">&gt;</span> <span class="nxml-tag-delimiter">&lt;</span><span class="nxml-element-local-name">span</span> <span class="nxml-attribute-local-name">class</span>=<span class="nxml-attribute-value-delimiter">&quot;</span><span class="nxml-attribute-value">synIdentifier</span><span class="nxml-attribute-value-delimiter">&quot;</span><span class="nxml-tag-delimiter">&gt;</span><span class="nxml-text">$s</span><span class="nxml-tag-delimiter">&lt;</span><span class="nxml-tag-slash">/</span><span class="nxml-element-local-name">span</span><span class="nxml-tag-delimiter">&gt;</span><span class="nxml-text"> = </span><span class="nxml-tag-delimiter">&lt;</span><span class="nxml-element-local-name">span</span> <span class="nxml-attribute-local-name">class</span>=<span class="nxml-attribute-value-delimiter">&quot;</span><span class="nxml-attribute-value">synConstant</span><span class="nxml-attribute-value-delimiter">&quot;</span><span class="nxml-tag-delimiter">&gt;</span><span class="nxml-entity-ref-delimiter">&amp;</span><span class="nxml-entity-ref-name">quot</span><span class="nxml-entity-ref-delimiter">;</span><span class="nxml-text">Hello, World!</span><span class="nxml-entity-ref-delimiter">&amp;</span><span class="nxml-entity-ref-name">quot</span><span class="nxml-entity-ref-delimiter">;</span><span class="nxml-tag-delimiter">&lt;</span><span class="nxml-tag-slash">/</span><span class="nxml-element-local-name">span</span><span class="nxml-tag-delimiter">&gt;</span><span class="nxml-text">;
+# </span><span class="nxml-tag-delimiter">&lt;</span><span class="nxml-element-local-name">span</span> <span class="nxml-attribute-local-name">class</span>=<span class="nxml-attribute-value-delimiter">&quot;</span><span class="nxml-attribute-value">synStatement</span><span class="nxml-attribute-value-delimiter">&quot;</span><span class="nxml-tag-delimiter">&gt;</span><span class="nxml-text">print</span><span class="nxml-tag-delimiter">&lt;</span><span class="nxml-tag-slash">/</span><span class="nxml-element-local-name">span</span><span class="nxml-tag-delimiter">&gt;</span> <span class="nxml-tag-delimiter">&lt;</span><span class="nxml-element-local-name">span</span> <span class="nxml-attribute-local-name">class</span>=<span class="nxml-attribute-value-delimiter">&quot;</span><span class="nxml-attribute-value">synIdentifier</span><span class="nxml-attribute-value-delimiter">&quot;</span><span class="nxml-tag-delimiter">&gt;</span><span class="nxml-text">$s</span><span class="nxml-tag-delimiter">&lt;</span><span class="nxml-tag-slash">/</span><span class="nxml-element-local-name">span</span><span class="nxml-tag-delimiter">&gt;</span><span class="nxml-text">; </span><span class="nxml-tag-delimiter">&lt;</span><span class="nxml-element-local-name">span</span> <span class="nxml-attribute-local-name">class</span>=<span class="nxml-attribute-value-delimiter">&quot;</span><span class="nxml-attribute-value">synComment</span><span class="nxml-attribute-value-delimiter">&quot;</span><span class="nxml-tag-delimiter">&gt;</span><span class="nxml-text"># prints Hello, World!</span><span class="nxml-tag-delimiter">&lt;</span><span class="nxml-tag-slash">/</span><span class="nxml-element-local-name">span</span><span class="nxml-tag-delimiter">&gt;</span><span class="nxml-text">
+# </span><span class="nxml-tag-delimiter">&lt;</span><span class="nxml-tag-slash">/</span><span class="nxml-element-local-name">pre</span><span class="nxml-tag-delimiter">&gt;</span><span class="nxml-text">
+# </span><span class="nxml-tag-delimiter">&lt;</span><span class="nxml-tag-slash">/</span><span class="nxml-element-local-name">div</span><span class="nxml-tag-delimiter">&gt;</span><span class="nxml-text">&apos;
+#     expected: &apos;</span><span class="nxml-tag-delimiter">&lt;</span><span class="nxml-element-local-name">div</span> <span class="nxml-attribute-local-name">class</span>=<span class="nxml-attribute-value-delimiter">&quot;</span><span class="nxml-attribute-value">section</span><span class="nxml-attribute-value-delimiter">&quot;</span><span class="nxml-tag-delimiter">&gt;</span><span class="nxml-text">
+#   </span><span class="nxml-tag-delimiter">&lt;</span><span class="nxml-element-local-name">pre</span> <span class="nxml-attribute-local-name">class</span>=<span class="nxml-attribute-value-delimiter">&quot;</span><span class="nxml-attribute-value">hatena-super-pre</span><span class="nxml-attribute-value-delimiter">&quot;</span><span class="nxml-tag-delimiter">&gt;</span><span class="nxml-text">
+# </span><span class="nxml-tag-delimiter">&lt;</span><span class="nxml-element-local-name">span</span> <span class="nxml-attribute-local-name">class</span>=<span class="nxml-attribute-value-delimiter">&quot;</span><span class="nxml-attribute-value">synPreProc</span><span class="nxml-attribute-value-delimiter">&quot;</span><span class="nxml-tag-delimiter">&gt;</span><span class="nxml-text">#!/usr/bin/perl -w</span><span class="nxml-tag-delimiter">&lt;</span><span class="nxml-tag-slash">/</span><span class="nxml-element-local-name">span</span><span class="nxml-tag-delimiter">&gt;</span><span class="nxml-text">
+# </span><span class="nxml-tag-delimiter">&lt;</span><span class="nxml-element-local-name">span</span> <span class="nxml-attribute-local-name">class</span>=<span class="nxml-attribute-value-delimiter">&quot;</span><span class="nxml-attribute-value">synStatement</span><span class="nxml-attribute-value-delimiter">&quot;</span><span class="nxml-tag-delimiter">&gt;</span><span class="nxml-text">use strict</span><span class="nxml-tag-delimiter">&lt;</span><span class="nxml-tag-slash">/</span><span class="nxml-element-local-name">span</span><span class="nxml-tag-delimiter">&gt;</span><span class="nxml-text">;
+# 
+# </span><span class="nxml-tag-delimiter">&lt;</span><span class="nxml-element-local-name">span</span> <span class="nxml-attribute-local-name">class</span>=<span class="nxml-attribute-value-delimiter">&quot;</span><span class="nxml-attribute-value">synStatement</span><span class="nxml-attribute-value-delimiter">&quot;</span><span class="nxml-tag-delimiter">&gt;</span><span class="nxml-text">my</span><span class="nxml-tag-delimiter">&lt;</span><span class="nxml-tag-slash">/</span><span class="nxml-element-local-name">span</span><span class="nxml-tag-delimiter">&gt;</span> <span class="nxml-tag-delimiter">&lt;</span><span class="nxml-element-local-name">span</span> <span class="nxml-attribute-local-name">class</span>=<span class="nxml-attribute-value-delimiter">&quot;</span><span class="nxml-attribute-value">synIdentifier</span><span class="nxml-attribute-value-delimiter">&quot;</span><span class="nxml-tag-delimiter">&gt;</span><span class="nxml-text">$s</span><span class="nxml-tag-delimiter">&lt;</span><span class="nxml-tag-slash">/</span><span class="nxml-element-local-name">span</span><span class="nxml-tag-delimiter">&gt;</span><span class="nxml-text"> = </span><span class="nxml-tag-delimiter">&lt;</span><span class="nxml-element-local-name">span</span> <span class="nxml-attribute-local-name">class</span>=<span class="nxml-attribute-value-delimiter">&quot;</span><span class="nxml-attribute-value">synConstant</span><span class="nxml-attribute-value-delimiter">&quot;</span><span class="nxml-tag-delimiter">&gt;</span><span class="nxml-entity-ref-delimiter">&amp;</span><span class="nxml-entity-ref-name">quot</span><span class="nxml-entity-ref-delimiter">;</span><span class="nxml-text">Hello, World!</span><span class="nxml-entity-ref-delimiter">&amp;</span><span class="nxml-entity-ref-name">quot</span><span class="nxml-entity-ref-delimiter">;</span><span class="nxml-tag-delimiter">&lt;</span><span class="nxml-tag-slash">/</span><span class="nxml-element-local-name">span</span><span class="nxml-tag-delimiter">&gt;</span><span class="nxml-text">;
+# </span><span class="nxml-tag-delimiter">&lt;</span><span class="nxml-element-local-name">span</span> <span class="nxml-attribute-local-name">class</span>=<span class="nxml-attribute-value-delimiter">&quot;</span><span class="nxml-attribute-value">synStatement</span><span class="nxml-attribute-value-delimiter">&quot;</span><span class="nxml-tag-delimiter">&gt;</span><span class="nxml-text">print</span><span class="nxml-tag-delimiter">&lt;</span><span class="nxml-tag-slash">/</span><span class="nxml-element-local-name">span</span><span class="nxml-tag-delimiter">&gt;</span> <span class="nxml-tag-delimiter">&lt;</span><span class="nxml-element-local-name">span</span> <span class="nxml-attribute-local-name">class</span>=<span class="nxml-attribute-value-delimiter">&quot;</span><span class="nxml-attribute-value">synIdentifier</span><span class="nxml-attribute-value-delimiter">&quot;</span><span class="nxml-tag-delimiter">&gt;</span><span class="nxml-text">$s</span><span class="nxml-tag-delimiter">&lt;</span><span class="nxml-tag-slash">/</span><span class="nxml-element-local-name">span</span><span class="nxml-tag-delimiter">&gt;</span><span class="nxml-text">; </span><span class="nxml-tag-delimiter">&lt;</span><span class="nxml-element-local-name">span</span> <span class="nxml-attribute-local-name">class</span>=<span class="nxml-attribute-value-delimiter">&quot;</span><span class="nxml-attribute-value">synComment</span><span class="nxml-attribute-value-delimiter">&quot;</span><span class="nxml-tag-delimiter">&gt;</span><span class="nxml-text"># prints Hello, World!</span><span class="nxml-tag-delimiter">&lt;</span><span class="nxml-tag-slash">/</span><span class="nxml-element-local-name">span</span><span class="nxml-tag-delimiter">&gt;</span><span class="nxml-text">
+# </span><span class="nxml-tag-delimiter">&lt;</span><span class="nxml-tag-slash">/</span><span class="nxml-element-local-name">pre</span><span class="nxml-tag-delimiter">&gt;</span><span class="nxml-text">
+# </span><span class="nxml-tag-delimiter">&lt;</span><span class="nxml-tag-slash">/</span><span class="nxml-element-local-name">div</span><span class="nxml-tag-delimiter">&gt;</span><span class="nxml-text">&apos;
+
+#   Failed test in t/00_text_hatena.t at line 307.
+#          got: &apos;</span><span class="nxml-tag-delimiter">&lt;</span><span class="nxml-element-local-name">div</span> <span class="nxml-attribute-local-name">class</span>=<span class="nxml-attribute-value-delimiter">&quot;</span><span class="nxml-attribute-value">section</span><span class="nxml-attribute-value-delimiter">&quot;</span><span class="nxml-tag-delimiter">&gt;</span><span class="nxml-text">
+#   </span><span class="nxml-tag-delimiter">&lt;</span><span class="nxml-element-local-name">pre</span> <span class="nxml-attribute-local-name">class</span>=<span class="nxml-attribute-value-delimiter">&quot;</span><span class="nxml-attribute-value">hatena-super-pre</span><span class="nxml-attribute-value-delimiter">&quot;</span><span class="nxml-tag-delimiter">&gt;</span><span class="nxml-text">
+# </span><span class="nxml-tag-delimiter">&lt;</span><span class="nxml-element-local-name">span</span> <span class="nxml-attribute-local-name">class</span>=<span class="nxml-attribute-value-delimiter">&quot;</span><span class="nxml-attribute-value">synPreProc</span><span class="nxml-attribute-value-delimiter">&quot;</span><span class="nxml-tag-delimiter">&gt;</span><span class="nxml-text">#!/usr/bin/perl -w</span><span class="nxml-tag-delimiter">&lt;</span><span class="nxml-tag-slash">/</span><span class="nxml-element-local-name">span</span><span class="nxml-tag-delimiter">&gt;</span><span class="nxml-text">
+# </span><span class="nxml-tag-delimiter">&lt;</span><span class="nxml-element-local-name">span</span> <span class="nxml-attribute-local-name">class</span>=<span class="nxml-attribute-value-delimiter">&quot;</span><span class="nxml-attribute-value">synPreProc</span><span class="nxml-attribute-value-delimiter">&quot;</span><span class="nxml-tag-delimiter">&gt;</span><span class="nxml-text">use strict</span><span class="nxml-tag-delimiter">&lt;</span><span class="nxml-tag-slash">/</span><span class="nxml-element-local-name">span</span><span class="nxml-tag-delimiter">&gt;</span><span class="nxml-text">;
+# 
+# </span><span class="nxml-tag-delimiter">&lt;</span><span class="nxml-element-local-name">span</span> <span class="nxml-attribute-local-name">class</span>=<span class="nxml-attribute-value-delimiter">&quot;</span><span class="nxml-attribute-value">synStatement</span><span class="nxml-attribute-value-delimiter">&quot;</span><span class="nxml-tag-delimiter">&gt;</span><span class="nxml-text">my</span><span class="nxml-tag-delimiter">&lt;</span><span class="nxml-tag-slash">/</span><span class="nxml-element-local-name">span</span><span class="nxml-tag-delimiter">&gt;</span> <span class="nxml-tag-delimiter">&lt;</span><span class="nxml-element-local-name">span</span> <span class="nxml-attribute-local-name">class</span>=<span class="nxml-attribute-value-delimiter">&quot;</span><span class="nxml-attribute-value">synIdentifier</span><span class="nxml-attribute-value-delimiter">&quot;</span><span class="nxml-tag-delimiter">&gt;</span><span class="nxml-text">$s</span><span class="nxml-tag-delimiter">&lt;</span><span class="nxml-tag-slash">/</span><span class="nxml-element-local-name">span</span><span class="nxml-tag-delimiter">&gt;</span><span class="nxml-text"> = </span><span class="nxml-tag-delimiter">&lt;</span><span class="nxml-element-local-name">span</span> <span class="nxml-attribute-local-name">class</span>=<span class="nxml-attribute-value-delimiter">&quot;</span><span class="nxml-attribute-value">synConstant</span><span class="nxml-attribute-value-delimiter">&quot;</span><span class="nxml-tag-delimiter">&gt;</span><span class="nxml-entity-ref-delimiter">&amp;</span><span class="nxml-entity-ref-name">quot</span><span class="nxml-entity-ref-delimiter">;</span><span class="nxml-text">Hello, World!</span><span class="nxml-entity-ref-delimiter">&amp;</span><span class="nxml-entity-ref-name">quot</span><span class="nxml-entity-ref-delimiter">;</span><span class="nxml-tag-delimiter">&lt;</span><span class="nxml-tag-slash">/</span><span class="nxml-element-local-name">span</span><span class="nxml-tag-delimiter">&gt;</span><span class="nxml-text">;
+# </span><span class="nxml-tag-delimiter">&lt;</span><span class="nxml-element-local-name">span</span> <span class="nxml-attribute-local-name">class</span>=<span class="nxml-attribute-value-delimiter">&quot;</span><span class="nxml-attribute-value">synStatement</span><span class="nxml-attribute-value-delimiter">&quot;</span><span class="nxml-tag-delimiter">&gt;</span><span class="nxml-text">print</span><span class="nxml-tag-delimiter">&lt;</span><span class="nxml-tag-slash">/</span><span class="nxml-element-local-name">span</span><span class="nxml-tag-delimiter">&gt;</span> <span class="nxml-tag-delimiter">&lt;</span><span class="nxml-element-local-name">span</span> <span class="nxml-attribute-local-name">class</span>=<span class="nxml-attribute-value-delimiter">&quot;</span><span class="nxml-attribute-value">synIdentifier</span><span class="nxml-attribute-value-delimiter">&quot;</span><span class="nxml-tag-delimiter">&gt;</span><span class="nxml-text">$s</span><span class="nxml-tag-delimiter">&lt;</span><span class="nxml-tag-slash">/</span><span class="nxml-element-local-name">span</span><span class="nxml-tag-delimiter">&gt;</span><span class="nxml-text">; </span><span class="nxml-tag-delimiter">&lt;</span><span class="nxml-element-local-name">span</span> <span class="nxml-attribute-local-name">class</span>=<span class="nxml-attribute-value-delimiter">&quot;</span><span class="nxml-attribute-value">synComment</span><span class="nxml-attribute-value-delimiter">&quot;</span><span class="nxml-tag-delimiter">&gt;</span><span class="nxml-text"># prints Hello, World!</span><span class="nxml-tag-delimiter">&lt;</span><span class="nxml-tag-slash">/</span><span class="nxml-element-local-name">span</span><span class="nxml-tag-delimiter">&gt;</span><span class="nxml-text">
+# </span><span class="nxml-tag-delimiter">&lt;</span><span class="nxml-tag-slash">/</span><span class="nxml-element-local-name">pre</span><span class="nxml-tag-delimiter">&gt;</span><span class="nxml-text">
+# </span><span class="nxml-tag-delimiter">&lt;</span><span class="nxml-tag-slash">/</span><span class="nxml-element-local-name">div</span><span class="nxml-tag-delimiter">&gt;</span><span class="nxml-text">&apos;
+#     expected: &apos;</span><span class="nxml-tag-delimiter">&lt;</span><span class="nxml-element-local-name">div</span> <span class="nxml-attribute-local-name">class</span>=<span class="nxml-attribute-value-delimiter">&quot;</span><span class="nxml-attribute-value">section</span><span class="nxml-attribute-value-delimiter">&quot;</span><span class="nxml-tag-delimiter">&gt;</span><span class="nxml-text">
+#   </span><span class="nxml-tag-delimiter">&lt;</span><span class="nxml-element-local-name">pre</span> <span class="nxml-attribute-local-name">class</span>=<span class="nxml-attribute-value-delimiter">&quot;</span><span class="nxml-attribute-value">hatena-super-pre</span><span class="nxml-attribute-value-delimiter">&quot;</span><span class="nxml-tag-delimiter">&gt;</span><span class="nxml-text">
+# </span><span class="nxml-tag-delimiter">&lt;</span><span class="nxml-element-local-name">span</span> <span class="nxml-attribute-local-name">class</span>=<span class="nxml-attribute-value-delimiter">&quot;</span><span class="nxml-attribute-value">synPreProc</span><span class="nxml-attribute-value-delimiter">&quot;</span><span class="nxml-tag-delimiter">&gt;</span><span class="nxml-text">#!/usr/bin/perl -w</span><span class="nxml-tag-delimiter">&lt;</span><span class="nxml-tag-slash">/</span><span class="nxml-element-local-name">span</span><span class="nxml-tag-delimiter">&gt;</span><span class="nxml-text">
+# </span><span class="nxml-tag-delimiter">&lt;</span><span class="nxml-element-local-name">span</span> <span class="nxml-attribute-local-name">class</span>=<span class="nxml-attribute-value-delimiter">&quot;</span><span class="nxml-attribute-value">synStatement</span><span class="nxml-attribute-value-delimiter">&quot;</span><span class="nxml-tag-delimiter">&gt;</span><span class="nxml-text">use strict</span><span class="nxml-tag-delimiter">&lt;</span><span class="nxml-tag-slash">/</span><span class="nxml-element-local-name">span</span><span class="nxml-tag-delimiter">&gt;</span><span class="nxml-text">;
+# 
+# </span><span class="nxml-tag-delimiter">&lt;</span><span class="nxml-element-local-name">span</span> <span class="nxml-attribute-local-name">class</span>=<span class="nxml-attribute-value-delimiter">&quot;</span><span class="nxml-attribute-value">synStatement</span><span class="nxml-attribute-value-delimiter">&quot;</span><span class="nxml-tag-delimiter">&gt;</span><span class="nxml-text">my</span><span class="nxml-tag-delimiter">&lt;</span><span class="nxml-tag-slash">/</span><span class="nxml-element-local-name">span</span><span class="nxml-tag-delimiter">&gt;</span> <span class="nxml-tag-delimiter">&lt;</span><span class="nxml-element-local-name">span</span> <span class="nxml-attribute-local-name">class</span>=<span class="nxml-attribute-value-delimiter">&quot;</span><span class="nxml-attribute-value">synIdentifier</span><span class="nxml-attribute-value-delimiter">&quot;</span><span class="nxml-tag-delimiter">&gt;</span><span class="nxml-text">$s</span><span class="nxml-tag-delimiter">&lt;</span><span class="nxml-tag-slash">/</span><span class="nxml-element-local-name">span</span><span class="nxml-tag-delimiter">&gt;</span><span class="nxml-text"> = </span><span class="nxml-tag-delimiter">&lt;</span><span class="nxml-element-local-name">span</span> <span class="nxml-attribute-local-name">class</span>=<span class="nxml-attribute-value-delimiter">&quot;</span><span class="nxml-attribute-value">synConstant</span><span class="nxml-attribute-value-delimiter">&quot;</span><span class="nxml-tag-delimiter">&gt;</span><span class="nxml-entity-ref-delimiter">&amp;</span><span class="nxml-entity-ref-name">quot</span><span class="nxml-entity-ref-delimiter">;</span><span class="nxml-text">Hello, World!</span><span class="nxml-entity-ref-delimiter">&amp;</span><span class="nxml-entity-ref-name">quot</span><span class="nxml-entity-ref-delimiter">;</span><span class="nxml-tag-delimiter">&lt;</span><span class="nxml-tag-slash">/</span><span class="nxml-element-local-name">span</span><span class="nxml-tag-delimiter">&gt;</span><span class="nxml-text">;
+# </span><span class="nxml-tag-delimiter">&lt;</span><span class="nxml-element-local-name">span</span> <span class="nxml-attribute-local-name">class</span>=<span class="nxml-attribute-value-delimiter">&quot;</span><span class="nxml-attribute-value">synStatement</span><span class="nxml-attribute-value-delimiter">&quot;</span><span class="nxml-tag-delimiter">&gt;</span><span class="nxml-text">print</span><span class="nxml-tag-delimiter">&lt;</span><span class="nxml-tag-slash">/</span><span class="nxml-element-local-name">span</span><span class="nxml-tag-delimiter">&gt;</span> <span class="nxml-tag-delimiter">&lt;</span><span class="nxml-element-local-name">span</span> <span class="nxml-attribute-local-name">class</span>=<span class="nxml-attribute-value-delimiter">&quot;</span><span class="nxml-attribute-value">synIdentifier</span><span class="nxml-attribute-value-delimiter">&quot;</span><span class="nxml-tag-delimiter">&gt;</span><span class="nxml-text">$s</span><span class="nxml-tag-delimiter">&lt;</span><span class="nxml-tag-slash">/</span><span class="nxml-element-local-name">span</span><span class="nxml-tag-delimiter">&gt;</span><span class="nxml-text">; </span><span class="nxml-tag-delimiter">&lt;</span><span class="nxml-element-local-name">span</span> <span class="nxml-attribute-local-name">class</span>=<span class="nxml-attribute-value-delimiter">&quot;</span><span class="nxml-attribute-value">synComment</span><span class="nxml-attribute-value-delimiter">&quot;</span><span class="nxml-tag-delimiter">&gt;</span><span class="nxml-text"># prints Hello, World!</span><span class="nxml-tag-delimiter">&lt;</span><span class="nxml-tag-slash">/</span><span class="nxml-element-local-name">span</span><span class="nxml-tag-delimiter">&gt;</span><span class="nxml-text">
+# </span><span class="nxml-tag-delimiter">&lt;</span><span class="nxml-tag-slash">/</span><span class="nxml-element-local-name">pre</span><span class="nxml-tag-delimiter">&gt;</span><span class="nxml-text">
+# </span><span class="nxml-tag-delimiter">&lt;</span><span class="nxml-tag-slash">/</span><span class="nxml-element-local-name">div</span><span class="nxml-tag-delimiter">&gt;</span><span class="nxml-text">&apos;
+# Looks like you failed 2 tests of 20.
+dubious
+    Test returned status 2 (wstat 512, 0x200)
+DIED. FAILED tests 15-16
+    Failed 2/20 tests, 90.00% okay
+t/01_autolink_compile...........ok
+t/02_autolink_text..............ok
+t/03_autolink_http..............Parsing of undecoded UTF-8 will give garbage when decoding entities at /usr/local/share/perl/5.8.8/LWP/Protocol.pm line 114.
+Parsing of undecoded UTF-8 will give garbage when decoding entities at /usr/local/share/perl/5.8.8/LWP/Protocol.pm line 114.
+ok
+t/04_autolink_ftp...............ok
+t/05_autolink_mailto............ok
+t/06_autolink_hatenafotolife....ok
+t/07_autolink_hatenagroup.......ok
+t/08_autolink_asin..............ok
+t/09_autolink_hatenadiary.......ok
+t/10_autolink_hatenaid..........ok
+t/11_autolink_tex...............ok
+t/12_autolink_unbracket.........ok
+t/13_autolink_hatenaantenna.....ok
+t/14_autolink_hatenabookmark....ok
+t/15_autolink_hatenarss.........ok
+t/16_autolink_hatenaidea........ok
+t/17_autolink_hatenaquestion....ok
+t/18_autolink_ean...............ok
+t/19_autolink_hatenagraph.......ok
+t/20_autolink_hatenamap.........ok
+t/21_autolink_google............ok
+t/22_autolink_hatenasearch......ok
+t/23_autolink_amazon............ok
+t/24_autolink_rakuten...........ok
+t/99_autolink...................Parsing of undecoded UTF-8 will give garbage when decoding entities at /usr/local/share/perl/5.8.8/LWP/Protocol.pm line 114, </span><span class="nxml-tag-delimiter">&lt;</span><span class="nxml-element-local-name">DATA</span><span class="nxml-tag-delimiter">&gt;</span><span class="nxml-text"> line 855.
+Parsing of undecoded UTF-8 will give garbage when decoding entities at /usr/local/share/perl/5.8.8/LWP/Protocol.pm line 114, </span><span class="nxml-tag-delimiter">&lt;</span><span class="nxml-element-local-name">DATA</span><span class="nxml-tag-delimiter">&gt;</span><span class="nxml-text"> line 855.
+ok
+Failed Test        Stat Wstat Total Fail  List of Failed
+-------------------------------------------------------------------------------
+t/00_text_hatena.t    2   512    20    2  15-16
+Failed 1/26 test scripts. 2/129 subtests failed.
+Files=26, Tests=129,  9 wallclock secs ( 3.82 cusr +  1.99 csys =  5.81 CPU)
+Use of uninitialized value in pattern match (m//) at /home/typester/.cpanplus/5.8.8/build/Text-Hatena-0.15/blib/lib/Text/Hatena/AutoLink/HTTP.pm line 135, </span><span class="nxml-tag-delimiter">&lt;</span><span class="nxml-element-local-name">DATA</span><span class="nxml-tag-delimiter">&gt;</span><span class="nxml-text"> line 855.
+Failed 1/26 test programs. 2/129 subtests failed.
+make: *** [test_dynamic] Error 255
+
+[ERROR] [Thu Sep 14 21:48:25 2006] Unable to create a new distribution object for &apos;Text::Hatena&apos; -- cannot continue
+</span></code></pre>
+
+  </div>
+
+  <div class="meta">
+    by typester /
+    at <a href="/memo/2006/09/14/5/">2006-09-14T22:14:00</a> /
+    <a href="/memo/tag/perl/">perl</a>
+    / <a href="/memo/2006/09/14/5/#disqus_thread">Comment</a>
+  </div>
+</div>
+
+<div class="entry autopagerize_page_element">
+  <h2><a href="/memo/2006/09/14/3/">Catalyst::Plugin::RPC</a></h2>
+
+  <div class="body">
+    <p>個人的にかなり気に入ってるので、ドキュメントがんばって書いて(死にそう＞＜)CPANにうぷろう。</p>
+
+  </div>
+
+  <div class="meta">
+    by typester /
+    at <a href="/memo/2006/09/14/3/">2006-09-14T12:54:00</a> /
+    <a href="/memo/tag/perl/">perl</a>
+    &middot; <a href="/memo/tag/catalyst/">catalyst</a>
+    / <a href="/memo/2006/09/14/3/#disqus_thread">Comment</a>
+  </div>
+</div>
+
+<div class="entry autopagerize_page_element">
+  <h2><a href="/memo/2006/09/11/4/">nothingmuchのCahe::FastMmapラッパ</a></h2>
+
+  <div class="body">
+    <p>use base qw/Cache::FastMmap/;</p>
+<pre><code><span class="keyword">sub</span> <span class="function-name">get</span> {
+    <span class="keyword">my</span> ( <span class="variable-name">$self</span>, <span class="variable-name">$key</span> ) = <span class="cperl-array">@_</span>;
+    ${ $self-&gt;SUPER::get($key) || <span class="keyword">return</span> };
+}
+
+<span class="keyword">sub</span> <span class="function-name">set</span> {
+    <span class="keyword">my</span> ( <span class="variable-name">$self</span>, <span class="variable-name">$key</span>, <span class="variable-name">$value</span> ) = <span class="cperl-array">@_</span>;
+    $self-&gt;SUPER::set( $key =&gt; \$value );
+}
+</code></pre>
+<p>カッコイイわぁ。</p>
+
+  </div>
+
+  <div class="meta">
+    by typester /
+    at <a href="/memo/2006/09/11/4/">2006-09-11T18:04:00</a> /
+    <a href="/memo/tag/perl/">perl</a>
+    / <a href="/memo/2006/09/11/4/#disqus_thread">Comment</a>
+  </div>
+</div>
+
+<div class="entry autopagerize_page_element">
+  <h2><a href="/memo/2006/09/11/3/">SubRequest</a></h2>
+
+  <div class="body">
+    <p>テラオソス</p>
+<p>うーむ。</p>
+
+  </div>
+
+  <div class="meta">
+    by typester /
+    at <a href="/memo/2006/09/11/3/">2006-09-11T13:45:00</a> /
+    <a href="/memo/tag/perl/">perl</a>
+    &middot; <a href="/memo/tag/catalyst/">catalyst</a>
+    / <a href="/memo/2006/09/11/3/#disqus_thread">Comment</a>
+  </div>
+</div>
+
+<div class="entry autopagerize_page_element">
+  <h2><a href="/memo/2006/09/11/1/">Use the force, luke</a></h2>
+
+  <div class="body">
+    <p>思いついてActivePerlをいれた。</p>
+<p>案の定CPANモジュールいれるのがめんどくさい。テスト失敗したのRT見たり、ソース見たり。</p>
+<p>問題なさげなのはforce installした。</p>
+<p>それでおもったけどCPANのforce installってテストもはしっちゃうからうぜーのね。いつもCPANPLUS使ってたから忘れてたわぁ。</p>
+<p>CPANPLUSだと--skiptestと--forceの両方ある。</p>
+<p>前者はテストしないでインストール。後者は強制的にインストール(同じバージョン入れなおしたりする場合に使う)。</p>
+
+  </div>
+
+  <div class="meta">
+    by typester /
+    at <a href="/memo/2006/09/11/1/">2006-09-11T02:14:00</a> /
+    <a href="/memo/tag/perl/">perl</a>
+    / <a href="/memo/2006/09/11/1/#disqus_thread">Comment</a>
+  </div>
+</div>
+
+
+
+
+<div id="pager" class="autopagerize_insert_before">
+  <p class="pages">
+    <a class="prev" rel="previous" href="/memo/tag/perl/page/14/">&laquo; Prev</a>
+    <a href="/memo/tag/perl/page/11/">11</a>
+    <a href="/memo/tag/perl/page/12/">12</a>
+    <a href="/memo/tag/perl/page/13/">13</a>
+    <a href="/memo/tag/perl/page/14/">14</a>
+    <span class="current">15</span>
+    <a href="/memo/tag/perl/page/16/">16</a>
+    <a href="/memo/tag/perl/page/17/">17</a>
+    <a href="/memo/tag/perl/page/18/">18</a>
+    <a href="/memo/tag/perl/page/19/">19</a>
+    <a href="/memo/tag/perl/page/20/">20</a>
+    <a class="next" rel="next" href="/memo/tag/perl/page/16/">Next &raquo;</a>
+  </p>
+  <p class="info">(Page 15 of 30)</p>
+</div>
+
+
+</div>
+
+<p id="footer">
+  Copyright &copy; 2005-2013
+      by <a class="author" href="/about/#me">Daisuke Murase (typester)</a> /
+  Site generated by <a href="https://github.com/typester/nim">nim</a> /
+  Comments powered by <a href="http://disqus.com">DISQUS</a>.
+</p>
+
+</div>
+
+
+<script type="text/javascript">
+//<![CDATA[
+(function() {
+	var links = document.getElementsByTagName('a');
+	var query = '?';
+	for(var i = 0; i < links.length; i++) {
+	if(links[i].href.indexOf('#disqus_thread') >= 0) {
+		query += 'url' + i + '=' + encodeURIComponent(links[i].href) + '&';
+	}
+	}
+	document.write('<script charset="utf-8" type="text/javascript" src="http://disqus.com/forums/unknownplace/get_num_replies.js' + query + '"></' + 'script>');
+})();
+//]]>
+</script>
+
+
+<script type="text/javascript">
+var gaJsHost = (("https:" == document.location.protocol) ? "https://ssl." : "http://www.");
+document.write(unescape("%3Cscript src='" + gaJsHost + "google-analytics.com/ga.js' type='text/javascript'%3E%3C/script%3E"));
+</script>
+<script type="text/javascript">
+try {
+var pageTracker = _gat._getTracker("UA-53067-1");
+pageTracker._trackPageview();
+} catch(err) {}</script>
+
+<script>
+function googleTranslateElementInit() {
+  new google.translate.TranslateElement({
+    pageLanguage: 'ja',
+    gaTrack: true,
+    gaId: 'UA-53067',
+    floatPosition: google.translate.TranslateElement.FloatPosition.BOTTOM_RIGHT
+  });
+}
+</script><script src="//translate.google.com/translate_a/element.js?cb=googleTranslateElementInit"></script>
+
+</body>
+</html>

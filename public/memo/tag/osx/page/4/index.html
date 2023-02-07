@@ -1,0 +1,430 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="ja" xml:lang="ja">
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <title>memo - unknownplace.org</title>
+  <link rel="stylesheet" type="text/css" href="http://yui.yahooapis.com/3.0.0/build/cssreset/reset-min.css" />
+  <link rel="stylesheet" type="text/css" href="http://yui.yahooapis.com/3.0.0/build/cssfonts/fonts-min.css" />
+  <link rel="stylesheet" href="/css/style.css" type="text/css" />
+  <meta property="fb:admins" content="1093631929" />
+  <meta name="robots" content="noindex" />
+  <link rel="alternate" type="application/rss+xml" href="http://unknownplace.org/memo/index.rss" />
+</head>
+<body>
+
+<div id="container">
+<div id="header">
+    <h1><a href="/">unknownplace.org</a></h1> /
+<a href="/memo/">memo</a>
+</div>
+
+<div id="content">
+
+<div class="entry autopagerize_page_element">
+  <h2><a href="/memo/2009/06/09/1/">.ppkファイルとか渡されて困ったとき</a></h2>
+
+  <div class="body">
+    <p><a href="http://ftp.chiark.greenend.org.uk/~sgtatham/putty/">PuTTY</a> 独自の形式の .ppk ファイルで鍵ペアを渡されて困ったときのためにメモ。</p>
+<p>PuTTY に付属している puttygen コマンドで普通の公開鍵・秘密鍵に分離できる。</p>
+<p>Debian 系なら <code>putty-tools</code> パッケージをインストールするだけでいいらしい(未確認)</p>
+<p>OSX だと ports 使うか自分でビルドする。</p>
+<p>ぼくは自分でビルドした。</p>
+<pre><code> wget http://the.earth.li/~sgtatham/putty/latest/putty-0.60.tar.gz
+ tar zxvf putty-0.60.tar.gz
+ cd putty-0.60/macosx
+ make puttygen
+</code></pre>
+<p>で puttygen だけビルドできる。っていうか全体 make はぼくの環境では失敗した。まぁこれさえビルドできればOK。</p>
+<p>秘密鍵を取り出す。</p>
+<pre><code>./puttygen unko.ppk -O private-openssh -o private_key
+</code></pre>
+<p>公開鍵</p>
+<pre><code>./puttygen unko.ppk -O public-openssh -o public_key
+</code></pre>
+
+  </div>
+
+  <div class="meta">
+    by typester /
+    at <a href="/memo/2009/06/09/1/">2009-06-09T10:04:00</a> /
+    <a href="/memo/tag/osx/">osx</a>
+    &middot; <a href="/memo/tag/putty/">putty</a>
+    / <a href="/memo/2009/06/09/1/#disqus_thread">Comment</a>
+  </div>
+</div>
+
+<div class="entry autopagerize_page_element">
+  <h2><a href="/memo/2009/03/17/1/">OSX でディスプレイが電源切れたことを検知したい</a></h2>
+
+  <div class="body">
+    <p>おもむろに Xcode のドキュメントを検索すると <code>CGGetOnlineDisplayList</code> とかいう関数が見つかったので</p>
+<pre><code><span class="preprocessor">#include</span> <span class="string">&lt;CoreFoundation/CoreFoundation.h&gt;</span>
+<span class="preprocessor">#include</span> <span class="string">&lt;ApplicationServices/ApplicationServices.h&gt;</span>
+
+<span class="type">int</span> <span class="function-name">main</span> (<span class="type">int</span> <span class="variable-name">argc</span>, <span class="keyword">const</span> <span class="type">char</span> * <span class="variable-name">argv</span>[]) {
+    <span class="type">CGDisplayCount</span>    <span class="variable-name">displayCount</span>;
+    <span class="type">CGDirectDisplayID</span> <span class="variable-name">displays</span>[4];
+    <span class="type">int</span>               <span class="variable-name">i</span>;
+
+    CGGetOnlineDisplayList(4, displays, &amp;displayCount);
+
+    <span class="keyword">for</span> (i = 0; i &lt; displayCount; ++i) {
+        <span class="type">CGRect</span> <span class="variable-name">rect</span> = CGDisplayBounds(displays[i]);
+        printf(<span class="string">"%d: %.0fx%.0f ( "</span>, i, rect.size.width, rect.size.height);
+
+        <span class="keyword">if</span> (CGDisplayIsActive(displays[i]))
+            printf(<span class="string">"active "</span>);
+
+        <span class="keyword">if</span> (CGDisplayIsAsleep(displays[i]))
+            printf(<span class="string">"sleep "</span>);
+
+        <span class="keyword">if</span> (CGDisplayIsBuiltin(displays[i]))
+            printf(<span class="string">"builtin "</span>);
+
+        <span class="keyword">if</span> (CGDisplayIsMain(displays[i]))
+            printf(<span class="string">"main "</span>);
+
+        <span class="keyword">if</span> (CGDisplayIsOnline(displays[i]))
+            printf(<span class="string">"online "</span>);
+
+        printf(<span class="string">")\n"</span>);
+    }
+
+    <span class="keyword">return</span> 0;
+}
+</code></pre>
+<p>とかいうのを書いてみた。これで、</p>
+<pre><code>$ ./dispinfo
+0: 1280x800 ( active builtin main online )
+1: 1024x768 ( active online )
+</code></pre>
+<p>とかいう出力が得られる。</p>
+<p>のだけど、ディスプレイの電源（上記の1）を切ってもこのプログラムの出力は全く変わらない。ケーブルを抜くと出力から消える。</p>
+<p>ここではケーブルは指したままで、ディスプレイの電源が落ちたことを検知したいという状況なので全然使えない。。</p>
+<p>どーしたらいいんだろ？</p>
+
+  </div>
+
+  <div class="meta">
+    by typester /
+    at <a href="/memo/2009/03/17/1/">2009-03-17T02:30:00</a> /
+    <a href="/memo/tag/osx/">osx</a>
+    / <a href="/memo/2009/03/17/1/#disqus_thread">Comment</a>
+  </div>
+</div>
+
+<div class="entry autopagerize_page_element">
+  <h2><a href="/memo/2009/03/05/1/">CarbonEmacsの背後のWindowを切り替える</a></h2>
+
+  <div class="body">
+    <p>そろそろ野球のシーズンですね。フルスクリーンEmacsの裏にメディアプレーヤーを置くとなかなか快適ということを発見しました。</p>
+<p><a href="http://www.flickr.com/photos/typester/3330676348/" title="watching wbc while coding by typester, on Flickr"><img alt="watching wbc while coding" height="313" src="http://farm4.static.flickr.com/3374/3330676348_7c2e6869be.jpg" width="500" /></a></p>
+<p>しかし、単純に裏に表示しているだけなため、Firefoxを開いたあとEmacsに戻ったりするとEmacsの裏の画面がFirefoxになってしまっていてイラッとします。</p>
+<p>そこでこんな elisp で emacs の裏の画面を好きなアプリケーションにすぐに設定できるようにしてみました。</p>
+<pre><code>(do-applescript <span class="string">&quot;activate application \&quot;VLC\&quot;
+                 activate application \&quot;Emacs\&quot;&quot;</span>)
+</code></pre>
+<p>快適。</p>
+<p>ところで、これをもっと汎用的にして、VLC の部分を anything で選択きたら全画面 emacser にはものすごく便利なのかも。</p>
+
+  </div>
+
+  <div class="meta">
+    by typester /
+    at <a href="/memo/2009/03/05/1/">2009-03-05T20:40:00</a> /
+    <a href="/memo/tag/osx/">osx</a>
+    &middot; <a href="/memo/tag/emacs/">emacs</a>
+    / <a href="/memo/2009/03/05/1/#disqus_thread">Comment</a>
+  </div>
+</div>
+
+<div class="entry autopagerize_page_element">
+  <h2><a href="/memo/2009/02/06/1/">Hiveminder.app</a></h2>
+
+  <div class="body">
+    <p>お気に入りのタスク管理ツール <a href="http://hiveminder.com/">Hiveminder</a> をちょっとハックして自分好みにしてみた。</p>
+<p><a href="http://www.flickr.com/photos/typester/3257131671/" title="Hiveminder.app by typester, on Flickr"><img alt="Hiveminder.app" height="554" src="http://farm4.static.flickr.com/3347/3257131671_4449115c2c_o.png" width="505" /></a></p>
+<ul><li>Fluid でアプリケーション的に使えるように</li><li>ページ内の jGrowl の通知を本物の Growl 使うように変更</li><li>いまやってるタスクのタイムをカウント出来る機能</li><li>でそれ(いまやるべきこと)を10分間隔で Growl 通知する機能</li></ul>
+<p>など。すぐに他ごとしてしまう僕のような人には一番最後の機能がなかなか有効なはず。</p>
+<p>スクリプトのダウンロード、使い方などはgithubにアップしたのでそっち見てくださいませ。</p>
+<blockquote><p><a href="http://github.com/typester/hiveminder-local-timetrack/tree/master">typester&apos;s hiveminder-local-timetrack at master - GitHub</a></p></blockquote>
+<p>余談。</p>
+<p>そんなに Hiveminder がいいの？ と聞かれると返答に困るわけですが、<a href="http://search.cpan.org/dist/App-Todo/bin/todo.pl">todo.pl</a> からのブレインダンプでのタスク登録 (todo.pl braindump) とか、指定した日付になるまでタスクリストからタスクを隠せる機能 ([hide until next monday]) だとか、タスクにアイデア的に登録したものをやんないよなーってものは永久に隠せたり（隠してるのはいつでも表示させることが出来るので過去のアイデアリストとして使える）とか他にはない気に入ってるところがたくさんあるので使い続けてます。</p>
+<p>@obra++ bestpractical++</p>
+<p>ってとこですかね！</p>
+<p>あと、いつものように、自分の必要な最小限の機能しかつくってないので、興味ある人いらっしゃいましたら是非とも一緒にハックしましょう。</p>
+
+  </div>
+
+  <div class="meta">
+    by typester /
+    at <a href="/memo/2009/02/06/1/">2009-02-06T20:37:00</a> /
+    <a href="/memo/tag/osx/">osx</a>
+    &middot; <a href="/memo/tag/hiveminder/">hiveminder</a>
+    / <a href="/memo/2009/02/06/1/#disqus_thread">Comment</a>
+  </div>
+</div>
+
+<div class="entry autopagerize_page_element">
+  <h2><a href="/memo/2009/01/21/1/">OSXで快適ビットマップフォント生活</a></h2>
+
+  <div class="body">
+    <p>OSX の良いところの一つにアンチエイリアスの効いたきれいなフォントがあげられると思います。</p>
+<p>ただ、ターミナルやエディタなどでそう言うフォントを使用するとどうしても視認性の問題から文字サイズを大きくする必要があり、1画面あたりの情報量が減ってしまいます。</p>
+<p>また単純に僕がビットマップフォントが好きだという理由もあり、ずっと OSX でもビットマップフォントで開発したいなーと思ってました。</p>
+<p>しかし、Terminal.app や iTerm できれいに日本語を表示できるビットマップフォントを見つけられず、やむを得ずアンチエイリアスしてました。 Osaka フォントとか、CarbonEmacs だとビットマップ表示で日本語きれいにひょうじできるのにTerminal.app やiTerm だとガタガタになってしまうし。。</p>
+<p>で、あきらめてたんですが、モトヤシーダというフォントならいけるよという話を聞いて設定してみたところわりときれいに表示させることが出来ました。</p>
+<p>モトヤシーダは</p>
+<blockquote><p><a href="http://www.motoyafont.jp/">http://www.motoyafont.jp/</a></p></blockquote>
+<p>こちらのサイトで販売されているのですが、お試しフリーフォントというところに入っていますのでとりあえず無料で試せます。僕はWin版をダウンロードしてCrossOver Macで自己解凍exeを展開しました。ただのlhaの自己解凍形式のようなのでlhaコマンドでも行けるそうです。</p>
+<p>そんなわけで Terminal.app + iTerm から CarbonEmacs + iTerm に移行しました。</p>
+<p>僕が愛用している CodingFontTobi というフォントは ttf 版だとなぜか 16pt 設定で 11pt 相当の表示というなぞの状態になっていて、日本語をうまく混在表示させるためにはasciiとそれ以外で違うフォント設定を使えるアプリケーションを使う必要があります。</p>
+<p>CarbonEmacsとiTermならそれができるということですね。CodingFontTobi 16pt + モトヤシーダ(EmacsではOsaka) 11pt という設定にしてます。</p>
+<p>これでやっと OSX でも満足行く表示になりました。やっぱりこっちのほうがいいですなー。</p>
+<p><a href="http://farm4.static.flickr.com/3328/3214539860_d7f5df4081_o.png" title="CodingFontTobi by typester, on Flickr"><img alt="CodingFontTobi" height="313" src="http://farm4.static.flickr.com/3328/3214539860_f7b3899110.jpg" width="500" /></a></p>
+<del>スクリーンショットを貼ろうと思ったんですが、なぜかスクリーンショットとるとアンチエイリアスがかかってしまうという罠がありあきらめました。これはなんなんだろう。。</del>
+<ins>Flickrでリサイズされてるだけだった。。</ins>
+<p>また、他にもいいビットマップフォントをご存じの方いらっしゃいましたら是非とも教えてください！！</p>
+
+  </div>
+
+  <div class="meta">
+    by typester /
+    at <a href="/memo/2009/01/21/1/">2009-01-21T11:23:00</a> /
+    <a href="/memo/tag/osx/">osx</a>
+    / <a href="/memo/2009/01/21/1/#disqus_thread">Comment</a>
+  </div>
+</div>
+
+<div class="entry autopagerize_page_element">
+  <h2><a href="/memo/2008/11/06/1/">emacs23をつかってみた</a></h2>
+
+  <div class="body">
+    <p>昨日のエントリで CarbonEmacs を使えばいいのかもと思ってちょっとためしてみようと思ったのだけど、どうせなら MultiTTY 使いたいなーなどという気持ちが出てきてしまった。</p>
+<p>それで emacs23 ベースな CarbonEmacs 的なのがないかと探してみたら、いまの CVS の emacs は普通に Emacs.app を作ることができるみたい。</p>
+<pre><code>cvs -z3 -d:pserver:anonymous@cvs.savannah.gnu.org:/sources/emacs co emacs
+</code></pre>
+<p>とかで co してきて</p>
+<pre><code>./configure --with-ns
+make
+make install
+</code></pre>
+<p>で nextstep ディレクトリに Emacs.app ができている。</p>
+<p>CLI で起動したい場合は</p>
+<pre><code>Emacs.app/Contents/MacOS/Emacs -nw
+</code></pre>
+<p>でおｋ。emacsclient は</p>
+<pre><code>Emacs.app/Content/MacOS/bin/emacsclient
+</code></pre>
+<p>にある。etags とかもここにある。</p>
+<p>とりあえず multitty をためしてみるために Emacs.app と CLI (-nw) と両方立ち上げて</p>
+<pre><code>emacsclient -t /path/to/file
+</code></pre>
+<p>としてみたところ、ちゃんとどちらの emacs でも同じファイルを開き、編集内容も共有できた。</p>
+<p>これで徐々に GUI な emacs に移行できるかなー。</p>
+
+  </div>
+
+  <div class="meta">
+    by typester /
+    at <a href="/memo/2008/11/06/1/">2008-11-06T13:58:00</a> /
+    <a href="/memo/tag/osx/">osx</a>
+    &middot; <a href="/memo/tag/emacs/">emacs</a>
+    / <a href="/memo/2008/11/06/1/#disqus_thread">Comment</a>
+  </div>
+</div>
+
+<div class="entry autopagerize_page_element">
+  <h2><a href="/memo/2008/11/05/3/">iTermでもremap.app_term_commandL2optionL</a></h2>
+
+  <div class="body">
+    <p><a href="http://www.pqrs.org/tekezo/macosx/keyremap4macbook/index.html.ja">KeyRemap4MacBook</a> に <code>remap.app_term_commandL2optionL</code> という設定があって、これを使うと Terminal.app でのみ<del>左コマンドキーと左オプションキーを入れ替える</del><ins>左コマンドキーを左オプションキーにする</ins>ことができる。</p>
+<p>これを iTerm でも使いたかったので設定を追加しようと思ってソースを見てたら実はこのオプションは iTerm でも効くようにつくられているのだが、そのアプリケーション名の指定が間違っているだけだということがわかった。</p>
+<pre><code>diff --git a/src/core/server/server.cpp b/src/core/server/server.cpp
+index d4695fe..40d1715 100644
+--- a/src/core/server/server.cpp
++++ b/src/core/server/server.cpp
+@@ -206,7 +206,7 @@ KeyRemap4MacBook_server::Server::do_ActiveApplicationInfo(<span class="type">KeyRemap4MacBook_bridg</span>
+     <span class="variable-name">reply</span>-&gt;is_vi = <span class="constant">true</span>;
+   }
+   <span class="keyword">if</span> (strcmp(applicationName, <span class="string">"com.apple.Terminal"</span>) == 0 ||
+-      strcmp(applicationName, <span class="string">"iTerm"</span>) == 0) {
++      strcmp(applicationName, <span class="string">"net.sourceforge.iTerm"</span>) == 0) {
+     reply-&gt;is_terminal = <span class="constant">true</span>;
+   }
+   <span class="keyword">if</span> (strcmp(applicationName, <span class="string">"com.vmware.fusion"</span>) == 0 ||
+</code></pre>
+<p>としてやるだけで、iTerm でもつかえるようになった。めでたし。</p>
+
+  </div>
+
+  <div class="meta">
+    by typester /
+    at <a href="/memo/2008/11/05/3/">2008-11-05T14:54:00</a> /
+    <a href="/memo/tag/osx/">osx</a>
+    &middot; <a href="/memo/tag/iterm/">iterm</a>
+    / <a href="/memo/2008/11/05/3/#disqus_thread">Comment</a>
+  </div>
+</div>
+
+<div class="entry autopagerize_page_element">
+  <h2><a href="/memo/2008/11/05/1/">OSXターミナル事情</a></h2>
+
+  <div class="body">
+    <p>新MacBookでの</p>
+<ol><li>Terminal.app <ul><li>重さはmacminiで使うのと比べるとかなりましになってる(GPUのおかげ？)</li><li>まぁでも若干重いよ</li><li>日本語入力中に画面が更新されると入力途中のが消える(これが地味にいたい)</li></ul></li><li>iTerm <ul><li>ATOKでの変換の文節区切りがわからない</li><li>重い</li><li>入力ソースをUSにしないとmetaがつかえない</li></ul></li><li>urxvt (X11) <ul><li>軽い！</li><li>日本語入力が死ぬ</li></ul></li></ol>
+<p>SKKを使いこなせる人ならurxvtで決まりという感じな気がするが、僕は無理なので Terminal.app がメインになるかなぁ、という感じ。</p>
+<p>でも、日本語入力中に画面更新されると入力途中なのが消えちゃうってのがあるのでirssiとかはきつい。ただemacsつかわなければiTermの重さはそんなに気にならないのでemacsはTerminal.appをつかい、irssiはiTermをつかうという両刀で行こうかと思っているところ。</p>
+<p>ちなみにLimeChatも試してみたけどやっぱり使いにくいなぁ。irssiサイコウ！</p>
+<p>ここまで書いて、CarbonEmacsが使いこなせればiTermだけでいいんじゃないかという気もしているところ。</p>
+
+  </div>
+
+  <div class="meta">
+    by typester /
+    at <a href="/memo/2008/11/05/1/">2008-11-05T10:26:00</a> /
+    <a href="/memo/tag/osx/">osx</a>
+    / <a href="/memo/2008/11/05/1/#disqus_thread">Comment</a>
+  </div>
+</div>
+
+<div class="entry autopagerize_page_element">
+  <h2><a href="/memo/2008/10/29/2/">GrowlのON/OFFをホットキーでできるようにする</a></h2>
+
+  <div class="body">
+    <p>人に画面見せてるときなどに、恥ずかしい通知がくるとこまるのでホットキーで Growl 通知の ON/OFF を切り替えたいと思ったのだが、なぜかググっても見つからないので、ごにょごにょしてみた。</p>
+<pre><code><span class="type">tell</span> <span class="function-name">application</span> <span class="string">"System Events"</span>
+    set isRunning to (<span class="type">count</span> <span class="variable-name">of</span> (every process whose <span class="type">name</span> <span class="variable-name">is</span> <span class="string">"GrowlHelperApp"</span>)) &gt; 0
+end tell
+
+<span class="keyword">if</span> isRunning then
+    tell application <span class="string">"GrowlHelperApp"</span> to quit
+<span class="keyword">else</span>
+    tell application <span class="string">"GrowlHelperApp"</span> to launch
+
+    tell application <span class="string">"GrowlHelperApp"</span>
+        set the allNotificationsList to {<span class="string">"Growl Toggler"</span>}
+        <span class="keyword">register</span> <span class="type">as</span> <span class="variable-name">application</span> <span class="string">"Growl Toggler"</span> all notifications allNotificationsList <span class="keyword">default</span> notifications allNotificationsList
+        notify with name <span class="string">"Growl Toggler"</span> title <span class="string">"Growl started"</span> description <span class="string">""</span> application name <span class="string">"Growl Toggler"</span>
+    end tell
+end <span class="keyword">if</span>
+</code></pre>
+<p>Growl を起動状態をトグルする AppleScript。</p>
+<p>終了するときは何も言わずに Stop するが、スタートしたときは Growl 通知で Growl started と出るようにした。</p>
+<p>これをアプリケーションとして保存して、あとは QuickSilver の Trigger 機能とかでホットキーで起動できるようにすれば完了。</p>
+<p>一応これで動くのだが、AppleScript をアプリケーションにすると重いなぁ。。</p>
+
+  </div>
+
+  <div class="meta">
+    by typester /
+    at <a href="/memo/2008/10/29/2/">2008-10-29T21:58:00</a> /
+    <a href="/memo/tag/osx/">osx</a>
+    &middot; <a href="/memo/tag/growl/">growl</a>
+    &middot; <a href="/memo/tag/applescript/">applescript</a>
+    / <a href="/memo/2008/10/29/2/#disqus_thread">Comment</a>
+  </div>
+</div>
+
+<div class="entry autopagerize_page_element">
+  <h2><a href="/memo/2008/10/01/1/">OSXの.dmgファイルをLinuxでごにょるの法</a></h2>
+
+  <div class="body">
+    <p><a href="http://vu1tur.eu.org/tools/">dmg2img</a> というのがよくできてる。</p>
+<pre><code>dmg2img xcode.dmg xcode.img
+</code></pre>
+<p>とすると <code>xcode.img</code> という <code>HFS+</code> のイメージファイルにしてくれる。</p>
+<p>で、</p>
+<pre><code>mount -t hfsplus -o loop xcode.img /mnt
+</code></pre>
+<p>とかでマウントできる。</p>
+<p>その中のpkgファイルの中身を取り出すには</p>
+<pre><code>xar -xf /mnt/Packages/MacOSX10.5.pkg Payload
+mv Payload Payload.gz
+gunzip Payload.gz
+mkdir dump
+cd dump
+cat ../Payload | cpio -i -d
+</code></pre>
+<p>とかするとdumpディレクトリ以下にpkgが展開されるという感じ。</p>
+
+  </div>
+
+  <div class="meta">
+    by typester /
+    at <a href="/memo/2008/10/01/1/">2008-10-01T11:42:00</a> /
+    <a href="/memo/tag/linux/">linux</a>
+    &middot; <a href="/memo/tag/osx/">osx</a>
+    / <a href="/memo/2008/10/01/1/#disqus_thread">Comment</a>
+  </div>
+</div>
+
+
+
+
+<div id="pager" class="autopagerize_insert_before">
+  <p class="pages">
+    <a class="prev" rel="previous" href="/memo/tag/osx/page/3/">&laquo; Prev</a>
+    <a href="/memo/tag/osx/">1</a>
+    <a href="/memo/tag/osx/page/2/">2</a>
+    <a href="/memo/tag/osx/page/3/">3</a>
+    <span class="current">4</span>
+    <a href="/memo/tag/osx/page/5/">5</a>
+    <a class="next" rel="next" href="/memo/tag/osx/page/5/">Next &raquo;</a>
+  </p>
+  <p class="info">(Page 4 of 5)</p>
+</div>
+
+
+</div>
+
+<p id="footer">
+  Copyright &copy; 2005-2013
+      by <a class="author" href="/about/#me">Daisuke Murase (typester)</a> /
+  Site generated by <a href="https://github.com/typester/nim">nim</a> /
+  Comments powered by <a href="http://disqus.com">DISQUS</a>.
+</p>
+
+</div>
+
+
+<script type="text/javascript">
+//<![CDATA[
+(function() {
+	var links = document.getElementsByTagName('a');
+	var query = '?';
+	for(var i = 0; i < links.length; i++) {
+	if(links[i].href.indexOf('#disqus_thread') >= 0) {
+		query += 'url' + i + '=' + encodeURIComponent(links[i].href) + '&';
+	}
+	}
+	document.write('<script charset="utf-8" type="text/javascript" src="http://disqus.com/forums/unknownplace/get_num_replies.js' + query + '"></' + 'script>');
+})();
+//]]>
+</script>
+
+
+<script type="text/javascript">
+var gaJsHost = (("https:" == document.location.protocol) ? "https://ssl." : "http://www.");
+document.write(unescape("%3Cscript src='" + gaJsHost + "google-analytics.com/ga.js' type='text/javascript'%3E%3C/script%3E"));
+</script>
+<script type="text/javascript">
+try {
+var pageTracker = _gat._getTracker("UA-53067-1");
+pageTracker._trackPageview();
+} catch(err) {}</script>
+
+<script>
+function googleTranslateElementInit() {
+  new google.translate.TranslateElement({
+    pageLanguage: 'ja',
+    gaTrack: true,
+    gaId: 'UA-53067',
+    floatPosition: google.translate.TranslateElement.FloatPosition.BOTTOM_RIGHT
+  });
+}
+</script><script src="//translate.google.com/translate_a/element.js?cb=googleTranslateElementInit"></script>
+
+</body>
+</html>

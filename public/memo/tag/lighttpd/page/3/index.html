@@ -1,0 +1,274 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="ja" xml:lang="ja">
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <title>memo - unknownplace.org</title>
+  <link rel="stylesheet" type="text/css" href="http://yui.yahooapis.com/3.0.0/build/cssreset/reset-min.css" />
+  <link rel="stylesheet" type="text/css" href="http://yui.yahooapis.com/3.0.0/build/cssfonts/fonts-min.css" />
+  <link rel="stylesheet" href="/css/style.css" type="text/css" />
+  <meta property="fb:admins" content="1093631929" />
+  <meta name="robots" content="noindex" />
+  <link rel="alternate" type="application/rss+xml" href="http://unknownplace.org/memo/index.rss" />
+</head>
+<body>
+
+<div id="container">
+<div id="header">
+    <h1><a href="/">unknownplace.org</a></h1> /
+<a href="/memo/">memo</a>
+</div>
+
+<div id="content">
+
+<div class="entry autopagerize_page_element">
+  <h2><a href="/memo/2006/02/23/5/"></a></h2>
+
+  <div class="body">
+    <blockquote><p><a href="http://www.typemiss.net/blog/kounoike/20060223-72">Link: CLON - 2006/02/23 - backend fastcgi プロセスが落ちている場合の挙動 | Typemiss.net</a></p><p>lighttpd-1.4.10ではsocket, host:portともに500 Internal Server Errorで返ってきています。lighttpd-1.4.9のNEWSで「fixed endless loops in mod_fastcgi if backend is dead」とあるので1.4.9での変更ではないでしょうか。</p></blockquote>
+<p>1.4.8 でした、テスト環境。あざっす。</p>
+
+  </div>
+
+  <div class="meta">
+    by typester /
+    at <a href="/memo/2006/02/23/5/">2006-02-23T23:27:00</a> /
+    <a href="/memo/tag/lighttpd/">lighttpd</a>
+    / <a href="/memo/2006/02/23/5/#disqus_thread">Comment</a>
+  </div>
+</div>
+
+<div class="entry autopagerize_page_element">
+  <h2><a href="/memo/2006/02/23/3/">backend fastcgi プロセスが落ちている場合の挙動</a></h2>
+
+  <div class="body">
+    <p>fastcgi プロセスをスタンドアローンで動かしていて、Webサーバーからそれを使うという場合、apache であれば fastcgi プロセスが落ちていたら 502 Bad Gateway が出るらしいのだけど、lighty だとでないみたい。</p>
+<p>lighty から fastcgi へつなぐ方法 2 種類試した。</p>
+<ol><li>socket ファイルで fastcgi へ</li><li>host:port で</li></ol>
+<p>1 の場合、対象 socket ファイルが有効になるまで待ち続ける(!)</p>
+<p>fastcgi プロセス再起なんかなどでは起動したらそのまま実行されるため便利かもしれないけど、downtime が長いとクライアントを溜め込んでしまうことになりそう。</p>
+<p>2 の場合、指定ポートへの接続が reject されると lighty もクライアントの接続を切る。えー。ここで 502 とか返せばいいのに。</p>
+<p>どっちにしろあんまり行儀が良くなくて使いにくいという感じ。1 よりは 2 のほうがいいかな。</p>
+
+  </div>
+
+  <div class="meta">
+    by typester /
+    at <a href="/memo/2006/02/23/3/">2006-02-23T15:39:00</a> /
+    <a href="/memo/tag/lighttpd/">lighttpd</a>
+    / <a href="/memo/2006/02/23/3/#disqus_thread">Comment</a>
+  </div>
+</div>
+
+<div class="entry autopagerize_page_element">
+  <h2><a href="/memo/2006/02/20/4/">lighttpd+fastcgi時のメモリ共有</a></h2>
+
+  <div class="body">
+    <p>このサーバーで動いてるアプリはほとんど lighty+fastcgi で動いているけど、アクセス数的に余裕まくりなのですべて1プロセスで動かしていていままで意識していなかったのだけど、仕事で使うことになったので調べてみた。</p>
+<p>まず、Catalyst 製アプリケーション MyApp をlighttpd.conf で以下のように設定。</p>
+<pre><code>fastcgi.server = (
+    <span class="string">""</span> =&gt; (
+        <span class="string">"myapp"</span> =&gt; (
+            <span class="string">"socket"</span> =&gt; <span class="string">"/tmp/myapp.socket"</span>,
+            <span class="string">"check-local"</span> =&gt; <span class="string">"disable"</span>,
+            <span class="string">"bin-path"</span> =&gt; <span class="string">"/path/to/script/myapp_fastcgi.pl"</span>,
+            <span class="string">"max-procs"</span> =&gt; 5,
+        ),
+    ),
+)
+</code></pre>
+<p>これは割りと一般的な方法。これでMyAppプロセスが5つ立ち上がる。うちもこんなようなのの max-procs を 1 にしたのを使っている。</p>
+<p>でも lighttpd.conf で bin-path を指定すると lighty がプロセスを5つ立ち上げてる感じになり、メモリは共有されてないっぽい。pstree はこんな感じ。</p>
+<pre><code>|-lighttpd---5*[myapp_fastcgi.pl]
+</code></pre>
+<p>なんかテストしてるPCだとCatalystアプリを立ち上げるときにFile::Slurpのwarningがでまくりなんだけど、上記設定でlighttpd立ち上げるとプロセス数分warningが出ることからもuseまくってんだなぁということがわかる（適当だなオイ</p>
+<p>これじゃー微妙なので、もう一つの方法を試す。</p>
+<p>Catalyst の fastcgi.pl は FCGI::ProcManager での動作もサポートしていて、</p>
+<pre><code>./script/myapp_fastcgi.pl -l /tmp/myapp.socket -n 5
+</code></pre>
+<p>とすれば MyApp が FCGI::ProcManager 経由で fastcgi プロセスが 5 つ立ち上がる。これだと</p>
+<pre><code>|-myapp_fastcgi.pl---5*[myapp_fastcgi.pl]
+</code></pre>
+<p>こんな感じで賢い風味。File::Slurp の warning も1回しか出ない！（そこで判断かよ</p>
+<p>これを lighty から使うにはさっきの設定から bin-path をはずせば OK。</p>
+<pre><code>fastcgi.server = (
+    <span class="string">""</span> =&gt; (
+        <span class="string">"myapp"</span> =&gt; (
+            <span class="string">"socket"</span> =&gt; <span class="string">"/tmp/myapp.socket"</span>,
+            <span class="string">"check-local"</span> =&gt; <span class="string">"disable"</span>,
+        ),
+    ),
+)
+</code></pre>
+<p>こんなんで。</p>
+<p>で、結論としては複数プロセス立ち上げるときは FCGI::ProcManager 使わないと損ということですかね。</p>
+<p>時間があるときに追試はしてみたい。</p>
+
+  </div>
+
+  <div class="meta">
+    by typester /
+    at <a href="/memo/2006/02/20/4/">2006-02-20T14:30:00</a> /
+    <a href="/memo/tag/perl/">perl</a>
+    &middot; <a href="/memo/tag/lighttpd/">lighttpd</a>
+    &middot; <a href="/memo/tag/fastcgi/">fastcgi</a>
+    / <a href="/memo/2006/02/20/4/#disqus_thread">Comment</a>
+  </div>
+</div>
+
+<div class="entry autopagerize_page_element">
+  <h2><a href="/memo/2005/12/05/19/">lighttpd&#39;s load balancer</a></h2>
+
+  <div class="body">
+    <p>lighttpd のロードバランス機能って誰も試してないのかなぁ。</p>
+<p>一応 fair, hash, round-robin と3種類あって、</p>
+<ul><li>fair <ul><li>負荷によって振り分ける(デフォルト)</li></ul></li><li>hash <ul><li>URLのhashで振り分ける(同じURLは必ず同じホストにわけられる)</li><li><a href="http://www.microsoft.com/japan/Proxy/techinfo/carp.asp" title="Microsoft Proxy Server - 技術情報 - Cache Array Routing Protocol (CARP) と Microsoft Proxy Server 2.0">Cache Array Routing Protocol</a> ていうアルゴリズムを使ってるらしい。</li></ul></li><li>round-robin <ul><li>リクエストごとに違うホストへ振り分ける</li></ul></li></ul>
+<p>設定も非常に簡単。</p>
+<pre><code>$HTTP[<span class="string">"host"</span>] == <span class="string">"www.example.org"</span> {
+  proxy.balance = <span class="string">"fair"</span>
+  proxy.server  = ( <span class="string">".pl"</span> =&gt; ( ( <span class="string">"host"</span> =&gt; <span class="string">"192.168.0.2"</span>, <span class="string">"port"</span> =&gt; 8080 ),
+                            ( <span class="string">"host"</span> =&gt; <span class="string">"192.168.0.3"</span> ),
+                            ( <span class="string">"host"</span> =&gt; <span class="string">"192.168.0.4"</span> ),
+                            ( <span class="string">"host"</span> =&gt; <span class="string">"192.168.0.5"</span>, <span class="string">"port"</span> =&gt; 81 ) ) )
+}
+</code></pre>
+<p>みたいな。バックエンドホストでも普通に VirtualHost が使えるのも○</p>
+<p><a href="http://svn.unknownplace.org/public/">svn.unknownplace.org</a>、<a href="http://dev.unknownplace.org/public/">dev.unknownplace.org</a> でも</p>
+<pre><code>$HTTP[<span class="string">"host"</span>] =~ <span class="string">"^(dev|svn)\.|unknownplace\.org)$"</span> {
+    proxy.server = ( <span class="string">"/"</span> =&gt;
+                      ((
+                       <span class="string">"host"</span> =&gt; <span class="string">"127.0.0.1"</span>,
+                       <span class="string">"port"</span> =&gt; 8080,
+                      ))
+    )
+}
+</code></pre>
+<p>とかしてバックエンドの apache2 にそのままとばしてるけど、後ろでも VirtualHost 普通に使えてうまー。</p>
+<p>まぁ、lighttpd の mod_proxy だと svn メソッドとばないので commit できねーのだけど（だめ</p>
+
+  </div>
+
+  <div class="meta">
+    by typester /
+    at <a href="/memo/2005/12/05/19/">2005-12-05T20:48:00</a> /
+    <a href="/memo/tag/lighttpd/">lighttpd</a>
+    / <a href="/memo/2005/12/05/19/#disqus_thread">Comment</a>
+  </div>
+</div>
+
+<div class="entry autopagerize_page_element">
+  <h2><a href="/memo/2005/11/25/3/">lighttpd 1.4.8</a></h2>
+
+  <div class="body">
+    <p>debian ディレクトリなくなったー。しょぼーん。</p>
+
+  </div>
+
+  <div class="meta">
+    by typester /
+    at <a href="/memo/2005/11/25/3/">2005-11-25T12:21:00</a> /
+    <a href="/memo/tag/lighttpd/">lighttpd</a>
+    / <a href="/memo/2005/11/25/3/#disqus_thread">Comment</a>
+  </div>
+</div>
+
+<div class="entry autopagerize_page_element">
+  <h2><a href="/memo/2005/11/04/8/">lighttpd 1.4.7</a></h2>
+
+  <div class="body">
+    <p>debian ディレクトリ更新されてないよ！！</p>
+
+  </div>
+
+  <div class="meta">
+    by typester /
+    at <a href="/memo/2005/11/04/8/">2005-11-04T14:13:00</a> /
+    <a href="/memo/tag/lighttpd/">lighttpd</a>
+    / <a href="/memo/2005/11/04/8/#disqus_thread">Comment</a>
+  </div>
+</div>
+
+<div class="entry autopagerize_page_element">
+  <h2><a href="/memo/2005/10/11/7/">lighttpd の mod_proxy</a></h2>
+
+  <div class="body">
+    <p>はすごい。Host: ヘッダもちゃんとバックエンドに飛んでくからバックエンド側でもVirtualHost使用可能。</p>
+<p>apacheでもできるらしいけどやりかたわからねー。</p>
+
+  </div>
+
+  <div class="meta">
+    by typester /
+    at <a href="/memo/2005/10/11/7/">2005-10-11T00:00:00</a> /
+    <a href="/memo/tag/lighttpd/">lighttpd</a>
+    &middot; <a href="/memo/tag/mod_proxy/">mod_proxy</a>
+    / <a href="/memo/2005/10/11/7/#disqus_thread">Comment</a>
+  </div>
+</div>
+
+
+
+
+<div id="pager" class="autopagerize_insert_before">
+  <p class="pages">
+    <a class="prev" rel="previous" href="/memo/tag/lighttpd/page/2/">&laquo; Prev</a>
+    <a href="/memo/tag/lighttpd/">1</a>
+    <a href="/memo/tag/lighttpd/page/2/">2</a>
+    <span class="current">3</span>
+    <span class="next">Next &raquo;</span>
+  </p>
+  <p class="info">(Page 3 of 3)</p>
+</div>
+
+
+</div>
+
+<p id="footer">
+  Copyright &copy; 2005-2013
+      by <a class="author" href="/about/#me">Daisuke Murase (typester)</a> /
+  Site generated by <a href="https://github.com/typester/nim">nim</a> /
+  Comments powered by <a href="http://disqus.com">DISQUS</a>.
+</p>
+
+</div>
+
+
+<script type="text/javascript">
+//<![CDATA[
+(function() {
+	var links = document.getElementsByTagName('a');
+	var query = '?';
+	for(var i = 0; i < links.length; i++) {
+	if(links[i].href.indexOf('#disqus_thread') >= 0) {
+		query += 'url' + i + '=' + encodeURIComponent(links[i].href) + '&';
+	}
+	}
+	document.write('<script charset="utf-8" type="text/javascript" src="http://disqus.com/forums/unknownplace/get_num_replies.js' + query + '"></' + 'script>');
+})();
+//]]>
+</script>
+
+
+<script type="text/javascript">
+var gaJsHost = (("https:" == document.location.protocol) ? "https://ssl." : "http://www.");
+document.write(unescape("%3Cscript src='" + gaJsHost + "google-analytics.com/ga.js' type='text/javascript'%3E%3C/script%3E"));
+</script>
+<script type="text/javascript">
+try {
+var pageTracker = _gat._getTracker("UA-53067-1");
+pageTracker._trackPageview();
+} catch(err) {}</script>
+
+<script>
+function googleTranslateElementInit() {
+  new google.translate.TranslateElement({
+    pageLanguage: 'ja',
+    gaTrack: true,
+    gaId: 'UA-53067',
+    floatPosition: google.translate.TranslateElement.FloatPosition.BOTTOM_RIGHT
+  });
+}
+</script><script src="//translate.google.com/translate_a/element.js?cb=googleTranslateElementInit"></script>
+
+</body>
+</html>

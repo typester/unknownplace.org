@@ -1,0 +1,494 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="ja" xml:lang="ja">
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <title>memo - unknownplace.org</title>
+  <link rel="stylesheet" type="text/css" href="http://yui.yahooapis.com/3.0.0/build/cssreset/reset-min.css" />
+  <link rel="stylesheet" type="text/css" href="http://yui.yahooapis.com/3.0.0/build/cssfonts/fonts-min.css" />
+  <link rel="stylesheet" href="/css/style.css" type="text/css" />
+  <meta property="fb:admins" content="1093631929" />
+  <meta name="robots" content="noindex" />
+  <link rel="alternate" type="application/rss+xml" href="http://unknownplace.org/memo/index.rss" />
+</head>
+<body>
+
+<div id="container">
+<div id="header">
+    <h1><a href="/">unknownplace.org</a></h1> /
+<a href="/memo/">memo</a>
+</div>
+
+<div id="content">
+
+<div class="entry autopagerize_page_element">
+  <h2><a href="/memo/2006/05/13/1/">Hachathon in CL</a></h2>
+
+  <div class="body">
+    <p>中。</p>
+<p>なんか</p>
+
+  </div>
+
+  <div class="meta">
+    by typester /
+    at <a href="/memo/2006/05/13/1/">2006-05-13T03:50:00</a> /
+    <a href="/memo/tag/life/">life</a>
+    &middot; <a href="/memo/tag/plagger/">plagger</a>
+    &middot; <a href="/memo/tag/plaggercon/">plaggercon</a>
+    / <a href="/memo/2006/05/13/1/#disqus_thread">Comment</a>
+  </div>
+</div>
+
+<div class="entry autopagerize_page_element">
+  <h2><a href="/memo/2006/05/11/1/">PlaggerLDR 改造</a></h2>
+
+  <div class="body">
+    <p>簡易認証追加と <code>server.pl -d</code> のときだけデバッグモードになるように</p>
+<pre><code>Index: lib/PlaggerLDR/Controller/API.pm
+===================================================================
+--- lib/PlaggerLDR/Controller/API.pm    (revision 1819)
++++ lib/PlaggerLDR/Controller/API.pm    (working copy)
+@@ -12,8 +12,9 @@
+ <span class="keyword">my</span> <span class="variable-name">$module</span> = first { $_-&gt;{<span class="string">module</span>} <span class="type">eq</span> <span class="string">&apos;Store::DBIC&apos;</span> } @{$config-&gt;{<span class="string">plugins</span>}};
+ <span class="keyword">my</span> <span class="variable-name">$schema</span> = Plagger::Schema::SQLite-&gt;<span class="type">connect</span>(@{$module-&gt;{<span class="string">config</span>}-&gt;{<span class="string">connect_info</span>}});
+
+-<span class="keyword">sub</span> <span class="function-name">default</span> <span class="constant">:</span> <span class="constant">Private</span> {
++<span class="keyword">sub</span> <span class="function-name">auto</span> <span class="constant">:</span> <span class="constant">Private</span> {
+     <span class="keyword">my</span>(<span class="variable-name">$self</span>, <span class="variable-name">$c</span>) = <span class="cperl-array">@_</span>;
++    $c-&gt;user;
+ }
+
+ <span class="keyword">sub</span> <span class="function-name">subs</span> <span class="constant">:</span> <span class="constant">Local</span> {
+Index: lib/PlaggerLDR.pm
+===================================================================
+--- lib/PlaggerLDR.pm   (revision 1819)
++++ lib/PlaggerLDR.pm   (working copy)
+@@ -3,21 +3,45 @@
+ <span class="keyword">use</span> <span class="function-name">strict</span>;
+ <span class="keyword">use</span> <span class="function-name">warnings</span>;
+
+-<span class="keyword">use</span> <span class="function-name">Catalyst</span> <span class="cperl-nonoverridable">qw</span><span class="string">/-Debug/</span>;
++<span class="keyword">use</span> <span class="function-name">Catalyst</span> <span class="cperl-nonoverridable">qw</span><span class="string">(
++    Authentication
++    Authentication::Credential::Password
++    Authentication::Store::Minimal
+
++    Session
++    Session::State::Cookie
++    Session::Store::FastMmap
++)</span>;
++
+ <span class="type">__PACKAGE__</span>-&gt;config(
+     <span class="string">name</span> =&gt; <span class="string">&apos;PlaggerLDR&apos;</span>,
+     <span class="string">&apos;View::JSON&apos;</span> =&gt; {
+         <span class="string">expose_stash</span> =&gt; <span class="string">&apos;json&apos;</span>,
+     },
++    <span class="string">authentication</span> =&gt; {
++        <span class="string">users</span> =&gt; {
++            <span class="string">your_username</span> =&gt; { <span class="string">password</span> =&gt; <span class="string">&apos;your_password&apos;</span>, },
++        },
++    },
+ );
+ <span class="type">__PACKAGE__</span>-&gt;setup;
+
+ <span class="keyword">sub</span> <span class="function-name">default</span> <span class="constant">:</span> <span class="constant">Private</span> {
+     <span class="keyword">my</span> ( <span class="variable-name">$self</span>, <span class="variable-name">$c</span> ) = <span class="cperl-array">@_</span>;
+
+-    <span class="comment-delimiter"># </span><span class="comment">Hello World
+</span>-    $c-&gt;response-&gt;body( $c-&gt;welcome_message );
++    $c-&gt;login(
++        $c-&gt;req-&gt;params-&gt;{<span class="string">u</span>},
++        $c-&gt;req-&gt;params-&gt;{<span class="string">p</span>},
++    );
++
++    $c-&gt;res-&gt;status(404);
+ }
+
+ 1;
+</code></pre>
+
+  </div>
+
+  <div class="meta">
+    by typester /
+    at <a href="/memo/2006/05/11/1/">2006-05-11T06:22:00</a> /
+    <a href="/memo/tag/plagger/">plagger</a>
+    &middot; <a href="/memo/tag/catalyst/">catalyst</a>
+    / <a href="/memo/2006/05/11/1/#disqus_thread">Comment</a>
+  </div>
+</div>
+
+<div class="entry autopagerize_page_element">
+  <h2><a href="/memo/2006/05/09/1/">plagger+LDR</a></h2>
+
+  <div class="body">
+    <p><a href="http://subtech.g.hatena.ne.jp/miyagawa/20060509/1147150987">subtechグループ - Bulknews::Subtech - [Plagger] Livedoor Reader Frontend</a></p>
+<p>きたこれ！</p>
+<p>plagger最高！</p>
+
+  </div>
+
+  <div class="meta">
+    by typester /
+    at <a href="/memo/2006/05/09/1/">2006-05-09T14:28:00</a> /
+    <a href="/memo/tag/plagger/">plagger</a>
+    / <a href="/memo/2006/05/09/1/#disqus_thread">Comment</a>
+  </div>
+</div>
+
+<div class="entry autopagerize_page_element">
+  <h2><a href="/memo/2006/04/04/5/"></a></h2>
+
+  <div class="body">
+    <p>miyagawa さんの sub ref の使い方かっこいいなぁ。まねよう。</p>
+
+  </div>
+
+  <div class="meta">
+    by typester /
+    at <a href="/memo/2006/04/04/5/">2006-04-04T19:05:00</a> /
+    <a href="/memo/tag/perl/">perl</a>
+    &middot; <a href="/memo/tag/plagger/">plagger</a>
+    / <a href="/memo/2006/04/04/5/#disqus_thread">Comment</a>
+  </div>
+</div>
+
+<div class="entry autopagerize_page_element">
+  <h2><a href="/memo/2006/04/02/1/">hackathon #2</a></h2>
+
+  <div class="body">
+    <p>perldoc ブラウザをつくっていたけどめんどくて飽きたので、YAPC 終わったら使い方まとめるとかいってた Plagger::Plugin::Store::DBIC に取り組む。</p>
+<p>そのうち Plagger 本体もDB対応するということらしいのでそれまでの野良プラギン。とりあえず僕の<a href="http://svn.unknownplace.org/public/library/perl/trunk/Plagger-Plugin-Store-DBIC/" title="Plagger-Plugin-Store-DBIC">レポジトリ</a>にUP。</p>
+<p>使い方は sql ディレクトリにはいってる plagger.sqlite.sql から</p>
+<pre><code>$ sqlite3 plagger.db &lt; sql/plagger.sqlite.sql
+</code></pre>
+<p>などとしてDBをつくって</p>
+<pre><code>  - module: Store::DBIC
+    config:
+      schema_class: Plagger::Schema::SQLite
+      connect_info: [ &apos;dbi:SQLite:/path/to/plagger.db&apos;, ]
+</code></pre>
+<p>などと設定ファイルを作ればOK。</p>
+<p>schema_class はめんどいから SQLite 用しかつくってないよ。</p>
+
+  </div>
+
+  <div class="meta">
+    by typester /
+    at <a href="/memo/2006/04/02/1/">2006-04-02T05:57:00</a> /
+    <a href="/memo/tag/plagger/">plagger</a>
+    &middot; <a href="/memo/tag/yapc/">yapc</a>
+    / <a href="/memo/2006/04/02/1/#disqus_thread">Comment</a>
+  </div>
+</div>
+
+<div class="entry autopagerize_page_element">
+  <h2><a href="/memo/2006/03/06/9/"></a></h2>
+
+  <div class="body">
+    <p>だめだ、すげー重い。</p>
+<pre><code>backtick id lifespan autorefresh command
+</code></pre>
+<p>で autorefresh に 0 以外を指定するとその秒数毎に command が実行されるのだけど、実行されてる間 screen が固まるｗ</p>
+<p>plagger でやるなら Notify::Pipe or Notify::File とかでなんかファイルに書き出しておいて</p>
+<pre><code>backtick id 0 0 tail -f そのファイル
+</code></pre>
+<p>かなー。</p>
+
+  </div>
+
+  <div class="meta">
+    by typester /
+    at <a href="/memo/2006/03/06/9/">2006-03-06T16:05:00</a> /
+    <a href="/memo/tag/plagger/">plagger</a>
+    &middot; <a href="/memo/tag/screen/">screen</a>
+    / <a href="/memo/2006/03/06/9/#disqus_thread">Comment</a>
+  </div>
+</div>
+
+<div class="entry autopagerize_page_element">
+  <h2><a href="/memo/2006/03/06/8/">plagger で backtick</a></h2>
+
+  <div class="body">
+    <p>plagger のみで backtick れるじゃんと、miyagawaさんにつっこまれたのでやってみた。</p>
+<p>まず Plugin::Notify::Stdout を書いた。</p>
+<pre><code><span class="keyword">package</span> <span class="function-name">Plagger::Plugin::Notify::Stdout</span>;
+<span class="keyword">use</span> <span class="function-name">strict</span>;
+<span class="keyword">use</span> <span class="function-name">warnings</span>;
+<span class="keyword">use</span> <span class="function-name">base</span> <span class="cperl-nonoverridable">qw</span><span class="string">/Plagger::Plugin/</span>;
+
+<span class="keyword">sub</span> <span class="function-name">register</span> {
+    <span class="keyword">my</span> ( <span class="variable-name">$self</span>, <span class="variable-name">$c</span> ) = <span class="cperl-array">@_</span>;
+    $c-&gt;register_hook(
+        $self,
+        <span class="string">&apos;publish.feed&apos;</span>     =&gt; \&amp;update,
+        <span class="string">&apos;publish.finalize&apos;</span> =&gt; \&amp;finalize,
+    );
+    $self-&gt;{<span class="string">count</span>} = 0;
+}
+
+<span class="keyword">sub</span> <span class="function-name">update</span> {
+    <span class="keyword">my</span> ( <span class="variable-name">$self</span>, <span class="variable-name">$c</span>, <span class="variable-name">$args</span> ) = <span class="cperl-array">@_</span>;
+
+    $self-&gt;{<span class="string">count</span>} += $args-&gt;{<span class="string">feed</span>}-&gt;count <span class="keyword">if</span> $args-&gt;{<span class="string">feed</span>}-&gt;count;
+}
+
+<span class="keyword">sub</span> <span class="function-name">finalize</span> {
+    <span class="keyword">my</span> ( <span class="variable-name">$self</span>, <span class="variable-name">$c</span>, <span class="variable-name">$args</span> ) = <span class="cperl-array">@_</span>;
+
+    <span class="keyword">if</span> (<span class="cperl-nonoverridable">defined</span> $self-&gt;{<span class="string">count</span>}) {
+        $self-&gt;conf-&gt;{<span class="string">format</span>}
+            ? <span class="cperl-nonoverridable">printf</span> $self-&gt;conf-&gt;{<span class="string">format</span>}, $self-&gt;{<span class="string">count</span>}
+            : <span class="cperl-nonoverridable">print</span> $self-&gt;{<span class="string">count</span>};
+        <span class="cperl-nonoverridable">print</span> <span class="string">&quot;\n&quot;</span>;
+    }
+}
+</code></pre>
+<p>ので下記のように backtick.yaml を作る</p>
+<pre><code><span class="constant">global</span>:
+  <span class="constant">timezone</span>: Asia/Tokyo
+  log:
+    level: error
+
+plugins:
+  - module: Subscription::Config
+    config:
+      feed: <span class="string">"https://username:password@mail.google.com/mail/feed/atom/!!Plagger"</span> # <span class="negation-char">!</span>!Plagger &#12399;&#12521;&#12505;&#12523;&#21517;
+
+  - module: Plagger::Plugin::Aggregator::Simple
+
+  - module: Notify::Stdout
+    config:
+      format: <span class="string">"Plagger(%d) "</span>
+</code></pre>
+<p>で、あとは .screenrc で</p>
+<pre><code>backtick 3 0 60 ${HOME}/plagger/plagger -c ${HOME}/.plagger/config/backtick.yaml
+</code></pre>
+<p>とか書いておけば 60 秒ごとに plagger が実行され、hardstatus とか caption とかで %3` とかけばそこにに plagger の出力が出る。</p>
+<p>3 ていうのは backtick で指定した最初の数字 (僕がすでに0 1 2とIDを使ってるので3ってこと)</p>
+
+  </div>
+
+  <div class="meta">
+    by typester /
+    at <a href="/memo/2006/03/06/8/">2006-03-06T15:45:00</a> /
+    <a href="/memo/tag/plagger/">plagger</a>
+    &middot; <a href="/memo/tag/screen/">screen</a>
+    / <a href="/memo/2006/03/06/8/#disqus_thread">Comment</a>
+  </div>
+</div>
+
+<div class="entry autopagerize_page_element">
+  <h2><a href="/memo/2006/03/06/7/">Gmail の Atom フィードは https + basic 認証</a></h2>
+
+  <div class="body">
+    <p>と教えてもらった。！！！</p>
+<p>さっき書いたの超意味ない。</p>
+<pre><code><span class="comment-delimiter">#</span><span class="comment">!/usr/bin/perl
+</span>
+<span class="keyword">use</span> <span class="function-name">strict</span>;
+<span class="keyword">use</span> <span class="function-name">warnings</span>;
+<span class="keyword">use</span> <span class="function-name">Carp</span>;
+<span class="keyword">use</span> <span class="function-name">LWP::UserAgent</span>;
+<span class="keyword">use</span> <span class="function-name">MIME::Base64</span>;
+
+<span class="keyword">our</span> <span class="variable-name">$VERSION</span> = <span class="string">&apos;0.02&apos;</span>;
+
+<span class="comment-delimiter"># </span><span class="comment">---- Configurations ----------------
+</span><span class="keyword">my</span> <span class="variable-name">$username</span> = <span class="string">&apos;username&apos;</span>;
+<span class="keyword">my</span> <span class="variable-name">$password</span> = <span class="string">&apos;base64::cGFzc3dvcmQ=&apos;</span>;
+<span class="keyword">my</span> <span class="variable-name">$label</span>    = <span class="string">&apos;!!Plagger&apos;</span>;
+
+<span class="keyword">my</span> <span class="variable-name">$interval</span> = 60;
+<span class="comment-delimiter"># </span><span class="comment">------------------------------------
+</span>
+<span class="keyword">if</span> ( <span class="keyword">my</span> (<span class="variable-name">$crypt</span>, <span class="variable-name">$pass</span>) = $password =~ <span class="constant">/</span><span class="function-name">^</span><span class="keyword">(</span><span class="builtin">\</span><span class="type">w</span><span class="builtin">+</span><span class="keyword">)</span><span class="string">::</span><span class="keyword">(</span><span class="function-name">.</span><span class="builtin">+</span><span class="keyword">)</span><span class="function-name">$</span><span class="constant">/</span> ) {
+    $password = $crypt <span class="type">eq</span> <span class="string">&apos;base64&apos;</span> ? decode_base64($pass) : <span class="cperl-nonoverridable">undef</span>;
+
+    croak <span class="cperl-nonoverridable">qq</span><span class="string">/Invalid password crypt type, &quot;$crypt&quot;/</span> <span class="keyword">unless</span> $password;
+}
+
+<span class="keyword">my</span> <span class="variable-name">$ua</span> = LWP::UserAgent-&gt;new;
+
+<span class="keyword">my</span> <span class="variable-name">$feed_request</span> =
+    HTTP::Request-&gt;new( <span class="string">GET</span> =&gt; <span class="string">&quot;https://mail.google.com/mail/feed/atom/$label&quot;</span> );
+$feed_request-&gt;headers-&gt;authorization_basic( $username, $password );
+
+$|=1;
+<span class="keyword">while</span> (1) {
+    <span class="keyword">my</span> <span class="variable-name">$res</span> = $ua-&gt;request( $feed_request );
+
+    <span class="keyword">my</span> (<span class="variable-name">$unread</span>) = $res-&gt;content =~ <span class="cperl-nonoverridable">m</span><span class="constant">!</span><span class="string">&lt;fullcount&gt;</span><span class="keyword">(</span><span class="builtin">\</span><span class="type">d</span><span class="builtin">+</span><span class="keyword">)</span><span class="string">&lt;/fullcount&gt;</span><span class="constant">!</span><span class="cperl-nonoverridable">m</span>;
+    <span class="cperl-nonoverridable">print</span> <span class="string">&quot;Plagger($unread) \n&quot;</span> <span class="keyword">if</span> <span class="cperl-nonoverridable">defined</span> $unread;
+
+    <span class="type">sleep</span> $interval;
+}
+</code></pre>
+<p>これでOKだ。</p>
+
+  </div>
+
+  <div class="meta">
+    by typester /
+    at <a href="/memo/2006/03/06/7/">2006-03-06T15:04:00</a> /
+    <a href="/memo/tag/plagger/">plagger</a>
+    &middot; <a href="/memo/tag/screen/">screen</a>
+    / <a href="/memo/2006/03/06/7/#disqus_thread">Comment</a>
+  </div>
+</div>
+
+<div class="entry autopagerize_page_element">
+  <h2><a href="/memo/2006/03/06/6/">plagger_backtick.pl</a></h2>
+
+  <div class="body">
+    <p>つくた。</p>
+<p><img alt="plagger backtick" height="42" src="http://static.flickr.com/52/108556653_e3953f4d88_o.png" width="283" /></p>
+<p>こんな感じ。</p>
+<pre><code><span class="comment-delimiter">#</span><span class="comment">!/usr/bin/perl
+</span>
+<span class="keyword">use</span> <span class="function-name">strict</span>;
+<span class="keyword">use</span> <span class="function-name">warnings</span>;
+<span class="keyword">use</span> <span class="function-name">Carp</span>;
+<span class="keyword">use</span> <span class="function-name">WWW::Mechanize</span>;
+<span class="keyword">use</span> <span class="function-name">HTTP::Cookies</span>;
+<span class="keyword">use</span> <span class="function-name">MIME::Base64</span>;
+
+<span class="keyword">our</span> <span class="variable-name">$VERSION</span> = <span class="string">&apos;0.01&apos;</span>;
+
+<span class="comment-delimiter"># </span><span class="comment">---- Configurations ----------------
+</span><span class="keyword">my</span> <span class="variable-name">$username</span> = <span class="string">&apos;username&apos;</span>;
+<span class="keyword">my</span> <span class="variable-name">$password</span> = <span class="string">&apos;base64::cGFzc3dvcmQ=&apos;</span>;
+<span class="keyword">my</span> <span class="variable-name">$label</span>    = <span class="string">&apos;!!Plagger&apos;</span>;
+
+<span class="keyword">my</span> <span class="variable-name">$interval</span> = 60;
+<span class="comment-delimiter"># </span><span class="comment">------------------------------------
+</span>
+<span class="keyword">if</span> ( <span class="keyword">my</span> (<span class="variable-name">$crypt</span>, <span class="variable-name">$pass</span>) = $password =~ <span class="constant">/</span><span class="function-name">^</span><span class="keyword">(</span><span class="builtin">\</span><span class="type">w</span><span class="builtin">+</span><span class="keyword">)</span><span class="string">::</span><span class="keyword">(</span><span class="function-name">.</span><span class="builtin">+</span><span class="keyword">)</span><span class="function-name">$</span><span class="constant">/</span> ) {
+    $password = $crypt <span class="type">eq</span> <span class="string">&apos;base64&apos;</span> ? decode_base64($pass) : <span class="cperl-nonoverridable">undef</span>;
+
+    croak <span class="cperl-nonoverridable">qq</span><span class="string">/Invalid password crypt type, &quot;$crypt&quot;/</span> <span class="keyword">unless</span> $password;
+}
+
+<span class="keyword">my</span> <span class="variable-name">$mech</span> = WWW::Mechanize-&gt;new( <span class="string">cookie_jar</span> =&gt; HTTP::Cookies-&gt;new, );
+$mech-&gt;agent_alias(<span class="string">&apos;Windows IE 6&apos;</span>);
+
+$|=1;
+<span class="keyword">while</span> (1) {
+    $mech-&gt;get(<span class="string">&apos;http://mail.google.com/&apos;</span>);
+    <span class="keyword">if</span> ( $mech-&gt;content =~ <span class="constant">/</span><span class="string">ServiceLoginAuth</span><span class="constant">/</span> ) {
+        $mech-&gt;submit_form(
+            <span class="string">fields</span> =&gt; {
+                <span class="string">Email</span>  =&gt; $username,
+                <span class="string">Passwd</span> =&gt; $password,
+            }
+        );
+
+        <span class="keyword">my</span> (<span class="variable-name">$redirect_url</span>) = $mech-&gt;content =~ <span class="constant">/</span><span class="string">url=</span><span class="keyword">(</span><span class="function-name">.</span><span class="builtin">*?</span><span class="keyword">)</span><span class="string">&quot;</span><span class="constant">/</span>;
+        $mech-&gt;get($redirect_url);
+    }
+    $mech-&gt;get(<span class="string">&quot;http://mail.google.com/mail/feed/atom/$label&quot;</span>);
+
+    <span class="keyword">my</span> (<span class="variable-name">$unread</span>) = $mech-&gt;content =~ <span class="cperl-nonoverridable">m</span><span class="constant">!</span><span class="string">&lt;fullcount&gt;</span><span class="keyword">(</span><span class="builtin">\</span><span class="type">d</span><span class="builtin">+</span><span class="keyword">)</span><span class="string">&lt;/fullcount&gt;</span><span class="constant">!</span><span class="cperl-nonoverridable">m</span>;
+    <span class="cperl-nonoverridable">print</span> <span class="string">&quot;Plagger($unread) \n&quot;</span> <span class="keyword">if</span> <span class="cperl-nonoverridable">defined</span> $unread;
+
+    <span class="type">sleep</span> $interval;
+}
+</code></pre>
+<p>これ作ってて見つけたんだけど、Gmail の Atom フィードって URL に Label 名つけるとそれで絞り込めるのね。便利！！</p>
+
+  </div>
+
+  <div class="meta">
+    by typester /
+    at <a href="/memo/2006/03/06/6/">2006-03-06T14:08:00</a> /
+    <a href="/memo/tag/plagger/">plagger</a>
+    &middot; <a href="/memo/tag/screen/">screen</a>
+    / <a href="/memo/2006/03/06/6/#disqus_thread">Comment</a>
+  </div>
+</div>
+
+<div class="entry autopagerize_page_element">
+  <h2><a href="/memo/2006/03/06/5/">Gmail で読むということ</a></h2>
+
+  <div class="body">
+    <p>plagger つかって Gmail でフィードを読んでると、Bloglines 使ってたときより圧倒的に速く読み終わる。</p>
+<p>けど、Bloglines のが読みやすい。この謎さ。</p>
+
+  </div>
+
+  <div class="meta">
+    by typester /
+    at <a href="/memo/2006/03/06/5/">2006-03-06T11:32:00</a> /
+    <a href="/memo/tag/life/">life</a>
+    &middot; <a href="/memo/tag/plagger/">plagger</a>
+    / <a href="/memo/2006/03/06/5/#disqus_thread">Comment</a>
+  </div>
+</div>
+
+
+
+
+<div id="pager" class="autopagerize_insert_before">
+  <p class="pages">
+    <a class="prev" rel="previous" href="/memo/tag/plagger/">&laquo; Prev</a>
+    <a href="/memo/tag/plagger/">1</a>
+    <span class="current">2</span>
+    <a href="/memo/tag/plagger/page/3/">3</a>
+    <a class="next" rel="next" href="/memo/tag/plagger/page/3/">Next &raquo;</a>
+  </p>
+  <p class="info">(Page 2 of 3)</p>
+</div>
+
+
+</div>
+
+<p id="footer">
+  Copyright &copy; 2005-2013
+      by <a class="author" href="/about/#me">Daisuke Murase (typester)</a> /
+  Site generated by <a href="https://github.com/typester/nim">nim</a> /
+  Comments powered by <a href="http://disqus.com">DISQUS</a>.
+</p>
+
+</div>
+
+
+<script type="text/javascript">
+//<![CDATA[
+(function() {
+	var links = document.getElementsByTagName('a');
+	var query = '?';
+	for(var i = 0; i < links.length; i++) {
+	if(links[i].href.indexOf('#disqus_thread') >= 0) {
+		query += 'url' + i + '=' + encodeURIComponent(links[i].href) + '&';
+	}
+	}
+	document.write('<script charset="utf-8" type="text/javascript" src="http://disqus.com/forums/unknownplace/get_num_replies.js' + query + '"></' + 'script>');
+})();
+//]]>
+</script>
+
+
+<script type="text/javascript">
+var gaJsHost = (("https:" == document.location.protocol) ? "https://ssl." : "http://www.");
+document.write(unescape("%3Cscript src='" + gaJsHost + "google-analytics.com/ga.js' type='text/javascript'%3E%3C/script%3E"));
+</script>
+<script type="text/javascript">
+try {
+var pageTracker = _gat._getTracker("UA-53067-1");
+pageTracker._trackPageview();
+} catch(err) {}</script>
+
+<script>
+function googleTranslateElementInit() {
+  new google.translate.TranslateElement({
+    pageLanguage: 'ja',
+    gaTrack: true,
+    gaId: 'UA-53067',
+    floatPosition: google.translate.TranslateElement.FloatPosition.BOTTOM_RIGHT
+  });
+}
+</script><script src="//translate.google.com/translate_a/element.js?cb=googleTranslateElementInit"></script>
+
+</body>
+</html>

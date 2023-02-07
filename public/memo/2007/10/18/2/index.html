@@ -1,0 +1,153 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="ja" xml:lang="ja">
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <title>元気玉メールをIMで通知する - unknownplace.org</title>
+  <link rel="stylesheet" type="text/css" href="http://yui.yahooapis.com/3.0.0/build/cssreset/reset-min.css" />
+  <link rel="stylesheet" type="text/css" href="http://yui.yahooapis.com/3.0.0/build/cssfonts/fonts-min.css" />
+  <link rel="stylesheet" href="/css/style.css" type="text/css" />
+  <meta property="fb:admins" content="1093631929" />
+  <link rel="alternate" type="application/rss+xml" href="http://unknownplace.org/memo/index.rss" />
+</head>
+<body>
+
+<div id="container">
+<div id="header">
+    <h1><a href="/">unknownplace.org</a></h1> /
+<a href="/memo/">memo</a>
+</div>
+
+<div id="content">
+<div class="entry autopagerize_page_element">
+  <h2><a href="/memo/2007/10/18/2/">元気玉メールをIMで通知する</a></h2>
+
+  <div class="body">
+    <p>弊社には元気玉という仕組みがあって、詳しくは<a href="http://pc.nikkeibp.co.jp/article/NPC/20061023/251448/" title="24： 時々、元気玉が飛び交います：日経パソコンオンライン">代表のブログを参照</a>、これに誰よりも速く返信するために元気玉という文字がメールの件名に含まれていた場合即座にIMに通知するような仕組みを作った。</p>
+<p>うちで使用しているメール配信ソフトウェアは postfix+maildrop で、IMへの通知には <a href="http://im.kayac.com" title="im.kayac.com - Simple instant message (IM) posting API">im.kayac.com</a> のAPIを使用。</p>
+<p>非常に簡単にできた。まずmaildropのフィルタ <code>~/.mailfilter</code>:</p>
+<pre><code>DECODED_SUBJECT = <span class="string">""</span>
+<span class="keyword">if</span> ( /^Subject:\s*(.*)$/ )
+{
+        MATCH1 = escape($MATCH1)
+        DECODED_SUBJECT = `echo $MATCH1 |/home/typester/bin/subjectdecoder.pl`
+}
+
+<span class="keyword">if</span> ( $DECODED_SUBJECT =~ /&#20803;&#27671;&#29577;/ )
+{
+        cc <span class="string">"|/home/typester/bin/mail2im.pl"</span>
+}
+</code></pre>
+<p>二つのスクリプトを読んでます。subjectdecoder は単にMIMEエンコードされてる件名をutf-8にして戻してあげるだけのもので、mail2im.plが実際にIMメッセージを送るスクリプト。以下がその中身。</p>
+<p>subjectdecoder.pl:</p>
+<pre><code><span class="comment-delimiter">#</span><span class="comment">!/usr/bin/env perl
+</span>
+<span class="keyword">use</span> <span class="function-name">strict</span>;
+<span class="keyword">use</span> <span class="function-name">warnings</span>;
+
+<span class="keyword">use</span> <span class="function-name">Encode</span>;
+
+<span class="keyword">my</span> <span class="variable-name">$subject</span> = <span class="keyword">do</span> { <span class="keyword">local</span> <span class="variable-name">$/</span>; &lt;STDIN&gt; };
+$subject =~ <span class="cperl-nonoverridable">s</span><span class="constant">/</span><span class="builtin">\</span><span class="string">\</span><span class="keyword">(</span><span class="function-name">.</span><span class="keyword">)</span><span class="constant">/</span><span class="string">$1</span><span class="constant">/</span><span class="cperl-nonoverridable">gs</span>;
+
+<span class="cperl-nonoverridable">print</span> encode(<span class="string">&apos;utf-8&apos;</span>, decode(<span class="string">&apos;MIME-Header&apos;</span>, $subject));
+</code></pre>
+<p>mail2im.pl:</p>
+<pre><code><span class="comment-delimiter">#</span><span class="comment">!/usr/bin/env perl
+</span>
+<span class="keyword">use</span> <span class="function-name">strict</span>;
+<span class="keyword">use</span> <span class="function-name">warnings</span>;
+
+<span class="keyword">my</span> <span class="variable-name">$mail</span> = <span class="keyword">do</span> { <span class="keyword">local</span> <span class="variable-name">$/</span>; &lt;STDIN&gt; };
+
+<span class="keyword">use</span> <span class="function-name">Encode</span>;
+<span class="keyword">use</span> <span class="function-name">Email::MIME</span>;
+<span class="keyword">use</span> <span class="function-name">Mail::Address</span>;
+
+<span class="keyword">my</span> <span class="variable-name">$msg</span> = Email::MIME-&gt;new($mail);
+
+<span class="keyword">my</span> <span class="variable-name">$subject</span> = encode(<span class="string">&apos;utf-8&apos;</span>, $msg-&gt;header(<span class="string">&apos;Subject&apos;</span>));
+<span class="keyword">my</span> (<span class="variable-name">$from</span>)  = Mail::Address-&gt;parse( $msg-&gt;header(<span class="string">&apos;From&apos;</span>) );
+
+<span class="keyword">exit</span> <span class="keyword">unless</span> $subject &amp;&amp; $from;
+
+<span class="keyword">use</span> <span class="function-name">LWP::UserAgent</span>;
+<span class="keyword">use</span> <span class="function-name">HTTP::Request::Common</span>;
+
+<span class="keyword">my</span> <span class="variable-name">$res</span> = LWP::UserAgent-&gt;new-&gt;request(
+    POST <span class="string">&quot;http://im.kayac.com/api/post/typester&quot;</span>,
+    [ <span class="string">message</span> =&gt; <span class="string">&quot;[E-Mail] $subject (@{[$from-&gt;address]})&quot;</span> ]
+);
+</code></pre>
+<p>件名デコードしないとmaildropで日本語の件名のマッチングができないのが面倒だけど(これってなんとかならんのかな)、それでも簡単にできた！ im.kayac.com++ (自画自賛</p>
+
+  </div>
+
+  <div class="meta">
+    by typester /
+    at <a href="/memo/2007/10/18/2/">2007-10-18T17:22:00</a> /
+    <a href="/memo/tag/life/">life</a>
+    &middot; <a href="/memo/tag/mail/">mail</a>
+    &middot; <a href="/memo/tag/im/">im</a>
+    / <a href="/memo/2007/10/18/2/#disqus_thread">Comments(0)</a>
+  </div>
+</div>
+
+<div id="disqus_thread"></div>
+
+<script type="text/javascript">
+    var disqus_url = location.protocol + "//" + location.host + "/memo/2007/10/18/2/";
+</script>
+<script type="text/javascript" src="http://disqus.com/forums/unknownplace/embed.js"></script>
+
+</div>
+
+<p id="footer">
+  Copyright &copy; 2005-2013
+      by <a class="author" href="/about/#me">Daisuke Murase (typester)</a> /
+  Site generated by <a href="https://github.com/typester/nim">nim</a> /
+  Comments powered by <a href="http://disqus.com">DISQUS</a>.
+</p>
+
+</div>
+
+
+<script type="text/javascript">
+//<![CDATA[
+(function() {
+	var links = document.getElementsByTagName('a');
+	var query = '?';
+	for(var i = 0; i < links.length; i++) {
+	if(links[i].href.indexOf('#disqus_thread') >= 0) {
+		query += 'url' + i + '=' + encodeURIComponent(links[i].href) + '&';
+	}
+	}
+	document.write('<script charset="utf-8" type="text/javascript" src="http://disqus.com/forums/unknownplace/get_num_replies.js' + query + '"></' + 'script>');
+})();
+//]]>
+</script>
+
+
+<script type="text/javascript">
+var gaJsHost = (("https:" == document.location.protocol) ? "https://ssl." : "http://www.");
+document.write(unescape("%3Cscript src='" + gaJsHost + "google-analytics.com/ga.js' type='text/javascript'%3E%3C/script%3E"));
+</script>
+<script type="text/javascript">
+try {
+var pageTracker = _gat._getTracker("UA-53067-1");
+pageTracker._trackPageview();
+} catch(err) {}</script>
+
+<script>
+function googleTranslateElementInit() {
+  new google.translate.TranslateElement({
+    pageLanguage: 'ja',
+    gaTrack: true,
+    gaId: 'UA-53067',
+    floatPosition: google.translate.TranslateElement.FloatPosition.BOTTOM_RIGHT
+  });
+}
+</script><script src="//translate.google.com/translate_a/element.js?cb=googleTranslateElementInit"></script>
+
+</body>
+</html>

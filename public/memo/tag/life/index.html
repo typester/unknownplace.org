@@ -1,0 +1,376 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="ja" xml:lang="ja">
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <title>memo - unknownplace.org</title>
+  <link rel="stylesheet" type="text/css" href="http://yui.yahooapis.com/3.0.0/build/cssreset/reset-min.css" />
+  <link rel="stylesheet" type="text/css" href="http://yui.yahooapis.com/3.0.0/build/cssfonts/fonts-min.css" />
+  <link rel="stylesheet" href="/css/style.css" type="text/css" />
+  <meta property="fb:admins" content="1093631929" />
+  <meta name="robots" content="noindex" />
+  <link rel="alternate" type="application/rss+xml" href="http://unknownplace.org/memo/index.rss" />
+</head>
+<body>
+
+<div id="container">
+<div id="header">
+    <h1><a href="/">unknownplace.org</a></h1> /
+<a href="/memo/">memo</a>
+</div>
+
+<div id="content">
+
+<div class="entry autopagerize_page_element">
+  <h2><a href="/memo/2013/03/06/1/">ATOKをやめてSKKを使いはじめた</a></h2>
+
+  <div class="body">
+    <p>ATOKをMacを使いはじめてからずっと使っているので、そこそこ長い付き合いではあるけれど、 和英混在入力の使い勝手が悪く、いつも混在入力をするときに、ATOK自体のON/OFFをして対応してしまっていた。</p>
+<p>この使い方は注意しないと、変な文節を学習させてしまうことになる。</p>
+<p>例えば、</p>
+<blockquote><p>nodeよりperlが好き。</p></blockquote>
+<p>のような文章で、英語の部分ではATOKをOFFにするような入力をしていると、 「が好き」という文章をATOKに教えこませてしまう。このような意図しない学習結果が積みかさなると、普通の文章の変換も苦になるほどATOKの調子が悪くなってしまう。</p>
+<p>そのような状態になるたびに、辞書をクリアしたり、 そもそもこのようなことを避けるために、「が」で一旦確定させるクセをつけるなどして、対応してきたが、そんなことを考えながら文章かくのであれば、もっとシンプルな、SKKのような入力方法にしちゃえばいいのではないかなーということで、とりあえず試してみることにした。</p>
+<h4>SKK入門</h4>
+<p>最初のとっかかりは、<a href="http://d.hatena.ne.jp/tomoya/20101212/1292089972">Emacsのddskkというのについてくるチュートリアルが良い</a>、とのことなので、まずMacシステムの入力メソッドはそのままにEmacs内だけでSKKを試してみる。</p>
+<p>それを一通り終えて、SKKの使い方が分かったところで、Mac全体でもSKKが使えるように<a href="http://aquaskk.sourceforge.jp/">AquaSKK</a>をインストール。</p>
+<p>試してみたところEmacs内でもAquaSKKが使えるっぽいので、ddskkは別に使わなくてもいいかなーという感じで、チュートリアルそうそう、ddskkは使わなくなってしまった。 AquaSKKは、Enterで改行しない、というデフォルトで有効になっている余計なオプションを外してしまえば、あとは大体ddskkと同じような使い勝手のようだ。(SKKに詳しい人から見るといろいろ違うのかもしれないが)</p>
+<p>入力方法自体はいたってシンプルで、すぐに覚えられる。 「困った」みたいのの変換が、まだちょっと考えないと入力できないが、まぁすぐに慣れるだろう。</p>
+<p>しかしそれ以外にもいろいろ問題があった。</p>
+<h4>問題1. C-j がつらい</h4>
+<p>SKKは <code>C-j</code> を変換確定やら日本語モードへの移行やらに使用する、言ってしまえば、SKKのメインキーである。</p>
+<p>しかし僕はこれを改行とか、elispの評価とかに使用するのが手に染みついてしまっていて、このキーをSKKで使用するのは苦痛を伴なう。</p>
+<p>この際だし、矯正してしまってもいいかなーともおもってしばらくがんばったが、どうにもだめなので、SKKの該当キーを <code>C-o</code> に変更した。</p>
+<p>AquaSKKのキー設定を変更するには、<code>/Library/Input Methods/AquaSKK.app/Contents/Resources/keymap.conf</code> を <code>/Users/typester/Library/Application Support/AquaSKK/keymap.conf</code> にコピーして、その中の、<code>SKK_JMODE</code> というところを</p>
+<pre><code>SKK_JMODE       ctrl::o
+</code></pre>
+<p>みたいな感じに修正すれば良い。</p>
+<h4>問題2. ターミナルで入力できない</h4>
+<p>入力できない、というか <code>C-o</code> が効かない。ので日本語に復帰できない。(<code>C-j</code>に戻してもだめだった)</p>
+<p><code>uim-fep</code> いれろ、みたいのを見て、ウンザリしつつもインストールしたが、しばらく使っていると高確率でSEGVするのでまともに使えなかったためさらにウンザリ。</p>
+<p>これはMacだけの現象かなーと思ってLinuxで試してみると、Linuxではうまく動いた。</p>
+<p>ただ、日常的にターミナルで日本語入力をする場面を考えてみると、IRCをするirssiだけ。 しかも、irssiを動かしているサーバーはLinuxなので、そこにuim-fepをいれてしのぐことにした。</p>
+<p>uim-skk でも、以下のような設定で AquaSKK と同じように <code>C-j</code> を <code>C-o</code> に置きかえた。</p>
+<pre><code># ~/.uim
+(define-key skk-on-key? <span class="warning">'</span><span class="string">("&lt;Control&gt;o"))
+(define-key skk-commit-key? '</span>(<span class="string">"&lt;Control&gt;o"</span>))
+(define-key skk-state-direct-no-preedit-nop-key? <span class="warning">'</span><span class="string">("&lt;Control&gt;o"))
+</span></code></pre>
+<p>ユーザー辞書をDropboxかなにかで同期できたらいいなーとおもったが、 AquaSKKのユーザー辞書は utf-8、uim-skk のそれは euc-jp と、文字コードが違い、しかもそれを変更する方法がわからなかったので、とりあえず別々の学習になってしまってもいいか〜ってなってる。</p>
+<h4>問題3. ひらかなの小文字入力</h4>
+<p>いままでずっと「la」で「ぁ」というように <code>l</code> キーで小文字入力していたが、SKKではこのキーは英字入力への切り替えキーなので使うことができない。 これもキー設定をかえてもよかったが、ここは <code>x</code> を使うように矯正する方向でがんばる。</p>
+<h4>使用感</h4>
+<p>送り仮名を意識しないといけなかったり、その送り仮名が「っ」だったりするときの入力はまだまだ慣れなくて難しい。 慣れてもイメージとして、ATOKほど高速に日本語入力ができる感じはない。ATOKはやっぱり賢いのでガーーっと長文を一気に入力して一発変換という使い方をしても精度が高く、日本語だけを入力する分にはやはり最高の入力メソッドであると思う。</p>
+<p>SKKのいいところは仕組みがシンプルなことと、実装がいっぱいあってどこでも動くところかな。</p>
+<p>シンプルなので自分でコントロールできると思う。ATOKは学習がおかしくなってしまったらもう途方にくれるしかなかった。実装がいっぱいあるのも、AquaSKKがなくなってもEmacsがあれば大丈夫、みたいな安心感はある。</p>
+<p>入力速度に関しては、Shiftキーを非常に多用するので、親指Shiftとかを導入したらもう少し高速に入力できるようになるのだろうかなー。</p>
+
+  </div>
+
+  <div class="meta">
+    by typester /
+    at <a href="/memo/2013/03/06/1/">2013-03-06T16:32:00</a> /
+    <a href="/memo/tag/life/">life</a>
+    &middot; <a href="/memo/tag/skk/">skk</a>
+    / <a href="/memo/2013/03/06/1/#disqus_thread">Comment</a>
+  </div>
+</div>
+
+<div class="entry autopagerize_page_element">
+  <h2><a href="/memo/2012/11/07/1/">Redis布教活動報告 ISUCON 編</a></h2>
+
+  <div class="body">
+    <p>最近 <code>Test::RedisServer</code> とかもろもろつくっててばれてるかもしれませんが、だいぶ Redis 期にありまして、最近の趣味は？っていう問いにはだいたいRedisのソースを読むことですってなくらいなのですが、 memcached とかシンプルな KVS と比べるとだいぶ機能が豊富なので使い方を迷ったりとかそういう事例もあり、周りにもう少し使える人を増やさなければ僕の書いたコードが属人化しててつらい感じになるなーっていうわけで、 布教活動をおこなっておりまして、その一環として ISUCON2 に参加してきましたのでその報告です。</p>
+<blockquote><p><a href="http://blog.livedoor.jp/techblog/archives/67726489.html">livedoor Techブログ : #isucon2 リアルタイムフォトレポート 更新終了</a></p></blockquote>
+<p>前回の優勝チームに混ぜてもらった感じでだいぶついてる感じもしますが、見事連覇を果たせ、懇親会でも redis redis と連呼してきたのでだいぶ興味持った方も多いのではないでしょうか！</p>
+<p>そんな布教活動視点から ISUCON を振り返ってみたいと思います。</p>
+<h4>Redis がつかえるかどうか</h4>
+<p>開始直後はチーム間でのコンフリクトをさけるために <code>git push</code> で rev サーバーに反映ってのだけは設定しましたが、そのあとはすぐボトルネックそうなところで Redis に置き換えられる物はないか探していました。</p>
+<p>すぐに購入トランザクションが見つかります。Redis には Set 型という集合を表す型があり、それを使うと集合のなかから排他的に一つランダムでとりだして消すというのをとても効率的に実装することができます。 ISUCON ではこのランダム条件が（チェッカーがバグでスルーしていたみたいですけど）なかなかきびしかったところだと思いますが、そこもするっと解決です。 なお、順番に購入という条件であれば双方向リストの List 型を使うのが正解でしょう。こちらも先頭or末尾からの取得＆削除を排他的に行うことができます。</p>
+<p>ついでに購入履歴も Redis にもたせておけばそこから、サイドバー(<code>recent_sold</code>)とCSV吐き出しもどちらも行えそうだなと思いました。</p>
+<p>ここまででとりあえずこの購入トランザクションだけでも Redis にうつしたら DB ロックする必要がないのでだいぶ良さそうだなと思い、redisブランチやりますとチームに宣言します。</p>
+<h4>書き換えの流れ</h4>
+<p>そしてもりもり書き換えました。</p>
+<ul><li><code>POST /admin</code> でMySQLにデータを流し込んだあとに stock のデータをすべて redis にコピーする。(<code>stock:{variation_id}</code> というキーのSet)</li><li><code>POST /buy</code> で対象の Set から一つ取り出し、<code>order_history</code> という List にアーティスト名などの付属情報込みな辞書情報をPush。</li><li>サイドバーは <code>order_history</code> から最新10件を取得するように変更</li><li>CSV書き出しは <code>order_history</code> をまるっと書き出す感じ</li><li>その他もろもろテンプレに渡してるデータをよしなに変更</li></ul>
+<p>といった感じですが、アプリのテストコードがないのでだいぶ変更が手探りな感じでつらかったです。とくにテンプレ周り。なおしてベンチ止まって、ベンチのエラー見て修正という…。 そんなつらいかんじや実際の作業内容は <a href="https://github.com/kayac/isucon2/commits/redis">redis ブランチのコミットログ</a>を参照いただくと分かるかなと思います。</p>
+<h4>他になんかあるか？</h4>
+<p>コード見てるだけだとわからなかったので fujiwara さんにボトルネック探してもらいつつ、自分はとくにやることもないので非同期の実装を模索しておりました。 この時点ではforkモデルの限界なんじゃなかろうかと思っていて非同期にしてベンチ取ってみるか、みたいな感じでしたが、Perlで非同期にすると書き直しになるし、nodeの実装いじっててもうまく動かなくてすぐにあきらめてしまったんですが、それは fujiwara さんがテンプレのレンダリングボトルネックを見つけてくれて、そちらを直したら今までのアプリでも十分スループット（reverse proxy &lt;-&gt; app 間）が出ており、非同期全然意味ありませんでした。</p>
+<p>まぁそうだよね、IOウェイトが問題になるような場合以外は非同期意味ないなーとそのとき思った次第です。</p>
+<h4>テンプレキャッシュ</h4>
+<p>組長が見つけてくれたチケットの座席表のレンダリングのボトルネック。これも Redis でキャッシュするようにしました。 Redis は単純なKVSとしてみても十分高速なのでこういう用途にも使えます。</p>
+<h4>データ永続化</h4>
+<p>これは本家ドキュメントよくまとまっております。</p>
+<blockquote><p><a href="http://redis.io/topics/persistence">http://redis.io/topics/persistence</a></p></blockquote>
+<p>スナップショット(dump)と追記ログ(appendlog - MySQLのbinlog的な)の二種類の永続化方法があり、dumpはバックアップ用、復元をappendlogから、ってのがオススメな方法。</p>
+<p>appendlog は基本的にはプロトコルログなんですが、大きくなるとバックグラウンドで最適化されて小さくなります。デフォルトでは fsync が1秒ごとに走るので最悪そこまでのデータは保全される。 書き込み毎に sync って言うのも設定でできますがパフォーマンス的につらいことになるでしょう。</p>
+<p>これがISUCONのレギュレーションを満たしているかは定かではありませんがとりあえず fujiwara 組では1秒fsyncなappendlogでデータ永続化をしました。</p>
+<p>また、メモリいっぱい使い切っているような大きなデータセットの場合に appendlog するは不安感ありますが、自分もまだ試したことがないので、近いうちに試したいと思っております。</p>
+<h4>まとめ</h4>
+<p>あんまりおすすめしまくっていると勘違いしちゃう人もいるかもしれないのでいちおう補足しておきますが、単純に MySQL を Redis に置き換えたら速くなる、っていうことはないです。 MySQLがいいところ、Redisがいいところ、（もちろんその他のツールも）どちらもあるので、 Pros and Cons やトレードオフを考えた上で選択するのが大事です。</p>
+<p>僕自身も Redis つかっているといっても運用上のノウハウなどまだまだうちも足りていないのでそこはこれから精進していきたいと思います。</p>
+<p>しかし、ISUCON楽しいですね。 #isucon のログによると</p>
+<pre><code>11:47 &lt; typester&gt; すでにだいぶたのしい
+</code></pre>
+<p>といっており、ここからずーーーっと終了までたのしかったですね。</p>
+<p>あと珈琲ありがとうございました！</p>
+<h4>番外: Xslate の速さを実感</h4>
+<p>家帰って他の言語の実装をうごかしてみると、明らかに座席表のレンダリングが遅いんです。ブラウザで見てボトルネックって分かるレベル。 でも、Perl の実装をブラウザで見た人はあのページの遅さはテンプレートエンジンじゃなくてブラウザがレンダリングするのに時間かかってる、くらいにしか感じない気がする。 今回の罠は Xslate の速さと言っても良いのではないでしょうか。</p>
+<p>これは gfx++ といわざるを得ませんね！</p>
+
+  </div>
+
+  <div class="meta">
+    by typester /
+    at <a href="/memo/2012/11/07/1/">2012-11-07T08:46:00</a> /
+    <a href="/memo/tag/isucon/">isucon</a>
+    &middot; <a href="/memo/tag/life/">life</a>
+    &middot; <a href="/memo/tag/redis/">redis</a>
+    / <a href="/memo/2012/11/07/1/#disqus_thread">Comment</a>
+  </div>
+</div>
+
+<div class="entry autopagerize_page_element">
+  <h2><a href="/memo/2011/11/14/1/">テラスモール湘南に行ってきた</a></h2>
+
+  <div class="body">
+    <p>11月11日に辻堂駅前にオープンしたばかりの湘南地区最大級のショッピングモール、<a href="http://terracemall-shonan.com/">テラスモール湘南</a>に行ってみた。</p>
+<p>我らが<a href="http://bowls-cafe.jp/">鎌倉bowls</a>も出店しているからその様子見もかねて。</p>
+<blockquote><p><a href="http://okazu.bowls-cafe.jp/">楽しいおかず by鎌倉bowls</a></p><p>テラスモール湘南のデリカテッセンのお店。いつもの家庭の食卓にサプライズと笑顔をお届け！</p></blockquote>
+<p>個人的には、109シネマズ（もちろんIMAXシアター付き）が入っているというのが最大のポイント。いままでは川崎まで見に行っていたからね。</p>
+<p>ただ、懸念点は交通事情。あのあたりってそんなに道も大きくないような気がしたし、テラスモール湘南自体は2500台収容の駐車場があるらしいけど周りの交通が麻痺してしまっていたら意味がない。</p>
+<p>実際に行ってみるとそんなに心配することもなかった。到着したのはたぶん1番混んでると思われる14時台だったけど、テラスモール湘南の少し手前から駐車場に入る列が出来ている程度の渋滞しかなかった。 ただ駐車場は屋上以外はほとんど満車状態だったから、雨の日など屋根付きのところへ駐車したいという場合には早めか遅めの時間帯に行くようにした方がいいだろう。</p>
+<p>鎌倉から向かうには海沿いをずっと行って浜見山交番前を右折、あとはずっとまっすぐ行くとテラスモールの真ん前に出るから1番楽だと思う。帰りはそのルートは混むので模索中…。</p>
+<p>今回は映画を見るわけでもなく施設内をぶらぶらしただけだったけど、なかなか好印象。湘南地区の人たちは横浜や都内に出る機会がだいぶ減るんじゃないかな。ここで事足りるっていう意味で。 次回は映画を見に行こうと思う。</p>
+
+  </div>
+
+  <div class="meta">
+    by typester /
+    at <a href="/memo/2011/11/14/1/">2011-11-14T10:20:00</a> /
+    <a href="/memo/tag/life/">life</a>
+    / <a href="/memo/2011/11/14/1/#disqus_thread">Comment</a>
+  </div>
+</div>
+
+<div class="entry autopagerize_page_element">
+  <h2><a href="/memo/2011/10/06/1/">Jobs の思い出</a></h2>
+
+  <div class="body">
+    <p>最初はたぶん中学生くらいの頃だったと思う。古い Macintosh をさわる機会があった時だ。</p>
+<p>分解してみると、内部に Steve Jobs という刻印があった。 当時はインターネットがまだ普及しておらず、スティーブ・ジョブズという人のことを全く知らなかったから、エンジニアの名前なのかなーとおもったり、 もしくは Steve&apos;s job （スティーブの仕事）ってかいてあるのかなとか思っていた。筆記体で書かれててよく読めなかったのだ。</p>
+<p>いずれにせよ、スティーブさんというのは僕の中ではエンジニアということになっていたから、数年後どういう人なのか知ったときには衝撃だった。 それと同時に製品に自らの名前を刻印するということにも妙に納得したりした（笑）</p>
+<p>今では家中が Apple 製品であふれている。</p>
+<ul><li>MacBook</li><li>MacBook Air</li><li>Mac mini 2台</li><li>Time Cupsule</li><li>AirMac Express</li><li>AppleTV</li><li>iPhone</li><li>iPad</li></ul>
+<p>エンジニアとして、クリエーターとして、彼の妥協しないクリエイティブへの姿勢は尊敬しているし、今後それを目にすることができないのは残念でならない。</p>
+<p>とにかく、いままでありがとう！ 安らかに。</p>
+
+  </div>
+
+  <div class="meta">
+    by typester /
+    at <a href="/memo/2011/10/06/1/">2011-10-06T10:03:00</a> /
+    <a href="/memo/tag/life/">life</a>
+    / <a href="/memo/2011/10/06/1/#disqus_thread">Comment</a>
+  </div>
+</div>
+
+<div class="entry autopagerize_page_element">
+  <h2><a href="/memo/2011/06/21/1/">最近の活動その2 VQチェッカー</a></h2>
+
+  <div class="body">
+    <p>Reengo の合間に VQ チェッカーというアプリも開発していました。</p>
+<p><a href="http://www.koesouken.com/vqchecker/"><img alt="モテ声診断VQチェッカー" src="http://www.koesouken.com/img/common/bnr_vq.png" width="600" /></a></p>
+<p><a href="http://click.linksynergy.com/fs-bin/stat?id=epIEMEmECfk&amp;offerid=94348&amp;type=3&amp;subid=0&amp;tmpid=2192&amp;RD_PARM1=http%253A%252F%252Fitunes.apple.com%252Fjp%252Fapp%252Fid440104143%253Fmt%253D8%2526uo%253D4%2526partnerId%253D30" target="itunes_store"><img alt="VQチェッカー - モテ声診断 - KAYAC Inc." src="http://ax.phobos.apple.com.edgesuite.net/images/web/linkmaker/badge_appstore-lrg.gif" style="border: 0;" /></a></p>
+<p>これ、結構真面目に音声解析をしているのですが、もともとそういう知識をもっていたわけではないので、東京工芸大学の<a href="http://www.koesouken.com/about/#entryMemberMoriyama">森山先生</a>に監修いただいています。 基礎から解説いただいて、非常に刺激的でした。音声解析というのは僕にとっては本当に不思議な世界で計算結果がどうしてこうなるのかというところはまだよくわかっていません。今後も掘り下げていきたい分野ですね。</p>
+<p>開発は音声が扱いやすいという理由だけでMacアプリとして開発しテストしていました。 ある程度出来たところでそれをActionScriptに移植したという流れです。MacのAudioUnitのコードは少し変更するだけでiPhoneでもそのまま動きます。したがってiPhone版もついでにつくっちゃうか！っていう流れでiPhone版もつくっちゃいました。</p>
+<p>気軽に遊べるのでぜひ遊んでみてください！</p>
+
+  </div>
+
+  <div class="meta">
+    by typester /
+    at <a href="/memo/2011/06/21/1/">2011-06-21T12:07:00</a> /
+    <a href="/memo/tag/life/">life</a>
+    / <a href="/memo/2011/06/21/1/#disqus_thread">Comment</a>
+  </div>
+</div>
+
+<div class="entry autopagerize_page_element">
+  <h2><a href="/memo/2011/06/16/1/">最近の活動その１ Reengo</a></h2>
+
+  <div class="body">
+    <p>気づいたら3ヶ月も更新途絶えてましたが、その間ずっとiPhoneアプリを開発してました。</p>
+<p>今年一番時間をかけ、いま現在もつきっきりで開発しているのが Reengo というアプリ。</p>
+<p><iframe allowfullscreen="allowfullscreen" frameborder="0" height="349" src="http://www.youtube.com/embed/YAOlkYLcMlU" width="560"></iframe></p>
+<p><a href="http://click.linksynergy.com/fs-bin/stat?id=epIEMEmECfk&amp;offerid=94348&amp;type=3&amp;subid=0&amp;tmpid=2192&amp;RD_PARM1=http%253A%252F%252Fitunes.apple.com%252Fjp%252Fapp%252Fid430589998%253Fmt%253D8%2526uo%253D4%2526partnerId%253D30" target="itunes_store"><img alt="Reengo - 番号なしで電話できるアプリ - KAYAC Inc." src="http://ax.phobos.apple.com.edgesuite.net/images/web/linkmaker/badge_appstore-lrg.gif" style="border: 0;" /></a></p>
+<p>いわゆる VoIP アプリケーションですが、Facebookアカウント連動で友達がアプリさえインストールしていればすぐに通話できるというのが特徴です。</p>
+<p><a href="http://unknownplace.org/memo/2011/01/28/1/">この辺</a>の投稿なんかはこれの伏線だったわけです。</p>
+<p>クライアント実装は通信周りのロジックは C で書いていて、この部分は近日リリース予定の Android 版と共有して使いまわしてます。 サーバー実装は Perl と Node を適材適所使い分けております。Node の使用用途としてはいままで Perl の AnyEvent を使ってやっていた部分を Node に置き換えたというイメージで、個人的にはこれはなかなかいい選択肢なんじゃないかなーとおもってます。 技術的なところの詳細はまたどこかで別途書きたいと思ってます。</p>
+<p>まだまだ課題があってそれを徐々につぶしているという状態ですが、ぜひ使ってみてください！</p>
+
+  </div>
+
+  <div class="meta">
+    by typester /
+    at <a href="/memo/2011/06/16/1/">2011-06-16T11:30:00</a> /
+    <a href="/memo/tag/life/">life</a>
+    &middot; <a href="/memo/tag/iphone/">iphone</a>
+    / <a href="/memo/2011/06/16/1/#disqus_thread">Comment</a>
+  </div>
+</div>
+
+<div class="entry autopagerize_page_element">
+  <h2><a href="/memo/2010/11/18/2/">ブログ</a></h2>
+
+  <div class="body">
+    <p>clmemo になんか記事っぽくメモを書くのに疲れてきたので、ブログを復活させようそうしよう。</p>
+<p>昔のエントリ見るとちゃんとメモっぽいのだけどなんでだろうなーw</p>
+
+  </div>
+
+  <div class="meta">
+    by typester /
+    at <a href="/memo/2010/11/18/2/">2010-11-18T15:11:00</a> /
+    <a href="/memo/tag/life/">life</a>
+    / <a href="/memo/2010/11/18/2/#disqus_thread">Comment</a>
+  </div>
+</div>
+
+<div class="entry autopagerize_page_element">
+  <h2><a href="/memo/2009/12/06/1/">3GS 購入</a></h2>
+
+  <div class="body">
+    <p>アプリ開発で 3GS を借りたのが最後、もうどうしてもあの速さがうらやましくなってしまって結局買ってしまった。</p>
+<p>今まで使用していた 3G の分割のこり10ヶ月分くらいは次の請求で一括で払うことに。そのまま分割したままでもよかったが割引きかなくなるから一括で払っても変わらないからそれなら払っちゃっておいた方が良いかなーと。なんかよくわからないけどホワイトWとかなんちゃらオプションとか加入させられたのでそれはわすれないうちにオフにした。</p>
+<p>感想としてはいままで iPhone 使ってて一番不満だったメモリ足りなすぎて重いなーって言う感じがまったくしなくなってとても快適。これが本来イメージされてた iPhone かーという感じ。 3G ユーザーはみんな乗り換えたら感動すると思う。</p>
+<p>でも液晶の色合いがなんか 3G と違って白っぽいのはきになるなー。液晶は前の方が好み。</p>
+<p>本体の方の色は 3G が白つかってたので黒にしたが、白の方がよかったなーと若干後悔中。iPhone の黒はなんか下品な感じがする。まぁカバーつけるから関係ないんだけど。</p>
+
+  </div>
+
+  <div class="meta">
+    by typester /
+    at <a href="/memo/2009/12/06/1/">2009-12-06T13:57:00</a> /
+    <a href="/memo/tag/life/">life</a>
+    / <a href="/memo/2009/12/06/1/#disqus_thread">Comment</a>
+  </div>
+</div>
+
+<div class="entry autopagerize_page_element">
+  <h2><a href="/memo/2009/11/24/1/">たこthon</a></h2>
+
+  <div class="body">
+    <blockquote><p><a href="http://d.hatena.ne.jp/tomyhero/20091120/1258718763">たこthon 2009/11/23(月) - Lazy Programmer :-p</a></p></blockquote>
+<p>というのに参加してきた。</p>
+<p>tomyhero さんの家なのでどんだけ奇天烈な家なんだろうと思ってワクワクして言ったら予想に反してまともな家でした。でもものすごく遠い。</p>
+<p>たこ焼き食べたり鯛焼き食べたりタコライスたべたりしてあとはハックしたりゲームしたり漫画読んだりする会らしい。</p>
+<p>予想に反して集中できたので</p>
+<ul><li>オレオレlighttpdモジュールを本番投入したり</li><li>前から作ろうと思ってたiPhoneアプリをガリガリ実装したり</li></ul>
+<p>した。iPhoneアプリはほしい機能全部はつけてないけどとりあえずそれ削れば公開はできそうだったので公開してから帰るかとおもってリリース作業してたら最後の最後で謎エラーで手間取りだめだった。今日の夜にでもアップしよう。</p>
+<p>たこ焼き器とPS3欲しくなった。</p>
+<p>Kindleもちょっとだけ欲しくなった。</p>
+
+  </div>
+
+  <div class="meta">
+    by typester /
+    at <a href="/memo/2009/11/24/1/">2009-11-24T09:40:00</a> /
+    <a href="/memo/tag/life/">life</a>
+    / <a href="/memo/2009/11/24/1/#disqus_thread">Comment</a>
+  </div>
+</div>
+
+<div class="entry autopagerize_page_element">
+  <h2><a href="/memo/2009/11/19/1/">リニューアル</a></h2>
+
+  <div class="body">
+    <p>clmemo を開始してから4年ほど、ずっと変えていなかったサイトをサーバーが死亡したのを機にリニューアル。</p>
+<p>今年初めに作った <a href="http://github.com/typester/nim">nim</a> をつかって全部静的ファイルな構成にしてみる。制限のきついレンタルサーバーならともかく、僕の環境ではまったく意味がない。最初は <code>typester.github.com</code> とかでやろうとおもったけど、その後移転したくなったときリダイレクトとかできないのはいやなのでやめた。</p>
+<p>でも自鯖はめんどくさいので <a href="http://prgmr.com/xen/">prgmr.com</a> 借りた。なかなか良い。</p>
+<p>nim なら clmemo 以外にもコンテンツを扱えるのでぼちぼち増やしていく予定。とりあえずブログかなぁ。</p>
+<p>しかしやっぱりサイトをいじるのは楽しい。最近はブログサービスなどが普及してきてこういうことをやる人が少なくなってしまったけどもったいないなーとおもう。</p>
+
+  </div>
+
+  <div class="meta">
+    by typester /
+    at <a href="/memo/2009/11/19/1/">2009-11-19T00:31:00</a> /
+    <a href="/memo/tag/web/">web</a>
+    &middot; <a href="/memo/tag/life/">life</a>
+    / <a href="/memo/2009/11/19/1/#disqus_thread">Comment</a>
+  </div>
+</div>
+
+
+
+
+<div id="pager" class="autopagerize_insert_before">
+  <p class="pages">
+    <span class="prev">&laquo; Prev</span>
+    <span class="current">1</span>
+    <a href="/memo/tag/life/page/2/">2</a>
+    <a href="/memo/tag/life/page/3/">3</a>
+    <a href="/memo/tag/life/page/4/">4</a>
+    <a href="/memo/tag/life/page/5/">5</a>
+    <a href="/memo/tag/life/page/6/">6</a>
+    <a href="/memo/tag/life/page/7/">7</a>
+    <a href="/memo/tag/life/page/8/">8</a>
+    <a href="/memo/tag/life/page/9/">9</a>
+    <a href="/memo/tag/life/page/10/">10</a>
+    <a class="next" rel="next" href="/memo/tag/life/page/2/">Next &raquo;</a>
+  </p>
+  <p class="info">(Page 1 of 120)</p>
+</div>
+
+
+</div>
+
+<p id="footer">
+  Copyright &copy; 2005-2013
+      by <a class="author" href="/about/#me">Daisuke Murase (typester)</a> /
+  Site generated by <a href="https://github.com/typester/nim">nim</a> /
+  Comments powered by <a href="http://disqus.com">DISQUS</a>.
+</p>
+
+</div>
+
+
+<script type="text/javascript">
+//<![CDATA[
+(function() {
+	var links = document.getElementsByTagName('a');
+	var query = '?';
+	for(var i = 0; i < links.length; i++) {
+	if(links[i].href.indexOf('#disqus_thread') >= 0) {
+		query += 'url' + i + '=' + encodeURIComponent(links[i].href) + '&';
+	}
+	}
+	document.write('<script charset="utf-8" type="text/javascript" src="http://disqus.com/forums/unknownplace/get_num_replies.js' + query + '"></' + 'script>');
+})();
+//]]>
+</script>
+
+
+<script type="text/javascript">
+var gaJsHost = (("https:" == document.location.protocol) ? "https://ssl." : "http://www.");
+document.write(unescape("%3Cscript src='" + gaJsHost + "google-analytics.com/ga.js' type='text/javascript'%3E%3C/script%3E"));
+</script>
+<script type="text/javascript">
+try {
+var pageTracker = _gat._getTracker("UA-53067-1");
+pageTracker._trackPageview();
+} catch(err) {}</script>
+
+<script>
+function googleTranslateElementInit() {
+  new google.translate.TranslateElement({
+    pageLanguage: 'ja',
+    gaTrack: true,
+    gaId: 'UA-53067',
+    floatPosition: google.translate.TranslateElement.FloatPosition.BOTTOM_RIGHT
+  });
+}
+</script><script src="//translate.google.com/translate_a/element.js?cb=googleTranslateElementInit"></script>
+
+</body>
+</html>

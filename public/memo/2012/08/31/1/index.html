@@ -1,0 +1,158 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="ja" xml:lang="ja">
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <title>最近の Module::Install で Travis るときの注意ポイント - unknownplace.org</title>
+  <link rel="stylesheet" type="text/css" href="http://yui.yahooapis.com/3.0.0/build/cssreset/reset-min.css" />
+  <link rel="stylesheet" type="text/css" href="http://yui.yahooapis.com/3.0.0/build/cssfonts/fonts-min.css" />
+  <link rel="stylesheet" href="/css/style.css" type="text/css" />
+  <meta property="fb:admins" content="1093631929" />
+  <link rel="alternate" type="application/rss+xml" href="http://unknownplace.org/memo/index.rss" />
+</head>
+<body>
+
+<div id="container">
+<div id="header">
+    <h1><a href="/">unknownplace.org</a></h1> /
+<a href="/memo/">memo</a>
+</div>
+
+<div id="content">
+<div class="entry autopagerize_page_element">
+  <h2><a href="/memo/2012/08/31/1/">最近の Module::Install で Travis るときの注意ポイント</a></h2>
+
+  <div class="body">
+    <p><a href="http://travis-ci.org/">Travis</a> は Github 連携の CI サービスで、結構前に Perl にも対応しているので最近更新したレポジトリには基本的に <code>.travis.yml</code> を置いて便利に使わせていただいていたのですが、 いままで使っていた設定だとtravis上でうまくテストが通らなくなってしまった。</p>
+<p>今まで使っていた方法は、まず <a href="http://d.hatena.ne.jp/gfx/20101101/1288608299">gfx 考案の Makefile.PL</a> をベースに Makefile.PL をこんなかんじで書く：</p>
+<pre><code><span class="keyword">use</span> <span class="function-name">strict</span>;
+<span class="keyword">use</span> <span class="function-name">warnings</span>;
+
+<span class="keyword">BEGIN</span> {
+    <span class="keyword">my</span> <span class="cperl-array">@devmods</span> = <span class="cperl-nonoverridable">qw</span><span class="string">(
+        Module::Install::AuthorTests
+        Module::Install::ReadmeFromPod
+        Module::Install::Repository
+    )</span>;
+    <span class="keyword">my</span> <span class="cperl-array">@not_available</span>;
+
+    <span class="keyword">eval</span> <span class="cperl-nonoverridable">qq</span><span class="string">{use inc::Module::Install; 1;}</span> <span class="type">or</span> <span class="cperl-nonoverridable">push</span> <span class="cperl-array">@not_available</span>, <span class="string">&apos;inc::Module::Install&apos;</span>;
+    <span class="keyword">for</span> <span class="keyword">my</span> <span class="variable-name">$mod</span> (<span class="cperl-array">@devmods</span>) {
+        <span class="keyword">eval</span> <span class="cperl-nonoverridable">qq</span><span class="string">{require $mod}</span> <span class="type">or</span> <span class="cperl-nonoverridable">push</span> <span class="cperl-array">@not_available</span>, $mod;
+    }
+    <span class="keyword">if</span> (<span class="cperl-array">@not_available</span>) {
+        <span class="cperl-nonoverridable">print</span> <span class="cperl-nonoverridable">qq</span><span class="string">{# The following modules are not available.\n}</span>;
+        <span class="cperl-nonoverridable">print</span> <span class="cperl-nonoverridable">qq</span><span class="string">{# `$^X $0 | cpanm` will install them:\n}</span>;
+        <span class="cperl-nonoverridable">print</span> $_, <span class="string">&quot;\n&quot;</span> <span class="keyword">for</span> <span class="cperl-array">@not_available</span>;
+        <span class="cperl-nonoverridable">print</span> <span class="string">&quot;\n&quot;</span>;
+        <span class="keyword">exit</span> -1;
+    }
+}
+
+<span class="keyword">use</span> <span class="function-name">inc::Module::Install</span>;
+
+name <span class="string">&apos;Test-RedisServer&apos;</span>;
+all_from <span class="string">&apos;lib/Test/RedisServer.pm&apos;</span>;
+
+test_requires <span class="string">&apos;Redis&apos;</span>;
+test_requires <span class="string">&apos;Test::More&apos;</span> =&gt; <span class="string">&apos;0.86&apos;</span>;
+test_requires <span class="string">&apos;Test::TCP&apos;</span>  =&gt; <span class="string">&apos;1.17&apos;</span>;
+
+requires <span class="string">&apos;perl&apos;</span>       =&gt; <span class="string">&apos;5.008001&apos;</span>;
+requires <span class="string">&apos;File::Temp&apos;</span> =&gt; <span class="string">&apos;0.19&apos;</span>; <span class="comment-delimiter"># </span><span class="comment">newdir
+</span>requires <span class="string">&apos;Any::Moose&apos;</span> =&gt; <span class="string">&apos;0.18&apos;</span>;
+
+readme_from <span class="string">&apos;lib/Test/RedisServer.pm&apos;</span>;
+author_tests <span class="string">&apos;xt&apos;</span>;
+auto_set_repository;
+
+WriteAll;
+</code></pre>
+<p>こうすると <code>perl Makefile.PL | cpanm</code> で必要な Module::Install モジュールが入るので、<code>.travis.yml</code> を</p>
+<pre><code><span class="constant">language</span>: <span class="string">"perl"</span>
+before_install:
+    - perl Makefile.PL | cpanm
+</code></pre>
+<p>こんな感じにするだけでOK。でした。前までは。</p>
+<p>.travis.yml はこのままでいいんですが、最近の Module::Install は <code>use inc::Module::Install</code> したときに</p>
+<pre><code>include /Users/typester/dev/Test-RedisServer/inc/Module/Install.pm
+</code></pre>
+<p>みたいのを標準出力に出力するので、それが cpanm に渡ってしまいおかしなことになっている模様。</p>
+<p>苦肉の策として</p>
+<pre><code>    {
+        <span class="keyword">local</span> <span class="variable-name">*STDOUT</span>;
+        <span class="keyword">eval</span> <span class="cperl-nonoverridable">qq</span><span class="string">{use inc::Module::Install; 1;}</span> <span class="type">or</span> <span class="cperl-nonoverridable">push</span> <span class="cperl-array">@not_available</span>, <span class="string">&apos;inc::Module::Install&apos;</span>;
+    }
+</code></pre>
+<p>みたいのを入れてしのいだ。</p>
+<p>最終的な Makefile.PL は<a href="https://github.com/typester/Test-RedisServer/blob/master/Makefile.PL">こちら</a>。 Travis のときは author_tests 走らないようにとかもしてある。</p>
+
+  </div>
+
+  <div class="meta">
+    by typester /
+    at <a href="/memo/2012/08/31/1/">2012-08-31T10:51:00</a> /
+    <a href="/memo/tag/perl/">perl</a>
+    &middot; <a href="/memo/tag/travis/">travis</a>
+    / <a href="/memo/2012/08/31/1/#disqus_thread">Comments(0)</a>
+  </div>
+</div>
+
+<div id="disqus_thread"></div>
+
+<script type="text/javascript">
+    var disqus_url = location.protocol + "//" + location.host + "/memo/2012/08/31/1/";
+</script>
+<script type="text/javascript" src="http://disqus.com/forums/unknownplace/embed.js"></script>
+
+</div>
+
+<p id="footer">
+  Copyright &copy; 2005-2013
+      by <a class="author" href="/about/#me">Daisuke Murase (typester)</a> /
+  Site generated by <a href="https://github.com/typester/nim">nim</a> /
+  Comments powered by <a href="http://disqus.com">DISQUS</a>.
+</p>
+
+</div>
+
+
+<script type="text/javascript">
+//<![CDATA[
+(function() {
+	var links = document.getElementsByTagName('a');
+	var query = '?';
+	for(var i = 0; i < links.length; i++) {
+	if(links[i].href.indexOf('#disqus_thread') >= 0) {
+		query += 'url' + i + '=' + encodeURIComponent(links[i].href) + '&';
+	}
+	}
+	document.write('<script charset="utf-8" type="text/javascript" src="http://disqus.com/forums/unknownplace/get_num_replies.js' + query + '"></' + 'script>');
+})();
+//]]>
+</script>
+
+
+<script type="text/javascript">
+var gaJsHost = (("https:" == document.location.protocol) ? "https://ssl." : "http://www.");
+document.write(unescape("%3Cscript src='" + gaJsHost + "google-analytics.com/ga.js' type='text/javascript'%3E%3C/script%3E"));
+</script>
+<script type="text/javascript">
+try {
+var pageTracker = _gat._getTracker("UA-53067-1");
+pageTracker._trackPageview();
+} catch(err) {}</script>
+
+<script>
+function googleTranslateElementInit() {
+  new google.translate.TranslateElement({
+    pageLanguage: 'ja',
+    gaTrack: true,
+    gaId: 'UA-53067',
+    floatPosition: google.translate.TranslateElement.FloatPosition.BOTTOM_RIGHT
+  });
+}
+</script><script src="//translate.google.com/translate_a/element.js?cb=googleTranslateElementInit"></script>
+
+</body>
+</html>

@@ -1,0 +1,512 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="ja" xml:lang="ja">
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <title>memo - unknownplace.org</title>
+  <link rel="stylesheet" type="text/css" href="http://yui.yahooapis.com/3.0.0/build/cssreset/reset-min.css" />
+  <link rel="stylesheet" type="text/css" href="http://yui.yahooapis.com/3.0.0/build/cssfonts/fonts-min.css" />
+  <link rel="stylesheet" href="/css/style.css" type="text/css" />
+  <meta property="fb:admins" content="1093631929" />
+  <meta name="robots" content="noindex" />
+  <link rel="alternate" type="application/rss+xml" href="http://unknownplace.org/memo/index.rss" />
+</head>
+<body>
+
+<div id="container">
+<div id="header">
+    <h1><a href="/">unknownplace.org</a></h1> /
+<a href="/memo/">memo</a>
+</div>
+
+<div id="content">
+
+<div class="entry autopagerize_page_element">
+  <h2><a href="/memo/2012/07/17/1/">Sub::Rateと言うのを書いた</a></h2>
+
+  <div class="body">
+    <blockquote><p><a href="https://metacpan.org/module/Sub::Rate">Sub::Rate - Rate based sub dispatcher generator - metacpan.org</a></p></blockquote>
+<p>確率に応じて処理を振り分けたいというような要件をカジュアルにクリアできる感じになっております。</p>
+<p>たとえばいわゆるガチャ的なものを考えたときに、</p>
+<pre><code><span class="keyword">my</span> <span class="variable-name">$rate</span> = Sub::Rate-&gt;new( <span class="string">max_rate</span> =&gt; 100 );
+
+$rate-&gt;add( 0.1, <span class="keyword">sub</span> { say <span class="string">&apos;Super rare&apos;</span> }); <span class="comment-delimiter"># </span><span class="comment">0.1 %
+</span>$rate-&gt;add( 3,   <span class="keyword">sub</span> { say <span class="string">&apos;Rare&apos;</span> });       <span class="comment-delimiter"># </span><span class="comment">3 %
+</span>
+$rate-&gt;add( <span class="string">default</span> =&gt; <span class="keyword">sub</span> { <span class="string">&apos;Normal&apos;</span> });   <span class="comment-delimiter"># </span><span class="comment">残り
+</span>
+<span class="keyword">my</span> <span class="variable-name">$func</span> = $rate-&gt;generate;
+</code></pre>
+<p>みたいな感じで関数を生成できて、この生成した <code>$func</code> は呼ぶと確率に応じて登録された関数を呼び出してくれる、というようなもの。</p>
+<p>母数となる数字（<code>max_rate</code>）をあらかじめ設定しておいて、そのうちどのくらいの率かというのを関数ごとに指定するインタフェースのモジュールが欲しかったんだけど見つけられなかったので。（検索ワードが悪いという説もある…）</p>
+
+  </div>
+
+  <div class="meta">
+    by typester /
+    at <a href="/memo/2012/07/17/1/">2012-07-17T20:11:00</a> /
+    <a href="/memo/tag/perl/">perl</a>
+    / <a href="/memo/2012/07/17/1/#disqus_thread">Comment</a>
+  </div>
+</div>
+
+<div class="entry autopagerize_page_element">
+  <h2><a href="/memo/2012/05/24/1/">AnyEvent でバックエンドに EV を使う時の注意</a></h2>
+
+  <div class="body">
+    <p>AnyEvent を利用する際に注意する必要があることに、コールバック中で発生した例外の処理方法がバックエンドに任されている（＝例外処理の方法がバックエンドによってちがう）、というのが挙げられる。</p>
+<p><code>Impl::Perl</code> では例外は単純に rethrow されるため、プログラム中で例外が発生したり <code>die</code> したりすると普通にプロセスは終了する。 しかし、<code>Impl::EV</code> の場合、デフォルトでは例外はキャッチされ標準エラーに出力されるものの、そのまま処理は続行されてしまう。</p>
+<p>以下のような1秒タイマーをまわしてタイマーが発火したらアプリを終了する、というようなコードがあったとき、</p>
+<pre><code><span class="keyword">use</span> <span class="function-name">strict</span>;
+<span class="keyword">use</span> <span class="function-name">warnings</span>;
+
+<span class="keyword">use</span> <span class="function-name">AnyEvent</span>;
+
+<span class="keyword">my</span> <span class="variable-name">$cv</span> = AnyEvent-&gt;condvar;
+
+<span class="keyword">my</span> <span class="variable-name">$t</span>; $t = AnyEvent-&gt;timer(
+    <span class="string">after</span> =&gt; 1,
+    <span class="string">cb</span>    =&gt; <span class="keyword">sub</span> {
+        <span class="cperl-nonoverridable">undef</span> $t;
+
+        <span class="keyword">die</span>;
+
+        $cv-&gt;<span class="type">send</span>;
+    },
+);
+
+<span class="cperl-nonoverridable">print</span> <span class="string">&quot;Backend: &quot;</span>, AnyEvent::detect(), <span class="string">&quot;\n&quot;</span>;
+
+$cv-&gt;<span class="type">recv</span>;
+</code></pre>
+<p><code>Impl::Perl</code> な環境ではこれは期待通り動作するが、<code>Impl::EV</code> の場合は刺さってしまう。</p>
+<p>例外が起きてもそのまま継続する、というのがデフォルト動作なのはどういうわけなのかよくわからないが、手元で <code>Impl::Perl</code> で開発していて本番で <code>Impl::EV</code> とかで動かすとこの違いによってはまることはかなりありそう。</p>
+<p>この挙動を変えるためには EV の例外処理を上書きするようにすれば良い。 AnyEvent では <code>post_detect</code> というものでバックエンドモジュールが決まったときのフックを差し込める。それをつかって、</p>
+<pre><code>AnyEvent::post_detect {
+    <span class="keyword">if</span> ($AnyEvent::MODEL <span class="type">eq</span> <span class="string">&apos;AnyEvent::Impl::EV&apos;</span>) {
+        <span class="cperl-nonoverridable">no</span> <span class="function-name">warnings</span> <span class="string">&apos;once&apos;</span>;
+        $EV::DIED = <span class="keyword">sub</span> { $cv-&gt;croak($@) };
+    }
+};
+</code></pre>
+<p>このようなコードを入れておけばまぁいいんだとおもう。EV のドキュメントにも書かれているが、<code>$EV::DIED</code> で例外処理を上書きすることはできるのだが、この関数内で発生した例外は無視するそうなので（これどうなのｗ）、例外を rethrow するというようなことはできない。なのでこのようにどっかに condvar を置いておいてそれの <code>croak</code> を呼ぶというようなことをする必要がある。</p>
+<p>See also:</p>
+<blockquote><ul><li><a href="http://search.cpan.org/~mlehmann/AnyEvent/lib/AnyEvent.pm#ERROR_AND_EXCEPTION_HANDLING">AnyEventドキュメント、ERROR AND EXCEPTION HANDLING の項</a></li><li><a href="http://search.cpan.org/~mlehmann/EV/EV.pm#BASIC_INTERFACE">EVドキュメント、$EV::DIED</a></li></ul></blockquote>
+
+  </div>
+
+  <div class="meta">
+    by typester /
+    at <a href="/memo/2012/05/24/1/">2012-05-24T09:01:00</a> /
+    <a href="/memo/tag/perl/">perl</a>
+    &middot; <a href="/memo/tag/anyevent/">anyevent</a>
+    / <a href="/memo/2012/05/24/1/#disqus_thread">Comment</a>
+  </div>
+</div>
+
+<div class="entry autopagerize_page_element">
+  <h2><a href="/memo/2012/05/23/1/">最近の Mac での EV モジュールの入れ方</a></h2>
+
+  <div class="body">
+    <p>Xcode4.2くらい（？） からデフォルトになった <code>clang</code> だとビルドがこけるので、</p>
+<pre><code>$ perl Makefile.PL CC=gcc
+</code></pre>
+<p>などとして <code>gcc</code> でビルドするようにすれば普通に入ります。</p>
+
+  </div>
+
+  <div class="meta">
+    by typester /
+    at <a href="/memo/2012/05/23/1/">2012-05-23T13:11:00</a> /
+    <a href="/memo/tag/perl/">perl</a>
+    / <a href="/memo/2012/05/23/1/#disqus_thread">Comment</a>
+  </div>
+</div>
+
+<div class="entry autopagerize_page_element">
+  <h2><a href="/memo/2012/04/03/1/">CoffeeScript</a></h2>
+
+  <div class="body">
+    <blockquote><p><a href="http://subtech.g.hatena.ne.jp/cho45/20120402/1333366338">なぜ CoffeeScript がダメか - 冬通りに消え行く制服ガールは✖夢物語にリアルを求めない。 - subtech</a></p></blockquote>
+<p>僕の考えでは JavaScript ネイティブでない（けれど非同期プログラミングやネットワークの知識はある）人が、Node.js を使ってネットワークアプリケーションを書くという用途では結構使えると思う。</p>
+<p>デバッグしづらいという点も Node と組み合わせる前提で考えれば <code>coffee</code> コマンドで直接実行すればいい話である。</p>
+<p>また僕自身も小さなネットワークアプリケーションは最近は CoffeeScript で書いてて、<a href="http://d.hatena.ne.jp/sfujiwara/">fujiwara</a> 氏などにメンテしてもらっているけれど、やはり彼も僕と同じようなスキル（JavaScriptネイティブでない）だから、そういう人が見て大体なんとなく理解できるものになってると感じる。</p>
+<p>これがもし、AnyEvent で書いたコードだったらそうはいかなかっただろうなーとw</p>
+
+  </div>
+
+  <div class="meta">
+    by typester /
+    at <a href="/memo/2012/04/03/1/">2012-04-03T10:07:00</a> /
+    <a href="/memo/tag/coffeescript/">coffeescript</a>
+    &middot; <a href="/memo/tag/perl/">perl</a>
+    / <a href="/memo/2012/04/03/1/#disqus_thread">Comment</a>
+  </div>
+</div>
+
+<div class="entry autopagerize_page_element">
+  <h2><a href="/memo/2011/12/15/1/">Cocoa::Skype とか</a></h2>
+
+  <div class="body">
+    <p>Cocoa:: なんちゃらでほしいものを聞いていたときにも挙がっていた Cocoa::Skype だけど、その昔<a href="http://coderepos.org/share/wiki/Skype4IRC">Skype4COMを使った記憶</a>があって、SkypeAPI のバインディング書くのはめんどそうな印象だったのだが、 今日 Skype.framework のヘッダファイルみたら、</p>
+<pre><code>#import &lt;Cocoa/Cocoa.h&gt;
+
+@protocol SkypeAPIDelegate;
+
+@interface SkypeAPI : NSObject 
+{
+
+}
+
++ (BOOL)isSkypeRunning;             
++ (BOOL)isSkypeAvailable;       // You can only connect and send commands when this method returns YES.
+                                // For example, when Skype is running, but user is logged out, then it returns NO.
+
++ (void)setSkypeDelegate:(NSObject&lt;SkypeAPIDelegate&gt;*)aDelegate;
++ (NSObject&lt;SkypeAPIDelegate&gt;*)skypeDelegate;
++ (void)removeSkypeDelegate;
+
++ (void)connect;
++ (void)disconnect;
+
++ (void)sendSkypeCommand:(NSString*)aCommandString;
+@end
+
+
+// delegate protocol
+@protocol SkypeAPIDelegate
+- (NSString*)clientApplicationName;
+@end
+
+// delegate informal protocol
+@interface NSObject (SkypeAPIDelegateInformalProtocol)
+- (void)skypeNotificationReceived:(NSString*)aNotificationString;
+- (void)skypeAttachResponse:(unsigned)aAttachResponseCode;              // 0 - failed, 1 - success
+- (void)skypeBecameAvailable:(NSNotification*)aNotification;
+- (void)skypeBecameUnavailable:(NSNotification*)aNotification;
+@end
+</code></pre>
+<p>と想像以上に短く、これならすぐバインディング書けそうだなーということで気分転換もかねてPerlバインディングをつくってみた。</p>
+<blockquote><p><a href="https://github.com/typester/Cocoa-Skype">typester/Cocoa-Skype - GitHub</a></p></blockquote>
+<p>使い方は付属の example を参照のこと。 Skype.framework の機能は全部つけてある。 Perl サイドのメソッド名とかはまだ変更するかもしれない。暇なときにドキュメントつけてリリースしよう。</p>
+
+  </div>
+
+  <div class="meta">
+    by typester /
+    at <a href="/memo/2011/12/15/1/">2011-12-15T22:52:00</a> /
+    <a href="/memo/tag/perl/">perl</a>
+    &middot; <a href="/memo/tag/skype/">skype</a>
+    &middot; <a href="/memo/tag/osx/">osx</a>
+    / <a href="/memo/2011/12/15/1/#disqus_thread">Comment</a>
+  </div>
+</div>
+
+<div class="entry autopagerize_page_element">
+  <h2><a href="/memo/2011/12/01/1/">libuv の Perl バインディング</a></h2>
+
+  <div class="body">
+    <p>気分転換プロジェクトとして、<a href="https://github.com/joyent/libuv">libuv</a>のPerlバインディングを書いている。</p>
+<blockquote><p><a href="https://github.com/typester/p5-UV">typester/p5-UV - GitHub</a></p></blockquote>
+<p>現状、timerとtcp周りを一通り実装したところ。</p>
+<p>実装は愚直にlibuvの関数とperlの関数を1:1に（<code>uv_tcp_init(...)</code>を<code>UV::tcp_init(...)</code>というような形で）マッピングしている。 この実装はlow level APIと位置づけ、その上に使いやすい高レベルなインタフェースをPerl上で用意したいつもり。</p>
+<p>このlow level APIをつかったTCP echo serverはこんな感じになる:</p>
+<pre><code><span class="keyword">use</span> <span class="function-name">strict</span>;
+<span class="keyword">use</span> <span class="function-name">warnings</span>;
+
+<span class="keyword">use</span> <span class="function-name">UV</span>;
+
+<span class="keyword">my</span> <span class="variable-name">$server</span> = UV::tcp_init();
+UV::tcp_bind($server, <span class="string">&apos;0.0.0.0&apos;</span>, 3000)
+    &amp;&amp; <span class="keyword">die</span> <span class="string">&apos;bind error: &apos;</span>, UV::strerror(UV::last_error());
+
+UV::<span class="type">listen</span>($server, 10, <span class="keyword">sub</span> {
+    <span class="keyword">my</span> <span class="variable-name">$client</span> = UV::tcp_init();
+    UV::<span class="type">accept</span>($server, $client) &amp;&amp; <span class="keyword">die</span> <span class="string">&apos;accept failed: &apos;</span>, UV::strerror(UV::last_error());
+
+    UV::read_start($client, <span class="keyword">sub</span> {
+        <span class="keyword">my</span> (<span class="variable-name">$nread</span>, <span class="variable-name">$buf</span>) = <span class="cperl-array">@_</span>;
+
+        <span class="keyword">if</span> ($nread &lt; 0) {
+            <span class="keyword">my</span> <span class="variable-name">$err</span> = UV::last_error();
+            <span class="keyword">if</span> ($err <span class="negation-char">!</span>= UV::EOF) {
+                <span class="type">warn</span> <span class="string">&apos;client read error: &apos;</span>, UV::strerror($err);
+            }
+            UV::<span class="type">close</span>($client);
+        }
+        <span class="keyword">elsif</span> ($nread == 0) {
+            <span class="comment-delimiter"># </span><span class="comment">nothing to read
+</span>        }
+        <span class="keyword">else</span> {
+            UV::<span class="type">write</span>($client, $buf, <span class="keyword">sub</span> {
+                <span class="keyword">my</span> (<span class="variable-name">$status</span>) = <span class="cperl-array">@_</span>;
+
+                <span class="keyword">if</span> ($status) {
+                    <span class="type">warn</span> <span class="string">&apos;client write error: &apos;</span>, UV::strerror(UV::last_error());
+                    UV::<span class="type">close</span>($client);
+                }
+            });
+        }
+    });
+
+}) &amp;&amp; <span class="keyword">die</span> <span class="string">&apos;listen error: &apos;</span>, UV::strerror(UV::last_error());
+
+UV::run();
+</code></pre>
+<p>見てわかるようにperlモジュールとしての使いかってはわるいが、libuvを使い慣れた人なら迷いなく使うことが出来るようになっている。 これは僕にとっては発見だった。</p>
+<p>また、このサンプルをみてもわかるように<code>listen</code>とか<code>accept</code>とかまでラップしている関係上、libuvをAnyEventのバックエンドとしてつかうのは現状は無理そう。</p>
+<p>libuv自体はWindowsでも動くはずだが、メインマシンをAirにして以来Windows環境を仮想環境でも持ち歩いていないため確認できていない。 Windows対応してくれる人募集！</p>
+<p>開発を始めるためのステップ：</p>
+<pre><code>$ cpanm Module::Install
+$ cpanm Module::Install::XSUtil
+
+$ git clone git://github.com/typester/p5-UV.git
+$ cd p5-UV
+$ git submodule update --init
+$ perl Makefile.PL
+$ make
+$ make test
+</code></pre>
+
+  </div>
+
+  <div class="meta">
+    by typester /
+    at <a href="/memo/2011/12/01/1/">2011-12-01T11:38:00</a> /
+    <a href="/memo/tag/perl/">perl</a>
+    &middot; <a href="/memo/tag/libuv/">libuv</a>
+    / <a href="/memo/2011/12/01/1/#disqus_thread">Comment</a>
+  </div>
+</div>
+
+<div class="entry autopagerize_page_element">
+  <h2><a href="/memo/2011/10/17/1/">YAPC::Asia 2011</a></h2>
+
+  <div class="body">
+    <p>なんだか今年は身内の訃報がかさなったりして、フル参戦できなかったのですが、少しでも行くとモチベーションが上がるのが YAPC ですね。</p>
+<h3>Hacking Mac OS X Cocoa API from Perl</h3>
+<div id="__ss_9725345" style="width:425px"><strong style="display:block;margin:12px 0 4px"><a href="http://www.slideshare.net/typester/hacking-mac-osx-cocoa-api-from-perl" title="Hacking Mac OSX Cocoa API from Perl">Hacking Mac OSX Cocoa API from Perl</a></strong><object height="355" id="__sse9725345" width="425"><param name="movie" value="http://static.slidesharecdn.com/swf/ssplayer2.swf?doc=yapcasia2011-hacking-macosx-cocoa-from-perl-111016225106-phpapp02&amp;stripped_title=hacking-mac-osx-cocoa-api-from-perl&amp;userName=typester" /><param name="allowFullScreen" value="true" /><param name="allowScriptAccess" value="always" /><embed allowfullscreen="true" allowscriptaccess="always" height="355" name="__sse9725345" src="http://static.slidesharecdn.com/swf/ssplayer2.swf?doc=yapcasia2011-hacking-macosx-cocoa-from-perl-111016225106-phpapp02&amp;stripped_title=hacking-mac-osx-cocoa-api-from-perl&amp;userName=typester" type="application/x-shockwave-flash" width="425" /></object><div style="padding:5px 0 12px">View more <a href="http://www.slideshare.net/">presentations</a> from <a href="http://www.slideshare.net/typester">typester</a>.</div></div>
+<p>っていうニッチな発表をしました。補足エントリーは別でかきます。</p>
+<p>あと、発表中に似非XSっていう言葉を使ってたんだけど、以外とこの方法で XS 入門するってのはあるなーっておもっているのでいつか（Advent Calendarとか？）まとめたいところ。</p>
+<h3>感想</h3>
+<p>見たかったトークの大部分を見ることができず、懇親会にも出られず、だいぶ不完全燃焼ではあるのですが、見ることができた gdb のトークや、組み込みPerlの話、あとたまたま通りがかったmotemenのトークがとてもおもしろかったです！</p>
+<p>motemen さんのは普通にメインであってもだいぶおもしろかったとおもうけど、たぶんこれはトークの応募の際の説明とかがだめだったんだろうなと予想！</p>
+
+  </div>
+
+  <div class="meta">
+    by typester /
+    at <a href="/memo/2011/10/17/1/">2011-10-17T12:45:00</a> /
+    <a href="/memo/tag/perl/">perl</a>
+    &middot; <a href="/memo/tag/yapcasia/">yapcasia</a>
+    / <a href="/memo/2011/10/17/1/#disqus_thread">Comment</a>
+  </div>
+</div>
+
+<div class="entry autopagerize_page_element">
+  <h2><a href="/memo/2011/07/27/2/">Lion の /usr/bin/perl とその設定</a></h2>
+
+  <div class="body">
+    <blockquote><p><a href="http://twitter.com/kazuho/status/96099885094412288">http://twitter.com/kazuho/status/96099885094412288</a></p><p>@kazuho: /usr/bin/perl は defaults を見て設定されたバージョンの perl を exec するラッパーじゃないかな</p></blockquote>
+<p>ということで、man 引いてみたらそう言うようなことが書いてありました。kazuho++</p>
+<p>これはじめてしったんですが、 OSX の perl コマンドは <code>defaults</code> や環境変数によって実行バージョンやアーキテクチャを変更できるらしい。</p>
+<pre><code>$ defaults write com.apple.versioner.perl Version 5.10
+</code></pre>
+<p>とすれば 5.10 がデフォルトになったり、</p>
+<pre><code>$ defaults write com.apple.versioner.perl Prefer-32-Bit -bool yes
+</code></pre>
+<p>とかすればさっき<a href="http://unknownplace.org/memo/2011/07/27/1/">意味ないって書いた</a>32bit版のバイナリをつかうようになるみたい。</p>
+<p>環境変数でも設定できたり、ユーザーレベルじゃなくシステムレベルでも設定できるようです。詳しくは <code>man perl</code> してみてください。</p>
+
+  </div>
+
+  <div class="meta">
+    by typester /
+    at <a href="/memo/2011/07/27/2/">2011-07-27T15:21:00</a> /
+    <a href="/memo/tag/osx/">osx</a>
+    &middot; <a href="/memo/tag/perl/">perl</a>
+    / <a href="/memo/2011/07/27/2/#disqus_thread">Comment</a>
+  </div>
+</div>
+
+<div class="entry autopagerize_page_element">
+  <h2><a href="/memo/2011/07/27/1/">Lion の Perl とアーキテクチャ</a></h2>
+
+  <div class="body">
+    <p><a href="http://unknownplace.org/memo/2010/01/08/1/">Snow Leopard の Perl とアーキテクチャ</a> の Lion 版。</p>
+<p>インストールされてるPerlは3つ:</p>
+<pre><code>/usr/bin/perl
+This is perl 5, version 12, subversion 3 (v5.12.3) built for darwin-thread-multi-2level
+
+/usr/bin/perl5.12
+This is perl 5, version 12, subversion 3 (v5.12.3) built for darwin-thread-multi-2level
+
+/usr/bin/perl5.10
+This is perl, v5.10.1 (*) built for darwin-thread-multi-2level
+</code></pre>
+<p><code>/usr/bin/perl</code> と <code>/usr/bin/perl5.12</code> は同じかと思いきやサイズがだいぶ違う。といっても <code>perl -V</code> の出力は全く同じでなぞだが…。(i386の方のバイナリが違うのかもしれない)</p>
+<p>それぞれユニバーサルバイナリとなっていて、</p>
+<pre><code>$ file /usr/bin/perl
+/usr/bin/perl: Mach-O universal binary with 2 architectures
+/usr/bin/perl (for architecture x86_64):        Mach-O 64-bit executable x86_64
+/usr/bin/perl (for architecture i386):  Mach-O executable i386
+
+$ file /usr/bin/perl5.12
+/usr/bin/perl5.12: Mach-O universal binary with 2 architectures
+/usr/bin/perl5.12 (for architecture x86_64):    Mach-O 64-bit executable x86_64
+/usr/bin/perl5.12 (for architecture i386):      Mach-O executable i386
+
+$ file /usr/bin/perl5.10
+/usr/bin/perl5.10: Mach-O universal binary with 2 architectures
+/usr/bin/perl5.10 (for architecture x86_64):    Mach-O 64-bit executable x86_64
+/usr/bin/perl5.10 (for architecture i386):      Mach-O executable i386
+</code></pre>
+<p>という感じで、Snow Leopard の時と違ってアーキテクチャは統一されている。 ppc は完全に切り捨てられてますね。現状 64bit 対応していない CPU では Lion のインストールできないとおもうので i386 バイナリもあまりついている意味はないと思うが…。</p>
+<p>また Snow Leopard のときは <code>/usr/bin/perl5.8.9</code> などとフルバーション表記のバイナリだったが、<code>5.12</code> とかいうバイナリになっているのでもしかしたらソフトウェアアップデートでバージョンをあげることも考えているのかもしれない。</p>
+<h3>追記</h3>
+<p><code>/usr/bin/perl</code> について指摘があり追記しました。</p>
+<blockquote><p><a href="http://unknownplace.org/memo/2011/07/27/2/">Lion の /usr/bin/perl とその設定</a></p></blockquote>
+
+  </div>
+
+  <div class="meta">
+    by typester /
+    at <a href="/memo/2011/07/27/1/">2011-07-27T13:41:00</a> /
+    <a href="/memo/tag/perl/">perl</a>
+    &middot; <a href="/memo/tag/osx/">osx</a>
+    / <a href="/memo/2011/07/27/1/#disqus_thread">Comment</a>
+  </div>
+</div>
+
+<div class="entry autopagerize_page_element">
+  <h2><a href="/memo/2011/01/04/2/">Cocoa::EventLoop</a></h2>
+
+  <div class="body">
+    <p>そういえば <a href="http://search.cpan.org/dist/Cocoa-EventLoop/">Cocoa::EventLoop</a> と言うモジュールを書いたんでした。</p>
+<p>これはもともと AnyEvent::Impl::NSRunLoop として書いていたイベントループ処理部分だけを単体モジュールとして切り出した物で、 AnyEvent を使わなくても Cocoa のイベントループを Perl から使用できるというものです。</p>
+<p>くわしくはドキュメントを参照してもらうとして、Cocoa::Growl を使ったサンプルを載せてみます：</p>
+<pre><code><span class="keyword">use</span> <span class="function-name">Cocoa::EventLoop</span>;
+<span class="keyword">use</span> <span class="function-name">Cocoa::Growl</span>;
+
+<span class="keyword">my</span> <span class="variable-name">$done</span> = 0;
+growl_notify(
+    <span class="string">name</span>        =&gt; <span class="string">&apos;Notification Name&apos;</span>,
+    <span class="string">title</span>       =&gt; <span class="string">&apos;Hello&apos;</span>,
+    <span class="string">description</span> =&gt; <span class="string">&apos;Cocoa World!&apos;</span>,
+    <span class="string">on_click</span>    =&gt; <span class="keyword">sub</span> {
+        $done++;
+    },
+    <span class="string">on_timeout</span> =&gt; <span class="keyword">sub</span> {
+        $done++;
+    },
+);
+
+Cocoa::EventLoop-&gt;run_while(0.1) <span class="keyword">while</span> <span class="negation-char">!</span>$done;
+</code></pre>
+<p>これを AnyEvent で書くと：</p>
+<pre><code><span class="keyword">use</span> <span class="function-name">AnyEvent</span> 5.30;
+<span class="keyword">use</span> <span class="function-name">Cocoa::EventLoop</span>;
+<span class="keyword">use</span> <span class="function-name">Cocoa::Growl</span>;
+
+<span class="keyword">my</span> <span class="variable-name">$cv</span> = AnyEvent-&gt;condvar;
+growl_notify(
+    <span class="string">name</span>        =&gt; <span class="string">&apos;Notification Name&apos;</span>,
+    <span class="string">title</span>       =&gt; <span class="string">&apos;Hello&apos;</span>,
+    <span class="string">description</span> =&gt; <span class="string">&apos;Cocoa World!&apos;</span>,
+    <span class="string">on_click</span>    =&gt; <span class="keyword">sub</span> {
+        $cv-&gt;<span class="type">send</span>;
+    },
+    <span class="string">on_timeout</span> =&gt; <span class="keyword">sub</span> {
+        $cv-&gt;<span class="type">send</span>;
+    },
+);
+
+$cv-&gt;<span class="type">recv</span>;
+</code></pre>
+<p>ほぼ一緒ですね。 また、この例ではわからないですがtimerやioのインタフェースもAnyEventに合わせてあるのでほとんど同じ感じで使うことができます。</p>
+<p>ただまぁ、AnyEventには豊富なライブラリがあるため、上記のGrowlのサンプル以上に複雑なことをする場合は素直にAnyEventを使うのがいいかと思います。</p>
+
+  </div>
+
+  <div class="meta">
+    by typester /
+    at <a href="/memo/2011/01/04/2/">2011-01-04T10:30:00</a> /
+    <a href="/memo/tag/perl/">perl</a>
+    &middot; <a href="/memo/tag/osx/">osx</a>
+    / <a href="/memo/2011/01/04/2/#disqus_thread">Comment</a>
+  </div>
+</div>
+
+
+
+
+<div id="pager" class="autopagerize_insert_before">
+  <p class="pages">
+    <a class="prev" rel="previous" href="/memo/tag/perl/">&laquo; Prev</a>
+    <a href="/memo/tag/perl/">1</a>
+    <span class="current">2</span>
+    <a href="/memo/tag/perl/page/3/">3</a>
+    <a href="/memo/tag/perl/page/4/">4</a>
+    <a href="/memo/tag/perl/page/5/">5</a>
+    <a href="/memo/tag/perl/page/6/">6</a>
+    <a href="/memo/tag/perl/page/7/">7</a>
+    <a href="/memo/tag/perl/page/8/">8</a>
+    <a href="/memo/tag/perl/page/9/">9</a>
+    <a href="/memo/tag/perl/page/10/">10</a>
+    <a class="next" rel="next" href="/memo/tag/perl/page/3/">Next &raquo;</a>
+  </p>
+  <p class="info">(Page 2 of 30)</p>
+</div>
+
+
+</div>
+
+<p id="footer">
+  Copyright &copy; 2005-2013
+      by <a class="author" href="/about/#me">Daisuke Murase (typester)</a> /
+  Site generated by <a href="https://github.com/typester/nim">nim</a> /
+  Comments powered by <a href="http://disqus.com">DISQUS</a>.
+</p>
+
+</div>
+
+
+<script type="text/javascript">
+//<![CDATA[
+(function() {
+	var links = document.getElementsByTagName('a');
+	var query = '?';
+	for(var i = 0; i < links.length; i++) {
+	if(links[i].href.indexOf('#disqus_thread') >= 0) {
+		query += 'url' + i + '=' + encodeURIComponent(links[i].href) + '&';
+	}
+	}
+	document.write('<script charset="utf-8" type="text/javascript" src="http://disqus.com/forums/unknownplace/get_num_replies.js' + query + '"></' + 'script>');
+})();
+//]]>
+</script>
+
+
+<script type="text/javascript">
+var gaJsHost = (("https:" == document.location.protocol) ? "https://ssl." : "http://www.");
+document.write(unescape("%3Cscript src='" + gaJsHost + "google-analytics.com/ga.js' type='text/javascript'%3E%3C/script%3E"));
+</script>
+<script type="text/javascript">
+try {
+var pageTracker = _gat._getTracker("UA-53067-1");
+pageTracker._trackPageview();
+} catch(err) {}</script>
+
+<script>
+function googleTranslateElementInit() {
+  new google.translate.TranslateElement({
+    pageLanguage: 'ja',
+    gaTrack: true,
+    gaId: 'UA-53067',
+    floatPosition: google.translate.TranslateElement.FloatPosition.BOTTOM_RIGHT
+  });
+}
+</script><script src="//translate.google.com/translate_a/element.js?cb=googleTranslateElementInit"></script>
+
+</body>
+</html>

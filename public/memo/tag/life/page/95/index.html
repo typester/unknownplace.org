@@ -1,0 +1,308 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="ja" xml:lang="ja">
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <title>memo - unknownplace.org</title>
+  <link rel="stylesheet" type="text/css" href="http://yui.yahooapis.com/3.0.0/build/cssreset/reset-min.css" />
+  <link rel="stylesheet" type="text/css" href="http://yui.yahooapis.com/3.0.0/build/cssfonts/fonts-min.css" />
+  <link rel="stylesheet" href="/css/style.css" type="text/css" />
+  <meta property="fb:admins" content="1093631929" />
+  <meta name="robots" content="noindex" />
+  <link rel="alternate" type="application/rss+xml" href="http://unknownplace.org/memo/index.rss" />
+</head>
+<body>
+
+<div id="container">
+<div id="header">
+    <h1><a href="/">unknownplace.org</a></h1> /
+<a href="/memo/">memo</a>
+</div>
+
+<div id="content">
+
+<div class="entry autopagerize_page_element">
+  <h2><a href="/memo/2005/12/31/2/">helper</a></h2>
+
+  <div class="body">
+    <p><strong>PACKAGE</strong>-&gt;config( name =&gt; &apos;AdminPage&apos;,</p>
+<pre><code>    <span class="nxml-text">authentication =&gt; {
+        dbic =&gt; {
+            user_class         =&gt; &apos;AdminPage::Model::DBIC::Account&apos;,
+            user_field         =&gt; &apos;username&apos;,
+            password_field     =&gt; &apos;password&apos;,
+            password_type      =&gt; &apos;hashed&apos;,
+            password_hash_type =&gt; &apos;MD5&apos;,
+        },
+    },
+
+    authorization =&gt; {
+        dbic =&gt; {
+            role_class           =&gt; &apos;AdminPage::Model::DBIC::Role&apos;,
+            role_field           =&gt; &apos;role&apos;,
+            role_rel             =&gt; &apos;map_account_role&apos;,
+            user_role_user_field =&gt; &apos;account&apos;,
+        },
+    },
+
+    session =&gt; {
+        expires =&gt; 3600 * 14,
+        storage =&gt; __PACKAGE__-&gt;path_to( &apos;session&apos;, &apos;session&apos; )-&gt;stringify,
+        cookie_name =&gt; &apos;ap_sid&apos;,
+    },
+
+    validator =&gt; {
+        plugins        =&gt; [qw/DBIC::Unique/],
+        options        =&gt; { dbic_base_class =&gt; &apos;AdminPage::Model::DBIC&apos;, },
+        messages       =&gt; __PACKAGE__-&gt;path_to(&apos;validator.yml&apos;)-&gt;stringify,
+        message_format =&gt; qq{</span><span class="nxml-tag-delimiter">&lt;</span><span class="nxml-element-local-name">span</span> <span class="nxml-attribute-local-name">class</span>=<span class="nxml-attribute-value-delimiter">&quot;</span><span class="nxml-attribute-value">error</span><span class="nxml-attribute-value-delimiter">&quot;</span><span class="nxml-tag-delimiter">&gt;</span><span class="nxml-text">%s</span><span class="nxml-tag-delimiter">&lt;</span><span class="nxml-tag-slash">/</span><span class="nxml-element-local-name">span</span><span class="nxml-tag-delimiter">&gt;</span><span class="nxml-text">},
+    },
+
+    &apos;View::TT&apos; =&gt; {
+        CONTEXT     =&gt; undef,
+        PRE_PROCESS =&gt; &apos;inc/macro.tt&apos;,
+    },
+);
+</span></code></pre>
+<p>こんな config をちょくちょく書くんだけど、いまいちうまくヘルパーつくれなくてめんどいのよね。ううう。</p>
+<p>なんつか、もうちょいアプリかかないとどこが共通でどこが変わるかとかがうまくわからんよ。パターん</p>
+
+  </div>
+
+  <div class="meta">
+    by typester /
+    at <a href="/memo/2005/12/31/2/">2005-12-31T04:53:00</a> /
+    <a href="/memo/tag/life/">life</a>
+    &middot; <a href="/memo/tag/perl/">perl</a>
+    / <a href="/memo/2005/12/31/2/#disqus_thread">Comment</a>
+  </div>
+</div>
+
+<div class="entry autopagerize_page_element">
+  <h2><a href="/memo/2005/12/31/1/">SUPER MARIOBROS</a></h2>
+
+  <div class="body">
+    <p>貸してもらった！</p>
+<p>やべー、こんなむずかったっけ。Bダッシュむずい。</p>
+
+  </div>
+
+  <div class="meta">
+    by typester /
+    at <a href="/memo/2005/12/31/1/">2005-12-31T00:56:00</a> /
+    <a href="/memo/tag/life/">life</a>
+    / <a href="/memo/2005/12/31/1/#disqus_thread">Comment</a>
+  </div>
+</div>
+
+<div class="entry autopagerize_page_element">
+  <h2><a href="/memo/2005/12/30/5/">ツメ仕事</a></h2>
+
+  <div class="body">
+    <p><a href="http://www.formassembly.com/time-tracker/">Time Tracker</a> 良いね。</p>
+<p>これ社内用に共有というか他人の見えるやつ作ったら楽しそうだ。</p>
+
+  </div>
+
+  <div class="meta">
+    by typester /
+    at <a href="/memo/2005/12/30/5/">2005-12-30T21:16:00</a> /
+    <a href="/memo/tag/life/">life</a>
+    / <a href="/memo/2005/12/30/5/#disqus_thread">Comment</a>
+  </div>
+</div>
+
+<div class="entry autopagerize_page_element">
+  <h2><a href="/memo/2005/12/30/3/"></a></h2>
+
+  <div class="body">
+    <p>Bloglines にもう補足されてる。はや。。</p>
+
+  </div>
+
+  <div class="meta">
+    by typester /
+    at <a href="/memo/2005/12/30/3/">2005-12-30T12:48:00</a> /
+    <a href="/memo/tag/life/">life</a>
+    / <a href="/memo/2005/12/30/3/#disqus_thread">Comment</a>
+  </div>
+</div>
+
+<div class="entry autopagerize_page_element">
+  <h2><a href="/memo/2005/12/30/2/">applied</a></h2>
+
+  <div class="body">
+    <p>tokuhiro のひとから要望パッチきてたので<a href="http://dev.unknownplace.org/public/changeset/196" title="[196] (changeset) - Public Projects - Trac">適用</a>。サンクス！</p>
+
+  </div>
+
+  <div class="meta">
+    by typester /
+    at <a href="/memo/2005/12/30/2/">2005-12-30T12:43:00</a> /
+    <a href="/memo/tag/life/">life</a>
+    / <a href="/memo/2005/12/30/2/#disqus_thread">Comment</a>
+  </div>
+</div>
+
+<div class="entry autopagerize_page_element">
+  <h2><a href="/memo/2005/12/30/1/">screen とスクロール</a></h2>
+
+  <div class="body">
+    <ol><li>screen導入したて、画面ロールバックできなくてこまる</li><li>コピーモードを覚える、が使いにくいと思う</li><li>PuTTY の Alternate 端末画面への切り替えを無効にするのオプションを知る。便利ジャン！</li><li>徐々にコピーモードしか使わなくなる。</li><li>スクロールバーが邪魔になり、スクロールバーを表示しなくなり、コピーモードのみになる。(←いまここ</li></ol>
+<p>この後どうなるんでしょうか。</p>
+
+  </div>
+
+  <div class="meta">
+    by typester /
+    at <a href="/memo/2005/12/30/1/">2005-12-30T01:58:00</a> /
+    <a href="/memo/tag/life/">life</a>
+    / <a href="/memo/2005/12/30/1/#disqus_thread">Comment</a>
+  </div>
+</div>
+
+<div class="entry autopagerize_page_element">
+  <h2><a href="/memo/2005/12/28/3/">CPAN Recent Changes</a></h2>
+
+  <div class="body">
+    <p>CPAN の Recent RSS は更新チェックにはつかえるけど、名前空間で絞りこみたかったり、何が変わったのか知りたいので、更新された部分の Changelog つきで RSS をはくツールを作ってみた。</p>
+<p><a href="http://unknownplace.org/cpanrecent/">CPAN Recent Changes</a></p>
+<p><a href="http://unknownplace.org/cpanrecent/Catalyst/Plugin/" title="CPAN Recent Changes - Catalyst::Plugin">/cpanrecent/Catalyst/Plugin</a></p>
+<p>などとすれば Catalyst::Plugin のみの更新もチェック可能。CPAN ウォーチャー必携！</p>
+<p>ソースはこちら： <a href="http://svn.unknownplace.org/public/CPANRecent/trunk/">http://svn.unknownplace.org/public/CPANRecent/trunk/</a></p>
+
+  </div>
+
+  <div class="meta">
+    by typester /
+    at <a href="/memo/2005/12/28/3/">2005-12-28T22:01:00</a> /
+    <a href="/memo/tag/life/">life</a>
+    &middot; <a href="/memo/tag/perl/">perl</a>
+    / <a href="/memo/2005/12/28/3/#disqus_thread">Comment</a>
+  </div>
+</div>
+
+<div class="entry autopagerize_page_element">
+  <h2><a href="/memo/2005/12/28/2/"></a></h2>
+
+  <div class="body">
+    <p><a href="http://b.hatena.ne.jp/entry/http://search.cpan.org/~typester/Catalyst-Plugin-Flavour-0.01/lib/Catalyst/Plugin/Flavour.pm">はてなブックマーク - Catalyst::Plugin::Flavour</a></p>
+<p>hatena タグ？</p>
+
+  </div>
+
+  <div class="meta">
+    by typester /
+    at <a href="/memo/2005/12/28/2/">2005-12-28T20:27:00</a> /
+    <a href="/memo/tag/life/">life</a>
+    / <a href="/memo/2005/12/28/2/#disqus_thread">Comment</a>
+  </div>
+</div>
+
+<div class="entry autopagerize_page_element">
+  <h2><a href="/memo/2005/12/28/1/"></a></h2>
+
+  <div class="body">
+    <p>起きた。</p>
+<p>昨日仕事納め→忘年会→二次会→つぶれた人と漫喫で休憩→帰還→寝</p>
+
+  </div>
+
+  <div class="meta">
+    by typester /
+    at <a href="/memo/2005/12/28/1/">2005-12-28T20:15:00</a> /
+    <a href="/memo/tag/life/">life</a>
+    / <a href="/memo/2005/12/28/1/#disqus_thread">Comment</a>
+  </div>
+</div>
+
+<div class="entry autopagerize_page_element">
+  <h2><a href="/memo/2005/12/27/2/"></a></h2>
+
+  <div class="body">
+    <p>出社。</p>
+<p>ThinkPad がサスペンドから復帰しねえええええ、とか思ったらディスプレイが外部出力のみのモードになってるだけだった。</p>
+
+  </div>
+
+  <div class="meta">
+    by typester /
+    at <a href="/memo/2005/12/27/2/">2005-12-27T11:08:00</a> /
+    <a href="/memo/tag/life/">life</a>
+    / <a href="/memo/2005/12/27/2/#disqus_thread">Comment</a>
+  </div>
+</div>
+
+
+
+
+<div id="pager" class="autopagerize_insert_before">
+  <p class="pages">
+    <a class="prev" rel="previous" href="/memo/tag/life/page/94/">&laquo; Prev</a>
+    <a href="/memo/tag/life/page/91/">91</a>
+    <a href="/memo/tag/life/page/92/">92</a>
+    <a href="/memo/tag/life/page/93/">93</a>
+    <a href="/memo/tag/life/page/94/">94</a>
+    <span class="current">95</span>
+    <a href="/memo/tag/life/page/96/">96</a>
+    <a href="/memo/tag/life/page/97/">97</a>
+    <a href="/memo/tag/life/page/98/">98</a>
+    <a href="/memo/tag/life/page/99/">99</a>
+    <a href="/memo/tag/life/page/100/">100</a>
+    <a class="next" rel="next" href="/memo/tag/life/page/96/">Next &raquo;</a>
+  </p>
+  <p class="info">(Page 95 of 120)</p>
+</div>
+
+
+</div>
+
+<p id="footer">
+  Copyright &copy; 2005-2013
+      by <a class="author" href="/about/#me">Daisuke Murase (typester)</a> /
+  Site generated by <a href="https://github.com/typester/nim">nim</a> /
+  Comments powered by <a href="http://disqus.com">DISQUS</a>.
+</p>
+
+</div>
+
+
+<script type="text/javascript">
+//<![CDATA[
+(function() {
+	var links = document.getElementsByTagName('a');
+	var query = '?';
+	for(var i = 0; i < links.length; i++) {
+	if(links[i].href.indexOf('#disqus_thread') >= 0) {
+		query += 'url' + i + '=' + encodeURIComponent(links[i].href) + '&';
+	}
+	}
+	document.write('<script charset="utf-8" type="text/javascript" src="http://disqus.com/forums/unknownplace/get_num_replies.js' + query + '"></' + 'script>');
+})();
+//]]>
+</script>
+
+
+<script type="text/javascript">
+var gaJsHost = (("https:" == document.location.protocol) ? "https://ssl." : "http://www.");
+document.write(unescape("%3Cscript src='" + gaJsHost + "google-analytics.com/ga.js' type='text/javascript'%3E%3C/script%3E"));
+</script>
+<script type="text/javascript">
+try {
+var pageTracker = _gat._getTracker("UA-53067-1");
+pageTracker._trackPageview();
+} catch(err) {}</script>
+
+<script>
+function googleTranslateElementInit() {
+  new google.translate.TranslateElement({
+    pageLanguage: 'ja',
+    gaTrack: true,
+    gaId: 'UA-53067',
+    floatPosition: google.translate.TranslateElement.FloatPosition.BOTTOM_RIGHT
+  });
+}
+</script><script src="//translate.google.com/translate_a/element.js?cb=googleTranslateElementInit"></script>
+
+</body>
+</html>

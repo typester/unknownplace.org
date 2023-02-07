@@ -1,0 +1,306 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="ja" xml:lang="ja">
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <title>2006/02/02 - memo - unknownplace.org</title>
+  <link rel="stylesheet" type="text/css" href="http://yui.yahooapis.com/3.0.0/build/cssreset/reset-min.css" />
+  <link rel="stylesheet" type="text/css" href="http://yui.yahooapis.com/3.0.0/build/cssfonts/fonts-min.css" />
+  <link rel="stylesheet" href="/css/style.css" type="text/css" />
+  <meta property="fb:admins" content="1093631929" />
+  <meta name="robots" content="noindex" />
+  <link rel="alternate" type="application/rss+xml" href="http://unknownplace.org/memo/index.rss" />
+</head>
+<body>
+
+<div id="container">
+<div id="header">
+    <h1><a href="/">unknownplace.org</a></h1> /
+<a href="/memo/">memo</a>
+</div>
+
+<div id="content">
+
+<div class="entry autopagerize_page_element">
+  <h2 id="e005"><a href="/memo/2006/02/02/5/">IE7 beta2 preview をインストールしないで使う</a></h2>
+
+  <div class="body">
+    <p>IE7 をインストールすると IE6 を上書きする形で入るのではげしくうざいので調べてみた。</p>
+<p>まず、IE7 をスタンドアローンで動くようにする</p>
+<ol><li>IE7のセットアップファイル (IE7B2P-WindowsXP-x86-enu.exe) をダウンロード</li><li>上記は自己解答形式の圧縮ファイルなのでなんかで解凍する</li><li>解凍してできたディレクトリの shlwapi.dll を削除し、iexplore.exe.local という空ファイルを作る</li></ol>
+<p>これでiexplore.exe起動すればIE7が立ち上がる。</p>
+<p>ただこれで一度IE7を起動するとIE6でアドレスバーにURL入力するとIEではなくデフォルトブラウザで開くようになってしまう。(IE6がデフォルトブラウザな方は下記作業はいらないのかもしれない)</p>
+<p>なので、IE7終了したらIE7が追加したレジストリエントリを削除する必要がある。</p>
+<pre><code>Windows Registry Editor Version 5.00
+
+[-HKEY_LOCAL_MACHINE\SOFTWARE\Classes\CLSID\{C90250F3-4D7D-4991-9B69-A5C5BC1C2AE6}]
+[-HKEY_LOCAL_MACHINE\SOFTWARE\Classes\Interface\{000214E5-0000-0000-C000-000000000046}]
+[-HKEY_LOCAL_MACHINE\SOFTWARE\Classes\Interface\{000214F1-0000-0000-C000-000000000046}]
+[-HKEY_LOCAL_MACHINE\SOFTWARE\Classes\Interface\{00610046-C71A-4EB4-B585-6D20492D608E}]
+[-HKEY_LOCAL_MACHINE\SOFTWARE\Classes\Interface\{02305531-F76F-4A4D-A760-B1192E72C6D5}]
+[-HKEY_LOCAL_MACHINE\SOFTWARE\Classes\Interface\{02468693-E7E5-4C6B-9995-64CE5F51CEC4}]
+[-HKEY_LOCAL_MACHINE\SOFTWARE\Classes\Interface\{02BA3B52-0547-11D1-B833-00C04FC9B31F}]
+[-HKEY_LOCAL_MACHINE\SOFTWARE\Classes\Interface\{04F0C07F-463C-492C-900E-0FB6910B5A65}]
+[-HKEY_LOCAL_MACHINE\SOFTWARE\Classes\Interface\{06091FFE-0B9B-4B2A-B933-0AB0FEA8B26D}]
+[-HKEY_LOCAL_MACHINE\SOFTWARE\Classes\Interface\{07B3B2BA-90EE-4464-9F6F-A824B13B91C1}]
+[-HKEY_LOCAL_MACHINE\SOFTWARE\Classes\Interface\{0A498932-D65C-4E0C-80DA-8A2CA8F25320}]
+[-HKEY_LOCAL_MACHINE\SOFTWARE\Classes\Interface\{0AD364CE-ADCB-11D3-8269-00805FC732C0}]
+[-HKEY_LOCAL_MACHINE\SOFTWARE\Classes\Interface\{10339516-2894-11D2-9039-00C04F8EEB3E}]
+[-HKEY_LOCAL_MACHINE\SOFTWARE\Classes\Interface\{169DB284-8361-4BE4-BDB0-0B73AD8764F1}]
+[-HKEY_LOCAL_MACHINE\SOFTWARE\Classes\Interface\{176C11B1-4302-4164-8430-D5A9F0EEACDB}]
+[-HKEY_LOCAL_MACHINE\SOFTWARE\Classes\Interface\{18459F6F-10F8-4979-923C-CF86C1614A10}]
+[-HKEY_LOCAL_MACHINE\SOFTWARE\Classes\Interface\{193215BF-3815-441A-98BC-589DB62452A6}]
+[-HKEY_LOCAL_MACHINE\SOFTWARE\Classes\Interface\{1C9CD5BB-98E9-4491-A60F-31AACC72B83C}]
+[-HKEY_LOCAL_MACHINE\SOFTWARE\Classes\Interface\{1D3293BC-EC01-400F-8179-8DE5D53ABEB7}]
+[-HKEY_LOCAL_MACHINE\SOFTWARE\Classes\Interface\{1D34CEFB-3901-46A5-94FA-1E91163D5D7E}]
+[-HKEY_LOCAL_MACHINE\SOFTWARE\Classes\Interface\{1E61BA50-BFAE-42A1-9276-D2E877B589F7}]
+[-HKEY_LOCAL_MACHINE\SOFTWARE\Classes\Interface\{1F6E41E5-25B1-49CE-A00A-2DA5A99EE4F5}]
+[-HKEY_LOCAL_MACHINE\SOFTWARE\Classes\Interface\{22C440DF-4720-4B3A-A472-0CCB6E6CDD97}]
+[-HKEY_LOCAL_MACHINE\SOFTWARE\Classes\Interface\{23D62F16-9AFF-49D2-917E-AA8A56B2B0CD}]
+[-HKEY_LOCAL_MACHINE\SOFTWARE\Classes\Interface\{240A7174-D653-4A1D-A6D3-D4943CFBFE3D}]
+[-HKEY_LOCAL_MACHINE\SOFTWARE\Classes\Interface\{241C033E-E659-43DA-AA4D-4086DBC4758D}]
+[-HKEY_LOCAL_MACHINE\SOFTWARE\Classes\Interface\{2659B475-EEB8-48B7-8F07-B378810F48CF}]
+[-HKEY_LOCAL_MACHINE\SOFTWARE\Classes\Interface\{289E924C-9FA1-4B1F-B8AE-A8B7AD9D74A7}]
+[-HKEY_LOCAL_MACHINE\SOFTWARE\Classes\Interface\{2C06EAB7-1814-4DEF-9625-0F3EC1EF0BC7}]
+[-HKEY_LOCAL_MACHINE\SOFTWARE\Classes\Interface\{2C1C7E2E-2D0E-4059-831E-1E6F82335C2E}]
+[-HKEY_LOCAL_MACHINE\SOFTWARE\Classes\Interface\{2D43C5B0-EA54-4B64-AB09-11C1B436D7AD}]
+[-HKEY_LOCAL_MACHINE\SOFTWARE\Classes\Interface\{3050F679-98B5-11CF-BB82-00AA00BDCE0B}]
+[-HKEY_LOCAL_MACHINE\SOFTWARE\Classes\Interface\{3050F6DC-98B5-11CF-BB82-00AA00BDCE0B}]
+[-HKEY_LOCAL_MACHINE\SOFTWARE\Classes\Interface\{321A6A6A-D61F-4BF3-97AE-14BE2986BB36}]
+[-HKEY_LOCAL_MACHINE\SOFTWARE\Classes\Interface\{32A86A13-5A3D-49E6-8FAC-46512ADC339A}]
+[-HKEY_LOCAL_MACHINE\SOFTWARE\Classes\Interface\{3552E971-528C-4988-BE75-64952F5F85A6}]
+[-HKEY_LOCAL_MACHINE\SOFTWARE\Classes\Interface\{36116642-D713-4B97-9B83-7484A9D00433}]
+[-HKEY_LOCAL_MACHINE\SOFTWARE\Classes\Interface\{3C44BA76-DE0E-4049-B6E4-6B31A5262707}]
+[-HKEY_LOCAL_MACHINE\SOFTWARE\Classes\Interface\{3C708557-C99D-4FA3-9231-56518418B4E4}]
+[-HKEY_LOCAL_MACHINE\SOFTWARE\Classes\Interface\{3E481212-DFE0-4756-A033-0928214904BC}]
+[-HKEY_LOCAL_MACHINE\SOFTWARE\Classes\Interface\{3EC36F3E-5BA3-4C3D-BF39-10F76C3F7CC6}]
+[-HKEY_LOCAL_MACHINE\SOFTWARE\Classes\Interface\{4037D137-0045-44F8-9FF9-3D1B931D70D0}]
+[-HKEY_LOCAL_MACHINE\SOFTWARE\Classes\Interface\{48F8A5B1-82B4-47A3-8A7A-A097BC5E349D}]
+[-HKEY_LOCAL_MACHINE\SOFTWARE\Classes\Interface\{4B7272AE-1955-4BFE-98B0-780621888569}]
+[-HKEY_LOCAL_MACHINE\SOFTWARE\Classes\Interface\{504C9F82-0F68-47F4-8F63-083E58C88412}]
+[-HKEY_LOCAL_MACHINE\SOFTWARE\Classes\Interface\{50C852B0-C95F-4FEE-BE00-87DC18B2661B}]
+[-HKEY_LOCAL_MACHINE\SOFTWARE\Classes\Interface\{52B14A6A-58F1-45BD-B00A-DCE7403D951E}]
+[-HKEY_LOCAL_MACHINE\SOFTWARE\Classes\Interface\{52BBC746-9F9C-44B4-8D7C-0AAAB79BC7DC}]
+[-HKEY_LOCAL_MACHINE\SOFTWARE\Classes\Interface\{53326B4A-E949-41FA-AE2C-9293FF144A50}]
+[-HKEY_LOCAL_MACHINE\SOFTWARE\Classes\Interface\{54A8F188-9EBD-4795-AD16-9B4945119636}]
+[-HKEY_LOCAL_MACHINE\SOFTWARE\Classes\Interface\{56887418-C996-4EE6-95E2-FA03776E10B3}]
+[-HKEY_LOCAL_MACHINE\SOFTWARE\Classes\Interface\{59007C49-CB25-4BD5-AAD9-6943F08F4F9E}]
+[-HKEY_LOCAL_MACHINE\SOFTWARE\Classes\Interface\{5CD52983-9449-11D2-963A-00C04F79ADF0}]
+[-HKEY_LOCAL_MACHINE\SOFTWARE\Classes\Interface\{5EA5DE37-3D26-4BC0-A90C-F24EDC74FB7E}]
+[-HKEY_LOCAL_MACHINE\SOFTWARE\Classes\Interface\{5EBC8D33-D04E-4576-AE40-0A8631F319E6}]
+[-HKEY_LOCAL_MACHINE\SOFTWARE\Classes\Interface\{5FF4DE38-0DE2-45F5-B6EE-8223CAF82347}]
+[-HKEY_LOCAL_MACHINE\SOFTWARE\Classes\Interface\{60CE96BB-B6F9-42DC-B84E-5E5D9C370A6F}]
+[-HKEY_LOCAL_MACHINE\SOFTWARE\Classes\Interface\{6295DF2A-35EE-11D1-8707-00C04FD93327}]
+[-HKEY_LOCAL_MACHINE\SOFTWARE\Classes\Interface\{6295DF2C-35EE-11D1-8707-00C04FD93327}]
+[-HKEY_LOCAL_MACHINE\SOFTWARE\Classes\Interface\{6295DF40-35EE-11D1-8707-00C04FD93327}]
+[-HKEY_LOCAL_MACHINE\SOFTWARE\Classes\Interface\{6295DF41-35EE-11D1-8707-00C04FD93327}]
+[-HKEY_LOCAL_MACHINE\SOFTWARE\Classes\Interface\{6295DF42-35EE-11D1-8707-00C04FD93327}]
+[-HKEY_LOCAL_MACHINE\SOFTWARE\Classes\Interface\{64A1CBF0-3A1A-4461-9158-376969693950}]
+[-HKEY_LOCAL_MACHINE\SOFTWARE\Classes\Interface\{650BE65D-DF09-4028-97A0-40B74C150A50}]
+[-HKEY_LOCAL_MACHINE\SOFTWARE\Classes\Interface\{66994203-1CA4-464F-A70B-C0A17584E7FD}]
+[-HKEY_LOCAL_MACHINE\SOFTWARE\Classes\Interface\{66A9CB08-4802-11D2-A561-00A0C92DBFE8}]
+[-HKEY_LOCAL_MACHINE\SOFTWARE\Classes\Interface\{6CB95A6A-88B6-4DC4-B3EA-3A776D1E8EFF}]
+[-HKEY_LOCAL_MACHINE\SOFTWARE\Classes\Interface\{6D1B6FF1-BADD-440F-B85D-C6A491FB405C}]
+[-HKEY_LOCAL_MACHINE\SOFTWARE\Classes\Interface\{736D8A2B-6895-4944-9567-DA67D00B0DCA}]
+[-HKEY_LOCAL_MACHINE\SOFTWARE\Classes\Interface\{75EEA680-DF51-4984-883F-5A5CED99330D}]
+[-HKEY_LOCAL_MACHINE\SOFTWARE\Classes\Interface\{77E425FC-CBF9-4307-BA6A-BB5727745661}]
+[-HKEY_LOCAL_MACHINE\SOFTWARE\Classes\Interface\{77F295D5-2D6F-4E19-B8AE-322F3E721AB5}]
+[-HKEY_LOCAL_MACHINE\SOFTWARE\Classes\Interface\{792C7DAB-C434-4945-BF8D-042C439C460C}]
+[-HKEY_LOCAL_MACHINE\SOFTWARE\Classes\Interface\{7AC7492B-C38E-438A-87DB-68737844FF70}]
+[-HKEY_LOCAL_MACHINE\SOFTWARE\Classes\Interface\{7AF4B09B-7312-4A4E-ADED-342D15E8EF1D}]
+[-HKEY_LOCAL_MACHINE\SOFTWARE\Classes\Interface\{7AF4B09C-7312-4A4E-ADED-342D15E8EF1D}]
+[-HKEY_LOCAL_MACHINE\SOFTWARE\Classes\Interface\{7BC28AC2-0D9C-4941-BB9A-72BECB184FAC}]
+[-HKEY_LOCAL_MACHINE\SOFTWARE\Classes\Interface\{7C32FA17-30A4-42D5-B7DA-FFE8FCFCCE45}]
+[-HKEY_LOCAL_MACHINE\SOFTWARE\Classes\Interface\{7C9E512F-41D7-11D1-8E2E-00C04FB9386D}]
+[-HKEY_LOCAL_MACHINE\SOFTWARE\Classes\Interface\{7D903FCA-D6F9-4810-8332-946C0177E247}]
+[-HKEY_LOCAL_MACHINE\SOFTWARE\Classes\Interface\{7EBFDD80-AD18-11D3-A4C5-00C04F72D6B8}]
+[-HKEY_LOCAL_MACHINE\SOFTWARE\Classes\Interface\{7EBFDD85-AD18-11D3-A4C5-00C04F72D6B8}]
+[-HKEY_LOCAL_MACHINE\SOFTWARE\Classes\Interface\{7EBFDD87-AD18-11D3-A4C5-00C04F72D6B8}]
+[-HKEY_LOCAL_MACHINE\SOFTWARE\Classes\Interface\{8016B7B3-3D49-4504-A0AA-2A37494E606F}]
+[-HKEY_LOCAL_MACHINE\SOFTWARE\Classes\Interface\{85DB95DF-8879-4EF3-B9BD-86CE79737D5A}]
+[-HKEY_LOCAL_MACHINE\SOFTWARE\Classes\Interface\{87CC5D04-EAFA-4833-9820-8F986530CC00}]
+[-HKEY_LOCAL_MACHINE\SOFTWARE\Classes\Interface\{8C85B440-D8F7-48C3-98E0-A91513F7D829}]
+[-HKEY_LOCAL_MACHINE\SOFTWARE\Classes\Interface\{90B4135A-95BA-46EA-8CAA-E05B45CD801E}]
+[-HKEY_LOCAL_MACHINE\SOFTWARE\Classes\Interface\{91A565C1-E38F-11D0-94BF-00A0C9055CBF}]
+[-HKEY_LOCAL_MACHINE\SOFTWARE\Classes\Interface\{96E5AE6D-6AE1-4B1C-900C-C6480EAA8828}]
+[-HKEY_LOCAL_MACHINE\SOFTWARE\Classes\Interface\{9737CC15-CADC-4694-B628-0D52D930F610}]
+[-HKEY_LOCAL_MACHINE\SOFTWARE\Classes\Interface\{98CD9153-D326-41A1-9D0C-C3DCB8A6E6B8}]
+[-HKEY_LOCAL_MACHINE\SOFTWARE\Classes\Interface\{A6087428-3BE3-4D73-B308-7C04A540BF1A}]
+[-HKEY_LOCAL_MACHINE\SOFTWARE\Classes\Interface\{A7254510-9427-4D22-9EBE-0E88C2CBC800}]
+[-HKEY_LOCAL_MACHINE\SOFTWARE\Classes\Interface\{A73CE67A-8AB1-44F1-8D43-D2FCBF6B1CD0}]
+[-HKEY_LOCAL_MACHINE\SOFTWARE\Classes\Interface\{B20CECC1-655E-4397-8C6E-E5BB61D77434}]
+[-HKEY_LOCAL_MACHINE\SOFTWARE\Classes\Interface\{B3DCB623-4280-4EB1-84B3-8D07E84F299A}]
+[-HKEY_LOCAL_MACHINE\SOFTWARE\Classes\Interface\{B824B49D-22AC-4161-AC8A-9916E8FA3F7F}]
+[-HKEY_LOCAL_MACHINE\SOFTWARE\Classes\Interface\{B9075C7C-D48E-403F-AB99-D6C77A1084AC}]
+[-HKEY_LOCAL_MACHINE\SOFTWARE\Classes\Interface\{BC245C43-4BB9-47AA-AF6F-AE7B0F33295F}]
+[-HKEY_LOCAL_MACHINE\SOFTWARE\Classes\Interface\{C339211E-E4B5-4A2C-AD84-4042F8956AE9}]
+[-HKEY_LOCAL_MACHINE\SOFTWARE\Classes\Interface\{C35456E7-BEBF-4A1B-86A9-24D56BE8B369}]
+[-HKEY_LOCAL_MACHINE\SOFTWARE\Classes\Interface\{C8F026DA-8F7D-40AA-A780-41525EBDCC1F}]
+[-HKEY_LOCAL_MACHINE\SOFTWARE\Classes\Interface\{C8F945CB-327A-4330-BB2F-C04122959488}]
+[-HKEY_LOCAL_MACHINE\SOFTWARE\Classes\Interface\{CA59707B-4C62-4D1E-ADB0-2367D96EE4E9}]
+[-HKEY_LOCAL_MACHINE\SOFTWARE\Classes\Interface\{CAB55631-A36C-4E5C-971B-B5C1980C6593}]
+[-HKEY_LOCAL_MACHINE\SOFTWARE\Classes\Interface\{CEDAC0B3-E828-40CC-9E5C-E2F4E9B447C4}]
+[-HKEY_LOCAL_MACHINE\SOFTWARE\Classes\Interface\{CEF04FDF-FE72-11D2-87A5-00C04F6837CF}]
+[-HKEY_LOCAL_MACHINE\SOFTWARE\Classes\Interface\{D0191542-7954-4908-BC06-B2360BBE45BA}]
+[-HKEY_LOCAL_MACHINE\SOFTWARE\Classes\Interface\{D57C7288-D4AD-4768-BE02-9D969532D960}]
+[-HKEY_LOCAL_MACHINE\SOFTWARE\Classes\Interface\{D72FF553-AE8F-4DAE-9EE8-833A9E025CB0}]
+[-HKEY_LOCAL_MACHINE\SOFTWARE\Classes\Interface\{D8EC27BB-3F3B-4042-B10A-4ACFD924D453}]
+[-HKEY_LOCAL_MACHINE\SOFTWARE\Classes\Interface\{D8F6AD5B-B44F-4BCC-88FD-EB3473DB7502}]
+[-HKEY_LOCAL_MACHINE\SOFTWARE\Classes\Interface\{D926E764-B7F6-4992-BEAE-4B587CF46223}]
+[-HKEY_LOCAL_MACHINE\SOFTWARE\Classes\Interface\{D9BC0C86-6141-4F32-8CD4-79FA9E9BA88E}]
+[-HKEY_LOCAL_MACHINE\SOFTWARE\Classes\Interface\{DD62F5AC-737D-4506-8015-A871779E8624}]
+[-HKEY_LOCAL_MACHINE\SOFTWARE\Classes\Interface\{DF14A364-AFC9-45DB-B702-020CEF09473C}]
+[-HKEY_LOCAL_MACHINE\SOFTWARE\Classes\Interface\{E03333E1-C840-46C2-B032-D3466DFBEBE4}]
+[-HKEY_LOCAL_MACHINE\SOFTWARE\Classes\Interface\{E157C3A1-A532-4DE2-9480-1452B7426EEE}]
+[-HKEY_LOCAL_MACHINE\SOFTWARE\Classes\Interface\{E76B8E13-485F-4ED3-8D27-2FA4930CF236}]
+[-HKEY_LOCAL_MACHINE\SOFTWARE\Classes\Interface\{EB6339BF-EB6A-437A-82DA-A56E7E4F9CDC}]
+[-HKEY_LOCAL_MACHINE\SOFTWARE\Classes\Interface\{ECF43B3A-724A-46BB-BAD3-6AFE0BEF0728}]
+[-HKEY_LOCAL_MACHINE\SOFTWARE\Classes\Interface\{ED4F9ADD-3CC4-46B7-A416-2FF54D7156BB}]
+[-HKEY_LOCAL_MACHINE\SOFTWARE\Classes\Interface\{F0009734-E8DE-48E5-B603-BFA5966A8F7C}]
+[-HKEY_LOCAL_MACHINE\SOFTWARE\Classes\Interface\{F46EDB3B-BC2F-11D0-9412-00AA00A3EBD3}]
+[-HKEY_LOCAL_MACHINE\SOFTWARE\Classes\Interface\{F4E26C7B-0D88-4F41-87E2-B01BD0AA96D6}]
+[-HKEY_LOCAL_MACHINE\SOFTWARE\Classes\Interface\{F6F95A83-0AF5-464D-A105-7296D61C9E68}]
+[-HKEY_LOCAL_MACHINE\SOFTWARE\Classes\Interface\{F7041E23-1A6C-41BB-89B2-B3425C51CCD5}]
+[-HKEY_LOCAL_MACHINE\SOFTWARE\Classes\Interface\{F7C40885-2506-4EB9-B4AB-0E1E3D3FD5F9}]
+[-HKEY_LOCAL_MACHINE\SOFTWARE\Classes\Interface\{F7DA33A5-FD27-4FF1-B8E9-05C7535BE52B}]
+[-HKEY_LOCAL_MACHINE\SOFTWARE\Classes\Interface\{FECE3DD3-B657-4FC1-B2DF-532A1BDF43AC}]
+[-HKEY_LOCAL_MACHINE\SOFTWARE\Classes\Interface\{FF8C9B9C-C90F-4F30-B5B2-77C3D56BD125}]
+[-HKEY_LOCAL_MACHINE\SOFTWARE\Classes\Interface\{FFF994DD-E785-11D6-8F9F-00065BBD32BD}]
+[-HKEY_LOCAL_MACHINE\SOFTWARE\Classes\Interface\{FFF994DF-E785-11D6-8F9F-00065BBD32BD}]
+[-HKEY_LOCAL_MACHINE\SOFTWARE\Classes\Interface\{FFF994E9-E785-11D6-8F9F-00065BBD32BD}]
+[-HKEY_LOCAL_MACHINE\SOFTWARE\Classes\Interface\{FFF99648-E785-11D6-8F9F-00065BBD32BD}]
+</code></pre>
+<p>上記を ie7fix2.reg などいう名前でと保存しダブクリすれば削除完了。</p>
+<p>元ネタは <a href="http://weblogs.asp.net/jgalloway/archive/2005/12/28/434132.aspx">IE7 Standalone Launch Script</a> でここで同じような方法で ie7fix.reg というのが紹介されているが、これは beta2 preview ではうまく動かないよう。</p>
+<p>ie7fix.reg でも IE6 の問題は修正されるが IE7 が起動直後に落ちるようになる。</p>
+
+  </div>
+
+  <div class="meta">
+    by typester /
+    at <a href="/memo/2006/02/02/5/">2006-02-02T23:46:00</a> /
+    <a href="/memo/tag/windows/">windows</a>
+    / <a href="/memo/2006/02/02/5/#disqus_thread">Comment</a>
+  </div>
+</div>
+
+<div class="entry autopagerize_page_element">
+  <h2 id="e004"><a href="/memo/2006/02/02/4/"></a></h2>
+
+  <div class="body">
+    <p>出社。</p>
+
+  </div>
+
+  <div class="meta">
+    by typester /
+    at <a href="/memo/2006/02/02/4/">2006-02-02T16:28:00</a> /
+    <a href="/memo/tag/life/">life</a>
+    / <a href="/memo/2006/02/02/4/#disqus_thread">Comment</a>
+  </div>
+</div>
+
+<div class="entry autopagerize_page_element">
+  <h2 id="e003"><a href="/memo/2006/02/02/3/"></a></h2>
+
+  <div class="body">
+    <p>退社。</p>
+
+  </div>
+
+  <div class="meta">
+    by typester /
+    at <a href="/memo/2006/02/02/3/">2006-02-02T03:14:00</a> /
+    <a href="/memo/tag/life/">life</a>
+    / <a href="/memo/2006/02/02/3/#disqus_thread">Comment</a>
+  </div>
+</div>
+
+<div class="entry autopagerize_page_element">
+  <h2 id="e002"><a href="/memo/2006/02/02/2/">IE7</a></h2>
+
+  <div class="body">
+    <p>少し試した。</p>
+<p>CSS周り</p>
+<ul><li>子セレクタ使える</li><li>アンダースコア無視するバグなくなった</li></ul>
+<p>っぽいので、切り分けるほうほうがわからなく。IE6ともGeckoともボックスモデル解釈ちがうっぽくうざい予感。</p>
+
+  </div>
+
+  <div class="meta">
+    by typester /
+    at <a href="/memo/2006/02/02/2/">2006-02-02T03:00:00</a> /
+    <a href="/memo/tag/life/">life</a>
+    / <a href="/memo/2006/02/02/2/#disqus_thread">Comment</a>
+  </div>
+</div>
+
+<div class="entry autopagerize_page_element">
+  <h2 id="e001"><a href="/memo/2006/02/02/1/">f おしっぱ @ Bloglines</a></h2>
+
+  <div class="body">
+    <p>ごろさんの日記みてて他人事のようにばかだなぁとか思ってたけど、やっちゃったよ。。</p>
+
+  </div>
+
+  <div class="meta">
+    by typester /
+    at <a href="/memo/2006/02/02/1/">2006-02-02T00:15:00</a> /
+    <a href="/memo/tag/life/">life</a>
+    / <a href="/memo/2006/02/02/1/#disqus_thread">Comment</a>
+  </div>
+</div>
+
+
+
+</div>
+
+<p id="footer">
+  Copyright &copy; 2005-2013
+      by <a class="author" href="/about/#me">Daisuke Murase (typester)</a> /
+  Site generated by <a href="https://github.com/typester/nim">nim</a> /
+  Comments powered by <a href="http://disqus.com">DISQUS</a>.
+</p>
+
+</div>
+
+
+<script type="text/javascript">
+//<![CDATA[
+(function() {
+	var links = document.getElementsByTagName('a');
+	var query = '?';
+	for(var i = 0; i < links.length; i++) {
+	if(links[i].href.indexOf('#disqus_thread') >= 0) {
+		query += 'url' + i + '=' + encodeURIComponent(links[i].href) + '&';
+	}
+	}
+	document.write('<script charset="utf-8" type="text/javascript" src="http://disqus.com/forums/unknownplace/get_num_replies.js' + query + '"></' + 'script>');
+})();
+//]]>
+</script>
+
+
+<script type="text/javascript">
+var gaJsHost = (("https:" == document.location.protocol) ? "https://ssl." : "http://www.");
+document.write(unescape("%3Cscript src='" + gaJsHost + "google-analytics.com/ga.js' type='text/javascript'%3E%3C/script%3E"));
+</script>
+<script type="text/javascript">
+try {
+var pageTracker = _gat._getTracker("UA-53067-1");
+pageTracker._trackPageview();
+} catch(err) {}</script>
+
+<script>
+function googleTranslateElementInit() {
+  new google.translate.TranslateElement({
+    pageLanguage: 'ja',
+    gaTrack: true,
+    gaId: 'UA-53067',
+    floatPosition: google.translate.TranslateElement.FloatPosition.BOTTOM_RIGHT
+  });
+}
+</script><script src="//translate.google.com/translate_a/element.js?cb=googleTranslateElementInit"></script>
+
+</body>
+</html>

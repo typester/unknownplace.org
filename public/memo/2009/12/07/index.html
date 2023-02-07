@@ -1,0 +1,170 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="ja" xml:lang="ja">
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <title>2009/12/07 - memo - unknownplace.org</title>
+  <link rel="stylesheet" type="text/css" href="http://yui.yahooapis.com/3.0.0/build/cssreset/reset-min.css" />
+  <link rel="stylesheet" type="text/css" href="http://yui.yahooapis.com/3.0.0/build/cssfonts/fonts-min.css" />
+  <link rel="stylesheet" href="/css/style.css" type="text/css" />
+  <meta property="fb:admins" content="1093631929" />
+  <meta name="robots" content="noindex" />
+  <link rel="alternate" type="application/rss+xml" href="http://unknownplace.org/memo/index.rss" />
+</head>
+<body>
+
+<div id="container">
+<div id="header">
+    <h1><a href="/">unknownplace.org</a></h1> /
+<a href="/memo/">memo</a>
+</div>
+
+<div id="content">
+
+<div class="entry autopagerize_page_element">
+  <h2 id="e001"><a href="/memo/2009/12/07/1/">A simple chat server in AnyEvent</a></h2>
+
+  <div class="body">
+    <p><a href="http://dhotson.tumblr.com/post/271733389/a-simple-chat-server-in-node-js">Node.js でつくってるやつ</a> をみて同じくらいで書けそうだなと思ったので試しに AnyEvent で書き直してみた。</p>
+<pre><code><span class="comment-delimiter">#</span><span class="comment">!/usr/bin/perl
+</span>
+<span class="keyword">use</span> <span class="function-name">strict</span>;
+<span class="keyword">use</span> <span class="function-name">warnings</span>;
+
+<span class="keyword">use</span> <span class="function-name">AnyEvent::Socket</span>;
+<span class="keyword">use</span> <span class="function-name">AnyEvent::Handle</span>;
+
+<span class="keyword">my</span> <span class="cperl-array">@clients</span>;
+
+tcp_server <span class="cperl-nonoverridable">undef</span>, 7000, <span class="keyword">sub</span> {
+    <span class="keyword">my</span> (<span class="variable-name">$fh</span>) = <span class="cperl-array">@_</span> <span class="type">or</span> <span class="keyword">die</span> $!;
+    <span class="keyword">my</span> <span class="variable-name">$h</span> = AnyEvent::Handle-&gt;new( <span class="string">fh</span> =&gt; $fh );
+
+    <span class="keyword">my</span> <span class="variable-name">$leave</span> = <span class="keyword">sub</span> {
+        <span class="keyword">my</span> <span class="variable-name">$client</span> = <span class="cperl-nonoverridable">delete</span> <span class="cperl-array">$clients</span>[ <span class="type">fileno</span>($fh) ];
+        <span class="keyword">for</span> <span class="keyword">my</span> <span class="variable-name">$c</span> (<span class="cperl-nonoverridable">grep</span> { <span class="cperl-nonoverridable">defined</span> } <span class="cperl-array">@clients</span>) {
+            $c-&gt;{<span class="string">handle</span>}-&gt;push_write(<span class="string">&quot;$client-&gt;{name} has left.\n&quot;</span>);
+        }
+    };
+
+    $h-&gt;on_read(<span class="keyword">sub</span> {
+        <span class="cperl-nonoverridable">shift</span>-&gt;push_read( <span class="string">line</span> =&gt; <span class="keyword">sub</span> {
+            <span class="keyword">my</span> (<span class="variable-name">$h</span>, <span class="variable-name">$line</span>) = <span class="cperl-array">@_</span>;
+
+            <span class="keyword">my</span> <span class="variable-name">$client</span> = <span class="cperl-array">$clients</span>[ <span class="type">fileno</span>($fh) ];
+
+            <span class="keyword">unless</span> (<span class="cperl-nonoverridable">defined</span> $client-&gt;{<span class="string">name</span>}) {
+                <span class="keyword">if</span> ($line =~ <span class="constant">/</span><span class="keyword">(</span><span class="builtin">\</span><span class="type">S</span><span class="builtin">+</span><span class="keyword">)</span><span class="constant">/</span>) {
+                    $client-&gt;{<span class="string">name</span>} = $1;
+                    $h-&gt;push_write(<span class="string">&quot;===========\n&quot;</span>);
+
+                    <span class="keyword">for</span> <span class="keyword">my</span> <span class="variable-name">$client</span> (<span class="cperl-nonoverridable">grep</span> { <span class="cperl-nonoverridable">defined</span> } <span class="cperl-array">@clients</span>) {
+                        <span class="keyword">next</span> <span class="keyword">if</span> $client-&gt;{<span class="string">handle</span>} <span class="type">eq</span> $h;
+                        $client-&gt;{<span class="string">handle</span>}
+                            -&gt;push_write( <span class="string">&quot;$client-&gt;{name} has joined.\n&quot;</span> );
+                    }
+                }
+                <span class="keyword">return</span>;
+            }
+
+            <span class="keyword">my</span> (<span class="variable-name">$command</span>) = $line =~ <span class="cperl-nonoverridable">m</span><span class="constant">!</span><span class="function-name">^</span><span class="string">/</span><span class="keyword">(</span><span class="function-name">.</span><span class="builtin">+</span><span class="keyword">)</span><span class="constant">!</span>;
+            <span class="keyword">if</span> ($command) {
+                <span class="keyword">if</span> ($command <span class="type">eq</span> <span class="string">&apos;users&apos;</span>) {
+                    $h-&gt;push_write(<span class="string">&quot;- $_-&gt;{name}\n&quot;</span>) <span class="keyword">for</span> <span class="cperl-nonoverridable">grep</span> { <span class="cperl-nonoverridable">defined</span> } <span class="cperl-array">@clients</span>;
+                }
+                <span class="keyword">elsif</span> ($command <span class="type">eq</span> <span class="string">&apos;quit&apos;</span>) {
+                    $leave-&gt;();
+                }
+                <span class="keyword">return</span>;
+            }
+
+            <span class="keyword">for</span> <span class="keyword">my</span> <span class="variable-name">$c</span> (<span class="cperl-nonoverridable">grep</span> { <span class="cperl-nonoverridable">defined</span> } <span class="cperl-array">@clients</span>) {
+                <span class="keyword">next</span> <span class="keyword">if</span> $c-&gt;{<span class="string">handle</span>} <span class="type">eq</span> $h;
+                $c-&gt;{<span class="string">handle</span>}-&gt;push_write( <span class="string">&quot;$client-&gt;{name}: $line\n&quot;</span> );
+            }
+        });
+    });
+
+    $h-&gt;on_error(<span class="keyword">sub</span> {
+        <span class="keyword">my</span> (<span class="variable-name">$h</span>, <span class="variable-name">$fatal</span>, <span class="variable-name">$msg</span>) = <span class="cperl-array">@_</span>;
+        $leave-&gt;();
+        $h-&gt;destroy;
+    });
+
+    <span class="cperl-array">$clients</span>[ <span class="type">fileno</span>($fh) ] = {
+        <span class="string">name</span>   =&gt; <span class="cperl-nonoverridable">undef</span>,
+        <span class="string">handle</span> =&gt; $h,
+    };
+
+    $h-&gt;push_write(<span class="string">&quot;Welcome, enter your username:\n&quot;</span>);
+};
+
+AE::cv-&gt;<span class="type">wait</span>;
+</code></pre>
+<p>行数的にはほぼ同じくらい。</p>
+<p>追記＠2009-12-08T10:36:37+09:00： left なメッセージがおかしかったので直した。</p>
+
+  </div>
+
+  <div class="meta">
+    by typester /
+    at <a href="/memo/2009/12/07/1/">2009-12-07T20:38:00</a> /
+    <a href="/memo/tag/perl/">perl</a>
+    &middot; <a href="/memo/tag/anyevent/">anyevent</a>
+    / <a href="/memo/2009/12/07/1/#disqus_thread">Comment</a>
+  </div>
+</div>
+
+
+
+</div>
+
+<p id="footer">
+  Copyright &copy; 2005-2013
+      by <a class="author" href="/about/#me">Daisuke Murase (typester)</a> /
+  Site generated by <a href="https://github.com/typester/nim">nim</a> /
+  Comments powered by <a href="http://disqus.com">DISQUS</a>.
+</p>
+
+</div>
+
+
+<script type="text/javascript">
+//<![CDATA[
+(function() {
+	var links = document.getElementsByTagName('a');
+	var query = '?';
+	for(var i = 0; i < links.length; i++) {
+	if(links[i].href.indexOf('#disqus_thread') >= 0) {
+		query += 'url' + i + '=' + encodeURIComponent(links[i].href) + '&';
+	}
+	}
+	document.write('<script charset="utf-8" type="text/javascript" src="http://disqus.com/forums/unknownplace/get_num_replies.js' + query + '"></' + 'script>');
+})();
+//]]>
+</script>
+
+
+<script type="text/javascript">
+var gaJsHost = (("https:" == document.location.protocol) ? "https://ssl." : "http://www.");
+document.write(unescape("%3Cscript src='" + gaJsHost + "google-analytics.com/ga.js' type='text/javascript'%3E%3C/script%3E"));
+</script>
+<script type="text/javascript">
+try {
+var pageTracker = _gat._getTracker("UA-53067-1");
+pageTracker._trackPageview();
+} catch(err) {}</script>
+
+<script>
+function googleTranslateElementInit() {
+  new google.translate.TranslateElement({
+    pageLanguage: 'ja',
+    gaTrack: true,
+    gaId: 'UA-53067',
+    floatPosition: google.translate.TranslateElement.FloatPosition.BOTTOM_RIGHT
+  });
+}
+</script><script src="//translate.google.com/translate_a/element.js?cb=googleTranslateElementInit"></script>
+
+</body>
+</html>

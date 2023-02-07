@@ -1,0 +1,158 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="ja" xml:lang="ja">
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <title>Bulkfeeds API - unknownplace.org</title>
+  <link rel="stylesheet" type="text/css" href="http://yui.yahooapis.com/3.0.0/build/cssreset/reset-min.css" />
+  <link rel="stylesheet" type="text/css" href="http://yui.yahooapis.com/3.0.0/build/cssfonts/fonts-min.css" />
+  <link rel="stylesheet" href="/css/style.css" type="text/css" />
+  <meta property="fb:admins" content="1093631929" />
+  <link rel="alternate" type="application/rss+xml" href="http://unknownplace.org/memo/index.rss" />
+</head>
+<body>
+
+<div id="container">
+<div id="header">
+    <h1><a href="/">unknownplace.org</a></h1> /
+<a href="/memo/">memo</a>
+</div>
+
+<div id="content">
+<div class="entry autopagerize_page_element">
+  <h2><a href="/memo/2005/10/15/2/">Bulkfeeds API</a></h2>
+
+  <div class="body">
+    <p>gorou さんがうごかねっつってるので触ってみた。</p>
+<pre><code><span class="comment-delimiter">#</span><span class="comment">!/usr/bin/perl
+</span>
+<span class="keyword">use</span> <span class="function-name">strict</span>;
+<span class="keyword">use</span> <span class="function-name">LWP::UserAgent</span>;
+<span class="keyword">use</span> <span class="function-name">HTTP::Request::Common</span>;
+<span class="keyword">use</span> <span class="function-name">FileHandle</span>;
+<span class="keyword">use</span> <span class="function-name">Readonly</span>;
+
+Readonly <span class="keyword">my</span> <span class="variable-name">$url</span>     =&gt; <span class="string">&apos;http://bulkfeeds.net/app/terms.xml&apos;</span>;
+Readonly <span class="keyword">my</span> <span class="variable-name">$api_key</span> =&gt; <span class="string">&apos;my key&apos;</span>;
+
+<span class="keyword">my</span> <span class="variable-name">$ua</span> = LWP::UserAgent-&gt;new;
+
+<span class="comment-delimiter"># </span><span class="comment">read test.txt
+</span><span class="keyword">my</span> <span class="variable-name">$text</span> = <span class="cperl-nonoverridable">q</span><span class="string">{}</span>;
+<span class="keyword">if</span> ( <span class="keyword">my</span> <span class="variable-name">$fh</span> = FileHandle-&gt;new(<span class="string">&apos;test.txt&apos;</span>) ) {
+    $text = <span class="type">join</span> <span class="cperl-nonoverridable">q</span><span class="string">{}</span>, &lt;$fh&gt;;
+    $fh-&gt;<span class="type">close</span>;
+}
+<span class="keyword">else</span> {
+    <span class="keyword">die</span> <span class="string">&apos;text read error&apos;</span>;
+}
+
+<span class="comment-delimiter"># </span><span class="comment">call api
+</span><span class="keyword">my</span> <span class="variable-name">$res</span> = $ua-&gt;request(POST $url, [ <span class="string">apikey</span> =&gt; $api_key, <span class="string">content</span> =&gt; $text, ]);
+
+<span class="keyword">if</span> (<span class="type">not</span> $res-&gt;is_success) {
+    <span class="keyword">die</span> $res-&gt;status_line;
+}
+<span class="keyword">else</span> {
+    <span class="cperl-nonoverridable">print</span> $res-&gt;status_line, <span class="cperl-nonoverridable">qq</span><span class="string">{\n\n}</span>;
+    <span class="cperl-nonoverridable">print</span> $res-&gt;content;
+}
+</code></pre>
+<p>で、結果</p>
+<pre><code>200 OK
+
+&lt;?xml version=<span class="string">"1.0"</span> encoding=<span class="string">"utf-8"</span>?&gt;
+&lt;terms&gt;
+&lt;term&gt;&#12463;&#12522;&#12483;&#12497;&#12540;&#12474;&lt;/term&gt;
+&lt;term&gt;&#33253;&lt;/term&gt;
+&lt;term&gt;NBA&lt;/term&gt;
+&lt;term&gt;&#12503;&#12524;&#12471;&#12540;&#12474;&#12531;&lt;/term&gt;
+&lt;term&gt;&#21021;&#25126;&lt;/term&gt;
+&lt;term&gt;&#38283;&#24149;&lt;/term&gt;
+&lt;term&gt;&#30000;&lt;/term&gt;
+&lt;term&gt;&#12450;&#12471;&#12473;&#12488;&lt;/term&gt;
+&lt;term&gt;&#12522;&#12496;&#12454;&#12531;&#12489;&lt;/term&gt;
+&lt;term&gt;&#12469;&#12531;&#12474;&lt;/term&gt;
+&lt;term&gt;&#12518;&#12540;&#12452;&#12531;&#12464;&lt;/term&gt;
+&lt;term&gt;&#12522;&#12499;&#12531;&#12464;&#12473;&#12488;&#12531;&lt;/term&gt;
+&lt;term&gt;95&lt;/term&gt;
+&lt;term&gt;&#21191;&lt;/term&gt;
+&lt;term&gt;4Q&lt;/term&gt;
+&lt;term&gt;&#20426;&#25935;&lt;/term&gt;
+&lt;term&gt;&#65310;&#65311;&lt;/term&gt;
+&lt;term&gt;&#28961;&#24471;&#28857;&lt;/term&gt;
+&lt;term&gt;&#24471;&#28857;&lt;/term&gt;
+&lt;term&gt;&#12505;&#12531;&#12481;&lt;/term&gt;
+&lt;/terms&gt;
+</code></pre>
+<p>動いてる！ あーこれおもしろいかも。</p>
+
+  </div>
+
+  <div class="meta">
+    by typester /
+    at <a href="/memo/2005/10/15/2/">2005-10-15T14:19:00</a> /
+    <a href="/memo/tag/bulkfeeds/">bulkfeeds</a>
+    &middot; <a href="/memo/tag/perl/">perl</a>
+    / <a href="/memo/2005/10/15/2/#disqus_thread">Comments(0)</a>
+  </div>
+</div>
+
+<div id="disqus_thread"></div>
+
+<script type="text/javascript">
+    var disqus_url = location.protocol + "//" + location.host + "/memo/2005/10/15/2/";
+</script>
+<script type="text/javascript" src="http://disqus.com/forums/unknownplace/embed.js"></script>
+
+</div>
+
+<p id="footer">
+  Copyright &copy; 2005-2013
+      by <a class="author" href="/about/#me">Daisuke Murase (typester)</a> /
+  Site generated by <a href="https://github.com/typester/nim">nim</a> /
+  Comments powered by <a href="http://disqus.com">DISQUS</a>.
+</p>
+
+</div>
+
+
+<script type="text/javascript">
+//<![CDATA[
+(function() {
+	var links = document.getElementsByTagName('a');
+	var query = '?';
+	for(var i = 0; i < links.length; i++) {
+	if(links[i].href.indexOf('#disqus_thread') >= 0) {
+		query += 'url' + i + '=' + encodeURIComponent(links[i].href) + '&';
+	}
+	}
+	document.write('<script charset="utf-8" type="text/javascript" src="http://disqus.com/forums/unknownplace/get_num_replies.js' + query + '"></' + 'script>');
+})();
+//]]>
+</script>
+
+
+<script type="text/javascript">
+var gaJsHost = (("https:" == document.location.protocol) ? "https://ssl." : "http://www.");
+document.write(unescape("%3Cscript src='" + gaJsHost + "google-analytics.com/ga.js' type='text/javascript'%3E%3C/script%3E"));
+</script>
+<script type="text/javascript">
+try {
+var pageTracker = _gat._getTracker("UA-53067-1");
+pageTracker._trackPageview();
+} catch(err) {}</script>
+
+<script>
+function googleTranslateElementInit() {
+  new google.translate.TranslateElement({
+    pageLanguage: 'ja',
+    gaTrack: true,
+    gaId: 'UA-53067',
+    floatPosition: google.translate.TranslateElement.FloatPosition.BOTTOM_RIGHT
+  });
+}
+</script><script src="//translate.google.com/translate_a/element.js?cb=googleTranslateElementInit"></script>
+
+</body>
+</html>

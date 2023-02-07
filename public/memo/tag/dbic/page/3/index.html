@@ -1,0 +1,312 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="ja" xml:lang="ja">
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <title>memo - unknownplace.org</title>
+  <link rel="stylesheet" type="text/css" href="http://yui.yahooapis.com/3.0.0/build/cssreset/reset-min.css" />
+  <link rel="stylesheet" type="text/css" href="http://yui.yahooapis.com/3.0.0/build/cssfonts/fonts-min.css" />
+  <link rel="stylesheet" href="/css/style.css" type="text/css" />
+  <meta property="fb:admins" content="1093631929" />
+  <meta name="robots" content="noindex" />
+  <link rel="alternate" type="application/rss+xml" href="http://unknownplace.org/memo/index.rss" />
+</head>
+<body>
+
+<div id="container">
+<div id="header">
+    <h1><a href="/">unknownplace.org</a></h1> /
+<a href="/memo/">memo</a>
+</div>
+
+<div id="content">
+
+<div class="entry autopagerize_page_element">
+  <h2><a href="/memo/2006/03/10/2/"></a></h2>
+
+  <div class="body">
+    <p><code>insert_or_update</code> が <code>update_or_insert</code> になった。</p>
+<p>この関数、<code>find_or_create</code> と一緒に使うことが多くて、その関係か <code>update_or_insert</code> ってよく間違えてエラーってたからうれしい。</p>
+<pre><code>*insert_or_update = \&amp;update_or_insert;
+</code></pre>
+<p>とかしてあって、一応まえのも使える。</p>
+
+  </div>
+
+  <div class="meta">
+    by typester /
+    at <a href="/memo/2006/03/10/2/">2006-03-10T11:54:00</a> /
+    <a href="/memo/tag/dbic/">dbic</a>
+    / <a href="/memo/2006/03/10/2/#disqus_thread">Comment</a>
+  </div>
+</div>
+
+<div class="entry autopagerize_page_element">
+  <h2><a href="/memo/2006/03/08/3/"></a></h2>
+
+  <div class="body">
+    <p><code>$c-&gt;forward( $c-&gt;view(&apos;YAML&apos;) );</code> したとき日本語が数値参照になるなぁ、とかおもったら DBIC::UTF8Columns で get_columns オーバーライドしてなかった。</p>
+<p>するようにした。</p>
+
+  </div>
+
+  <div class="meta">
+    by typester /
+    at <a href="/memo/2006/03/08/3/">2006-03-08T10:22:00</a> /
+    <a href="/memo/tag/life/">life</a>
+    &middot; <a href="/memo/tag/dbic/">dbic</a>
+    / <a href="/memo/2006/03/08/3/#disqus_thread">Comment</a>
+  </div>
+</div>
+
+<div class="entry autopagerize_page_element">
+  <h2><a href="/memo/2006/03/03/2/">DBIC::UTF8Columns</a></h2>
+
+  <div class="body">
+    <p>昨日のやつ、<a href="http://dev.catalyst.perl.org/repos/bast/">bast</a> のほうにコミット。次のDBICのリリースに含まれちゃうよ＞＜</p>
+<p>使い方はテーブルクラスで</p>
+<pre><code><span class="type">__PACKAGE__</span>-&gt;load_components(<span class="cperl-nonoverridable">qw</span><span class="string">/UTF8Columns Core/</span>);
+</code></pre>
+<p>とかしてロードしておき、</p>
+<pre><code><span class="type">__PACKAGE__</span>-&gt;utf8_columns(<span class="cperl-nonoverridable">qw</span><span class="string">/name description/</span>);
+</code></pre>
+<p>と文字列カラムを指定。</p>
+<p>こうすると <code>$table-&gt;name</code> や <code>$table-&gt;get_column(&apos;name&apos;)</code> でとってくる値は utf-8 フラグが自動的にたつ。</p>
+<p>逆に <code>$table-&gt;name( $name );</code> とかでは utf-8 フラグが落とされてから保存される。</p>
+<p>utf8_columns で自分で指定するだけじゃなく、テーブル単位で文字列カラムにすべてに対して有効になる機能もあるといいかも？</p>
+
+  </div>
+
+  <div class="meta">
+    by typester /
+    at <a href="/memo/2006/03/03/2/">2006-03-03T14:11:00</a> /
+    <a href="/memo/tag/perl/">perl</a>
+    &middot; <a href="/memo/tag/dbic/">dbic</a>
+    / <a href="/memo/2006/03/03/2/#disqus_thread">Comment</a>
+  </div>
+</div>
+
+<div class="entry autopagerize_page_element">
+  <h2><a href="/memo/2006/03/02/5/">DBIC::UTF8Columns</a></h2>
+
+  <div class="body">
+    <p><a href="http://svn.unknownplace.org/public/library/perl/trunk/DBIx-Class-UTF8Columns/lib/DBIx/Class/UTF8Columns.pm" title="DBIx::Class::UTF8Columns">書いた</a>。</p>
+<p>Template::Stash::ForceUTF8 インスパイア。</p>
+
+  </div>
+
+  <div class="meta">
+    by typester /
+    at <a href="/memo/2006/03/02/5/">2006-03-02T18:54:00</a> /
+    <a href="/memo/tag/perl/">perl</a>
+    &middot; <a href="/memo/tag/dbic/">dbic</a>
+    / <a href="/memo/2006/03/02/5/#disqus_thread">Comment</a>
+  </div>
+</div>
+
+<div class="entry autopagerize_page_element">
+  <h2><a href="/memo/2006/02/22/4/">MySQL の DATETIME 型</a></h2>
+
+  <div class="body">
+    <p>って、タイムゾーン情報ないから、deflate するとき set_time_zone してタイムゾーンそろえたほうがいいと思った。</p>
+<p>あと、inflate 時も floating timezone で帰ってくるから、保存時のタイムゾーンをセットしてあげたほうが良い。</p>
+<pre><code>inflate =&gt; sub {
+    DateTime::Format::MySQL-&gt;parse_datetime(shift)
+        -&gt;set_time_zone(&apos;local&apos;);
+},
+deflate =&gt; sub {
+    DateTime::Format::MySQL-&gt;format_datetime(
+        shift-&gt;set_time_zone(&apos;local&apos;) );
+},
+</code></pre>
+<p>と思うんだけどどーなんだろ。</p>
+<p>決めうちでしかつかわないならいいんかな。</p>
+
+  </div>
+
+  <div class="meta">
+    by typester /
+    at <a href="/memo/2006/02/22/4/">2006-02-22T13:58:00</a> /
+    <a href="/memo/tag/perl/">perl</a>
+    &middot; <a href="/memo/tag/dbic/">dbic</a>
+    / <a href="/memo/2006/02/22/4/#disqus_thread">Comment</a>
+  </div>
+</div>
+
+<div class="entry autopagerize_page_element">
+  <h2><a href="/memo/2006/02/12/2/">refactored</a></h2>
+
+  <div class="body">
+    <p>sub fuzzyfind { my ( $self, $id ) = @_;</p>
+<pre><code>    $id <span class="type">and</span> $id =~ <span class="constant">/</span><span class="builtin">\</span><span class="type">D</span><span class="constant">/</span>
+        ? ( $self-&gt;find( { <span class="string">uuid</span> =&gt; $id } ), 1 )
+        : $self-&gt;find($id);
+}
+</code></pre>
+<p>こうか。</p>
+
+  </div>
+
+  <div class="meta">
+    by typester /
+    at <a href="/memo/2006/02/12/2/">2006-02-12T17:46:00</a> /
+    <a href="/memo/tag/perl/">perl</a>
+    &middot; <a href="/memo/tag/dbic/">dbic</a>
+    / <a href="/memo/2006/02/12/2/#disqus_thread">Comment</a>
+  </div>
+</div>
+
+<div class="entry autopagerize_page_element">
+  <h2><a href="/memo/2006/02/12/1/">fuzzyfind</a></h2>
+
+  <div class="body">
+    <p>sub fuzzyfind { my ( $self, $id ) = @_;</p>
+<pre><code>    <span class="keyword">my</span> ( <span class="variable-name">$exist</span>, <span class="variable-name">$uuid</span> );
+    $exist = $self-&gt;find( { <span class="string">uuid</span> =&gt; $id } ) <span class="type">and</span> $uuid++
+        <span class="keyword">if</span> $id <span class="type">and</span> $id =~ <span class="constant">/</span><span class="builtin">\</span><span class="type">w</span><span class="constant">/</span>;
+
+    <span class="cperl-nonoverridable">defined</span> $exist ? ( $exist, $uuid ) : $self-&gt;find($id);
+}
+</code></pre>
+<p>namingsence by 2ndlife.</p>
+<p>* 16:46 コード修正</p>
+
+  </div>
+
+  <div class="meta">
+    by typester /
+    at <a href="/memo/2006/02/12/1/">2006-02-12T16:27:00</a> /
+    <a href="/memo/tag/perl/">perl</a>
+    &middot; <a href="/memo/tag/dbic/">dbic</a>
+    / <a href="/memo/2006/02/12/1/#disqus_thread">Comment</a>
+  </div>
+</div>
+
+<div class="entry autopagerize_page_element">
+  <h2><a href="/memo/2006/02/07/4/"></a></h2>
+
+  <div class="body">
+    <p>下記 CLON::Model::DBIC だと <code>use CLON;</code> な使い方でも warning はでないんだ。唯一の利点かｍ</p>
+<p>clon_server.pl で warning がでるのは require してるせい。どうしようもねーな。</p>
+
+  </div>
+
+  <div class="meta">
+    by typester /
+    at <a href="/memo/2006/02/07/4/">2006-02-07T03:19:00</a> /
+    <a href="/memo/tag/dbic/">dbic</a>
+    / <a href="/memo/2006/02/07/4/#disqus_thread">Comment</a>
+  </div>
+</div>
+
+<div class="entry autopagerize_page_element">
+  <h2><a href="/memo/2006/02/07/2/"></a></h2>
+
+  <div class="body">
+    <p>ためしに CLON の <code>CLON::Model::DBIC</code> を <code>Schema::Loader</code> ベースにしてみた。</p>
+<p><a href="http://dev.unknownplace.org/public/file/CLON/trunk/lib/CLON/Model/DBIC.pm?rev=224&amp;format=txt">CLON::Model::DBIC Rev.224</a></p>
+<pre><code><span class="keyword">sub</span> <span class="function-name">table</span> {
+    <span class="keyword">my</span> ( <span class="variable-name">$self</span>, <span class="variable-name">$table</span> ) = <span class="cperl-array">@_</span>;
+    <span class="type">__PACKAGE__</span>-&gt;resultset( $self-&gt;loader-&gt;monikers-&gt;{$table} );
+}
+</code></pre>
+<p>こんなコードを入れておくことにより、<code>Catalyst::Model::DBIC</code> 互換な <code>$c-&gt;model(&apos;DBIC&apos;)-&gt;table(&apos;table_name&apos;)</code> がそのまま利用でき、CLON はこの書き方をしていたのでこのファイルを書き換えるだけで他は何も変更しなくて良かった。</p>
+<p>といってもこれじゃ別に Schema の恩恵にまったくあずかれないし、相変わらず Class::C3 はうるさいし、あんまりいいことない。</p>
+
+  </div>
+
+  <div class="meta">
+    by typester /
+    at <a href="/memo/2006/02/07/2/">2006-02-07T01:38:00</a> /
+    <a href="/memo/tag/dbic/">dbic</a>
+    / <a href="/memo/2006/02/07/2/#disqus_thread">Comment</a>
+  </div>
+</div>
+
+<div class="entry autopagerize_page_element">
+  <h2><a href="/memo/2006/02/06/10/">cpanrecent_crawler を Schema::Loader にスイッチ</a></h2>
+
+  <div class="body">
+    <p>今朝かいた <a href="http://unknownplace.org/memo/2006/02/06#e003">Catalyst の Model を Schema::Loader でロード</a>ってやつを、CPAN Recent Changes のクローラでやってみた。</p>
+<p>今までは <code>use MyApp;</code> 方式でロードしていて、それからの変更は以下のような感じ。</p>
+<blockquote><p><a href="http://dev.unknownplace.org/public/changeset/223">[223] (changeset) - Public Projects - Trac</a></p></blockquote>
+<p>こんな感じで割りとすぐ移行可能。<code>Class::C3</code> の warning が消えたのがかなりうれしいなぁ。</p>
+
+  </div>
+
+  <div class="meta">
+    by typester /
+    at <a href="/memo/2006/02/06/10/">2006-02-06T22:53:00</a> /
+    <a href="/memo/tag/perl/">perl</a>
+    &middot; <a href="/memo/tag/dbic/">dbic</a>
+    / <a href="/memo/2006/02/06/10/#disqus_thread">Comment</a>
+  </div>
+</div>
+
+
+
+
+<div id="pager" class="autopagerize_insert_before">
+  <p class="pages">
+    <a class="prev" rel="previous" href="/memo/tag/dbic/page/2/">&laquo; Prev</a>
+    <a href="/memo/tag/dbic/">1</a>
+    <a href="/memo/tag/dbic/page/2/">2</a>
+    <span class="current">3</span>
+    <a href="/memo/tag/dbic/page/4/">4</a>
+    <a class="next" rel="next" href="/memo/tag/dbic/page/4/">Next &raquo;</a>
+  </p>
+  <p class="info">(Page 3 of 4)</p>
+</div>
+
+
+</div>
+
+<p id="footer">
+  Copyright &copy; 2005-2013
+      by <a class="author" href="/about/#me">Daisuke Murase (typester)</a> /
+  Site generated by <a href="https://github.com/typester/nim">nim</a> /
+  Comments powered by <a href="http://disqus.com">DISQUS</a>.
+</p>
+
+</div>
+
+
+<script type="text/javascript">
+//<![CDATA[
+(function() {
+	var links = document.getElementsByTagName('a');
+	var query = '?';
+	for(var i = 0; i < links.length; i++) {
+	if(links[i].href.indexOf('#disqus_thread') >= 0) {
+		query += 'url' + i + '=' + encodeURIComponent(links[i].href) + '&';
+	}
+	}
+	document.write('<script charset="utf-8" type="text/javascript" src="http://disqus.com/forums/unknownplace/get_num_replies.js' + query + '"></' + 'script>');
+})();
+//]]>
+</script>
+
+
+<script type="text/javascript">
+var gaJsHost = (("https:" == document.location.protocol) ? "https://ssl." : "http://www.");
+document.write(unescape("%3Cscript src='" + gaJsHost + "google-analytics.com/ga.js' type='text/javascript'%3E%3C/script%3E"));
+</script>
+<script type="text/javascript">
+try {
+var pageTracker = _gat._getTracker("UA-53067-1");
+pageTracker._trackPageview();
+} catch(err) {}</script>
+
+<script>
+function googleTranslateElementInit() {
+  new google.translate.TranslateElement({
+    pageLanguage: 'ja',
+    gaTrack: true,
+    gaId: 'UA-53067',
+    floatPosition: google.translate.TranslateElement.FloatPosition.BOTTOM_RIGHT
+  });
+}
+</script><script src="//translate.google.com/translate_a/element.js?cb=googleTranslateElementInit"></script>
+
+</body>
+</html>

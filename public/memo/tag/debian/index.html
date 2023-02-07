@@ -1,0 +1,348 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="ja" xml:lang="ja">
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <title>memo - unknownplace.org</title>
+  <link rel="stylesheet" type="text/css" href="http://yui.yahooapis.com/3.0.0/build/cssreset/reset-min.css" />
+  <link rel="stylesheet" type="text/css" href="http://yui.yahooapis.com/3.0.0/build/cssfonts/fonts-min.css" />
+  <link rel="stylesheet" href="/css/style.css" type="text/css" />
+  <meta property="fb:admins" content="1093631929" />
+  <meta name="robots" content="noindex" />
+  <link rel="alternate" type="application/rss+xml" href="http://unknownplace.org/memo/index.rss" />
+</head>
+<body>
+
+<div id="container">
+<div id="header">
+    <h1><a href="/">unknownplace.org</a></h1> /
+<a href="/memo/">memo</a>
+</div>
+
+<div id="content">
+
+<div class="entry autopagerize_page_element">
+  <h2><a href="/memo/2008/02/07/1/">fastladderメモ</a></h2>
+
+  <div class="body">
+    <p>動かすのに必要だったもの</p>
+<pre><code>sudo aptitude install ruby ruby1.8-dev rubygems
+sudo aptitude install libfreeimage-dev
+sudo gem install rails
+sudo gem install sqlite3-ruby
+sudo gem install feed-normalizer
+</code></pre>
+<p>DBセットアップ</p>
+<pre><code>rake db:migrate RAILS_ENV=development
+</code></pre>
+<p>起動</p>
+<pre><code>./script/server -e development
+</code></pre>
+<p>すばらしすぎるなぁ。</p>
+
+  </div>
+
+  <div class="meta">
+    by typester /
+    at <a href="/memo/2008/02/07/1/">2008-02-07T14:35:00</a> /
+    <a href="/memo/tag/ruby/">ruby</a>
+    &middot; <a href="/memo/tag/debian/">debian</a>
+    / <a href="/memo/2008/02/07/1/#disqus_thread">Comment</a>
+  </div>
+</div>
+
+<div class="entry autopagerize_page_element">
+  <h2><a href="/memo/2007/08/23/1/">htpasswdだけインストールしたい！</a></h2>
+
+  <div class="body">
+    <p>と思ったのだけど、htpasswdとかはapache2-utilsってパッケージにわけられていてそれだけ別にインストールできるようで、一瞬で解決。</p>
+<pre><code>$ sudo dpkg -L apache2-utils
+/.
+/usr
+/usr/bin
+/usr/bin/dbmmanage
+/usr/bin/htdbm
+/usr/bin/htdigest
+/usr/bin/htpasswd
+/usr/sbin
+/usr/sbin/ab
+/usr/sbin/checkgid
+/usr/sbin/logresolve
+/usr/sbin/rotatelogs
+/usr/sbin/htcacheclean
+/usr/sbin/check_forensic
+/usr/sbin/split-logfile
+/usr/share
+/usr/share/man
+/usr/share/man/man1
+/usr/share/man/man1/htdbm.1.gz
+/usr/share/man/man1/htpasswd.1.gz
+/usr/share/man/man1/dbmmanage.1.gz
+/usr/share/man/man1/htdigest.1.gz
+/usr/share/man/man8
+/usr/share/man/man8/rotatelogs.8.gz
+/usr/share/man/man8/htcacheclean.8.gz
+/usr/share/man/man8/checkgid.8.gz
+/usr/share/man/man8/ab.8.gz
+/usr/share/man/man8/logresolve.8.gz
+/usr/share/man/man8/check_forensic.8.gz
+/usr/share/doc
+/usr/share/doc/apache2-utils
+/usr/share/doc/apache2-utils/copyright
+/usr/share/doc/apache2-utils/NEWS.Debian.gz
+/usr/share/doc/apache2-utils/changelog.gz
+/usr/share/doc/apache2-utils/changelog.Debian.gz
+</code></pre>
+
+  </div>
+
+  <div class="meta">
+    by typester /
+    at <a href="/memo/2007/08/23/1/">2007-08-23T16:52:00</a> /
+    <a href="/memo/tag/debian/">debian</a>
+    / <a href="/memo/2007/08/23/1/#disqus_thread">Comment</a>
+  </div>
+</div>
+
+<div class="entry autopagerize_page_element">
+  <h2><a href="/memo/2007/07/18/1/">aptitude upgrade</a></h2>
+
+  <div class="body">
+    <p>しようとしたら</p>
+<blockquote><p>W: The &quot;upgrade&quot; command is deprecated; use &quot;safe-upgrade&quot; instead.</p></blockquote>
+<p>とかいわれた。お、お。</p>
+<p>man みてみると</p>
+<ul><li>upgrade -&gt; safe-upgrade</li><li>dist-upgrade -&gt; full-upgrade</li></ul>
+<p>となったのかな。</p>
+
+  </div>
+
+  <div class="meta">
+    by typester /
+    at <a href="/memo/2007/07/18/1/">2007-07-18T12:06:00</a> /
+    <a href="/memo/tag/debian/">debian</a>
+    / <a href="/memo/2007/07/18/1/#disqus_thread">Comment</a>
+  </div>
+</div>
+
+<div class="entry autopagerize_page_element">
+  <h2><a href="/memo/2007/02/20/1/">perl-debug</a></h2>
+
+  <div class="body">
+    <p>とか言うパッケージがあったのか！！！！＞Debian</p>
+<p>いままでソースからわざわざ別の場所に入れてたよー。あー。</p>
+
+  </div>
+
+  <div class="meta">
+    by typester /
+    at <a href="/memo/2007/02/20/1/">2007-02-20T00:19:00</a> /
+    <a href="/memo/tag/perl/">perl</a>
+    &middot; <a href="/memo/tag/debian/">debian</a>
+    / <a href="/memo/2007/02/20/1/#disqus_thread">Comment</a>
+  </div>
+</div>
+
+<div class="entry autopagerize_page_element">
+  <h2><a href="/memo/2007/02/17/1/">64bit Debian で 32bit アプリを動かすの法</a></h2>
+
+  <div class="body">
+    <p>$ sudo aptitude install ia32-libs</p>
+<p>hamachi がうごかんくてあせったわー。</p>
+
+  </div>
+
+  <div class="meta">
+    by typester /
+    at <a href="/memo/2007/02/17/1/">2007-02-17T01:42:00</a> /
+    <a href="/memo/tag/linux/">linux</a>
+    &middot; <a href="/memo/tag/debian/">debian</a>
+    / <a href="/memo/2007/02/17/1/#disqus_thread">Comment</a>
+  </div>
+</div>
+
+<div class="entry autopagerize_page_element">
+  <h2><a href="/memo/2006/12/09/4/">dnsmasq調子悪い @ debian etch</a></h2>
+
+  <div class="body">
+    <p>うちのLAN内の名前解決に使ってるdnsmasqだけど最近反応なくなることが多いなぁ。なんだろう</p>
+<p>起動しなおしてやると動く。。</p>
+
+  </div>
+
+  <div class="meta">
+    by typester /
+    at <a href="/memo/2006/12/09/4/">2006-12-09T16:27:00</a> /
+    <a href="/memo/tag/debian/">debian</a>
+    / <a href="/memo/2006/12/09/4/#disqus_thread">Comment</a>
+  </div>
+</div>
+
+<div class="entry autopagerize_page_element">
+  <h2><a href="/memo/2006/11/15/2/">ひさびさに dist-upgrade</a></h2>
+
+  <div class="body">
+    <p>アップデートリストに subversion やら apache やら気になるものが出ていたので、dist-upgrade ってみた。</p>
+<p>apacheは2.2に、subversionは1.4になった。Debian etch。</p>
+<p>とりあえずsvnのBasic認証が通らなくなって何事かと思ったら、<code>mod_authz_user</code> が無効になっていた。何でデフォ無効なんだよ＞＜</p>
+<p>なんかモジュールふえまくりだな、とか今頃思った次第。</p>
+
+  </div>
+
+  <div class="meta">
+    by typester /
+    at <a href="/memo/2006/11/15/2/">2006-11-15T14:19:00</a> /
+    <a href="/memo/tag/life/">life</a>
+    &middot; <a href="/memo/tag/debian/">debian</a>
+    / <a href="/memo/2006/11/15/2/#disqus_thread">Comment</a>
+  </div>
+</div>
+
+<div class="entry autopagerize_page_element">
+  <h2><a href="/memo/2006/06/26/4/">Weak references are not implemented in the version of perl</a></h2>
+
+  <div class="body">
+    <p>なにげなく <code>aptitude upgrade</code> したら CRON からメールがきまくって</p>
+<pre><code>Weak references are not implemented in the version of perl at /usr/local/share/perl/5.8.4/DBIx/Class/Schema.pm line 7
+</code></pre>
+<p>とかで Scalar::Util::weaken 使ってるスクリプトが全滅。</p>
+<p>おいおいなんだよこれ。</p>
+<p>weaken は Catalyst でも DBIC でも使ってるのでこのままだと fastcgi プロセス再起したらこの鯖で動いてる Web アプリ全部死亡する危機w</p>
+<p>なんでだろーとおもってとりあえず Scalar::Util 再インストールしたら直った。</p>
+<p>謎過ぎる。。同じバージョンだったのに。</p>
+
+  </div>
+
+  <div class="meta">
+    by typester /
+    at <a href="/memo/2006/06/26/4/">2006-06-26T22:47:00</a> /
+    <a href="/memo/tag/perl/">perl</a>
+    &middot; <a href="/memo/tag/debian/">debian</a>
+    / <a href="/memo/2006/06/26/4/#disqus_thread">Comment</a>
+  </div>
+</div>
+
+<div class="entry autopagerize_page_element">
+  <h2><a href="/memo/2006/02/09/4/">Debian での trac webadmin メモ</a></h2>
+
+  <div class="body">
+    <p>etch での話ですよ。</p>
+<pre><code>$ sudo aptitude install python-setuptools
+</code></pre>
+<p>で python のパッケージインストーラが入るが、コマンド名がDebian独自のものになってるため注意が必要。</p>
+<p>んで、webadminのページより.eggファイルをダウンロードし、</p>
+<pre><code>$ sudo easy_install TracWebAdmin-0.1.1dev_r2765-py2.3.egg
+</code></pre>
+<p>とすればインストール完了。DLしなくてもeasy_installにURL渡してもいいぽい。</p>
+<p>Debian独特なのは以上で、あとは同じ。 trac.ini を編集すれば、TRAC_ADMIN権限ユーザーでwebadmin機能が使用可能になる。</p>
+<p>んー便利だ。これだけで0.9にあげた価値ある。家のほうでも使おう。</p>
+
+  </div>
+
+  <div class="meta">
+    by typester /
+    at <a href="/memo/2006/02/09/4/">2006-02-09T17:54:00</a> /
+    <a href="/memo/tag/debian/">debian</a>
+    &middot; <a href="/memo/tag/trac/">trac</a>
+    / <a href="/memo/2006/02/09/4/#disqus_thread">Comment</a>
+  </div>
+</div>
+
+<div class="entry autopagerize_page_element">
+  <h2><a href="/memo/2006/01/25/5/">KDE 日本語関係</a></h2>
+
+  <div class="body">
+    <p>メモ。</p>
+<pre><code>sudo aptitude skkdic skktools uim uim-skk uim-xim uim-gtk2.0 uim-qt
+</code></pre>
+<p>~/.uim</p>
+<pre><code>(define default-im-name &apos;skk)
+</code></pre>
+<p>~/.xsession</p>
+<pre><code>export GTK_IM_MODULE=uim
+export QT_IM_MODULE=uim
+export XMODIFIERS=@im=uim
+
+uim-xim &amp;
+uim-toolbar-gtk-systray &amp;
+uim-toolbar-qt &amp;
+
+x-session-manager
+</code></pre>
+
+  </div>
+
+  <div class="meta">
+    by typester /
+    at <a href="/memo/2006/01/25/5/">2006-01-25T22:28:00</a> /
+    <a href="/memo/tag/debian/">debian</a>
+    &middot; <a href="/memo/tag/kde/">kde</a>
+    / <a href="/memo/2006/01/25/5/#disqus_thread">Comment</a>
+  </div>
+</div>
+
+
+
+
+<div id="pager" class="autopagerize_insert_before">
+  <p class="pages">
+    <span class="prev">&laquo; Prev</span>
+    <span class="current">1</span>
+    <a href="/memo/tag/debian/page/2/">2</a>
+    <a class="next" rel="next" href="/memo/tag/debian/page/2/">Next &raquo;</a>
+  </p>
+  <p class="info">(Page 1 of 2)</p>
+</div>
+
+
+</div>
+
+<p id="footer">
+  Copyright &copy; 2005-2013
+      by <a class="author" href="/about/#me">Daisuke Murase (typester)</a> /
+  Site generated by <a href="https://github.com/typester/nim">nim</a> /
+  Comments powered by <a href="http://disqus.com">DISQUS</a>.
+</p>
+
+</div>
+
+
+<script type="text/javascript">
+//<![CDATA[
+(function() {
+	var links = document.getElementsByTagName('a');
+	var query = '?';
+	for(var i = 0; i < links.length; i++) {
+	if(links[i].href.indexOf('#disqus_thread') >= 0) {
+		query += 'url' + i + '=' + encodeURIComponent(links[i].href) + '&';
+	}
+	}
+	document.write('<script charset="utf-8" type="text/javascript" src="http://disqus.com/forums/unknownplace/get_num_replies.js' + query + '"></' + 'script>');
+})();
+//]]>
+</script>
+
+
+<script type="text/javascript">
+var gaJsHost = (("https:" == document.location.protocol) ? "https://ssl." : "http://www.");
+document.write(unescape("%3Cscript src='" + gaJsHost + "google-analytics.com/ga.js' type='text/javascript'%3E%3C/script%3E"));
+</script>
+<script type="text/javascript">
+try {
+var pageTracker = _gat._getTracker("UA-53067-1");
+pageTracker._trackPageview();
+} catch(err) {}</script>
+
+<script>
+function googleTranslateElementInit() {
+  new google.translate.TranslateElement({
+    pageLanguage: 'ja',
+    gaTrack: true,
+    gaId: 'UA-53067',
+    floatPosition: google.translate.TranslateElement.FloatPosition.BOTTOM_RIGHT
+  });
+}
+</script><script src="//translate.google.com/translate_a/element.js?cb=googleTranslateElementInit"></script>
+
+</body>
+</html>

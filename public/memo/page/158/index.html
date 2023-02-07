@@ -1,0 +1,289 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="ja" xml:lang="ja">
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <title>memo - unknownplace.org</title>
+  <link rel="stylesheet" type="text/css" href="http://yui.yahooapis.com/3.0.0/build/cssreset/reset-min.css" />
+  <link rel="stylesheet" type="text/css" href="http://yui.yahooapis.com/3.0.0/build/cssfonts/fonts-min.css" />
+  <link rel="stylesheet" href="/css/style.css" type="text/css" />
+  <meta property="fb:admins" content="1093631929" />
+  <meta name="robots" content="noindex" />
+  <link rel="alternate" type="application/rss+xml" href="http://unknownplace.org/memo/index.rss" />
+</head>
+<body>
+
+<div id="container">
+<div id="header">
+    <h1><a href="/">unknownplace.org</a></h1> /
+<a href="/memo/">memo</a>
+</div>
+
+<div id="content">
+
+<div class="entry autopagerize_page_element">
+  <h2><a href="/memo/2005/12/21/2/"></a></h2>
+
+  <div class="body">
+    <p>退社。</p>
+
+  </div>
+
+  <div class="meta">
+    by typester /
+    at <a href="/memo/2005/12/21/2/">2005-12-21T03:36:00</a> /
+    <a href="/memo/tag/life/">life</a>
+    / <a href="/memo/2005/12/21/2/#disqus_thread">Comment</a>
+  </div>
+</div>
+
+<div class="entry autopagerize_page_element">
+  <h2><a href="/memo/2005/12/21/1/">FormValidator::Simple</a></h2>
+
+  <div class="body">
+    <p>Validator 使う機会があったら試してみようと思っていた FormValidator::Simple。やっと試してみた。</p>
+<p>すげーいい！</p>
+<p>けど、とりあえず軽く使ってみて一つ不満が。エラーメッセージを全体の集合でしか取れないこと。<code>Data::FormValidator</code> みたいに個別かつフォーマットされた物もほしい。</p>
+<p>とりあえず現状使う上では(Catalystの場合)、</p>
+<pre><code><span class="nxml-text">MyApp-&gt;config(
+    &apos;View::TT&apos; =&gt; { PRE_PROCESS =&gt; &apos;inc/macro.tt&apos;, },
+    validator  =&gt; {
+        messages       =&gt; &apos;conf/messages.yml&apos;,
+        message_format =&gt; qq!</span><span class="nxml-tag-delimiter">&lt;</span><span class="nxml-element-local-name">span</span> <span class="nxml-attribute-local-name">class</span>=<span class="nxml-attribute-value-delimiter">&quot;</span><span class="nxml-attribute-value">error</span><span class="nxml-attribute-value-delimiter">&quot;</span><span class="nxml-tag-delimiter">&gt;</span><span class="nxml-text">%s</span><span class="nxml-tag-delimiter">&lt;</span><span class="nxml-tag-slash">/</span><span class="nxml-element-local-name">span</span><span class="nxml-tag-delimiter">&gt;</span><span class="nxml-text">\n!,
+    },
+);
+</span></code></pre>
+<p>などとし、macro.tt に</p>
+<pre><code>[%-
+
+MACRO ERROR(action, key) BLOCK;
+    c.form.message.get(action, key, c.form.error(key)) | format(c.config.validator.message_format);
+END;
+
+-%]
+</code></pre>
+<p>とかしておいた上で、フォームのテンプレートで</p>
+<pre><code>&lt;input type=<span class="string">"text"</span> name=<span class="string">"user"</span> id=<span class="string">"login_form_user"</span> value=<span class="string">""</span> /&gt;
+[%- ERROR(<span class="string">'login'</span>, <span class="string">'user'</span>) -%]
+</code></pre>
+<p>とかすげーめんどいことしてる。</p>
+<p>モジュールのほういじろうかとおもったけど、いまいちうまい方法が思いつかなかったので。。</p>
+<p>けどそれでも <code>Data::FormValidator</code> よりは断然良い。</p>
+
+  </div>
+
+  <div class="meta">
+    by typester /
+    at <a href="/memo/2005/12/21/1/">2005-12-21T02:45:00</a> /
+    <a href="/memo/tag/perl/">perl</a>
+    / <a href="/memo/2005/12/21/1/#disqus_thread">Comment</a>
+  </div>
+</div>
+
+<div class="entry autopagerize_page_element">
+  <h2><a href="/memo/2005/12/20/5/"></a></h2>
+
+  <div class="body">
+    <p>4月にかった DELL の激安サーバーの uptime が 200 days に。いい買い物した！</p>
+
+  </div>
+
+  <div class="meta">
+    by typester /
+    at <a href="/memo/2005/12/20/5/">2005-12-20T14:13:00</a> /
+    <a href="/memo/tag/life/">life</a>
+    / <a href="/memo/2005/12/20/5/#disqus_thread">Comment</a>
+  </div>
+</div>
+
+<div class="entry autopagerize_page_element">
+  <h2><a href="/memo/2005/12/20/4/">dnsmasq</a></h2>
+
+  <div class="body">
+    <p>社内ネットワークが調子悪くてうんうんいってて、挙動的に DNS 周りがネックになってるっぽかったので、ローカルの Debian マシンで簡易 DNS サーバー作ってそっち使うようにしたら普通になった。</p>
+<p>Debian で DNS はどうやるのが普通なんだろうと思って <a href="http://www.debian-administration.org/">Debian GNU/Linux System Administration Resources</a> 内検索したら簡易なのは dnsmasq 使うとめちゃ簡単！ とかいうのをコメント欄で見つけたのでやってみた。</p>
+<p>ほんとすげー簡単。</p>
+<p>名前引きの設定は <code>/etc/hosts</code> から、外部 DNS サーバーの設定は <code>/etc/resolv.conf</code> から読むようになっていてほとんど設定不要。</p>
+<p>いやー、これ家でも使おう。OPT100 の EasyDNS 機能がどうしようもなくつかえなくてこまってたとこ。</p>
+
+  </div>
+
+  <div class="meta">
+    by typester /
+    at <a href="/memo/2005/12/20/4/">2005-12-20T13:44:00</a> /
+    <a href="/memo/tag/debian/">debian</a>
+    &middot; <a href="/memo/tag/life/">life</a>
+    / <a href="/memo/2005/12/20/4/#disqus_thread">Comment</a>
+  </div>
+</div>
+
+<div class="entry autopagerize_page_element">
+  <h2><a href="/memo/2005/12/20/3/"></a></h2>
+
+  <div class="body">
+    <p>ThinkPad X41 の Fn キーは Release 時に WakeUp キーコードを送ってくる。</p>
+
+  </div>
+
+  <div class="meta">
+    by typester /
+    at <a href="/memo/2005/12/20/3/">2005-12-20T10:56:00</a> /
+    <a href="/memo/tag/life/">life</a>
+    / <a href="/memo/2005/12/20/3/#disqus_thread">Comment</a>
+  </div>
+</div>
+
+<div class="entry autopagerize_page_element">
+  <h2><a href="/memo/2005/12/20/2/"></a></h2>
+
+  <div class="body">
+    <p>出社。</p>
+
+  </div>
+
+  <div class="meta">
+    by typester /
+    at <a href="/memo/2005/12/20/2/">2005-12-20T10:33:00</a> /
+    <a href="/memo/tag/life/">life</a>
+    / <a href="/memo/2005/12/20/2/#disqus_thread">Comment</a>
+  </div>
+</div>
+
+<div class="entry autopagerize_page_element">
+  <h2><a href="/memo/2005/12/20/1/"></a></h2>
+
+  <div class="body">
+    <p>退社。</p>
+
+  </div>
+
+  <div class="meta">
+    by typester /
+    at <a href="/memo/2005/12/20/1/">2005-12-20T00:33:00</a> /
+    <a href="/memo/tag/life/">life</a>
+    / <a href="/memo/2005/12/20/1/#disqus_thread">Comment</a>
+  </div>
+</div>
+
+<div class="entry autopagerize_page_element">
+  <h2><a href="/memo/2005/12/19/4/"></a></h2>
+
+  <div class="body">
+    <p>del.icio.us とかおちててつかえねーからそゆとき用のフロントエンド作ろうかと思ったけど、del.icio.us 落ちてたら作れないことに気づいた。</p>
+
+  </div>
+
+  <div class="meta">
+    by typester /
+    at <a href="/memo/2005/12/19/4/">2005-12-19T22:12:00</a> /
+    <a href="/memo/tag/life/">life</a>
+    / <a href="/memo/2005/12/19/4/#disqus_thread">Comment</a>
+  </div>
+</div>
+
+<div class="entry autopagerize_page_element">
+  <h2><a href="/memo/2005/12/19/3/"></a></h2>
+
+  <div class="body">
+    <p>隣の人が Thinkpad 買おうかなーとかいっててレノボのサイト見に行ったら、X40 とかも新しくなっててオレの X41 よりスペック高くなってやがるすよ！！ (X41も新しくなってるんだけど)</p>
+<p>つことは secondlife な人のはオレのよりスペック高げだなぁ。くぅ。</p>
+
+  </div>
+
+  <div class="meta">
+    by typester /
+    at <a href="/memo/2005/12/19/3/">2005-12-19T15:51:00</a> /
+    <a href="/memo/tag/life/">life</a>
+    / <a href="/memo/2005/12/19/3/#disqus_thread">Comment</a>
+  </div>
+</div>
+
+<div class="entry autopagerize_page_element">
+  <h2><a href="/memo/2005/12/19/2/"></a></h2>
+
+  <div class="body">
+    <p>体調よくなった。土日寝まくったからかな。</p>
+
+  </div>
+
+  <div class="meta">
+    by typester /
+    at <a href="/memo/2005/12/19/2/">2005-12-19T14:36:00</a> /
+    <a href="/memo/tag/life/">life</a>
+    / <a href="/memo/2005/12/19/2/#disqus_thread">Comment</a>
+  </div>
+</div>
+
+
+
+
+<div id="pager" class="autopagerize_insert_before">
+  <p class="pages">
+    <a class="prev" rel="previous" href="/memo/page/157/">&laquo; Prev</a>
+    <a href="/memo/page/154/">154</a>
+    <a href="/memo/page/155/">155</a>
+    <a href="/memo/page/156/">156</a>
+    <a href="/memo/page/157/">157</a>
+    <span class="current">158</span>
+    <a href="/memo/page/159/">159</a>
+    <a href="/memo/page/160/">160</a>
+    <a href="/memo/page/161/">161</a>
+    <a href="/memo/page/162/">162</a>
+    <a href="/memo/page/163/">163</a>
+    <a class="next" rel="next" href="/memo/page/159/">Next &raquo;</a>
+  </p>
+  <p class="info">(Page 158 of 203)</p>
+</div>
+
+
+</div>
+
+<p id="footer">
+  Copyright &copy; 2005-2013
+      by <a class="author" href="/about/#me">Daisuke Murase (typester)</a> /
+  Site generated by <a href="https://github.com/typester/nim">nim</a> /
+  Comments powered by <a href="http://disqus.com">DISQUS</a>.
+</p>
+
+</div>
+
+
+<script type="text/javascript">
+//<![CDATA[
+(function() {
+	var links = document.getElementsByTagName('a');
+	var query = '?';
+	for(var i = 0; i < links.length; i++) {
+	if(links[i].href.indexOf('#disqus_thread') >= 0) {
+		query += 'url' + i + '=' + encodeURIComponent(links[i].href) + '&';
+	}
+	}
+	document.write('<script charset="utf-8" type="text/javascript" src="http://disqus.com/forums/unknownplace/get_num_replies.js' + query + '"></' + 'script>');
+})();
+//]]>
+</script>
+
+
+<script type="text/javascript">
+var gaJsHost = (("https:" == document.location.protocol) ? "https://ssl." : "http://www.");
+document.write(unescape("%3Cscript src='" + gaJsHost + "google-analytics.com/ga.js' type='text/javascript'%3E%3C/script%3E"));
+</script>
+<script type="text/javascript">
+try {
+var pageTracker = _gat._getTracker("UA-53067-1");
+pageTracker._trackPageview();
+} catch(err) {}</script>
+
+<script>
+function googleTranslateElementInit() {
+  new google.translate.TranslateElement({
+    pageLanguage: 'ja',
+    gaTrack: true,
+    gaId: 'UA-53067',
+    floatPosition: google.translate.TranslateElement.FloatPosition.BOTTOM_RIGHT
+  });
+}
+</script><script src="//translate.google.com/translate_a/element.js?cb=googleTranslateElementInit"></script>
+
+</body>
+</html>

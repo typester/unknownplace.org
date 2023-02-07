@@ -1,0 +1,156 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="ja" xml:lang="ja">
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <title>通信状態表示 - unknownplace.org</title>
+  <link rel="stylesheet" type="text/css" href="http://yui.yahooapis.com/3.0.0/build/cssreset/reset-min.css" />
+  <link rel="stylesheet" type="text/css" href="http://yui.yahooapis.com/3.0.0/build/cssfonts/fonts-min.css" />
+  <link rel="stylesheet" href="/css/style.css" type="text/css" />
+  <meta property="fb:admins" content="1093631929" />
+  <link rel="alternate" type="application/rss+xml" href="http://unknownplace.org/memo/index.rss" />
+</head>
+<body>
+
+<div id="container">
+<div id="header">
+    <h1><a href="/">unknownplace.org</a></h1> /
+<a href="/memo/">memo</a>
+</div>
+
+<div id="content">
+<div class="entry autopagerize_page_element">
+  <h2><a href="/memo/2005/12/06/5/">通信状態表示</a></h2>
+
+  <div class="body">
+    <p><a href="http://www.flickr.com/photos/typester/70793693/" title="Photo Sharing"><img alt="GNU screen hardstatus #3" height="67" src="http://static.flickr.com/34/70793693_30fa457611_o.jpg" width="532" /></a></p>
+<p>意味ねええええ。ので多分すぐあきる。</p>
+<pre><code><span class="comment-delimiter">#</span><span class="comment">!/usr/bin/perl
+</span>
+<span class="keyword">use</span> <span class="function-name">strict</span>;
+<span class="keyword">use</span> <span class="function-name">warnings</span>;
+
+$|=1;
+
+{
+    <span class="keyword">package</span> <span class="function-name">StatQue</span>;
+
+    <span class="keyword">sub</span> <span class="function-name">new</span> { <span class="type">bless</span> {}, <span class="cperl-nonoverridable">shift</span> }
+
+    <span class="keyword">sub</span> <span class="function-name">add</span> {
+        <span class="keyword">my</span> <span class="variable-name">$self</span> = <span class="cperl-nonoverridable">shift</span>;
+        <span class="cperl-nonoverridable">push</span> @{$self-&gt;{<span class="string">que</span>}}, <span class="cperl-nonoverridable">shift</span>;
+
+        <span class="cperl-nonoverridable">shift</span> @{$self-&gt;{<span class="string">que</span>}} <span class="keyword">if</span> @{$self-&gt;{<span class="string">que</span>}} &gt;= 11;
+    }
+
+    <span class="keyword">sub</span> <span class="function-name">avg</span> {
+        <span class="keyword">my</span> <span class="variable-name">$self</span> = <span class="cperl-nonoverridable">shift</span>;
+        <span class="keyword">my</span> <span class="variable-name">$total</span>;
+        $total += $_ <span class="keyword">for</span> @{$self-&gt;{<span class="string">que</span>}};
+
+        $total / @{$self-&gt;{<span class="string">que</span>}};
+    }
+}
+
+<span class="keyword">my</span> <span class="variable-name">$in_que</span>  = StatQue-&gt;new;
+<span class="keyword">my</span> <span class="variable-name">$out_que</span> = StatQue-&gt;new;
+
+<span class="keyword">my</span> <span class="cperl-array">@stats</span> = <span class="cperl-nonoverridable">grep</span> <span class="constant">/</span><span class="function-name">.</span><span class="builtin">+</span><span class="constant">/</span>, <span class="cperl-nonoverridable">split</span> <span class="constant">/</span><span class="string">:</span><span class="keyword">|</span><span class="builtin">\</span><span class="type">s</span><span class="constant">/</span>, <span class="cperl-nonoverridable">qx</span><span class="string">{ cat /proc/net/dev | grep eth0 }</span>;
+<span class="keyword">my</span> ( <span class="variable-name">$old_in</span>, <span class="variable-name">$old_out</span> ) = ( <span class="cperl-array">$stats</span>[1], <span class="cperl-array">$stats</span>[9] );
+
+<span class="keyword">while</span> (1) {
+    <span class="type">sleep</span> 1;
+
+    <span class="cperl-array">@stats</span> = <span class="cperl-nonoverridable">grep</span> <span class="constant">/</span><span class="function-name">.</span><span class="builtin">+</span><span class="constant">/</span>, <span class="cperl-nonoverridable">split</span> <span class="constant">/</span><span class="string">:</span><span class="keyword">|</span><span class="builtin">\</span><span class="type">s</span><span class="constant">/</span>, <span class="cperl-nonoverridable">qx</span><span class="string">{ cat /proc/net/dev | grep eth0 }</span>;
+    <span class="keyword">my</span> ( <span class="variable-name">$new_in</span>, <span class="variable-name">$new_out</span> ) = ( <span class="cperl-array">$stats</span>[1], <span class="cperl-array">$stats</span>[9] );
+
+    $in_que-&gt;add( $new_in - $old_in );
+    $out_que-&gt;add( $new_out - $old_out );
+
+    <span class="cperl-nonoverridable">printf</span>(<span class="string">&quot;in: %.1fKB/s out: %.1fKB/s\n&quot;</span>,
+            $in_que-&gt;avg / 1024,
+            $out_que-&gt;avg / 1024);
+
+    $old_in  = $new_in;
+    $old_out = $new_out;
+}
+</code></pre>
+<p>こんなのを netstat.pl とかしておいて screenrc に</p>
+<pre><code>backtick 1 0 0 ${HOME}/.screen/netstat.pl
+</code></pre>
+<p>とする。hardstatus も</p>
+<pre><code>-hardstatus alwayslastline <span class="string">"[%02c] %`%-w%{=b bw}%n %t%{-}%+w"</span>
++hardstatus alwayslastline <span class="string">"[%02c] %0`%-w%{=b bw}%n %t%{-}%+w %= %1`"</span>
+</code></pre>
+<p>こんな感じで。</p>
+<p>昨日の backtick.pl が ID0 で netstat.pl が ID1 ってことね。</p>
+
+  </div>
+
+  <div class="meta">
+    by typester /
+    at <a href="/memo/2005/12/06/5/">2005-12-06T17:49:00</a> /
+    <a href="/memo/tag/screen/">screen</a>
+    / <a href="/memo/2005/12/06/5/#disqus_thread">Comments(0)</a>
+  </div>
+</div>
+
+<div id="disqus_thread"></div>
+
+<script type="text/javascript">
+    var disqus_url = location.protocol + "//" + location.host + "/memo/2005/12/06/5/";
+</script>
+<script type="text/javascript" src="http://disqus.com/forums/unknownplace/embed.js"></script>
+
+</div>
+
+<p id="footer">
+  Copyright &copy; 2005-2013
+      by <a class="author" href="/about/#me">Daisuke Murase (typester)</a> /
+  Site generated by <a href="https://github.com/typester/nim">nim</a> /
+  Comments powered by <a href="http://disqus.com">DISQUS</a>.
+</p>
+
+</div>
+
+
+<script type="text/javascript">
+//<![CDATA[
+(function() {
+	var links = document.getElementsByTagName('a');
+	var query = '?';
+	for(var i = 0; i < links.length; i++) {
+	if(links[i].href.indexOf('#disqus_thread') >= 0) {
+		query += 'url' + i + '=' + encodeURIComponent(links[i].href) + '&';
+	}
+	}
+	document.write('<script charset="utf-8" type="text/javascript" src="http://disqus.com/forums/unknownplace/get_num_replies.js' + query + '"></' + 'script>');
+})();
+//]]>
+</script>
+
+
+<script type="text/javascript">
+var gaJsHost = (("https:" == document.location.protocol) ? "https://ssl." : "http://www.");
+document.write(unescape("%3Cscript src='" + gaJsHost + "google-analytics.com/ga.js' type='text/javascript'%3E%3C/script%3E"));
+</script>
+<script type="text/javascript">
+try {
+var pageTracker = _gat._getTracker("UA-53067-1");
+pageTracker._trackPageview();
+} catch(err) {}</script>
+
+<script>
+function googleTranslateElementInit() {
+  new google.translate.TranslateElement({
+    pageLanguage: 'ja',
+    gaTrack: true,
+    gaId: 'UA-53067',
+    floatPosition: google.translate.TranslateElement.FloatPosition.BOTTOM_RIGHT
+  });
+}
+</script><script src="//translate.google.com/translate_a/element.js?cb=googleTranslateElementInit"></script>
+
+</body>
+</html>

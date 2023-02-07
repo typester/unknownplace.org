@@ -1,0 +1,169 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="ja" xml:lang="ja">
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <title>HTML::TreeBuilder::XPath + WWW::Mechanize なスクリプトを永続化させようとしてはまった - unknownplace.org</title>
+  <link rel="stylesheet" type="text/css" href="http://yui.yahooapis.com/3.0.0/build/cssreset/reset-min.css" />
+  <link rel="stylesheet" type="text/css" href="http://yui.yahooapis.com/3.0.0/build/cssfonts/fonts-min.css" />
+  <link rel="stylesheet" href="/css/style.css" type="text/css" />
+  <meta property="fb:admins" content="1093631929" />
+  <link rel="alternate" type="application/rss+xml" href="http://unknownplace.org/memo/index.rss" />
+</head>
+<body>
+
+<div id="container">
+<div id="header">
+    <h1><a href="/">unknownplace.org</a></h1> /
+<a href="/memo/">memo</a>
+</div>
+
+<div id="content">
+<div class="entry autopagerize_page_element">
+  <h2><a href="/memo/2007/09/10/1/">HTML::TreeBuilder::XPath + WWW::Mechanize なスクリプトを永続化させようとしてはまった</a></h2>
+
+  <div class="body">
+    <p><code>WWW::Mechanize</code> でコンテンツとってきて <code>TreeBuilder::XPath</code> で解析するようなのを今まで単機能スクリプトなどでは便利に使っていたのだけど、それを永続的なプロセスで使おうとしたらメモリ使いまくってとんでもないことになったという話。</p>
+<p>まずどんどんメモリが増えていくのでタイミングよく読んでいた<a href="http://blog.jrock.us/articles/Plugging%20a%20leaky%20whale.pod" title="Plugging a leaky whale">jrockwayの記事</a>などを参考に、</p>
+<pre><code>perl -MDevel::Leak::Object=GLOBAL_bless
+</code></pre>
+<p>付きでスクリプトを実行してみる。</p>
+<p>少しソースをいじってまずはループを一回で止めるようにしたときの出力</p>
+<pre><code>Tracked objects by class:
+Config                                   1
+DBI                                      1
+DBI::var                                 5
+DBIx::Class::ResultSource::Table         1
+DateTime::Duration                       2
+DateTime::Format::Builder::Parser        3
+DateTime::Format::Builder::Parser::Regex 10
+DateTime::Infinite::Future               1
+DateTime::Infinite::Past                 1
+DateTime::Locale::en                     1
+DateTime::TimeZone::Asia::Tokyo          1
+DateTime::TimeZone::Floating             2
+Encode::Internal                         1
+Encode::utf8                             2
+Errno                                    1
+FileHandle                               3
+HTML::Element                            1799
+HTML::Element::_travsignal               5
+HTML::TreeBuilder::XPath                 1
+XML::XPathEngine                         1
+XML::XPathEngine::Expr                   19
+XML::XPathEngine::Function               6
+XML::XPathEngine::Literal                9
+XML::XPathEngine::LocationPath           4
+XML::XPathEngine::Root                   1
+XML::XPathEngine::Step                   9
+utf8                                     2
+</code></pre>
+<p>つぎ、少しループしてから止めたときの出力</p>
+<pre><code>Tracked objects by class:
+Config                                   1
+DBI                                      1
+DBI::var                                 5
+DBIx::Class::ResultSource::Table         1
+DateTime::Duration                       2
+DateTime::Format::Builder::Parser        3
+DateTime::Format::Builder::Parser::Regex 10
+DateTime::Infinite::Future               1
+DateTime::Infinite::Past                 1
+DateTime::Locale::en                     1
+DateTime::TimeZone::Asia::Tokyo          1
+DateTime::TimeZone::Floating             2
+Encode::Internal                         1
+Encode::utf8                             2
+Errno                                    1
+FileHandle                               3
+HTML::Element                            7378
+HTML::Element::_travsignal               5
+HTML::TreeBuilder::XPath                 4
+XML::XPathEngine                         1
+XML::XPathEngine::Expr                   19
+XML::XPathEngine::Function               6
+XML::XPathEngine::Literal                9
+XML::XPathEngine::LocationPath           4
+XML::XPathEngine::Root                   1
+XML::XPathEngine::Step                   9
+utf8                                     2
+</code></pre>
+<p>となって、TreeBuilderがなんかやばいことになってるくさい。</p>
+<p>で、マニュアル読んでたら <code>$tree-&gt;delete</code> やれよ！って書いてあった。</p>
+<p>TreeBuilderは明示的にdeleteメソッド呼ばないと綺麗になくならないらしい。たぶん常識なのだが、いままでやってなかったわぁ。。</p>
+<p>これやったらずいぶんメモリ増えなくなった、でもまだなんか少しずつ増える。でも、Devel::Leak::Objectの出力は処理数あげてもかわらない。</p>
+<p>あとはmechがあやしいなぁとおもって毎回newするようにしたらメモリ増えなくなったのであれれとおもってマニュアル見たら、デフォルトではヒストリを無限に記録していくらしい。</p>
+<p>なので</p>
+<pre><code>WWW::Mechanize-&gt;new( stack_depth =&gt; 1 )
+</code></pre>
+<p>とかしたら大丈夫になった。これでとりあえず大丈夫かな。</p>
+<p>まぁ結論としては、マニュアル読めということです。あと Devel::Leak::Object は簡単で便利。</p>
+
+  </div>
+
+  <div class="meta">
+    by typester /
+    at <a href="/memo/2007/09/10/1/">2007-09-10T18:51:00</a> /
+    <a href="/memo/tag/perl/">perl</a>
+    / <a href="/memo/2007/09/10/1/#disqus_thread">Comments(0)</a>
+  </div>
+</div>
+
+<div id="disqus_thread"></div>
+
+<script type="text/javascript">
+    var disqus_url = location.protocol + "//" + location.host + "/memo/2007/09/10/1/";
+</script>
+<script type="text/javascript" src="http://disqus.com/forums/unknownplace/embed.js"></script>
+
+</div>
+
+<p id="footer">
+  Copyright &copy; 2005-2013
+      by <a class="author" href="/about/#me">Daisuke Murase (typester)</a> /
+  Site generated by <a href="https://github.com/typester/nim">nim</a> /
+  Comments powered by <a href="http://disqus.com">DISQUS</a>.
+</p>
+
+</div>
+
+
+<script type="text/javascript">
+//<![CDATA[
+(function() {
+	var links = document.getElementsByTagName('a');
+	var query = '?';
+	for(var i = 0; i < links.length; i++) {
+	if(links[i].href.indexOf('#disqus_thread') >= 0) {
+		query += 'url' + i + '=' + encodeURIComponent(links[i].href) + '&';
+	}
+	}
+	document.write('<script charset="utf-8" type="text/javascript" src="http://disqus.com/forums/unknownplace/get_num_replies.js' + query + '"></' + 'script>');
+})();
+//]]>
+</script>
+
+
+<script type="text/javascript">
+var gaJsHost = (("https:" == document.location.protocol) ? "https://ssl." : "http://www.");
+document.write(unescape("%3Cscript src='" + gaJsHost + "google-analytics.com/ga.js' type='text/javascript'%3E%3C/script%3E"));
+</script>
+<script type="text/javascript">
+try {
+var pageTracker = _gat._getTracker("UA-53067-1");
+pageTracker._trackPageview();
+} catch(err) {}</script>
+
+<script>
+function googleTranslateElementInit() {
+  new google.translate.TranslateElement({
+    pageLanguage: 'ja',
+    gaTrack: true,
+    gaId: 'UA-53067',
+    floatPosition: google.translate.TranslateElement.FloatPosition.BOTTOM_RIGHT
+  });
+}
+</script><script src="//translate.google.com/translate_a/element.js?cb=googleTranslateElementInit"></script>
+
+</body>
+</html>

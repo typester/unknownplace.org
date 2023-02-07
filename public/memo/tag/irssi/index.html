@@ -1,0 +1,440 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="ja" xml:lang="ja">
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <title>memo - unknownplace.org</title>
+  <link rel="stylesheet" type="text/css" href="http://yui.yahooapis.com/3.0.0/build/cssreset/reset-min.css" />
+  <link rel="stylesheet" type="text/css" href="http://yui.yahooapis.com/3.0.0/build/cssfonts/fonts-min.css" />
+  <link rel="stylesheet" href="/css/style.css" type="text/css" />
+  <meta property="fb:admins" content="1093631929" />
+  <meta name="robots" content="noindex" />
+  <link rel="alternate" type="application/rss+xml" href="http://unknownplace.org/memo/index.rss" />
+</head>
+<body>
+
+<div id="container">
+<div id="header">
+    <h1><a href="/">unknownplace.org</a></h1> /
+<a href="/memo/">memo</a>
+</div>
+
+<div id="content">
+
+<div class="entry autopagerize_page_element">
+  <h2><a href="/memo/2013/03/22/1/">irssiで良い感じにlingrができる irssi-lingr</a></h2>
+
+  <div class="body">
+    <p>最近、</p>
+<blockquote><p><a href="http://lingr.com/room/perl_jp/">Perlの話題を日本語で – Lingr</a></p><p>お気軽なかんじで、Perl に関する話題をしましょう。 初心者のかたでも御気軽にPerl の質問など、もりもりしてください♪</p></blockquote>
+<p>というLingrの部屋が盛りあがってる。</p>
+<p>最初はブラウザで見ていたんだけど、だんだんつらくなってきたので、APIを使って<a href="http://irssi.org/">irssi</a>でLingrチャットができるのを作りました。</p>
+<blockquote><p><a href="https://github.com/typester/irssi-lingr">https://github.com/typester/irssi-lingr</a></p></blockquote>
+<p><code>~/.irssi/scripts</code> に置いて、 irssi内から、</p>
+<pre><code>/run lingr
+/set lingr_user your_lingr_username
+/set lingr_password your_lingr_password
+/set lingr_api_key your_api_key  # オプション
+/lingr start
+</code></pre>
+<p>で <code>lingr/*</code> というwindowができてそこで普通に会話できる。</p>
+<p><a href="http://www.flickr.com/photos/typester/8578112735/" title="irssi-lingr by typester, on Flickr"><img alt="irssi-lingr" height="242" src="http://farm9.staticflickr.com/8528/8578112735_55416222c8.jpg" width="369" /></a></p>
+<p>lingrはtwitterみたいに、<code>@username</code> という形で発言するとその人に通知がいく(iPhoneクライアントだけ？)機能があるので、 その機能を簡単に使えるように、nick補完すると自動的に <code>@</code> を付与する機能も付けておいた。</p>
+<blockquote><p><a href="http://unknownplace.org/memo/2012/03/26/1/">tmux + irssi + canything で Anything 風チャンネル切り替えする</a></p></blockquote>
+<p>で使ってる <code>channel-socket</code> プラグインも、このirssi-lingrのチャンネル郡も切り替えられるようにアップデートしてあるので、もしつかっているひとがいたらアップデートすると良いです。</p>
+
+  </div>
+
+  <div class="meta">
+    by typester /
+    at <a href="/memo/2013/03/22/1/">2013-03-22T10:20:00</a> /
+    <a href="/memo/tag/irssi/">irssi</a>
+    / <a href="/memo/2013/03/22/1/#disqus_thread">Comment</a>
+  </div>
+</div>
+
+<div class="entry autopagerize_page_element">
+  <h2><a href="/memo/2012/03/26/1/">tmux + irssi + canything で Anything 風チャンネル切り替えする</a></h2>
+
+  <div class="body">
+    <p>irssi 環境を prgmr.com からさくら VPS に移行したついでに irssi のプラグインを見直していて、そのときに <a href="http://wouter.coekaerts.be/irssi/nicklist">nicklist.pl</a> というのをいれたわけですが、これがなかなか hackish な実装になっており(笑)、named pipe なファイルつくってそれを cat しておくと irssi がそこに nicklist を書き込むというような感じになってて、基本的に GNU screen などの縦分割と一緒に使うように設計されている。</p>
+<p>で、僕はリモートサーバー上の GNU screen 上で irssi を動かしているので、それをつかうために縦分割をためしてみたわけですが、window 分割したときにでる caption を GNU screen では消すことができず、ローカルで使っている screen の hardstatus の上に、リモート screen の caption が出るという大変いやなかんじになってしまう。</p>
+<p>設定見てもどうにも消せないっぽいので、screen 競合として名高い tmux を見てみると普通に消せたのでとりあえずリモートだけ tmux に移行をしてみた。</p>
+<p>リモートだけのつもりが tmux をいじっているうちにこれはなかなか良いものだと言うことになり、ローカルも乗り換えるに至った。</p>
+<p>まず、tmux をおすすめしてる記事はこれまでもよく目にしてきたがピンとこなかったのは、ほとんどの記事が GNU screen をハードに使ってる人のものではなかったからである。 GNU screen をハードに使ってる人のために僕が tmux の良いところを上げると、</p>
+<ul><li>tmux 内外問わず、すべての操作をコマンドから行える</li><li>window 増やさなくても window の中に分割窓(pane)をおける</li></ul>
+<p>他にもいろいろあるのだが、この二つは大きい。</p>
+<h4>tmux 内外問わず、すべての操作をコマンドから行える</h4>
+<p>これは script 的に動作を拡張しようとしたときに重要になる。 GNU screen でもまぁ <code>screen -X</code> でできるのだが、tmux に比べるとできることが限られており、ちょっと込み入ったことをやろうとするとすぐに screen にパッチを当てる、みたいなことになるw</p>
+<h4>window 増やさなくても window の中に分割窓(pane)をおける</h4>
+<p>tmux は window 分割の概念が screen とは異なっている。tmux では分割された小窓は pane とよばれ、window とは定義が違ったものが存在する。それによって window を増やすことなく画面を分割でき、それぞれの window が分割 pane のレイアウトを別々に管理することが可能になっている。</p>
+<p>これは好みの問題もあるかもしれないが、僕は tmux 方式が気に入った。</p>
+<p>これによって GNU screen 利用時より分割を積極的につかうようになった。特にライフチェンジングだなとおもったのは、分割窓を Emacs でいうところの popwin.el 的に使う方法だ。man をチラ見したり、辞書を引いたりそういうレベルで気軽にpaneをつくれ、man を終了するとpaneが自動で閉じるといった具合に便利に使える。</p>
+<h4>canything</h4>
+<p>Emacs 使いが分割窓を popwin 的に使うようになったらまず思いつくのがやっぱり Anything だ。コマンドラインベースのがあったら tmux と相性いいだろうなとおもったらすぐに見つかりました。</p>
+<blockquote><p><a href="http://filmlang.org/soft/canything">canything: CUIでAnything</a></p></blockquote>
+<p>上記サイトにも乗っているけれど、</p>
+<pre><code>$ tmux lsw | canything | cut -d<span class="string">":"</span> -f 1 | xargs tmux select-window -t
+</code></pre>
+<p>とかすれば tmux ウィンドウを anything 風切り替えできるのですが、これを分割窓と組み合わせて、</p>
+<pre><code># .tmux.conf
+bind-key b split-window <span class="string">'tmux lsw | canything | cut -d":" -f 1 | xargs tmux select-window -t'</span>
+</code></pre>
+<p>みたいに設定すると、<code>C-z b</code> (僕はprefixキーz派) で Emacs っぽく画面分割され anything 風しぼりこみインタフェースで window 切り替えできる。すばらしい。</p>
+<h4>irssi で anything 風チャンネル切り替え</h4>
+<p>となるとやっぱり真っ先に思いつくのがこれでしょう。まず irssi プラグインを書き、コマンドラインから irssi のチャンネルリストを取得、チャンネル切り替えをできるようにするものを書いた。</p>
+<blockquote><p><a href="https://github.com/typester/irssi-plugins/blob/master/channel-socket.pl">channel-socket.pl</a></p></blockquote>
+<p>これを読み込んで、</p>
+<pre><code>/channel-socket start
+</code></pre>
+<p>とすると <code>/tmp/irssi-channels.sock</code> と <code>/tmp/irssi-set-channel.sock</code> という二つの UNIX ドメインソケットが作られる。それぞれチャンネル取得用ソケットと、チャンネル切り替え用ソケットだ。</p>
+<p>具体的には</p>
+<pre><code>$ nc -U /tmp/irssi-channels.sock
+</code></pre>
+<p>でチャンネル一覧取得でき、</p>
+<pre><code>$ echo &apos;#emacs-ja&apos; | nc -U /tmp/irssi-set-channel.sock
+</code></pre>
+<p>でチャンネルを切り替えられるっていう具合だ。</p>
+<p>これを連結させて</p>
+<pre><code>$ nc -U /tmp/irssi-channels.sock | canything | nc -U /tmp/irssi-set-channel.sock
+</code></pre>
+<p>で、anything 風 チャンネル切り替えのできあがり。</p>
+<p>これを tmux の分割窓とくみあわせれば完璧。さっきの tmux ウィンドウ切り替えみたいに tmux 側で bind しても良いが、irssi 側でやるのがより自然かなと思う。僕はこんな感じにした。</p>
+<pre><code>/bind meta-b command exec - tmux split-window &apos;nc -U /tmp/irssi-channels.sock | canything -i | nc -U /tmp/irssi-set-channel.sock&apos;
+</code></pre>
+<p>これで irssi 上で <code>M-b</code> すればチャンネル一覧の anything 窓がでる。</p>
+<p><a href="http://www.flickr.com/photos/typester/7015464855/" title="Anything like incremental channel switching at irssi by typester, on Flickr"><img alt="Anything like incremental channel switching at irssi" height="656" src="http://farm8.staticflickr.com/7047/7015464855_67cdeb30d7_o.png" width="920" /></a></p>
+<p>こんな感じ。他にもいろんなことにつかえそうですね！</p>
+
+  </div>
+
+  <div class="meta">
+    by typester /
+    at <a href="/memo/2012/03/26/1/">2012-03-26T06:53:00</a> /
+    <a href="/memo/tag/irssi/">irssi</a>
+    &middot; <a href="/memo/tag/tmux/">tmux</a>
+    / <a href="/memo/2012/03/26/1/#disqus_thread">Comment</a>
+  </div>
+</div>
+
+<div class="entry autopagerize_page_element">
+  <h2><a href="/memo/2012/03/22/1/">ssh経由でサーバー上のGNU screen上のirssiを一発で開くコマンド</a></h2>
+
+  <div class="body">
+    <p>IRCはssh経由でやっていて、毎回sshでつないだあとに手動でscreen attachとかめんどくさいなーと思っていたのですが、</p>
+<pre><code>$ ssh example.com -t screen -xR irssi
+</code></pre>
+<p>みたいな感じにすればssh接続と同時にscreen attachするようにできた。便利！ (ここでのirssiはコマンド名ではなく、GNU screenのセッション名です。念のため)</p>
+<p><code>irssi</code>っていうalias貼ったらローカルで実行してるような雰囲気になって良い。(実際にはローカルにもirssiいれているのでircというaliasにした)</p>
+
+  </div>
+
+  <div class="meta">
+    by typester /
+    at <a href="/memo/2012/03/22/1/">2012-03-22T14:46:00</a> /
+    <a href="/memo/tag/irssi/">irssi</a>
+    / <a href="/memo/2012/03/22/1/#disqus_thread">Comment</a>
+  </div>
+</div>
+
+<div class="entry autopagerize_page_element">
+  <h2><a href="/memo/2009/07/13/1/">AnyEventでirssiプラグインを書く</a></h2>
+
+  <div class="body">
+    <p>AnyEvent はその名の通りさまざまなイベントインタフェースに対応していて、その中に irssi が使用している Glib も含まれているため、irssiのプラグインの中で普通に AnyEvent を使用することができます。</p>
+<p>キーワード反応を <a href="http://im.kayac.com/">im.kayac.com</a> で自分の IM に通知する <a href="http://svn.coderepos.org/share/lang/perl/irssi/scripts/hilight2im.pl">higlith2im.pl</a> プラグインを AnyEvent を使用するように書き換えたのが以下です。</p>
+<pre><code><span class="keyword">use</span> <span class="function-name">strict</span>;
+<span class="keyword">use</span> <span class="function-name">warnings</span>;
+
+<span class="keyword">use</span> <span class="function-name">Glib</span>;
+
+<span class="keyword">use</span> <span class="function-name">Irssi</span>;
+<span class="keyword">use</span> <span class="function-name">AnyEvent::HTTP</span>;
+
+<span class="keyword">use</span> <span class="function-name">HTTP::Request::Common</span>;
+
+<span class="keyword">our</span> <span class="variable-name">$VERSION</span> = <span class="string">&apos;0.1&apos;</span>;
+
+<span class="keyword">our</span> <span class="cperl-hash">%IRSSI</span> = (
+    <span class="string">name</span>        =&gt; <span class="string">&apos;hilight2im&apos;</span>,
+    <span class="string">description</span> =&gt; <span class="string">&apos;notify hilight message to IM via im.kayac.com api&apos;</span>,
+    <span class="string">authors</span>     =&gt; <span class="string">&apos;Daisuke Murase&apos;</span>,
+);
+
+<span class="keyword">sub</span> <span class="function-name">sig_printtext</span> {
+    <span class="keyword">my</span> (<span class="variable-name">$dest</span>, <span class="variable-name">$text</span>, <span class="variable-name">$stripped</span>) = <span class="cperl-array">@_</span>;
+
+    <span class="keyword">if</span> ( $dest-&gt;{<span class="string">level</span>} &amp; MSGLEVEL_HILIGHT ) {
+        <span class="keyword">my</span> <span class="variable-name">$user</span> = Irssi::settings_get_str(<span class="string">&apos;im_kayac_com_username&apos;</span>) <span class="type">or</span> <span class="keyword">return</span>;
+        <span class="keyword">my</span> <span class="variable-name">$msg</span>  = <span class="type">sprintf</span>(<span class="string">&apos;[irssi] </span><span class="cperl-hash">%s</span><span class="string">&apos;</span>, $stripped);
+
+        <span class="keyword">my</span> <span class="variable-name">$req</span> = POST <span class="string">&quot;http://im.kayac.com/api/post/$user&quot;</span>, [ <span class="string">message</span> =&gt; $msg ];
+        <span class="keyword">my</span> <span class="cperl-hash">%headers</span> = <span class="cperl-nonoverridable">map</span> { $_ =&gt; $req-&gt;header($_), } $req-&gt;headers-&gt;header_field_names;
+
+        <span class="keyword">my</span> <span class="variable-name">$r</span>;
+        $r = http_post $req-&gt;uri, $req-&gt;content, <span class="string">headers</span> =&gt; \<span class="cperl-hash">%headers</span>, <span class="keyword">sub</span> { <span class="cperl-nonoverridable">undef</span> $r };
+    }
+}
+
+Irssi::signal_add(<span class="string">&apos;print text&apos;</span> =&gt; \&amp;sig_printtext);
+Irssi::settings_add_str(<span class="string">&apos;im_kayac_com&apos;</span>, <span class="string">&apos;im_kayac_com_username&apos;</span>, <span class="string">&apos;&apos;</span>);
+</code></pre>
+<p>fork する必要がなくなってシンプルですね！</p>
+<p>...とおもいきや現状の AnyEvent::HTTP はなんと HTTP::Request オブジェクトからのリクエスト送信に対応していないため、自分ですべてのリクエストを組み立てる必要があるようです。これは不便。。</p>
+<p>ですが、irssi の中で普通に AnyEvent を使うことができるのはなかなか便利です。お試しあれ！</p>
+<p>AnyEvent 版は <a href="http://github.com/typester/irssi-plugins/blob/master/hilight2im.pl">github</a> にあげた。</p>
+
+  </div>
+
+  <div class="meta">
+    by typester /
+    at <a href="/memo/2009/07/13/1/">2009-07-13T23:30:00</a> /
+    <a href="/memo/tag/perl/">perl</a>
+    &middot; <a href="/memo/tag/irssi/">irssi</a>
+    / <a href="/memo/2009/07/13/1/#disqus_thread">Comment</a>
+  </div>
+</div>
+
+<div class="entry autopagerize_page_element">
+  <h2><a href="/memo/2008/11/21/1/">irssiからOutputzに文字数を投げる</a></h2>
+
+  <div class="body">
+    <blockquote><p><a href="http://d.hatena.ne.jp/antipop/20081120/1227180641">EmacsからOutputzに文字数を投げる - antipop</a></p></blockquote>
+<p>を見て、早速インストールして使ってみたら激しくおもしろい！</p>
+<p>irssiでもやりたくなったので、irssiで発言した文字数をOutputzに投げるプラグインを書いた。</p>
+<blockquote><p><a href="http://github.com/typester/irssi-plugins/tree/master/outputz.pl">http://github.com/typester/irssi-plugins/tree/master/outputz.pl</a></p></blockquote>
+<p><code>~/.irssi/scripts</code> にファイルをおいて、irssi内で</p>
+<pre><code>/run outputz.pl
+</code></pre>
+<p>して</p>
+<pre><code>/set outputz_key あなたの復活の呪文
+/set outputz_uri 適当なURI
+</code></pre>
+<p>すると設定完了で、あとは自動で発言数が投稿されます。</p>
+<del>`outputz_uri` に `%s` をいれるとその部分はIRCのチャンネル名に置換されます。</del>
+<p><code>outputz_uri</code> は <code>URI::Template</code> 形式で指定できるようにしました。</p>
+<p>デフォルトは <code>irc://{server}:{port}/{channel}</code> です。</p>
+<p>つかえる変数は</p>
+<ul><li>server: サーバーアドレス</li><li>port: サーバーポート番号</li><li>channel: 発言したチャンネル名</li><li>server_tag: irssiでのサーバーのユニークタグ</li><li>nick: そのサーバーでのあなたのニックネーム</li></ul>
+<p>となっております。</p>
+<p>こないだ作った <code>PoCo::Client::HTTPDeferred</code> つかってるのでそのサンプルとしてもいいとおもいます。</p>
+<p>しかし、emacsよりirssiの方が文字数いってそうで集計を見るのが怖いです。。。</p>
+
+  </div>
+
+  <div class="meta">
+    by typester /
+    at <a href="/memo/2008/11/21/1/">2008-11-21T16:00:00</a> /
+    <a href="/memo/tag/web/">web</a>
+    &middot; <a href="/memo/tag/irssi/">irssi</a>
+    / <a href="/memo/2008/11/21/1/#disqus_thread">Comment</a>
+  </div>
+</div>
+
+<div class="entry autopagerize_page_element">
+  <h2><a href="/memo/2008/06/19/1/">irssi-proxy++</a></h2>
+
+  <div class="body">
+    <p>通常 IRC は自宅サーバー上の irssi でやってるのだが、イタリアの回線が細いため ssh が重くてイライラする。</p>
+<p>tiarra はずさなければよかったなぁと思ったが、irssi にも proxy 機能あった気がするなぁと思い直してそれを使ってみた。</p>
+<p>まず、</p>
+<pre><code>/load proxy
+</code></pre>
+<p>して proxy モジュールをロード。</p>
+<p>するとパスワード設定されてないYO! とかいう警告が出るので</p>
+<pre><code>/set irssiproxy_password hogehoge
+</code></pre>
+<p>などとしてパスワードを設定する。</p>
+<p>最後に</p>
+<pre><code>/set irssiproxy_ports freenode=16667 ircnet-ja=16668 skype=16669 local=16670
+</code></pre>
+<p>とかすれば指定したポートで proxy が立ち上がる。</p>
+<p>あとはローカルのIRCクライアントからそこにつなぐだけ！ 快適快適。</p>
+
+  </div>
+
+  <div class="meta">
+    by typester /
+    at <a href="/memo/2008/06/19/1/">2008-06-19T19:30:00</a> /
+    <a href="/memo/tag/irssi/">irssi</a>
+    / <a href="/memo/2008/06/19/1/#disqus_thread">Comment</a>
+  </div>
+</div>
+
+<div class="entry autopagerize_page_element">
+  <h2><a href="/memo/2008/03/21/2/">dopplrのnickからその人のローカル時間を表示するirssiプラグインを書いた</a></h2>
+
+  <div class="body">
+    <p>IRCで話していると、相手は今何時なんだろうと思うことがよくあります。</p>
+<p>今日とあるチャンネルでそのことについて話していて、dopplrの情報使ったらいいんじゃないかとひらめいたので早速irssiプラグインを作ってみました。</p>
+<blockquote><p><a href="http://coderepos.org/share/browser/lang/perl/irssi/scripts/dopplr.pl">http://coderepos.org/share/browser/lang/perl/irssi/scripts/dopplr.pl</a></p></blockquote>
+<p>これを入れた状態で</p>
+<pre><code>/clock miyagawa
+</code></pre>
+<p>とか打つとmiyagawaさんがいまどこにいて、そこはいま何時かというのを出してくれます。便利！</p>
+<pre><code>23:40 -!- Irssi: typester is at home in Kamakura (03/21 23:40)
+</code></pre>
+<p>という感じの出力です。(これは /clock typester した結果)</p>
+<p>使い方は <code>~/.irssi/scripts</code> 以下にスクリプトをおいて <code>/run dopplr</code> でロード。その後</p>
+<pre><code>/set dopplr_token 認証用token
+</code></pre>
+<p>としてtokenを登録したら/clockコマンドが動くようになります。</p>
+<p>tokenはまじめに取得するのは面倒なのですが、</p>
+<p><a href="http://www.dopplr.com/account/api_session_token">http://www.dopplr.com/account/api_session_token</a></p>
+<p>ここからテスト用のtokenを作成できるのでここのを使うと楽です。</p>
+<p>もちろんdopplrのAPIを使ってるので、dopplr上で自分がみることができる人の情報しかとってこれませんのであしからず。</p>
+
+  </div>
+
+  <div class="meta">
+    by typester /
+    at <a href="/memo/2008/03/21/2/">2008-03-21T23:38:00</a> /
+    <a href="/memo/tag/irssi/">irssi</a>
+    &middot; <a href="/memo/tag/dopplr/">dopplr</a>
+    / <a href="/memo/2008/03/21/2/#disqus_thread">Comment</a>
+  </div>
+</div>
+
+<div class="entry autopagerize_page_element">
+  <h2><a href="/memo/2007/11/01/1/">mobirc-irssi が実用に耐えうるようになりましたのでお知らせします</a></h2>
+
+  <div class="body">
+    <p>この間ちょっと紹介したirssiのプラグインスクリプトとして<a href="http://coderepos.org/share/wiki/mobirc">mobirc</a>をつかう<a href="http://svn.coderepos.org/share/lang/perl/irssi/scripts/mobirc.pl">mobirc.plスクリプト</a>ですが、実用に耐えうる段階まできましたので再度紹介しておきます。</p>
+<p>画面サンプルはこんな感じ。(スクリーンショットが取れるPSPでの画面です)</p>
+<p><a href="http://www.flickr.com/photos/typester/1812523046/" title="Photo Sharing"><img alt="psp x mobirc x twirc" height="272" src="http://farm3.static.flickr.com/2081/1812523046_4256fac3f8_o.png" width="480" /></a></p>
+<p>素のmobircはIRCクライアント機能と、HTTPD機能を両方持ち、tiarraなどのIRCプロクシにつなぐことで使用するものになっていますが、こちらのirssiプラグインではmobircのIRCクライアント機能はirssiプラグインとして実装していますので、irssiさえあれは利用することができます。</p>
+<p>イメージ的にはirssiがHTTPDを立てている感じになってます。</p>
+<p>またキーワード設定などもirssiのハイライト設定を使用していますので、別途mobirc側でキーワード設定をする必要がないのもちょっとうれしいところです。</p>
+<p>実際の使い方(インストールの仕方)としては</p>
+<ul><li><p>mobirc.plをirssiのスクリプトディレクトリ (~/.irssi/scripts) にコピーor symlink</p></li><li><p>irssi起動時にmobircのlibパスを環境変数に入れとく</p><p><code>PERL5LIB=/path/to/mobirc/lib irssi</code></p><p>とか。同じ意味なら何でも。</p></li><li><p>irssi起動したらmobirc.plをロードする ( /script load mobirc )</p><p>ここで <code>Can&apos;t locate XXX.pm in @INC</code> とか言われる場合モジュール足りないのでそれいれる。</p></li><li><p>ロードしたら config.yaml 自分用にいじって、そのパスをirssiで設定する</p><p><code>/set mobirc_config_path /path/to/config.yaml</code></p></li><li><p>設定完了したら /mobirc start すると HTTPD がたちあがる</p></li><li><p>mobirc started ってirssiコンソールに出てればOK。httpでつないで確認する。</p></li></ul>
+<p>とかでOK。</p>
+<p>ほか機能としては、</p>
+<ul><li><code>/mobirc stop</code> でhttpd停止。</li><li><code>/mobirc stop</code> -&gt; <code>/mobirc start</code> でyaml読み直してHTTPD再起</li><li><code>/set mobirc_auto_start on</code> しておけば次回から <code>/script load mobirc</code> するだけでHTTPDたちあがる</li><li><code>/script load</code> するのさえめんどいというひとはスクリプトを <code>~/.irssi/scripts</code> におくかわりに <code>~/.irssi/scripts/autorun</code> におけば irssi 起動時に自動起動する</li></ul>
+<p>という感じ。irssi使いには必須のスクリプトかと思います！</p>
+<p>Enjoy!</p>
+
+  </div>
+
+  <div class="meta">
+    by typester /
+    at <a href="/memo/2007/11/01/1/">2007-11-01T12:13:00</a> /
+    <a href="/memo/tag/perl/">perl</a>
+    &middot; <a href="/memo/tag/irssi/">irssi</a>
+    / <a href="/memo/2007/11/01/1/#disqus_thread">Comment</a>
+  </div>
+</div>
+
+<div class="entry autopagerize_page_element">
+  <h2><a href="/memo/2007/10/29/1/">mobirc クールすぎる</a></h2>
+
+  <div class="body">
+    <blockquote><p><a href="http://d.hatena.ne.jp/tokuhirom/20071028/1193526466">mobirc 0.01 released - TokuLog 改め だまってコードを書けよハゲ</a></p></blockquote>
+<p>すばらしすぎる！</p>
+<p>ソース見ると、IRCクライアント部分とHTTPD部分わかれてるから、IRCクライアント部分を丸々irssiプラグインで置き換えるのも簡単にできそう。</p>
+<p>irssi使うようになってからtiarraみたいなプロクシを使わなくなったので、irssiプラグインだけでkeitairc見たいの作りたかったんだよなー。tokuhirom++</p>
+<p>てわけで日本シリーズ見ながら作ってみた。</p>
+<blockquote><p><a href="http://coderepos.org/share/browser/lang/perl/irssi/scripts/mobirc.pl">mobirc.pl</a></p></blockquote>
+<p>こんなんで一応動く。</p>
+<p>irssiプラグイン内でPOEセッション(POE::Session::Irssi)作って、その中で Mobirc::HTTPD 動かしてる。</p>
+<p>動くことは動くけど、設定決め打ちだし、unloadもできないのでプラグイン再起動イコールirssi再起動で、まだ実用には耐えない。</p>
+<p>とりあえず動くことはわかったのであとは暇なときにでも。</p>
+
+  </div>
+
+  <div class="meta">
+    by typester /
+    at <a href="/memo/2007/10/29/1/">2007-10-29T01:49:00</a> /
+    <a href="/memo/tag/perl/">perl</a>
+    &middot; <a href="/memo/tag/irssi/">irssi</a>
+    / <a href="/memo/2007/10/29/1/#disqus_thread">Comment</a>
+  </div>
+</div>
+
+<div class="entry autopagerize_page_element">
+  <h2><a href="/memo/2007/10/20/1/">IRCで呼ばれたらIMで通知するirssiスクリプト</a></h2>
+
+  <div class="body">
+    <p>僕は以前からIRCでキーワード反応した時に <a href="http://unknownplace.org/memo/2005/12/06#e008" title="unknownplace.org - 2005/12/06 - IRC でよばれたら表示">GNU screen のステータスコードに通知を出すようにしている</a> のだけど、ターミナル見てないときがつかないので、またまた <a href="http://im.kayac.com/">im.kayac.com</a> をつかって、IMに通知する <a href="http://irssi.org/">irssi</a> のスクリプトを書いてみた。</p>
+<blockquote><p><a href="http://coderepos.org/share/browser/lang/perl/irssi/scripts/hilight2im.pl">http://coderepos.org/share/browser/lang/perl/irssi/scripts/hilight2im.pl</a></p></blockquote>
+<p>使い方は</p>
+<pre><code>/set im_kayac_com_username ユーザー名
+</code></pre>
+<p>で自分のim.kayac.comユーザー名をセットするだけ！</p>
+<p>あとはirssiで設定したキーワード(irssiではhilightという)を含んだメッセージを受信するとIMに通知される。</p>
+
+  </div>
+
+  <div class="meta">
+    by typester /
+    at <a href="/memo/2007/10/20/1/">2007-10-20T15:30:00</a> /
+    <a href="/memo/tag/perl/">perl</a>
+    &middot; <a href="/memo/tag/irssi/">irssi</a>
+    / <a href="/memo/2007/10/20/1/#disqus_thread">Comment</a>
+  </div>
+</div>
+
+
+
+
+<div id="pager" class="autopagerize_insert_before">
+  <p class="pages">
+    <span class="prev">&laquo; Prev</span>
+    <span class="current">1</span>
+    <a href="/memo/tag/irssi/page/2/">2</a>
+    <a class="next" rel="next" href="/memo/tag/irssi/page/2/">Next &raquo;</a>
+  </p>
+  <p class="info">(Page 1 of 2)</p>
+</div>
+
+
+</div>
+
+<p id="footer">
+  Copyright &copy; 2005-2013
+      by <a class="author" href="/about/#me">Daisuke Murase (typester)</a> /
+  Site generated by <a href="https://github.com/typester/nim">nim</a> /
+  Comments powered by <a href="http://disqus.com">DISQUS</a>.
+</p>
+
+</div>
+
+
+<script type="text/javascript">
+//<![CDATA[
+(function() {
+	var links = document.getElementsByTagName('a');
+	var query = '?';
+	for(var i = 0; i < links.length; i++) {
+	if(links[i].href.indexOf('#disqus_thread') >= 0) {
+		query += 'url' + i + '=' + encodeURIComponent(links[i].href) + '&';
+	}
+	}
+	document.write('<script charset="utf-8" type="text/javascript" src="http://disqus.com/forums/unknownplace/get_num_replies.js' + query + '"></' + 'script>');
+})();
+//]]>
+</script>
+
+
+<script type="text/javascript">
+var gaJsHost = (("https:" == document.location.protocol) ? "https://ssl." : "http://www.");
+document.write(unescape("%3Cscript src='" + gaJsHost + "google-analytics.com/ga.js' type='text/javascript'%3E%3C/script%3E"));
+</script>
+<script type="text/javascript">
+try {
+var pageTracker = _gat._getTracker("UA-53067-1");
+pageTracker._trackPageview();
+} catch(err) {}</script>
+
+<script>
+function googleTranslateElementInit() {
+  new google.translate.TranslateElement({
+    pageLanguage: 'ja',
+    gaTrack: true,
+    gaId: 'UA-53067',
+    floatPosition: google.translate.TranslateElement.FloatPosition.BOTTOM_RIGHT
+  });
+}
+</script><script src="//translate.google.com/translate_a/element.js?cb=googleTranslateElementInit"></script>
+
+</body>
+</html>

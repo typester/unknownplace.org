@@ -1,0 +1,344 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="ja" xml:lang="ja">
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <title>2005/12/06 - memo - unknownplace.org</title>
+  <link rel="stylesheet" type="text/css" href="http://yui.yahooapis.com/3.0.0/build/cssreset/reset-min.css" />
+  <link rel="stylesheet" type="text/css" href="http://yui.yahooapis.com/3.0.0/build/cssfonts/fonts-min.css" />
+  <link rel="stylesheet" href="/css/style.css" type="text/css" />
+  <meta property="fb:admins" content="1093631929" />
+  <meta name="robots" content="noindex" />
+  <link rel="alternate" type="application/rss+xml" href="http://unknownplace.org/memo/index.rss" />
+</head>
+<body>
+
+<div id="container">
+<div id="header">
+    <h1><a href="/">unknownplace.org</a></h1> /
+<a href="/memo/">memo</a>
+</div>
+
+<div id="content">
+
+<div class="entry autopagerize_page_element">
+  <h2 id="e010"><a href="/memo/2005/12/06/10/">よし</a></h2>
+
+  <div class="body">
+    <p>cd ~/workdir/CLON</p>
+<p>したオレがきましたよ。</p>
+
+  </div>
+
+  <div class="meta">
+    by typester /
+    at <a href="/memo/2005/12/06/10/">2005-12-06T23:23:00</a> /
+    <a href="/memo/tag/clon/">clon</a>
+    / <a href="/memo/2005/12/06/10/#disqus_thread">Comment</a>
+  </div>
+</div>
+
+<div class="entry autopagerize_page_element">
+  <h2 id="e009"><a href="/memo/2005/12/06/9/">flickr</a></h2>
+
+  <div class="body">
+    <p>pro アカウントにしたらなんかすごいページ読み込み速くなったんですが。</p>
+<p>tamatama?</p>
+
+  </div>
+
+  <div class="meta">
+    by typester /
+    at <a href="/memo/2005/12/06/9/">2005-12-06T21:39:00</a> /
+    <a href="/memo/tag/web/">web</a>
+    / <a href="/memo/2005/12/06/9/#disqus_thread">Comment</a>
+  </div>
+</div>
+
+<div class="entry autopagerize_page_element">
+  <h2 id="e008"><a href="/memo/2005/12/06/8/">IRC でよばれたら表示</a></h2>
+
+  <div class="body">
+    <p><a href="http://www.flickr.com/photos/typester/70807075/" title="Photo Sharing"><img alt="GNU screen hardstatus" height="58" src="http://static.flickr.com/18/70807075_27e5ae20c9_o.jpg" width="280" /></a></p>
+<p>なんで caution とかいわないで。なんとなく。</p>
+<p>んで elisp は <a href="http://rhyme.33rpm.jp/blosxom/" title="Uno, dos, tres, quatro!">33rpmさん</a> に教えてもらって</p>
+<pre><code>(add-hook &apos;riece-keyword-notify-functions
+      (<span class="keyword">lambda</span> (keyword message) (call-process <span class="string">&quot;touch&quot;</span> nil nil nil <span class="string">&quot;/tmp/riece&quot;</span>)))
+(add-hook &apos;riece-after-switch-to-channel-functions
+      (<span class="keyword">lambda</span> (last) (call-process <span class="string">&quot;rm&quot;</span> nil nil nil <span class="string">&quot;/tmp/riece&quot;</span>)))
+</code></pre>
+<p>こんな感じのを .riece/init においておく。これでIRCでキーワード流れると /tmp/riece ができる。 チャンネルかえると消える。</p>
+<pre><code><span class="comment-delimiter">#</span><span class="comment">!/usr/bin/perl
+</span>
+<span class="keyword">use</span> <span class="function-name">strict</span>;
+<span class="keyword">use</span> <span class="function-name">warnings</span>;
+
+$| = 1;
+
+<span class="keyword">while</span> (1) {
+    <span class="keyword">if</span> (<span class="function-name">-e</span> <span class="string">&apos;/tmp/riece&apos;</span>) {
+        <span class="cperl-nonoverridable">print</span> <span class="string">&quot; Caution!! \n&quot;</span>;
+    }
+    <span class="keyword">else</span> {
+        <span class="cperl-nonoverridable">print</span> <span class="string">&quot;\n&quot;</span>;
+    }
+
+    <span class="type">sleep</span> 1;
+}
+</code></pre>
+<p>こんなんを riece.pl として .screenrc には</p>
+<pre><code><span class="type">hardstatus</span> <span class="variable-name">alwayslastline</span> <span class="string">"[%02c] %0`%-w%{=b bw}%n %t%{-}%+w %= %?%{=b rw}%2`%{-} %?%1`"</span>
+
+backtick 0 0 0 ${HOME}/.screen/backtick.pl
+backtick 1 0 0 ${HOME}/.screen/netstat.pl
+backtick 2 0 0 ${HOME}/.screen/riece.pl
+</code></pre>
+<p>こんな感じで。<code>%?</code> でくくられてるところはそのなかのエスケープ文字(この場合 %2` )が展開されるときだけ中を表示するやつ。</p>
+<p>んでこれ消すのにチャンネル変えなきゃいけないのはめんどいこともあるとおもうので</p>
+<pre><code>#/bin/sh
+rm /tmp/riece
+</code></pre>
+<p>とかを delriece.sh とかにして screenrc に</p>
+<pre><code>bind r exec $HOME/.screen/delriece.sh
+</code></pre>
+<p>とかしといた。</p>
+
+  </div>
+
+  <div class="meta">
+    by typester /
+    at <a href="/memo/2005/12/06/8/">2005-12-06T19:21:00</a> /
+    <a href="/memo/tag/screen/">screen</a>
+    / <a href="/memo/2005/12/06/8/#disqus_thread">Comment</a>
+  </div>
+</div>
+
+<div class="entry autopagerize_page_element">
+  <h2 id="e007"><a href="/memo/2005/12/06/7/"></a></h2>
+
+  <div class="body">
+    <p>コードのシンタックスハイライトつけたいなぁ。ここ見ててもコード頭に入らんｗ</p>
+
+  </div>
+
+  <div class="meta">
+    by typester /
+    at <a href="/memo/2005/12/06/7/">2005-12-06T18:34:00</a> /
+    <a href="/memo/tag/clon/">clon</a>
+    / <a href="/memo/2005/12/06/7/#disqus_thread">Comment</a>
+  </div>
+</div>
+
+<div class="entry autopagerize_page_element">
+  <h2 id="e006"><a href="/memo/2005/12/06/6/">screenrc 読み込みなおし</a></h2>
+
+  <div class="body">
+    <p>:source $HOME/.screenrc</p>
+<p>知らなかった。いちいち screen 再起してたよ。。</p>
+<p>なんできねーかなとおもって :reload とか適当にいろいろためしてたらみっけた。(man 読みましょう)</p>
+
+  </div>
+
+  <div class="meta">
+    by typester /
+    at <a href="/memo/2005/12/06/6/">2005-12-06T18:14:00</a> /
+    <a href="/memo/tag/screen/">screen</a>
+    / <a href="/memo/2005/12/06/6/#disqus_thread">Comment</a>
+  </div>
+</div>
+
+<div class="entry autopagerize_page_element">
+  <h2 id="e005"><a href="/memo/2005/12/06/5/">通信状態表示</a></h2>
+
+  <div class="body">
+    <p><a href="http://www.flickr.com/photos/typester/70793693/" title="Photo Sharing"><img alt="GNU screen hardstatus #3" height="67" src="http://static.flickr.com/34/70793693_30fa457611_o.jpg" width="532" /></a></p>
+<p>意味ねええええ。ので多分すぐあきる。</p>
+<pre><code><span class="comment-delimiter">#</span><span class="comment">!/usr/bin/perl
+</span>
+<span class="keyword">use</span> <span class="function-name">strict</span>;
+<span class="keyword">use</span> <span class="function-name">warnings</span>;
+
+$|=1;
+
+{
+    <span class="keyword">package</span> <span class="function-name">StatQue</span>;
+
+    <span class="keyword">sub</span> <span class="function-name">new</span> { <span class="type">bless</span> {}, <span class="cperl-nonoverridable">shift</span> }
+
+    <span class="keyword">sub</span> <span class="function-name">add</span> {
+        <span class="keyword">my</span> <span class="variable-name">$self</span> = <span class="cperl-nonoverridable">shift</span>;
+        <span class="cperl-nonoverridable">push</span> @{$self-&gt;{<span class="string">que</span>}}, <span class="cperl-nonoverridable">shift</span>;
+
+        <span class="cperl-nonoverridable">shift</span> @{$self-&gt;{<span class="string">que</span>}} <span class="keyword">if</span> @{$self-&gt;{<span class="string">que</span>}} &gt;= 11;
+    }
+
+    <span class="keyword">sub</span> <span class="function-name">avg</span> {
+        <span class="keyword">my</span> <span class="variable-name">$self</span> = <span class="cperl-nonoverridable">shift</span>;
+        <span class="keyword">my</span> <span class="variable-name">$total</span>;
+        $total += $_ <span class="keyword">for</span> @{$self-&gt;{<span class="string">que</span>}};
+
+        $total / @{$self-&gt;{<span class="string">que</span>}};
+    }
+}
+
+<span class="keyword">my</span> <span class="variable-name">$in_que</span>  = StatQue-&gt;new;
+<span class="keyword">my</span> <span class="variable-name">$out_que</span> = StatQue-&gt;new;
+
+<span class="keyword">my</span> <span class="cperl-array">@stats</span> = <span class="cperl-nonoverridable">grep</span> <span class="constant">/</span><span class="function-name">.</span><span class="builtin">+</span><span class="constant">/</span>, <span class="cperl-nonoverridable">split</span> <span class="constant">/</span><span class="string">:</span><span class="keyword">|</span><span class="builtin">\</span><span class="type">s</span><span class="constant">/</span>, <span class="cperl-nonoverridable">qx</span><span class="string">{ cat /proc/net/dev | grep eth0 }</span>;
+<span class="keyword">my</span> ( <span class="variable-name">$old_in</span>, <span class="variable-name">$old_out</span> ) = ( <span class="cperl-array">$stats</span>[1], <span class="cperl-array">$stats</span>[9] );
+
+<span class="keyword">while</span> (1) {
+    <span class="type">sleep</span> 1;
+
+    <span class="cperl-array">@stats</span> = <span class="cperl-nonoverridable">grep</span> <span class="constant">/</span><span class="function-name">.</span><span class="builtin">+</span><span class="constant">/</span>, <span class="cperl-nonoverridable">split</span> <span class="constant">/</span><span class="string">:</span><span class="keyword">|</span><span class="builtin">\</span><span class="type">s</span><span class="constant">/</span>, <span class="cperl-nonoverridable">qx</span><span class="string">{ cat /proc/net/dev | grep eth0 }</span>;
+    <span class="keyword">my</span> ( <span class="variable-name">$new_in</span>, <span class="variable-name">$new_out</span> ) = ( <span class="cperl-array">$stats</span>[1], <span class="cperl-array">$stats</span>[9] );
+
+    $in_que-&gt;add( $new_in - $old_in );
+    $out_que-&gt;add( $new_out - $old_out );
+
+    <span class="cperl-nonoverridable">printf</span>(<span class="string">&quot;in: %.1fKB/s out: %.1fKB/s\n&quot;</span>,
+            $in_que-&gt;avg / 1024,
+            $out_que-&gt;avg / 1024);
+
+    $old_in  = $new_in;
+    $old_out = $new_out;
+}
+</code></pre>
+<p>こんなのを netstat.pl とかしておいて screenrc に</p>
+<pre><code>backtick 1 0 0 ${HOME}/.screen/netstat.pl
+</code></pre>
+<p>とする。hardstatus も</p>
+<pre><code>-hardstatus alwayslastline <span class="string">"[%02c] %`%-w%{=b bw}%n %t%{-}%+w"</span>
++hardstatus alwayslastline <span class="string">"[%02c] %0`%-w%{=b bw}%n %t%{-}%+w %= %1`"</span>
+</code></pre>
+<p>こんな感じで。</p>
+<p>昨日の backtick.pl が ID0 で netstat.pl が ID1 ってことね。</p>
+
+  </div>
+
+  <div class="meta">
+    by typester /
+    at <a href="/memo/2005/12/06/5/">2005-12-06T17:49:00</a> /
+    <a href="/memo/tag/screen/">screen</a>
+    / <a href="/memo/2005/12/06/5/#disqus_thread">Comment</a>
+  </div>
+</div>
+
+<div class="entry autopagerize_page_element">
+  <h2 id="e004"><a href="/memo/2005/12/06/4/">うおお</a></h2>
+
+  <div class="body">
+    <p>vim 関係の日記なにいってるかさっぱりわかんねえええ。</p>
+
+  </div>
+
+  <div class="meta">
+    by typester /
+    at <a href="/memo/2005/12/06/4/">2005-12-06T11:00:00</a> /
+    <a href="/memo/tag/life/">life</a>
+    / <a href="/memo/2005/12/06/4/#disqus_thread">Comment</a>
+  </div>
+</div>
+
+<div class="entry autopagerize_page_element">
+  <h2 id="e003"><a href="/memo/2005/12/06/3/"></a></h2>
+
+  <div class="body">
+    <p>出社。</p>
+
+  </div>
+
+  <div class="meta">
+    by typester /
+    at <a href="/memo/2005/12/06/3/">2005-12-06T10:44:00</a> /
+    <a href="/memo/tag/life/">life</a>
+    / <a href="/memo/2005/12/06/3/#disqus_thread">Comment</a>
+  </div>
+</div>
+
+<div class="entry autopagerize_page_element">
+  <h2 id="e002"><a href="/memo/2005/12/06/2/"></a></h2>
+
+  <div class="body">
+    <p>退社。</p>
+
+  </div>
+
+  <div class="meta">
+    by typester /
+    at <a href="/memo/2005/12/06/2/">2005-12-06T02:41:00</a> /
+    <a href="/memo/tag/life/">life</a>
+    / <a href="/memo/2005/12/06/2/#disqus_thread">Comment</a>
+  </div>
+</div>
+
+<div class="entry autopagerize_page_element">
+  <h2 id="e001"><a href="/memo/2005/12/06/1/">Clmemo</a></h2>
+
+  <div class="body">
+    <p>clmemo-mode に C-c C-c でタイトルヘッダ行に [s] が入る機能があって、これを改造して [en] とかはいるようにし、そこに英語ログを書くと言うアイデア。</p>
+
+  </div>
+
+  <div class="meta">
+    by typester /
+    at <a href="/memo/2005/12/06/1/">2005-12-06T02:37:00</a> /
+    <a href="/memo/tag/clmemo/">clmemo</a>
+    &middot; <a href="/memo/tag/idea/">idea</a>
+    / <a href="/memo/2005/12/06/1/#disqus_thread">Comment</a>
+  </div>
+</div>
+
+
+
+</div>
+
+<p id="footer">
+  Copyright &copy; 2005-2013
+      by <a class="author" href="/about/#me">Daisuke Murase (typester)</a> /
+  Site generated by <a href="https://github.com/typester/nim">nim</a> /
+  Comments powered by <a href="http://disqus.com">DISQUS</a>.
+</p>
+
+</div>
+
+
+<script type="text/javascript">
+//<![CDATA[
+(function() {
+	var links = document.getElementsByTagName('a');
+	var query = '?';
+	for(var i = 0; i < links.length; i++) {
+	if(links[i].href.indexOf('#disqus_thread') >= 0) {
+		query += 'url' + i + '=' + encodeURIComponent(links[i].href) + '&';
+	}
+	}
+	document.write('<script charset="utf-8" type="text/javascript" src="http://disqus.com/forums/unknownplace/get_num_replies.js' + query + '"></' + 'script>');
+})();
+//]]>
+</script>
+
+
+<script type="text/javascript">
+var gaJsHost = (("https:" == document.location.protocol) ? "https://ssl." : "http://www.");
+document.write(unescape("%3Cscript src='" + gaJsHost + "google-analytics.com/ga.js' type='text/javascript'%3E%3C/script%3E"));
+</script>
+<script type="text/javascript">
+try {
+var pageTracker = _gat._getTracker("UA-53067-1");
+pageTracker._trackPageview();
+} catch(err) {}</script>
+
+<script>
+function googleTranslateElementInit() {
+  new google.translate.TranslateElement({
+    pageLanguage: 'ja',
+    gaTrack: true,
+    gaId: 'UA-53067',
+    floatPosition: google.translate.TranslateElement.FloatPosition.BOTTOM_RIGHT
+  });
+}
+</script><script src="//translate.google.com/translate_a/element.js?cb=googleTranslateElementInit"></script>
+
+</body>
+</html>

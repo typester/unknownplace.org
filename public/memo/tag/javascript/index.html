@@ -1,0 +1,356 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="ja" xml:lang="ja">
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <title>memo - unknownplace.org</title>
+  <link rel="stylesheet" type="text/css" href="http://yui.yahooapis.com/3.0.0/build/cssreset/reset-min.css" />
+  <link rel="stylesheet" type="text/css" href="http://yui.yahooapis.com/3.0.0/build/cssfonts/fonts-min.css" />
+  <link rel="stylesheet" href="/css/style.css" type="text/css" />
+  <meta property="fb:admins" content="1093631929" />
+  <meta name="robots" content="noindex" />
+  <link rel="alternate" type="application/rss+xml" href="http://unknownplace.org/memo/index.rss" />
+</head>
+<body>
+
+<div id="container">
+<div id="header">
+    <h1><a href="/">unknownplace.org</a></h1> /
+<a href="/memo/">memo</a>
+</div>
+
+<div id="content">
+
+<div class="entry autopagerize_page_element">
+  <h2><a href="/memo/2011/01/06/1/">CoffeeScript いいねー</a></h2>
+
+  <div class="body">
+    <p>node.js とかが盛り上がっていてもまったく興味をそそられなかったのは、JavaScript 自体があんまり好きじゃないってのがあった。</p>
+<ul><li>function () {} とかのシンタックスシュガーがない</li><li>レキシカルスコープない</li></ul>
+<p>とかもろもろ。基本的に美しくコードがかけない言語だと思ってた。</p>
+<p>っていうのを一気に解決してくれるのが <a href="http://jashkenas.github.com/coffee-script/">CoffeeScript</a>。</p>
+<p>この言語は専用のインタラプタで実行することも出来るけど、 1:1 で JavaScript に変換できるので、変換後のコードは普通の JavaScript インタラプタで実行することができる。 なので普通にWebサイトでつかってるjsもCoffeeScriptで書いて変換したのを使うってことができる。</p>
+<p>具体的なシンタックスについては上記のサイトをみてもらうとして、僕が不満だった部分はほぼなくなっている。インデントによるブロックは僕はあまり好きじゃないけど、Emacs用の<a href="http://ozmm.org/posts/coffee_mode.html">coffee-mode</a>もすでにあるのでたいした問題じゃない。</p>
+<p>js はもうこれでしか書かないなー。あんまり書く機会ないけどさ。</p>
+
+  </div>
+
+  <div class="meta">
+    by typester /
+    at <a href="/memo/2011/01/06/1/">2011-01-06T11:20:00</a> /
+    <a href="/memo/tag/javascript/">javascript</a>
+    &middot; <a href="/memo/tag/coffeescript/">coffeescript</a>
+    / <a href="/memo/2011/01/06/1/#disqus_thread">Comment</a>
+  </div>
+</div>
+
+<div class="entry autopagerize_page_element">
+  <h2><a href="/memo/2008/10/29/1/">javascriptで誕生日から年齢</a></h2>
+
+  <div class="body">
+    <p>(new Date(new Date() - new Date(&quot;1981/02/11&quot;))).getFullYear() - 1970;</p>
+<p>こんなんでいいんだろか。</p>
+
+  </div>
+
+  <div class="meta">
+    by typester /
+    at <a href="/memo/2008/10/29/1/">2008-10-29T10:51:00</a> /
+    <a href="/memo/tag/javascript/">javascript</a>
+    / <a href="/memo/2008/10/29/1/#disqus_thread">Comment</a>
+  </div>
+</div>
+
+<div class="entry autopagerize_page_element">
+  <h2><a href="/memo/2007/02/23/2/">Jemplate多言語化用ラッパ</a></h2>
+
+  <div class="body">
+    <p>つくった。</p>
+<blockquote><p><a href="http://svn.unknownplace.org/public/scripts/jemplate-maketext.pl">http://svn.unknownplace.org/public/scripts/jemplate-maketext.pl</a></p></blockquote>
+<p>Jemplate のテンプレート内に <code>{{Hello}}</code> とか <code>_(&quot;Hello&quot;)</code> とかかいておいて <code>jemplate -c</code> のかわりに</p>
+<pre><code>jemplate-maketext.pl --path lib/MyApp/I18N --locale ja templates/jemplates/*.tt &gt; jemplate_ja.js
+</code></pre>
+<p>みたいにすると <code>{{Hello}}</code> とかの部分がその言語になったファイルができるというやつ。jemplate -c の簡単なラッパ。</p>
+<p>--path には .po や .mo のあるディレクトリを指定する。</p>
+<p><code>&quot;Hello %1!&quot;</code> みたいなのには対応できないんだけど、まぁとりあえずこれで。</p>
+
+  </div>
+
+  <div class="meta">
+    by typester /
+    at <a href="/memo/2007/02/23/2/">2007-02-23T17:29:00</a> /
+    <a href="/memo/tag/perl/">perl</a>
+    &middot; <a href="/memo/tag/javascript/">javascript</a>
+    &middot; <a href="/memo/tag/jemplate/">jemplate</a>
+    / <a href="/memo/2007/02/23/2/#disqus_thread">Comment</a>
+  </div>
+</div>
+
+<div class="entry autopagerize_page_element">
+  <h2><a href="/memo/2007/01/29/1/">Flash Player Detection Kit がひどいので改造</a></h2>
+
+  <div class="body">
+    <p>インストールされているFlashプレイヤーのバージョンを調べるためにadobeから<a href="http://www.adobe.com/jp/products/flashplayer/download/detection_kit/">Flash Player Detection Kit</a>というものが出てるのだが、これのjsの部分がひどいのでいじった。</p>
+<blockquote><p><a href="http://svn.unknownplace.org/public/library/js/trunk/Flash/Flash.js">Flash.js</a></p></blockquote>
+<p>var付け忘れてる変数にちまちまvarつけたり、関数エクスポートまくりなのを全部隠蔽したりとか。あと使わない部分はごっそり削除。</p>
+<p>このjsでは、Flash.VERSION でプレイヤーのバージョンがとれ、Flash.require() でプレイヤーのバージョンをチェックするって感じにしてある。</p>
+<p>前者は単純に文字列が入っててで、後者のrequire関数は</p>
+<pre><code>if (Flash.require(8,0,0)) {
+    // プレイヤー8以上入ってる！
+}
+</code></pre>
+<p>みたいに使う。</p>
+<p>SWFObjectもこの中に突っ込むといいかなとか思ったけど今は必要ではないのでいれていない。</p>
+
+  </div>
+
+  <div class="meta">
+    by typester /
+    at <a href="/memo/2007/01/29/1/">2007-01-29T18:57:00</a> /
+    <a href="/memo/tag/flash/">flash</a>
+    &middot; <a href="/memo/tag/javascript/">javascript</a>
+    / <a href="/memo/2007/01/29/1/#disqus_thread">Comment</a>
+  </div>
+</div>
+
+<div class="entry autopagerize_page_element">
+  <h2><a href="/memo/2007/01/25/4/"></a></h2>
+
+  <div class="body">
+    <p>ぐぐったら速攻あった。deconceptにｗ</p>
+<blockquote><p><a href="http://blog.deconcept.com/2005/08/29/regexp-flash-8-using-externalinterface/">deconcept &gt; RegExp in Flash 8 using ExternalInterface</a></p></blockquote>
+<p>これ無名関数で書いちゃえばjsいらねーのにな。</p>
+
+  </div>
+
+  <div class="meta">
+    by typester /
+    at <a href="/memo/2007/01/25/4/">2007-01-25T16:36:00</a> /
+    <a href="/memo/tag/flash/">flash</a>
+    &middot; <a href="/memo/tag/javascript/">javascript</a>
+    / <a href="/memo/2007/01/25/4/#disqus_thread">Comment</a>
+  </div>
+</div>
+
+<div class="entry autopagerize_page_element">
+  <h2><a href="/memo/2007/01/25/3/">js無名関数 with ExternalInterface</a></h2>
+
+  <div class="body">
+    <p><a href="http://level0.cuppy.co.jp/">弊社フラッシュチーム</a>からは常識じゃん？的なことを言われましたが、FlashのExternalInterfaceに無名関数を使うというテクはなかなか使えるなぁ。</p>
+<p>UserAgent取得</p>
+<pre><code><span class="type">var</span> <span class="variable-name">ua</span> = ExternalInterface.call(<span class="string">"function() { return navigator.userAgent }"</span>);
+</code></pre>
+<p>JSつかってJSONパースさせてオブジェクトを得る</p>
+<pre><code><span class="type">var</span> <span class="variable-name">json</span>   = <span class="string">'{foo:"bar"}'</span>;
+<span class="type">var</span> <span class="variable-name">object</span> = ExternalInterface.call(<span class="string">"function(json) { return eval('('+json+')') }"</span>, json);
+</code></pre>
+<p>などちょっとしたことやるならjsファイルでなんかやらなくてもas内だけで完結できる。</p>
+<p>ちょっとがんばればasクラスだけでjsの正規表現つかうラッパークラスとかもできそうだけど、もうありそうかな。</p>
+
+  </div>
+
+  <div class="meta">
+    by typester /
+    at <a href="/memo/2007/01/25/3/">2007-01-25T16:11:00</a> /
+    <a href="/memo/tag/flash/">flash</a>
+    &middot; <a href="/memo/tag/javascript/">javascript</a>
+    / <a href="/memo/2007/01/25/3/#disqus_thread">Comment</a>
+  </div>
+</div>
+
+<div class="entry autopagerize_page_element">
+  <h2><a href="/memo/2006/12/09/5/">JSコンソールにログをはくActionScript</a></h2>
+
+  <div class="body">
+    <p>いままではLocalConnection使うロガーをつかってたんだけど、JSと同じところで見れたほうが楽かなと思って作ってみた。</p>
+<pre><code><span class="type">import</span> <span class="variable-name">flash</span>.external.ExternalInterface;
+
+<span class="type">class</span> <span class="variable-name">Logger</span> {
+    public <span class="keyword">static</span> <span class="type">function</span> <span class="variable-name">trace</span>(msg) {
+        <span class="keyword">return</span> ExternalInterface.call(<span class="string">"window.console.log"</span>, msg)
+            || ExternalInterface.call(<span class="string">"opera.postError"</span>, msg)
+            || ExternalInterface.call(<span class="string">"printfire"</span>, msg)
+            || ExternalInterface.call(<span class="string">"Debug.writeln"</span>, msg)
+            || ExternalInterface.call(<span class="string">"debug.trace"</span>, msg)
+        ;
+    }
+}
+</code></pre>
+<p>こんな感じの、もてきっとからぱくってきただけだけど。</p>
+<p>MTASCから利用するときはコマンドラインパラメータに <code>-trace Logger.trace</code> とかすればasソース内のtrace()がコンパイル時かってに置換されるのでアプリ内からは普通にtrace()るだけでおｋ</p>
+
+  </div>
+
+  <div class="meta">
+    by typester /
+    at <a href="/memo/2006/12/09/5/">2006-12-09T20:38:00</a> /
+    <a href="/memo/tag/flash/">flash</a>
+    &middot; <a href="/memo/tag/javascript/">javascript</a>
+    &middot; <a href="/memo/tag/mtasc/">mtasc</a>
+    / <a href="/memo/2006/12/09/5/#disqus_thread">Comment</a>
+  </div>
+</div>
+
+<div class="entry autopagerize_page_element">
+  <h2><a href="/memo/2006/12/09/1/">Flash経由でAjax</a></h2>
+
+  <div class="body">
+    <p>っぽいことをするライブラリを作った。</p>
+<blockquote><p><a href="http://svn.unknownplace.org/public/library/js/trunk/Flax/">http://svn.unknownplace.org/public/library/js/trunk/Flax/</a></p></blockquote>
+<pre><code>Flax.Request(
+    &apos;http://example.com/&apos;,
+    {
+        method: &apos;get&apos;,
+        onSuccess: function(data) { alert(data) }
+    }
+);
+</code></pre>
+<p>みたいな。まだすごくシンプルな機能しかないけど、getとpostできる。</p>
+<p>crossdomain.xmlでドメインを制限しつつ自社サービス間とかでAPIを利用しあったりする用に便利かなと思う。</p>
+<p>簡単な使用例として</p>
+<blockquote><p><a href="http://unknownplace.org/tmp/Flax/examples/flickrsearch/" title="Flickr search example">http://unknownplace.org/tmp/Flax/examples/flickrsearch/</a></p></blockquote>
+<p>flickrの検索とかつくった。flickrはJSONPあるからこんなことしなくてもいいんだけど。ほかにいい例がなかった。</p>
+
+  </div>
+
+  <div class="meta">
+    by typester /
+    at <a href="/memo/2006/12/09/1/">2006-12-09T01:24:00</a> /
+    <a href="/memo/tag/javascript/">javascript</a>
+    &middot; <a href="/memo/tag/flash/">flash</a>
+    / <a href="/memo/2006/12/09/1/#disqus_thread">Comment</a>
+  </div>
+</div>
+
+<div class="entry autopagerize_page_element">
+  <h2><a href="/memo/2006/08/08/3/">Behaviour.jsライクな設定でエレメントに音を鳴らすイベントをつけるライブラリ</a></h2>
+
+  <div class="body">
+    <p>を作った。</p>
+<blockquote><p><a href="http://svn.unknownplace.org/public/library/js/trunk/JSound/">http://svn.unknownplace.org/public/library/js/trunk/JSound/</a></p></blockquote>
+<p>使い方は</p>
+<pre><code>&lt;script type=<span class="string">"text/javascript"</span> src=<span class="string">"/js/prototype.js"</span>&gt;&lt;/script&gt;
+&lt;script type=<span class="string">"text/javascript"</span> src=<span class="string">"/js/sound.js"</span>&gt;&lt;/script&gt;
+&lt;script type=<span class="string">"text/javascript"</span>&gt;
+
+    Sound.swf = <span class="string">'sound.swf'</span>; <span class="comment-delimiter">// </span><span class="comment">sound.swf &#12398;&#12497;&#12473;&#12434;&#25351;&#23450; (&#12487;&#12501;&#12457;&#12523;&#12488; /swf/sound.swf)
+</span>
+    <span class="comment-delimiter">// </span><span class="comment">&#35373;&#23450;
+</span>    <span class="type">var</span> <span class="variable-name">rules</span> = {
+        <span class="comment-delimiter">// </span><span class="comment">CSS&#12521;&#12452;&#12463;&#12394;&#12475;&#12524;&#12463;&#12479;&#12391;&#12456;&#12524;&#12513;&#12531;&#12488;&#12434;&#25351;&#23450;
+</span>        <span class="string">'a'</span>: {
+            <span class="constant">onmouseover</span>: <span class="string">'/static/sample/foo.mp3'</span>, <span class="comment-delimiter">// </span><span class="comment">&#12452;&#12505;&#12531;&#12488;&#12392;&#12469;&#12454;&#12531;&#12489;&#12501;&#12449;&#12452;&#12523;&#25351;&#23450;
+</span>            onclick: <span class="string">'/static/sample/foo.mp3'</span>
+        },
+        <span class="string">'#foo a'</span>: {
+            <span class="constant">onmouseover</span>: <span class="string">'/static/sample/foo.mp3'</span>
+        },
+        <span class="string">'.blah a'</span>: {
+            <span class="constant">onmouseover</span>: [
+                <span class="string">'/static/sample/foo.mp3'</span>,  <span class="comment-delimiter">// </span><span class="comment">&#12469;&#12454;&#12531;&#12489;&#12501;&#12449;&#12452;&#12523;&#12434;&#37197;&#21015;&#12391;&#25351;&#23450;&#12377;&#12427;&#12392;
+</span>                <span class="string">'/static/sample/bar.mp3'</span>   <span class="comment-delimiter">// </span><span class="comment">&#12381;&#12398;&#20013;&#12363;&#12425;&#12521;&#12531;&#12480;&#12512;&#12391;&#20877;&#29983;&#12373;&#12428;&#12427;
+</span>            ]
+        }
+    };
+
+    <span class="comment-delimiter">// </span><span class="comment">&#12452;&#12505;&#12531;&#12488;&#30331;&#37682;
+</span>    SoundEvent.onloadregister(rules);
+
+&lt;/script&gt;
+</code></pre>
+<p>こんな。prototype.js 1.5 以上が必要。重複するエレメントがあるばあい下に書いた方が有効になります。なのでa全体に適用とかいうセレクタは一番上に。</p>
+<p>Javascript Sound library とか id:brazil さんの FlashProxy とか見てたら面白くなってきて、自分でも作ってみたという感じ。</p>
+<p>MTASC + ExternalInterface おもろいわぁ。</p>
+
+  </div>
+
+  <div class="meta">
+    by typester /
+    at <a href="/memo/2006/08/08/3/">2006-08-08T21:57:00</a> /
+    <a href="/memo/tag/javascript/">javascript</a>
+    / <a href="/memo/2006/08/08/3/#disqus_thread">Comment</a>
+  </div>
+</div>
+
+<div class="entry autopagerize_page_element">
+  <h2><a href="/memo/2006/08/08/2/">(function(){ なんかコード })();</a></h2>
+
+  <div class="body">
+    <p>ずっと何でこんな書き方すんだろとおもってたんだけど、MTASCのサイト見ててわかった。</p>
+<p>JavaScriptやActionScriptって変数のスコープがブロックじゃなくて関数なんだね。だからperlとかの感じでブロック作ろうとするとタイトルのような書き方になっちゃうわけか。</p>
+
+  </div>
+
+  <div class="meta">
+    by typester /
+    at <a href="/memo/2006/08/08/2/">2006-08-08T18:17:00</a> /
+    <a href="/memo/tag/javascript/">javascript</a>
+    / <a href="/memo/2006/08/08/2/#disqus_thread">Comment</a>
+  </div>
+</div>
+
+
+
+
+<div id="pager" class="autopagerize_insert_before">
+  <p class="pages">
+    <span class="prev">&laquo; Prev</span>
+    <span class="current">1</span>
+    <a href="/memo/tag/javascript/page/2/">2</a>
+    <a class="next" rel="next" href="/memo/tag/javascript/page/2/">Next &raquo;</a>
+  </p>
+  <p class="info">(Page 1 of 2)</p>
+</div>
+
+
+</div>
+
+<p id="footer">
+  Copyright &copy; 2005-2013
+      by <a class="author" href="/about/#me">Daisuke Murase (typester)</a> /
+  Site generated by <a href="https://github.com/typester/nim">nim</a> /
+  Comments powered by <a href="http://disqus.com">DISQUS</a>.
+</p>
+
+</div>
+
+
+<script type="text/javascript">
+//<![CDATA[
+(function() {
+	var links = document.getElementsByTagName('a');
+	var query = '?';
+	for(var i = 0; i < links.length; i++) {
+	if(links[i].href.indexOf('#disqus_thread') >= 0) {
+		query += 'url' + i + '=' + encodeURIComponent(links[i].href) + '&';
+	}
+	}
+	document.write('<script charset="utf-8" type="text/javascript" src="http://disqus.com/forums/unknownplace/get_num_replies.js' + query + '"></' + 'script>');
+})();
+//]]>
+</script>
+
+
+<script type="text/javascript">
+var gaJsHost = (("https:" == document.location.protocol) ? "https://ssl." : "http://www.");
+document.write(unescape("%3Cscript src='" + gaJsHost + "google-analytics.com/ga.js' type='text/javascript'%3E%3C/script%3E"));
+</script>
+<script type="text/javascript">
+try {
+var pageTracker = _gat._getTracker("UA-53067-1");
+pageTracker._trackPageview();
+} catch(err) {}</script>
+
+<script>
+function googleTranslateElementInit() {
+  new google.translate.TranslateElement({
+    pageLanguage: 'ja',
+    gaTrack: true,
+    gaId: 'UA-53067',
+    floatPosition: google.translate.TranslateElement.FloatPosition.BOTTOM_RIGHT
+  });
+}
+</script><script src="//translate.google.com/translate_a/element.js?cb=googleTranslateElementInit"></script>
+
+</body>
+</html>

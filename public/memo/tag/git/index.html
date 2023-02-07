@@ -1,0 +1,399 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="ja" xml:lang="ja">
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <title>memo - unknownplace.org</title>
+  <link rel="stylesheet" type="text/css" href="http://yui.yahooapis.com/3.0.0/build/cssreset/reset-min.css" />
+  <link rel="stylesheet" type="text/css" href="http://yui.yahooapis.com/3.0.0/build/cssfonts/fonts-min.css" />
+  <link rel="stylesheet" href="/css/style.css" type="text/css" />
+  <meta property="fb:admins" content="1093631929" />
+  <meta name="robots" content="noindex" />
+  <link rel="alternate" type="application/rss+xml" href="http://unknownplace.org/memo/index.rss" />
+</head>
+<body>
+
+<div id="container">
+<div id="header">
+    <h1><a href="/">unknownplace.org</a></h1> /
+<a href="/memo/">memo</a>
+</div>
+
+<div id="content">
+
+<div class="entry autopagerize_page_element">
+  <h2><a href="/memo/2009/01/27/1/">ローカルのgitレポジトリをgistにアップするgist.pl</a></h2>
+
+  <div class="body">
+    <p>とか作ってみた。</p>
+<blockquote><p><a href="http://gist.github.com/53293">gist.pl</a></p></blockquote>
+<p>git レポジトリのルートで実行するとそのレポジトリの内容を gist にポストし、レポジトリの remote に投稿した gist を追加します。</p>
+<p>いろいろ手抜きなので下に注意事項を書いておきます。</p>
+<ol><li>正確にはレポジトリの中身ではなくてカレントディレクトリ以下のすべてのファイルを投稿しちゃう (.git以下はのぞく)</li><li>git config で github.user と github.token を登録しておく必要がある</li><li>remote 名 は origin きめうち</li><li>プライベートgistとかしらない</li></ol>
+<p>などという感じです。特に1は注意。必要に応じてverupする感じで。</p>
+<p>gisty つかってたんですが、僕は何か作るときとりあえず git init するので、gisty だと gist に投稿したらそれ以降違う場所のレポジトリを使うという設計なのでちょっと面倒だったんですね。</p>
+
+  </div>
+
+  <div class="meta">
+    by typester /
+    at <a href="/memo/2009/01/27/1/">2009-01-27T20:24:00</a> /
+    <a href="/memo/tag/git/">git</a>
+    &middot; <a href="/memo/tag/github/">github</a>
+    / <a href="/memo/2009/01/27/1/#disqus_thread">Comment</a>
+  </div>
+</div>
+
+<div class="entry autopagerize_page_element">
+  <h2><a href="/memo/2009/01/08/1/">git-svnなgitレポジトリをcloneするの法</a></h2>
+
+  <div class="body">
+    <p><code>git svn clone</code> は svn ログをたどるためでかい svn レポジトリになるととんでもなく時間がかかります。</p>
+<p>なのですでに clone 済みの git レポジトリから clone したら簡単じゃんと思って素直に clone してみたのだけど、そのままじゃうまく clone 出来なかったのでメモ。</p>
+<p>こんな感じでやればおk</p>
+<pre><code># とりあえずレポジトリ作る
+mkdir test
+cd test
+git init
+
+# clone
+git remote add origin http://co-workers-pc/dev/project/.git
+git config --add remote.origin.fetch &apos;+refs/remotes/*:refs/remotes/*&apos;
+git fetch
+git reset --hard trunk
+
+# git svn の remote を再設定
+git svn init -s http://yourrepos/svn/project/
+git svn rebase
+</code></pre>
+<p>なんだか手間かかるけど <code>git svn clone</code> するのと比べると圧倒的に速い。</p>
+<p>いきなり clone しないで <code>remote add</code> して config を追加してあげたあと fetch するのがポイントか。</p>
+<p>master を trunk として使わないなら <code>git reset</code> はいらんかな。あと、<code>svn init</code> で <code>-s</code> してないときはそもそも trunk ブランチとかないので注意。</p>
+
+  </div>
+
+  <div class="meta">
+    by typester /
+    at <a href="/memo/2009/01/08/1/">2009-01-08T13:19:00</a> /
+    <a href="/memo/tag/git/">git</a>
+    / <a href="/memo/2009/01/08/1/#disqus_thread">Comment</a>
+  </div>
+</div>
+
+<div class="entry autopagerize_page_element">
+  <h2><a href="/memo/2008/12/18/1/"></a></h2>
+
+  <div class="body">
+    <blockquote><p><a href="http://d.hatena.ne.jp/rubikitch/20081218/multiverse">multiverse.elで現在のファイルのスナップショットを取る - &apos;(rubikitch wanna be (a . lisper))</a></p><p>プログラミングしているとき、実験的修正をしたくなることがあるだろう。もし実験が失敗したときに元に戻す...なんてことは日常茶飯事だ。</p><p>RCS、CVS、Subversion、Gitなどのバージョン管理システムはまさしくそれをやっているのだが、未完成のままではコミットはできない。たとえば、複数の（細かな）実装が思い付いたとき、どっちかひとつをコミットしたいなんて場合とか。</p></blockquote>
+<p>そこにgitを一緒に入れるのはなぜなんだ？</p>
+<p>それをやるためにgitみたいなdistributedなバージョン管理システムがあると言っても過言でないくらいだと思うのだが。</p>
+
+  </div>
+
+  <div class="meta">
+    by typester /
+    at <a href="/memo/2008/12/18/1/">2008-12-18T11:00:00</a> /
+    <a href="/memo/tag/git/">git</a>
+    / <a href="/memo/2008/12/18/1/#disqus_thread">Comment</a>
+  </div>
+</div>
+
+<div class="entry autopagerize_page_element">
+  <h2><a href="/memo/2008/07/23/3/">master にコミットしちゃったのが微妙だけど branch に保存して残しておきたいとき</a></h2>
+
+  <div class="body">
+    <blockquote><p><a href="http://subtech.g.hatena.ne.jp/secondlife/20080722/1216713334">master にコミットしちゃったのが微妙だけど branch に保存して残しておきたいとき - 8時40分が超えられない - subtech</a></p><p>これ便利だなー branch 切らずに master に直接いれちゃえいう時が良くありますね(ブランチ切れよ)。んであとから見直したら微妙だはずしたい、というとき。push してなければ</p><pre><code>git branch bimyou_branch
+git reset --hard modositai_tokorono_sha1
+</code></pre><p>だけで master は元に戻るし、branch には残ってるしでばっちり。git おてがるー。(こまめにブランチは切りましょう)</p></blockquote>
+<p>いいね！ git++</p>
+<p>ただ「<strong>pushしてなければ</strong>」っていうのを見逃してかわいそうなことになる人がいるかもしれないので強調しておく。push しちゃってたらやっちゃだめよ！</p>
+
+  </div>
+
+  <div class="meta">
+    by typester /
+    at <a href="/memo/2008/07/23/3/">2008-07-23T15:39:00</a> /
+    <a href="/memo/tag/git/">git</a>
+    / <a href="/memo/2008/07/23/3/#disqus_thread">Comment</a>
+  </div>
+</div>
+
+<div class="entry autopagerize_page_element">
+  <h2><a href="/memo/2008/04/29/1/"></a></h2>
+
+  <div class="body">
+    <p>つーか、guidesにあるじゃねーか！！！</p>
+<p>secondlife-- (と人のせいにする)</p>
+<blockquote><p><a href="http://github.com/guides/remove-a-remote-branch">Remove a remote branch — Git Guides — GitHub</a></p></blockquote>
+
+  </div>
+
+  <div class="meta">
+    by typester /
+    at <a href="/memo/2008/04/29/1/">2008-04-29T00:25:00</a> /
+    <a href="/memo/tag/git/">git</a>
+    / <a href="/memo/2008/04/29/1/#disqus_thread">Comment</a>
+  </div>
+</div>
+
+<div class="entry autopagerize_page_element">
+  <h2><a href="/memo/2008/04/28/1/">remote branch を削除する方法</a></h2>
+
+  <div class="body">
+    <p>忘れないうちにメモ</p>
+<pre><code> ~/dev/git/test (master)
+$ git checkout -b testbranch
+Switched to a new branch <span class="string">"testbranch"</span>
+
+ ~/dev/git/test (testbranch)
+$ vim test.txt
+
+ ~/dev/git/test (testbranch)
+$ git commit -a
+Waiting <span class="keyword">for</span> Emacs...
+Created commit 7dea716: modified test.txt
+ 1 files changed, 1 insertions(+), 0 deletions(-)
+
+ ~/dev/git/test (testbranch)
+$ git push origin testbranch
+Counting objects: 5, done.
+Compressing objects: 100% (2/2), done.
+Writing objects: 100% (3/3), 267 bytes, done.
+Total 3 (delta 0), reused 0 (delta 0)
+refs/heads/testbranch: 0000000000000000000000000000000000000000 -&gt; 7dea716ff6f4984c3d0256d09279e9d954af3dc4
+To git@github.com:typester/test.git
+ * [new branch]      testbranch -&gt; testbranch
+
+ ~/dev/git/test (testbranch)
+$ git checkout master
+Switched to branch <span class="string">"master"</span>
+
+ ~/dev/git/test (master)
+$ git branch -D testbranch
+Deleted branch testbranch.
+
+ ~/dev/git/test (master)
+$ git push origin :heads/testbranch
+refs/heads/testbranch: 7dea716ff6f4984c3d0256d09279e9d954af3dc4 -&gt; deleted
+To git@github.com:typester/test.git
+ - [deleted]         testbranch
+</code></pre>
+
+  </div>
+
+  <div class="meta">
+    by typester /
+    at <a href="/memo/2008/04/28/1/">2008-04-28T23:33:00</a> /
+    <a href="/memo/tag/git/">git</a>
+    / <a href="/memo/2008/04/28/1/#disqus_thread">Comment</a>
+  </div>
+</div>
+
+<div class="entry autopagerize_page_element">
+  <h2><a href="/memo/2008/04/04/1/">vc-annotate</a></h2>
+
+  <div class="body">
+    <blockquote><p><a href="http://d.hatena.ne.jp/naoya/20080404/1207294998">Emacs の vc-annotate - naoyaのはてなダイアリー</a></p></blockquote>
+<p>そういえば設定したなとおもっておもむろに <code>M-x vc-annotate</code> してみたら git でもできた！</p>
+<p><a href="http://www.flickr.com/photos/typester/2386414551/" title="Untitled by typester, on Flickr"><img alt="untitled" height="562" src="http://farm3.static.flickr.com/2265/2386414551_150b942f0f_o.png" width="820" /></a></p>
+<p>設定はこんなんで</p>
+<blockquote><p><a href="http://svn.coderepos.org/share/dotfiles/emacs/typester/.emacs.d/conf/50_git.el">http://svn.coderepos.org/share/dotfiles/emacs/typester/.emacs.d/conf/50_git.el</a></p></blockquote>
+<p>elファイルはgit自体についてくる。</p>
+
+  </div>
+
+  <div class="meta">
+    by typester /
+    at <a href="/memo/2008/04/04/1/">2008-04-04T17:18:00</a> /
+    <a href="/memo/tag/emacs/">emacs</a>
+    &middot; <a href="/memo/tag/git/">git</a>
+    / <a href="/memo/2008/04/04/1/#disqus_thread">Comment</a>
+  </div>
+</div>
+
+<div class="entry autopagerize_page_element">
+  <h2><a href="/memo/2008/02/20/1/">fast-forward merge</a></h2>
+
+  <div class="body">
+    <p>は git-svn なブランチ上では予期せぬ動作になるので使用しない方がいいっぽい。</p>
+<p>新しいコミット発生しないので git svn dcommit できなくなる。</p>
+
+  </div>
+
+  <div class="meta">
+    by typester /
+    at <a href="/memo/2008/02/20/1/">2008-02-20T02:19:00</a> /
+    <a href="/memo/tag/git/">git</a>
+    / <a href="/memo/2008/02/20/1/#disqus_thread">Comment</a>
+  </div>
+</div>
+
+<div class="entry autopagerize_page_element">
+  <h2><a href="/memo/2008/02/19/3/">git-svn 作業フロー</a></h2>
+
+  <div class="body">
+    <p>plagger レポジトリで作業するとする。svkとの比較つき。</p>
+<h4>まず git レポジトリ作成</h4>
+<pre><code>git svn init -s http://svn.bulknews.net/repos/plagger/ plagger
+</code></pre>
+<p>これで、plaggerってディレクトリにgitレポジトリができる。svk mirror的なものですね</p>
+<h4>次にsvnとデータをsyncさせる。</h4>
+<pre><code>cd plagger
+git svn fetch
+</code></pre>
+<p>これは svk sync 的なもので対象の変更をすべてtrackしてmerge情報とかを記録する。なので重い。体感では svk sync 以上。</p>
+<p>ちなみに最初の init の代わりに clone とすると一気に fetch までしてくれる。</p>
+<h4>trunk で作業するよ (ここからが通常のワークフロー)</h4>
+<pre><code>git checkout trunk
+</code></pre>
+<p>で trunk に移動。</p>
+<p>svn が変更されてるかもしれないので</p>
+<pre><code>git svn rebase
+</code></pre>
+<p>でチェック。(svk pull 的なもの)</p>
+<p>いろいろ編集後</p>
+<pre><code>git commit -a
+</code></pre>
+<p>で git レポジトリにコミット。この時点ではローカルの git レポジトリにしか反映されてない。</p>
+<p>svn に反映させるには</p>
+<pre><code>git svn dcommit
+</code></pre>
+<p>とする。これが svk push 的なもの。</p>
+<p>ここまでが一応 co から ci までの流れ。</p>
+<p>もう少し例。</p>
+<h4>fastladder-crawler ブランチで作業してみる</h4>
+<p>ブランチに移動</p>
+<pre><code>git checkout fastladder-crawler
+</code></pre>
+<p>いろいろ変更後コミット</p>
+<pre><code>git commit -a
+</code></pre>
+<h4>このブランチをtrunkにマージしよう</h4>
+<p>まずtrunkに移動して</p>
+<pre><code>git checkout trunk
+</code></pre>
+<p>マージ</p>
+<pre><code>git merge fastladder-crawler
+</code></pre>
+<p>これだけ。すばらしく簡単。</p>
+<h4>ローカルブランチを作って作業も簡単</h4>
+<p>まずtrunkのローカルブランチをつくる。まずtrunkへ移動</p>
+<pre><code>git checkout trunk
+</code></pre>
+<p>test という名前のブランチ作成してそこに移動</p>
+<pre><code>git branch test
+git checkout test
+</code></pre>
+<p>これは以下で一発にできる</p>
+<pre><code>git checkout -b test
+</code></pre>
+<p>いろいろ編集して test ブランチにコミット</p>
+<pre><code>git commit -a
+</code></pre>
+<p>それを trunk に反映</p>
+<pre><code>git checkout trunk
+git merge test
+</code></pre>
+<p>用が済んだらtestブランチ削除</p>
+<pre><code>git merge -d test
+</code></pre>
+<p>とかいう感じ。</p>
+<p>ブランチ作ったりマージしたりがさくさくできて気持ちいい。svk ユーザーは一度さわってみるといいと思う。</p>
+
+  </div>
+
+  <div class="meta">
+    by typester /
+    at <a href="/memo/2008/02/19/3/">2008-02-19T22:56:00</a> /
+    <a href="/memo/tag/git/">git</a>
+    / <a href="/memo/2008/02/19/3/#disqus_thread">Comment</a>
+  </div>
+</div>
+
+<div class="entry autopagerize_page_element">
+  <h2><a href="/memo/2008/02/19/2/">zsh の prompt に git のブランチ情報を表示</a></h2>
+
+  <div class="body">
+    <p><a href="http://unknownplace.org/memo/2008/02/04">svk でやってたもの</a>の git 版。</p>
+<p><a href="http://www.flickr.com/photos/typester/2276187593/" title="git branch info in zsh prompt by typester, on Flickr"><img alt="git branch info in zsh prompt" height="169" src="http://farm3.static.flickr.com/2243/2276187593_458d4fe402_o.png" width="356" /></a></p>
+<p><code>ref: refs/heads/</code> という部分を消していいのか、ほかのものが入る場合があるのかよくわからなかったので全表示している。</p>
+<p>まぁぱっと見で git とわかるからいいかということでとりあえず。</p>
+<p>codereposにあげてあるよ。</p>
+<p>あぁ、なんか ref: とかすらでずに sha-1 ハッシュ値だけのときもある。もう少し調べないとだめだ。</p>
+
+  </div>
+
+  <div class="meta">
+    by typester /
+    at <a href="/memo/2008/02/19/2/">2008-02-19T18:09:00</a> /
+    <a href="/memo/tag/git/">git</a>
+    &middot; <a href="/memo/tag/zsh/">zsh</a>
+    / <a href="/memo/2008/02/19/2/#disqus_thread">Comment</a>
+  </div>
+</div>
+
+
+
+
+<div id="pager" class="autopagerize_insert_before">
+  <p class="pages">
+    <span class="prev">&laquo; Prev</span>
+    <span class="current">1</span>
+    <a href="/memo/tag/git/page/2/">2</a>
+    <a class="next" rel="next" href="/memo/tag/git/page/2/">Next &raquo;</a>
+  </p>
+  <p class="info">(Page 1 of 2)</p>
+</div>
+
+
+</div>
+
+<p id="footer">
+  Copyright &copy; 2005-2013
+      by <a class="author" href="/about/#me">Daisuke Murase (typester)</a> /
+  Site generated by <a href="https://github.com/typester/nim">nim</a> /
+  Comments powered by <a href="http://disqus.com">DISQUS</a>.
+</p>
+
+</div>
+
+
+<script type="text/javascript">
+//<![CDATA[
+(function() {
+	var links = document.getElementsByTagName('a');
+	var query = '?';
+	for(var i = 0; i < links.length; i++) {
+	if(links[i].href.indexOf('#disqus_thread') >= 0) {
+		query += 'url' + i + '=' + encodeURIComponent(links[i].href) + '&';
+	}
+	}
+	document.write('<script charset="utf-8" type="text/javascript" src="http://disqus.com/forums/unknownplace/get_num_replies.js' + query + '"></' + 'script>');
+})();
+//]]>
+</script>
+
+
+<script type="text/javascript">
+var gaJsHost = (("https:" == document.location.protocol) ? "https://ssl." : "http://www.");
+document.write(unescape("%3Cscript src='" + gaJsHost + "google-analytics.com/ga.js' type='text/javascript'%3E%3C/script%3E"));
+</script>
+<script type="text/javascript">
+try {
+var pageTracker = _gat._getTracker("UA-53067-1");
+pageTracker._trackPageview();
+} catch(err) {}</script>
+
+<script>
+function googleTranslateElementInit() {
+  new google.translate.TranslateElement({
+    pageLanguage: 'ja',
+    gaTrack: true,
+    gaId: 'UA-53067',
+    floatPosition: google.translate.TranslateElement.FloatPosition.BOTTOM_RIGHT
+  });
+}
+</script><script src="//translate.google.com/translate_a/element.js?cb=googleTranslateElementInit"></script>
+
+</body>
+</html>

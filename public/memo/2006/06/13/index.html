@@ -1,0 +1,277 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="ja" xml:lang="ja">
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <title>2006/06/13 - memo - unknownplace.org</title>
+  <link rel="stylesheet" type="text/css" href="http://yui.yahooapis.com/3.0.0/build/cssreset/reset-min.css" />
+  <link rel="stylesheet" type="text/css" href="http://yui.yahooapis.com/3.0.0/build/cssfonts/fonts-min.css" />
+  <link rel="stylesheet" href="/css/style.css" type="text/css" />
+  <meta property="fb:admins" content="1093631929" />
+  <meta name="robots" content="noindex" />
+  <link rel="alternate" type="application/rss+xml" href="http://unknownplace.org/memo/index.rss" />
+</head>
+<body>
+
+<div id="container">
+<div id="header">
+    <h1><a href="/">unknownplace.org</a></h1> /
+<a href="/memo/">memo</a>
+</div>
+
+<div id="content">
+
+<div class="entry autopagerize_page_element">
+  <h2 id="e010"><a href="/memo/2006/06/13/10/">SYNOPSIS of Plugin::FormValidator::Simple::Auto</a></h2>
+
+  <div class="body">
+    <p>use Catalyst qw/ FormValidator::Simple FormValidator::Simple::Auto /;</p>
+<pre><code><span class="type">__PACKAGE__</span>-&gt;config(
+    <span class="string">validator</span> =&gt; {
+        <span class="string">messages</span> =&gt; <span class="string">&apos;messages.yml&apos;</span>,
+        <span class="string">profiles</span> =&gt; <span class="string">&apos;profiles.yml&apos;</span>,
+        <span class="comment-delimiter"># </span><span class="comment">and other FormValidator::Simple config
+</span>    },
+);
+
+
+<span class="comment-delimiter"># </span><span class="comment">profiles.yml
+</span><span class="constant">action1:</span>
+  <span class="constant">param1:</span>
+    - NOT_BLANK
+    - ASCII
+    - [ <span class="string">&apos;LENGTH&apos;</span>, 4, 10 ]
+  <span class="constant">param2:</span>
+    - NOT_BLANK
+
+
+<span class="comment-delimiter"># </span><span class="comment">then your action
+</span><span class="keyword">sub</span> <span class="function-name">action1</span> <span class="constant">:</span> <span class="constant">Global</span> {
+    <span class="keyword">my</span> (<span class="variable-name">$self</span>, <span class="variable-name">$c</span>) = <span class="cperl-array">@_</span>;
+
+    <span class="comment-delimiter"># </span><span class="comment">$c-&gt;form($profile) already executed!
+</span>    <span class="keyword">unless</span> ($c-&gt;form-&gt;has_error) {
+        ...
+    }
+}
+</code></pre>
+<p>とか言うのを作ろうかと。</p>
+<p>牧さんのパクリ。</p>
+
+  </div>
+
+  <div class="meta">
+    by typester /
+    at <a href="/memo/2006/06/13/10/">2006-06-13T21:45:00</a> /
+    <a href="/memo/tag/perl/">perl</a>
+    &middot; <a href="/memo/tag/catalyst/">catalyst</a>
+    / <a href="/memo/2006/06/13/10/#disqus_thread">Comment</a>
+  </div>
+</div>
+
+<div class="entry autopagerize_page_element">
+  <h2 id="e009"><a href="/memo/2006/06/13/9/"></a></h2>
+
+  <div class="body">
+    <p>開発環境を Thinkpad - ubuntu にもどした。</p>
+<p>快適すぎる。。</p>
+
+  </div>
+
+  <div class="meta">
+    by typester /
+    at <a href="/memo/2006/06/13/9/">2006-06-13T14:16:00</a> /
+    <a href="/memo/tag/life/">life</a>
+    / <a href="/memo/2006/06/13/9/#disqus_thread">Comment</a>
+  </div>
+</div>
+
+<div class="entry autopagerize_page_element">
+  <h2 id="e008"><a href="/memo/2006/06/13/8/">ペルー 100g</a></h2>
+
+  <div class="body">
+    <p>新しいの。ブラジルなんちゃらは名前覚えらんなかったのでこっち。</p>
+<p>うっかり袋もらっちゃった。スタバの袋って柄がおもろいからもらうと捨てにくいんだよなー。</p>
+
+  </div>
+
+  <div class="meta">
+    by typester /
+    at <a href="/memo/2006/06/13/8/">2006-06-13T13:37:00</a> /
+    <a href="/memo/tag/life/">life</a>
+    &middot; <a href="/memo/tag/starbucks/">starbucks</a>
+    / <a href="/memo/2006/06/13/8/#disqus_thread">Comment</a>
+  </div>
+</div>
+
+<div class="entry autopagerize_page_element">
+  <h2 id="e007"><a href="/memo/2006/06/13/7/"></a></h2>
+
+  <div class="body">
+    <p>やっぱりコーディング環境はLinuxがいいなぁーー</p>
+
+  </div>
+
+  <div class="meta">
+    by typester /
+    at <a href="/memo/2006/06/13/7/">2006-06-13T12:13:00</a> /
+    <a href="/memo/tag/life/">life</a>
+    / <a href="/memo/2006/06/13/7/#disqus_thread">Comment</a>
+  </div>
+</div>
+
+<div class="entry autopagerize_page_element">
+  <h2 id="e006"><a href="/memo/2006/06/13/6/"></a></h2>
+
+  <div class="body">
+    <p>ちなみに僕のキーリピート設定は X でいうと</p>
+<pre><code>$ xset r rate 250 80
+</code></pre>
+<p>とか言う感じ。kbdacc のはわすれた。</p>
+
+  </div>
+
+  <div class="meta">
+    by typester /
+    at <a href="/memo/2006/06/13/6/">2006-06-13T12:11:00</a> /
+    <a href="/memo/tag/life/">life</a>
+    / <a href="/memo/2006/06/13/6/#disqus_thread">Comment</a>
+  </div>
+</div>
+
+<div class="entry autopagerize_page_element">
+  <h2 id="e005"><a href="/memo/2006/06/13/5/">キーリピート</a></h2>
+
+  <div class="body">
+    <p>synergy 経由で作業すれば問題解決じゃね？とかおもってやってみた。</p>
+<p>一瞬快適！っとおもったけどiTermがキーリピートについていけなくてキー離してもしばらくタイプされちゃう。</p>
+<p>限界だわこりゃあ。</p>
+
+  </div>
+
+  <div class="meta">
+    by typester /
+    at <a href="/memo/2006/06/13/5/">2006-06-13T12:08:00</a> /
+    <a href="/memo/tag/osx/">osx</a>
+    / <a href="/memo/2006/06/13/5/#disqus_thread">Comment</a>
+  </div>
+</div>
+
+<div class="entry autopagerize_page_element">
+  <h2 id="e004"><a href="/memo/2006/06/13/4/"></a></h2>
+
+  <div class="body">
+    <p>出社。</p>
+
+  </div>
+
+  <div class="meta">
+    by typester /
+    at <a href="/memo/2006/06/13/4/">2006-06-13T10:43:00</a> /
+    <a href="/memo/tag/life/">life</a>
+    / <a href="/memo/2006/06/13/4/#disqus_thread">Comment</a>
+  </div>
+</div>
+
+<div class="entry autopagerize_page_element">
+  <h2 id="e003"><a href="/memo/2006/06/13/3/"></a></h2>
+
+  <div class="body">
+    <p>退社。</p>
+
+  </div>
+
+  <div class="meta">
+    by typester /
+    at <a href="/memo/2006/06/13/3/">2006-06-13T02:44:00</a> /
+    <a href="/memo/tag/life/">life</a>
+    / <a href="/memo/2006/06/13/3/#disqus_thread">Comment</a>
+  </div>
+</div>
+
+<div class="entry autopagerize_page_element">
+  <h2 id="e002"><a href="/memo/2006/06/13/2/">明日忘れちゃいけないもの</a></h2>
+
+  <div class="body">
+    <ul><li>MacBookの外部ディスプレイ用のアダプタ</li><li>コーヒーミル&amp;ドリッパー</li></ul>
+
+  </div>
+
+  <div class="meta">
+    by typester /
+    at <a href="/memo/2006/06/13/2/">2006-06-13T01:32:00</a> /
+    <a href="/memo/tag/life/">life</a>
+    / <a href="/memo/2006/06/13/2/#disqus_thread">Comment</a>
+  </div>
+</div>
+
+<div class="entry autopagerize_page_element">
+  <h2 id="e001"><a href="/memo/2006/06/13/1/">日本なんだよーあれーもー</a></h2>
+
+  <div class="body">
+    <p>とりあえずサッカー興味ねぇとかゆってるやつにはこれを。</p>
+<p><a href="http://www.amazon.co.jp/exec/obidos/ASIN/4344404777/unknownplace-22/ref=nosim/" title="悪魔のパス 天使のゴール"><img alt="悪魔のパス 天使のゴール - 村上龍" height="" src="http://images-jp.amazon.com/images/P/4344404777.01._OU09_PE0_SCMZZZZZZZ_.jpg" width="" /></a></p>
+
+  </div>
+
+  <div class="meta">
+    by typester /
+    at <a href="/memo/2006/06/13/1/">2006-06-13T00:28:00</a> /
+    <a href="/memo/tag/life/">life</a>
+    / <a href="/memo/2006/06/13/1/#disqus_thread">Comment</a>
+  </div>
+</div>
+
+
+
+</div>
+
+<p id="footer">
+  Copyright &copy; 2005-2013
+      by <a class="author" href="/about/#me">Daisuke Murase (typester)</a> /
+  Site generated by <a href="https://github.com/typester/nim">nim</a> /
+  Comments powered by <a href="http://disqus.com">DISQUS</a>.
+</p>
+
+</div>
+
+
+<script type="text/javascript">
+//<![CDATA[
+(function() {
+	var links = document.getElementsByTagName('a');
+	var query = '?';
+	for(var i = 0; i < links.length; i++) {
+	if(links[i].href.indexOf('#disqus_thread') >= 0) {
+		query += 'url' + i + '=' + encodeURIComponent(links[i].href) + '&';
+	}
+	}
+	document.write('<script charset="utf-8" type="text/javascript" src="http://disqus.com/forums/unknownplace/get_num_replies.js' + query + '"></' + 'script>');
+})();
+//]]>
+</script>
+
+
+<script type="text/javascript">
+var gaJsHost = (("https:" == document.location.protocol) ? "https://ssl." : "http://www.");
+document.write(unescape("%3Cscript src='" + gaJsHost + "google-analytics.com/ga.js' type='text/javascript'%3E%3C/script%3E"));
+</script>
+<script type="text/javascript">
+try {
+var pageTracker = _gat._getTracker("UA-53067-1");
+pageTracker._trackPageview();
+} catch(err) {}</script>
+
+<script>
+function googleTranslateElementInit() {
+  new google.translate.TranslateElement({
+    pageLanguage: 'ja',
+    gaTrack: true,
+    gaId: 'UA-53067',
+    floatPosition: google.translate.TranslateElement.FloatPosition.BOTTOM_RIGHT
+  });
+}
+</script><script src="//translate.google.com/translate_a/element.js?cb=googleTranslateElementInit"></script>
+
+</body>
+</html>

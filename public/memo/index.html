@@ -1,0 +1,460 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="ja" xml:lang="ja">
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <title>memo - unknownplace.org</title>
+  <link rel="stylesheet" type="text/css" href="http://yui.yahooapis.com/3.0.0/build/cssreset/reset-min.css" />
+  <link rel="stylesheet" type="text/css" href="http://yui.yahooapis.com/3.0.0/build/cssfonts/fonts-min.css" />
+  <link rel="stylesheet" href="/css/style.css" type="text/css" />
+  <meta property="fb:admins" content="1093631929" />
+  <meta name="robots" content="noindex" />
+  <link rel="alternate" type="application/rss+xml" href="http://unknownplace.org/memo/index.rss" />
+</head>
+<body>
+
+<div id="container">
+<div id="header">
+    <h1><a href="/">unknownplace.org</a></h1> /
+<a href="/memo/">memo</a>
+</div>
+
+<div id="content">
+
+<div class="entry autopagerize_page_element">
+  <h2><a href="/memo/2013/04/04/1/">VLC 2.0.5 で YouTube Playlist 再生</a></h2>
+
+  <div class="body">
+    <p>VLCってたしかYouTube動画の再生に対応してたよなーと思いだして試してみたけど、 現在の最新バージョンの2.0.5でも今のYouTubeの仕様に対応できてないのか、YouTube動画の URL を開こうとしてもエラーになってしまう。 ためしに<a href="http://nightlies.videolan.org/build/">ナイトリービルド</a>でためしてみたらOKだった。</p>
+<p>けど、ナイトリービルドを常用するのも嫌だ。しかし、このYouTubeのハンドリングはどうもluaの拡張でやっているだけみたいなので、 その拡張ファイルだけバックポートするだけでいけそうだということで、やってみたらちゃんと動いた。</p>
+<p>具体的には、</p>
+<ul><li><code>VLC.app/Contents/MacOS/share/lua/playlist/youtube.luac</code></li><li><code>VLC.app/Contents/MacOS/share/lua/playlist/youtube_homepage.luac</code></li></ul>
+<p>の2ファイルを上書きしてあげればOK。</p>
+<p>ただ、VLCデフォルトだとどうも単体のYouTube動画は再生できるものの、playlistには対応していないみたいだ。 検索すると、</p>
+<blockquote><p><a href="http://addons.videolan.org/content/show.php/+Youtube+video+and+playlist+importer?content=149909">Youtube video and playlist importer addons.videolan.org</a></p></blockquote>
+<p>というのがみつかった。</p>
+<p>ためしてみるとplaylistの展開まではうまく動くが、再生で失敗してしまう。 これ、ナイトリービルドの拡張をもってくる前の挙動と同じだなぁとおもいつつソースを見てみるとこのplaylist拡張のなかで、動画URL(/watch?なの)もハンドリングしようとしちゃってるみたいだ。 ここはVLC本体のにまかせればいいので、クイックパッチをあてた。</p>
+<pre><code>--- 149909-playlist_youtube3.lua.orig   2012-12-03 02:18:38.000000000 +0900
++++ 149909-playlist_youtube3.lua    2013-04-04 15:54:17.000000000 +0900
+@@ -31,12 +31,13 @@
+     <span class="keyword">if</span> vlc.access ~= <span class="string">"http"</span> and vlc.access ~= <span class="string">"https"</span> then
+         <span class="keyword">return</span> <span class="constant">false</span>
+     end
+-    
+-    <span class="keyword">return</span> string.match(vlc.path:match(<span class="string">"([^/]+)"</span>),<span class="string">"%w+.youtube.com"</span>) and 
+-       (string.match(vlc.path, <span class="string">"list="</span>) 
+-       or string.match(vlc.path, <span class="string">"/watch%?"</span>) 
+-       or string.match(vlc.path, <span class="string">"/watch%?"</span>) 
+-       or string.match(vlc.path, <span class="string">"/player2.swf"</span>))
++
++    <span class="keyword">if</span> string.match(vlc.path, <span class="string">"/watch%?"</span>) then
++        <span class="keyword">return</span> <span class="constant">false</span>;
++    end
++
++    <span class="keyword">return</span> string.match(vlc.path:match(<span class="string">"([^/]+)"</span>),<span class="string">"%w+.youtube.com"</span>)
++       and string.match(vlc.path, <span class="string">"list="</span>)
+ end
+
+ -- Parse function.
+</code></pre>
+<p>これで再生は、本体のほうの拡張でおこなわれるので、いい感じでplaylist再生ができるようになった。良い。</p>
+
+  </div>
+
+  <div class="meta">
+    by typester /
+    at <a href="/memo/2013/04/04/1/">2013-04-04T15:36:00</a> /
+    <a href="/memo/tag/vlc/">vlc</a>
+    &middot; <a href="/memo/tag/youtube/">youtube</a>
+    / <a href="/memo/2013/04/04/1/#disqus_thread">Comment</a>
+  </div>
+</div>
+
+<div class="entry autopagerize_page_element">
+  <h2><a href="/memo/2013/03/22/1/">irssiで良い感じにlingrができる irssi-lingr</a></h2>
+
+  <div class="body">
+    <p>最近、</p>
+<blockquote><p><a href="http://lingr.com/room/perl_jp/">Perlの話題を日本語で – Lingr</a></p><p>お気軽なかんじで、Perl に関する話題をしましょう。 初心者のかたでも御気軽にPerl の質問など、もりもりしてください♪</p></blockquote>
+<p>というLingrの部屋が盛りあがってる。</p>
+<p>最初はブラウザで見ていたんだけど、だんだんつらくなってきたので、APIを使って<a href="http://irssi.org/">irssi</a>でLingrチャットができるのを作りました。</p>
+<blockquote><p><a href="https://github.com/typester/irssi-lingr">https://github.com/typester/irssi-lingr</a></p></blockquote>
+<p><code>~/.irssi/scripts</code> に置いて、 irssi内から、</p>
+<pre><code>/run lingr
+/set lingr_user your_lingr_username
+/set lingr_password your_lingr_password
+/set lingr_api_key your_api_key  # オプション
+/lingr start
+</code></pre>
+<p>で <code>lingr/*</code> というwindowができてそこで普通に会話できる。</p>
+<p><a href="http://www.flickr.com/photos/typester/8578112735/" title="irssi-lingr by typester, on Flickr"><img alt="irssi-lingr" height="242" src="http://farm9.staticflickr.com/8528/8578112735_55416222c8.jpg" width="369" /></a></p>
+<p>lingrはtwitterみたいに、<code>@username</code> という形で発言するとその人に通知がいく(iPhoneクライアントだけ？)機能があるので、 その機能を簡単に使えるように、nick補完すると自動的に <code>@</code> を付与する機能も付けておいた。</p>
+<blockquote><p><a href="http://unknownplace.org/memo/2012/03/26/1/">tmux + irssi + canything で Anything 風チャンネル切り替えする</a></p></blockquote>
+<p>で使ってる <code>channel-socket</code> プラグインも、このirssi-lingrのチャンネル郡も切り替えられるようにアップデートしてあるので、もしつかっているひとがいたらアップデートすると良いです。</p>
+
+  </div>
+
+  <div class="meta">
+    by typester /
+    at <a href="/memo/2013/03/22/1/">2013-03-22T10:20:00</a> /
+    <a href="/memo/tag/irssi/">irssi</a>
+    / <a href="/memo/2013/03/22/1/#disqus_thread">Comment</a>
+  </div>
+</div>
+
+<div class="entry autopagerize_page_element">
+  <h2><a href="/memo/2013/03/08/2/">clmemoを複数ファイルでやる</a></h2>
+
+  <div class="body">
+    <p>SKK導入してて思ったのは、新しい情報がまったくない、ということだ。</p>
+<p>まぁ2013年にもなってSKK導入しようなんて変なやつはいないってのもあるだろうけど、こういうの最近はみんなtwitterとかに流しておわっちゃうっていうパターンが多いからだと思う。 なのでやっぱりこのようにいろいろ作業したことを残すことは重要だなーと思いなおして、先日からやたらエントリが多いわけですw</p>
+<p>それでまぁもっと細目にclmemoつけていくかなーと思ったわけだけど、いま使ってる <code>clmemo.el</code> は、1つのメモファイルしかサポートしていない。 個人的に使うだけだったらそれで十分なんだけど、僕みたいにclmemoをこうして公開してしまっている場合、プライベートなメモもつけられると良い。</p>
+<p>ので、</p>
+<pre><code>(<span class="keyword">defun</span> <span class="function-name">clmemo-with-file</span> (memofile)
+  (interactive <span class="string">&quot;Fclmemo file: &quot;</span>)
+  (<span class="keyword">let</span> ((clmemo-file-name memofile))
+    (call-interactively &apos;clmemo)))
+</code></pre>
+<p>というような関数を書いた。これを <code>clmemo</code> の代わりに呼びだせば、<code>memofile</code> で指定したファイルが代わりに使われるのでウマー、というわけだ。</p>
+<p>まぁ、いまのところあんまりプライベートなメモってないんだけど、evernoteでやってたタスク管理なども、最近あまりevernoteが信用ならなくなってきたこともあり、Emacsでやろうかなと思ったので、ちょっとそういう感じでプライベートclmemoも運用してみようと思う。</p>
+
+  </div>
+
+  <div class="meta">
+    by typester /
+    at <a href="/memo/2013/03/08/2/">2013-03-08T10:07:00</a> /
+    <a href="/memo/tag/emacs/">emacs</a>
+    &middot; <a href="/memo/tag/clmemo/">clmemo</a>
+    / <a href="/memo/2013/03/08/2/#disqus_thread">Comment</a>
+  </div>
+</div>
+
+<div class="entry autopagerize_page_element">
+  <h2><a href="/memo/2013/03/08/1/">ddskkでも確定キーの挙動をAquaSKKライクに</a></h2>
+
+  <div class="body">
+    <p>カナモードからq押さないとひらがなモードに戻れないのは不便なので、AquaSKKと同じように <code>C-j</code> (僕は <code>C-o</code>) で カナ→かな になるようにしたい。</p>
+<p>調べてみると、 <code>skk-rom-kana-rule-list</code> というのに、かな・カナモード用のキーマップがあるので、それに対して自分で修正したバージョンのfuncを <code>skk-kakutei-key</code> に登録してあげれば良いみたいな雰囲気。</p>
+<p>そこで、</p>
+<pre><code>(<span class="keyword">defun</span> <span class="function-name">my:skk-kakutei-key</span> (arg)
+  (interactive <span class="string">&quot;P&quot;</span>)
+  (<span class="keyword">if</span> skk-henkan-mode
+      (skk-kakutei arg)
+    (skk-j-mode-on)))
+</code></pre>
+<p>というような、変換中だったら普通に確定キーとして動くけど、それ以外だったらかなに戻す、という動作をするカスタム関数を定義して、それを、</p>
+<pre><code>(add-to-list &apos;skk-rom-kana-rule-list
+     &apos;(skk-kakutei-key nil my:skk-kakutei-key))
+</code></pre>
+<p>してあげればOK。 <code>skk-rom-kana-rule-list</code> というのは <code>(require &apos;skk-setup)</code> しただけだとまだないので、 <code>(require &apos;skk-vars)</code> も必要だった。</p>
+<p>最終的な設定はこちら：</p>
+<blockquote><p><a href="https://github.com/typester/emacs-config/blob/master/conf/init/init-ddskk.el">https://github.com/typester/emacs-config/blob/master/conf/init/init-ddskk.el</a></p></blockquote>
+<p>はー、しかしこれで、AquaSKK/uim-skk/ddskk 全部で同じ感じで入力できる環境がようやくできた。 <a href="http://podcast.bulknews.net/post/44649386760/podcast-ep4-2013-03-06">miyagawaさんのpodcast</a>で、yak率という言葉がでてきたけど、SKK導入のyak率は相当なものだなぁ。</p>
+
+  </div>
+
+  <div class="meta">
+    by typester /
+    at <a href="/memo/2013/03/08/1/">2013-03-08T09:42:00</a> /
+    <a href="/memo/tag/skk/">skk</a>
+    &middot; <a href="/memo/tag/emacs/">emacs</a>
+    / <a href="/memo/2013/03/08/1/#disqus_thread">Comment</a>
+  </div>
+</div>
+
+<div class="entry autopagerize_page_element">
+  <h2><a href="/memo/2013/03/07/2/">ddskkをやっぱり使う</a></h2>
+
+  <div class="body">
+    <p>AquaSKKがEmacs上でも使えるから、ddskkとか使わないなぁと書きましたが、まちがいだった。</p>
+<p><code>C-c C-o</code> のような、キーでも、<code>C-o</code> をAquaSKKにとられてしまうのでだいぶつらい。 なので一度けしたddskkを再度インストール。</p>
+<p>設定はとりあえずこんなかんじで：</p>
+<pre><code>;; key
+(define-key global-map (kbd <span class="string">"C-x C-o"</span>) <span class="warning">'</span><span class="string">skk-mode)
+(setq skk-kakutei-key (kbd "C-o"))
+(setq mac-pass-control-to-system nil)
+
+;; skkserv
+(setq skk-server-host "127.0.0.1")
+(setq skk-server-portnum 1178)
+
+;; user dic
+(setq skk-jisyo-code '</span>utf-8)
+(<span class="type">setq</span> <span class="variable-name">skk</span>-jisyo (concat (getenv <span class="string">"HOME"</span>) <span class="string">"/Dropbox/skk/skk-jisyo.utf8"</span>))
+</code></pre>
+<p>共有辞書はskkserv経由でAquaSKKをつかう。 ユーザー辞書も文字コードをutf-8にすればAquaSKKと同じものが使える？っぽいのでAquaSKKと同じファイルを指定。 キーも他の環境に併せて <code>C-o</code> に。</p>
+<p>こっちは、uim-skkとちがってユーザー辞書もAquaSKKと同じものが使えるから、学習結果も無駄にならなくて良い感じである。</p>
+<p>唯一、カナモードのときに <code>C-o</code> を押してもひらがなモードに戻らないのが不便。 これはelispフックするかなんかすれば簡単に変更できそうだからそのうち知らべよう。</p>
+
+  </div>
+
+  <div class="meta">
+    by typester /
+    at <a href="/memo/2013/03/07/2/">2013-03-07T18:30:00</a> /
+    <a href="/memo/tag/skk/">skk</a>
+    &middot; <a href="/memo/tag/emacs/">emacs</a>
+    / <a href="/memo/2013/03/07/2/#disqus_thread">Comment</a>
+  </div>
+</div>
+
+<div class="entry autopagerize_page_element">
+  <h2><a href="/memo/2013/03/07/1/">SandS</a></h2>
+
+  <div class="body">
+    <p>SKK導入してShiftキー酷使してつらいなー、と言っていたら、<a href="http://blog.kentarok.org/">antipop</a>さんに、SandSをおすすめされたので、試してみている。</p>
+<p>MacでSandSするのはKeyRemap4MacBookを使うと簡単だ。</p>
+<blockquote><p><a href="http://pqrs.org/macosx/doc/keyboard/">Mac OS X で SandS (Space and Shift) を使う</a></p></blockquote>
+<p>しかしどうしても手が勝手に小指でshiftキーを押してしまうので、一時的に両サイドのshiftキーは無効になるようにした。</p>
+<p>このSandS、SKKでの日本語入力はまぁすぐに慣れるとおもうが、いままで手に染み込んだショートカットキーはだいぶ苦戦しそうだ。</p>
+<p>例えばEmacsでのundoは、<code>C-_</code> だが、押すキーは <code>C-S--</code> である。 これはなかなか、キーを手で覚えているから、これをスペースにおきかえるということがすぐに思いだせなくて非常に難しい。 こういうのはまぁ無理に矯正しないでもいい気もするが、どうしようかなぁ。</p>
+<p>あとEmacsを使っていると致命的につらいのが <code>M-&lt;</code> である。 MacでSandSで、っていう環境でこの場合押すキーは、<code>Cmd-Space-,</code> だ。おしにくい!</p>
+<p>これはIRCでぼやいていたら、<a href="http://handlena.me/">handlename</a>さんが、「<a href="http://d.hatena.ne.jp/rubikitch/20090219/sequential_command">sequential_command</a>つかってるからM-&lt;とか押さないですよ〜(ﾄﾞﾔｧ」みたいな雰囲気のことを言っていた。 たしかにこれは便利そうなので使ってみよう1</p>
+
+  </div>
+
+  <div class="meta">
+    by typester /
+    at <a href="/memo/2013/03/07/1/">2013-03-07T10:59:00</a> /
+    <a href="/memo/tag/skk/">skk</a>
+    &middot; <a href="/memo/tag/emacs/">emacs</a>
+    / <a href="/memo/2013/03/07/1/#disqus_thread">Comment</a>
+  </div>
+</div>
+
+<div class="entry autopagerize_page_element">
+  <h2><a href="/memo/2013/03/06/3/">最近のMacでuim-fep</a></h2>
+
+  <div class="body">
+    <p>先ほどのエントリーで、Macだと <code>uim-fep</code> が SEGV してしまう、と書いたが、どうやらこれは gcc の最適化がよくない感じで動いてしまっているようだ。</p>
+<pre><code>$ export CFLAGS=&apos;-g -O0&apos;
+$ export CXXFLAGS=$CFLAGS
+</code></pre>
+<p>してビルドしたら普通に動くようになった。</p>
+<p>こんな感じで入れた：</p>
+<pre><code>cd /tmp
+wget https://uim.googlecode.com/files/uim-1.8.4.tar.gz
+cd uim-1.8.4
+
+export CFLAGS=&apos;-g -O0&apos;
+export CXXFLAGS=$CFLAGS
+./configure --prefix=$(brew --prefix)/Cellar/uim/1.8.4 --without-x
+make
+make install
+brew link uim
+</code></pre>
+<p>アドホックな対応だけど、これでまぁいちおう手元のターミナルでも日本語入力がOKになった。</p>
+<p>あとは学習辞書をAquaSKKと共有したいな〜。</p>
+
+  </div>
+
+  <div class="meta">
+    by typester /
+    at <a href="/memo/2013/03/06/3/">2013-03-06T22:11:00</a> /
+    <a href="/memo/tag/skk/">skk</a>
+    / <a href="/memo/2013/03/06/3/#disqus_thread">Comment</a>
+  </div>
+</div>
+
+<div class="entry autopagerize_page_element">
+  <h2><a href="/memo/2013/03/06/2/">uim-skkでC-jでもカナからひらがなへ戻れるようにカスタマイズ</a></h2>
+
+  <div class="body">
+    <p>AquaSKKとuim-skkを併用していて、<code>C-j</code> キー (僕は <code>C-o</code> に変更してるが) の扱いの違いが若干気になった。</p>
+<p>AquaSKKでは基本的に、<code>C-j</code>を押せば、常にひらがな入力モードになる。</p>
+<p>一方uim-skkは、<code>q</code> を押してカタカナモードになっている状態で <code>C-j</code> を押してもなにも反応しない。また、カタカナモードから英数モードに移行したあとで、再度 <code>C-j</code> を押すとカタカナモードに復帰してしまう。 ひらかなモードに戻るには再度 <code>q</code> でトグルさせてあげる必要があるみたい。</p>
+<p>好みの問題かもしれないが、僕は AquaSKK の挙動のほうが好きなので、uim-skkもそれにあわせることにする。</p>
+<p>しかし不幸なことに、uim-skkのドキュメントにそのように設定する項目が見当らなかったので、以下のようにアドホックにコードを変更した。</p>
+<pre><code>--- /usr/share/uim/skk.scm.orig 2013-03-06 19:12:01.994615339 +0900
++++ /usr/share/uim/skk.scm      2013-03-06 19:16:07.314888197 +0900
+@@ -937,6 +937,11 @@
+          (skk-return-key? key key-state))
+       (skk-commit-raw sc key key-state)
+       #f)
++     ((skk-on-key? key key-state)
++      (skk-context-set-state! sc &apos;skk-state-direct)
++      (skk-context-set-kana-mode! sc skk-type-hiragana)
++      (rk-flush rkc)
++      #f)
+      ((skk-wide-latin-key? key key-state)
+       (skk-context-set-state! sc &apos;skk-state-wide-latin)
+       (rk-flush rkc)
+</code></pre>
+<p>あってるかわからないが、とりあえずこれで希望通りの動作になっているっぽい。</p>
+
+  </div>
+
+  <div class="meta">
+    by typester /
+    at <a href="/memo/2013/03/06/2/">2013-03-06T19:17:00</a> /
+    <a href="/memo/tag/skk/">skk</a>
+    / <a href="/memo/2013/03/06/2/#disqus_thread">Comment</a>
+  </div>
+</div>
+
+<div class="entry autopagerize_page_element">
+  <h2><a href="/memo/2013/03/06/1/">ATOKをやめてSKKを使いはじめた</a></h2>
+
+  <div class="body">
+    <p>ATOKをMacを使いはじめてからずっと使っているので、そこそこ長い付き合いではあるけれど、 和英混在入力の使い勝手が悪く、いつも混在入力をするときに、ATOK自体のON/OFFをして対応してしまっていた。</p>
+<p>この使い方は注意しないと、変な文節を学習させてしまうことになる。</p>
+<p>例えば、</p>
+<blockquote><p>nodeよりperlが好き。</p></blockquote>
+<p>のような文章で、英語の部分ではATOKをOFFにするような入力をしていると、 「が好き」という文章をATOKに教えこませてしまう。このような意図しない学習結果が積みかさなると、普通の文章の変換も苦になるほどATOKの調子が悪くなってしまう。</p>
+<p>そのような状態になるたびに、辞書をクリアしたり、 そもそもこのようなことを避けるために、「が」で一旦確定させるクセをつけるなどして、対応してきたが、そんなことを考えながら文章かくのであれば、もっとシンプルな、SKKのような入力方法にしちゃえばいいのではないかなーということで、とりあえず試してみることにした。</p>
+<h4>SKK入門</h4>
+<p>最初のとっかかりは、<a href="http://d.hatena.ne.jp/tomoya/20101212/1292089972">Emacsのddskkというのについてくるチュートリアルが良い</a>、とのことなので、まずMacシステムの入力メソッドはそのままにEmacs内だけでSKKを試してみる。</p>
+<p>それを一通り終えて、SKKの使い方が分かったところで、Mac全体でもSKKが使えるように<a href="http://aquaskk.sourceforge.jp/">AquaSKK</a>をインストール。</p>
+<p>試してみたところEmacs内でもAquaSKKが使えるっぽいので、ddskkは別に使わなくてもいいかなーという感じで、チュートリアルそうそう、ddskkは使わなくなってしまった。 AquaSKKは、Enterで改行しない、というデフォルトで有効になっている余計なオプションを外してしまえば、あとは大体ddskkと同じような使い勝手のようだ。(SKKに詳しい人から見るといろいろ違うのかもしれないが)</p>
+<p>入力方法自体はいたってシンプルで、すぐに覚えられる。 「困った」みたいのの変換が、まだちょっと考えないと入力できないが、まぁすぐに慣れるだろう。</p>
+<p>しかしそれ以外にもいろいろ問題があった。</p>
+<h4>問題1. C-j がつらい</h4>
+<p>SKKは <code>C-j</code> を変換確定やら日本語モードへの移行やらに使用する、言ってしまえば、SKKのメインキーである。</p>
+<p>しかし僕はこれを改行とか、elispの評価とかに使用するのが手に染みついてしまっていて、このキーをSKKで使用するのは苦痛を伴なう。</p>
+<p>この際だし、矯正してしまってもいいかなーともおもってしばらくがんばったが、どうにもだめなので、SKKの該当キーを <code>C-o</code> に変更した。</p>
+<p>AquaSKKのキー設定を変更するには、<code>/Library/Input Methods/AquaSKK.app/Contents/Resources/keymap.conf</code> を <code>/Users/typester/Library/Application Support/AquaSKK/keymap.conf</code> にコピーして、その中の、<code>SKK_JMODE</code> というところを</p>
+<pre><code>SKK_JMODE       ctrl::o
+</code></pre>
+<p>みたいな感じに修正すれば良い。</p>
+<h4>問題2. ターミナルで入力できない</h4>
+<p>入力できない、というか <code>C-o</code> が効かない。ので日本語に復帰できない。(<code>C-j</code>に戻してもだめだった)</p>
+<p><code>uim-fep</code> いれろ、みたいのを見て、ウンザリしつつもインストールしたが、しばらく使っていると高確率でSEGVするのでまともに使えなかったためさらにウンザリ。</p>
+<p>これはMacだけの現象かなーと思ってLinuxで試してみると、Linuxではうまく動いた。</p>
+<p>ただ、日常的にターミナルで日本語入力をする場面を考えてみると、IRCをするirssiだけ。 しかも、irssiを動かしているサーバーはLinuxなので、そこにuim-fepをいれてしのぐことにした。</p>
+<p>uim-skk でも、以下のような設定で AquaSKK と同じように <code>C-j</code> を <code>C-o</code> に置きかえた。</p>
+<pre><code># ~/.uim
+(define-key skk-on-key? <span class="warning">'</span><span class="string">("&lt;Control&gt;o"))
+(define-key skk-commit-key? '</span>(<span class="string">"&lt;Control&gt;o"</span>))
+(define-key skk-state-direct-no-preedit-nop-key? <span class="warning">'</span><span class="string">("&lt;Control&gt;o"))
+</span></code></pre>
+<p>ユーザー辞書をDropboxかなにかで同期できたらいいなーとおもったが、 AquaSKKのユーザー辞書は utf-8、uim-skk のそれは euc-jp と、文字コードが違い、しかもそれを変更する方法がわからなかったので、とりあえず別々の学習になってしまってもいいか〜ってなってる。</p>
+<h4>問題3. ひらかなの小文字入力</h4>
+<p>いままでずっと「la」で「ぁ」というように <code>l</code> キーで小文字入力していたが、SKKではこのキーは英字入力への切り替えキーなので使うことができない。 これもキー設定をかえてもよかったが、ここは <code>x</code> を使うように矯正する方向でがんばる。</p>
+<h4>使用感</h4>
+<p>送り仮名を意識しないといけなかったり、その送り仮名が「っ」だったりするときの入力はまだまだ慣れなくて難しい。 慣れてもイメージとして、ATOKほど高速に日本語入力ができる感じはない。ATOKはやっぱり賢いのでガーーっと長文を一気に入力して一発変換という使い方をしても精度が高く、日本語だけを入力する分にはやはり最高の入力メソッドであると思う。</p>
+<p>SKKのいいところは仕組みがシンプルなことと、実装がいっぱいあってどこでも動くところかな。</p>
+<p>シンプルなので自分でコントロールできると思う。ATOKは学習がおかしくなってしまったらもう途方にくれるしかなかった。実装がいっぱいあるのも、AquaSKKがなくなってもEmacsがあれば大丈夫、みたいな安心感はある。</p>
+<p>入力速度に関しては、Shiftキーを非常に多用するので、親指Shiftとかを導入したらもう少し高速に入力できるようになるのだろうかなー。</p>
+
+  </div>
+
+  <div class="meta">
+    by typester /
+    at <a href="/memo/2013/03/06/1/">2013-03-06T16:32:00</a> /
+    <a href="/memo/tag/life/">life</a>
+    &middot; <a href="/memo/tag/skk/">skk</a>
+    / <a href="/memo/2013/03/06/1/#disqus_thread">Comment</a>
+  </div>
+</div>
+
+<div class="entry autopagerize_page_element">
+  <h2><a href="/memo/2013/01/24/1/">plenv の Perl バージョンを取得する zsh スクリプト</a></h2>
+
+  <div class="body">
+    <p><a href="http://blog.64p.org/entry/2013/01/21/134639">plenv</a> でつかわれる Perl をプロンプトに表示したりするのに使えるかと。検出ロジックは plenv とおなじつもり。</p>
+<pre><code><span class="function-name">plenv_perl_version</span>() {
+    <span class="type">local</span> <span class="variable-name">dir</span>=$PWD
+
+    [[ -n $PLENV_VERSION ]] &amp;&amp; { echo $PLENV_VERSION; <span class="keyword">return</span> }
+
+    <span class="keyword">while</span> [[ -n $dir &amp;&amp; $dir != <span class="string">"/"</span> &amp;&amp; $dir != <span class="string">"."</span> ]]; <span class="keyword">do</span>
+        <span class="keyword">if</span> [[ -f <span class="string">"$dir/.perl-version"</span> ]]; <span class="type">then</span>
+            <span class="variable-name">head</span> -n 1 <span class="string">"$dir/.perl-version"</span>
+            <span class="keyword">return</span>
+        fi
+        dir=$dir:h
+    done
+
+    local plenv_home=$PLENV_HOME
+    [[ -z $PLENV_HOME &amp;&amp; -n $HOME ]] &amp;&amp; plenv_home=<span class="string">"$HOME/.plenv"</span>
+
+    <span class="keyword">if</span> [[ -f <span class="string">"$plenv_home/version"</span> ]]; <span class="type">then</span>
+        <span class="variable-name">head</span> -n 1 <span class="string">"$plenv_home/version"</span>
+    fi
+}
+</code></pre>
+<p><code>dir=$dir:h</code> とかしてるので zsh でしか動かないと思う。</p>
+<p>しかし、書くのにだいぶ時間かかった。。</p>
+
+  </div>
+
+  <div class="meta">
+    by typester /
+    at <a href="/memo/2013/01/24/1/">2013-01-24T09:32:00</a> /
+    <a href="/memo/tag/zsh/">zsh</a>
+    / <a href="/memo/2013/01/24/1/#disqus_thread">Comment</a>
+  </div>
+</div>
+
+
+
+
+<div id="pager" class="autopagerize_insert_before">
+  <p class="pages">
+    <span class="prev">&laquo; Prev</span>
+    <span class="current">1</span>
+    <a href="/memo/page/2/">2</a>
+    <a href="/memo/page/3/">3</a>
+    <a href="/memo/page/4/">4</a>
+    <a href="/memo/page/5/">5</a>
+    <a href="/memo/page/6/">6</a>
+    <a href="/memo/page/7/">7</a>
+    <a href="/memo/page/8/">8</a>
+    <a href="/memo/page/9/">9</a>
+    <a href="/memo/page/10/">10</a>
+    <a class="next" rel="next" href="/memo/page/2/">Next &raquo;</a>
+  </p>
+  <p class="info">(Page 1 of 203)</p>
+</div>
+
+
+</div>
+
+<p id="footer">
+  Copyright &copy; 2005-2013
+      by <a class="author" href="/about/#me">Daisuke Murase (typester)</a> /
+  Site generated by <a href="https://github.com/typester/nim">nim</a> /
+  Comments powered by <a href="http://disqus.com">DISQUS</a>.
+</p>
+
+</div>
+
+
+<script type="text/javascript">
+//<![CDATA[
+(function() {
+	var links = document.getElementsByTagName('a');
+	var query = '?';
+	for(var i = 0; i < links.length; i++) {
+	if(links[i].href.indexOf('#disqus_thread') >= 0) {
+		query += 'url' + i + '=' + encodeURIComponent(links[i].href) + '&';
+	}
+	}
+	document.write('<script charset="utf-8" type="text/javascript" src="http://disqus.com/forums/unknownplace/get_num_replies.js' + query + '"></' + 'script>');
+})();
+//]]>
+</script>
+
+
+<script type="text/javascript">
+var gaJsHost = (("https:" == document.location.protocol) ? "https://ssl." : "http://www.");
+document.write(unescape("%3Cscript src='" + gaJsHost + "google-analytics.com/ga.js' type='text/javascript'%3E%3C/script%3E"));
+</script>
+<script type="text/javascript">
+try {
+var pageTracker = _gat._getTracker("UA-53067-1");
+pageTracker._trackPageview();
+} catch(err) {}</script>
+
+<script>
+function googleTranslateElementInit() {
+  new google.translate.TranslateElement({
+    pageLanguage: 'ja',
+    gaTrack: true,
+    gaId: 'UA-53067',
+    floatPosition: google.translate.TranslateElement.FloatPosition.BOTTOM_RIGHT
+  });
+}
+</script><script src="//translate.google.com/translate_a/element.js?cb=googleTranslateElementInit"></script>
+
+</body>
+</html>

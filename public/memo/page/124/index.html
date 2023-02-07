@@ -1,0 +1,334 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="ja" xml:lang="ja">
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <title>memo - unknownplace.org</title>
+  <link rel="stylesheet" type="text/css" href="http://yui.yahooapis.com/3.0.0/build/cssreset/reset-min.css" />
+  <link rel="stylesheet" type="text/css" href="http://yui.yahooapis.com/3.0.0/build/cssfonts/fonts-min.css" />
+  <link rel="stylesheet" href="/css/style.css" type="text/css" />
+  <meta property="fb:admins" content="1093631929" />
+  <meta name="robots" content="noindex" />
+  <link rel="alternate" type="application/rss+xml" href="http://unknownplace.org/memo/index.rss" />
+</head>
+<body>
+
+<div id="container">
+<div id="header">
+    <h1><a href="/">unknownplace.org</a></h1> /
+<a href="/memo/">memo</a>
+</div>
+
+<div id="content">
+
+<div class="entry autopagerize_page_element">
+  <h2><a href="/memo/2006/03/20/1/">鎌倉はかそん</a></h2>
+
+  <div class="body">
+    <p>なやがまんと。</p>
+<p>VMWare をいれてみつつ、vim の使い方を教わる。むずい＞＜</p>
+<p>巷で colinux より軽いともっぱらの噂の VMWare だが、正直体感では全然重い気がする(手元のcolinux0.6.2と比較)</p>
+<p>慣れ親しんだ svk, aptitude の反応が VMWare テラオソス。</p>
+<p>最近のバージョンの colinux が不安定つことなんかね。</p>
+<p>までも VMWare の良いと思った点は</p>
+<ul><li>イメージファイルの容量が可変(1Gのイメージ作っても使ってるバイト数分しか容量食わない)</li><li>サスペンドできるからいつでも復旧可能</li></ul>
+<p>とノートPCにはやさしい感じなので、もう少し使ってみようかと。</p>
+<p>vim はむずい。あと perl の色付けがキモイ。</p>
+
+  </div>
+
+  <div class="meta">
+    by typester /
+    at <a href="/memo/2006/03/20/1/">2006-03-20T00:59:00</a> /
+    <a href="/memo/tag/life/">life</a>
+    / <a href="/memo/2006/03/20/1/#disqus_thread">Comment</a>
+  </div>
+</div>
+
+<div class="entry autopagerize_page_element">
+  <h2><a href="/memo/2006/03/18/1/"></a></h2>
+
+  <div class="body">
+    <p>退社。</p>
+
+  </div>
+
+  <div class="meta">
+    by typester /
+    at <a href="/memo/2006/03/18/1/">2006-03-18T02:18:00</a> /
+    <a href="/memo/tag/life/">life</a>
+    / <a href="/memo/2006/03/18/1/#disqus_thread">Comment</a>
+  </div>
+</div>
+
+<div class="entry autopagerize_page_element">
+  <h2><a href="/memo/2006/03/17/6/">ユーコンブレンド 100g</a></h2>
+
+  <div class="body">
+    
+  </div>
+
+  <div class="meta">
+    by typester /
+    at <a href="/memo/2006/03/17/6/">2006-03-17T21:06:00</a> /
+    <a href="/memo/tag/life/">life</a>
+    &middot; <a href="/memo/tag/starbucks/">starbucks</a>
+    / <a href="/memo/2006/03/17/6/#disqus_thread">Comment</a>
+  </div>
+</div>
+
+<div class="entry autopagerize_page_element">
+  <h2><a href="/memo/2006/03/17/5/">JavaScript や CSS の query に自動で最終更新時間をつける Catalyst Plugin</a></h2>
+
+  <div class="body">
+    <blockquote><p><a href="http://d.hatena.ne.jp/secondlife/20060316/1142512987">川o・-・）＜2nd life - JavaScript や CSS の query に自動で最終更新時間をつける Rails Plugin</a></p></blockquote>
+<p>インスパイア。</p>
+<pre><code><span class="keyword">package</span> <span class="function-name">Catalyst::Plugin::URI::MtimeQuery</span>;
+
+<span class="keyword">sub</span> <span class="function-name">uri_for</span> {
+    <span class="keyword">my</span> <span class="variable-name">$c</span>   = <span class="cperl-nonoverridable">shift</span>;
+    <span class="keyword">my</span> <span class="variable-name">$res</span> = $c-&gt;NEXT::uri_for(<span class="cperl-array">@_</span>);
+
+    <span class="keyword">if</span> ( $res =~ <span class="constant">/</span><span class="builtin">\</span><span class="string">.</span><span class="keyword">(</span><span class="string">css</span><span class="keyword">|</span><span class="string">js</span><span class="keyword">|</span><span class="string">swf</span><span class="keyword">)</span><span class="function-name">$</span><span class="constant">/</span> ) {
+        <span class="keyword">my</span> <span class="variable-name">$base</span> = $c-&gt;req-&gt;base;
+        <span class="keyword">my</span> (<span class="variable-name">$path</span>) = $res =~ <span class="cperl-nonoverridable">m</span><span class="constant">!</span><span class="function-name">^</span><span class="variable-name">$base</span><span class="string">/</span><span class="keyword">(</span><span class="function-name">.</span><span class="builtin">*</span><span class="keyword">)</span><span class="constant">!</span>;
+
+        <span class="keyword">my</span> <span class="variable-name">$file</span> = $c-&gt;path_to( <span class="string">&apos;root&apos;</span>, <span class="cperl-nonoverridable">split</span> <span class="string">&apos;/&apos;</span>, $path );
+        <span class="keyword">if</span> ( $file-&gt;<span class="type">stat</span> &amp;&amp; <span class="function-name">-f _</span> &amp;&amp; <span class="function-name">-r _</span> ) {
+            $res .= <span class="string">&apos;?&apos;</span> . $file-&gt;<span class="type">stat</span>-&gt;mtime;
+        }
+    }
+
+    $res;
+}
+
+1;
+</code></pre>
+<p>Catalyst では CSS や Javascript の読み込みは <code>[% c.uri_for(&apos;/js/prototype.js&apos;) %]</code> などのように記述することが多いのですが、上記プラグインをロードしておくと、css|js|swf の場合は自動で更新時間が付くようになります。試してないけど。</p>
+<p>上のは設定きめうちなんだけどその理由は config の設定キー名思いつかなかったからという。。</p>
+<p>あと、swf は普通にクエリを渡して使うことが多いのでこのままだとあまり使えない。</p>
+
+  </div>
+
+  <div class="meta">
+    by typester /
+    at <a href="/memo/2006/03/17/5/">2006-03-17T15:41:00</a> /
+    <a href="/memo/tag/perl/">perl</a>
+    &middot; <a href="/memo/tag/catalyst/">catalyst</a>
+    / <a href="/memo/2006/03/17/5/#disqus_thread">Comment</a>
+  </div>
+</div>
+
+<div class="entry autopagerize_page_element">
+  <h2><a href="/memo/2006/03/17/4/"></a></h2>
+
+  <div class="body">
+    <p><code>qr/\.(css|js|swf)$/</code> みたいなのを YAML で書くにはどうしたらいいのだろうとおもって、とりあえず YAML モジュールを使って</p>
+<pre><code><span class="keyword">use</span> <span class="function-name">YAML</span>;
+
+<span class="keyword">my</span> <span class="variable-name">$data</span> = {
+    <span class="string">regex</span> =&gt; <span class="cperl-nonoverridable">qr</span><span class="constant">/</span><span class="builtin">\</span><span class="string">.</span><span class="keyword">(</span><span class="string">css</span><span class="keyword">|</span><span class="string">js</span><span class="keyword">|</span><span class="string">swf</span><span class="keyword">)</span><span class="function-name">$</span><span class="constant">/</span>,
+};
+
+<span class="cperl-nonoverridable">print</span> Dump( $data );
+</code></pre>
+<p>こんなのをしてみる。</p>
+<p>結果。</p>
+<pre><code>---
+regex: !perl/regexp:
+  REGEXP: \.(css|js|swf)$
+</code></pre>
+<p>こんな風に書くのか。これを LoadFile しても</p>
+<pre><code>$VAR1 = {
+          &apos;regex&apos; =&gt; qr/(?-xism:(?:\.(css|js|swf)$))/
+        };
+</code></pre>
+<p>となるのでちゃんと使えるようだ。</p>
+<p>でも YAML::Syck だと Load Dump ともにうまく動かない。</p>
+
+  </div>
+
+  <div class="meta">
+    by typester /
+    at <a href="/memo/2006/03/17/4/">2006-03-17T14:53:00</a> /
+    <a href="/memo/tag/perl/">perl</a>
+    &middot; <a href="/memo/tag/yaml/">yaml</a>
+    / <a href="/memo/2006/03/17/4/#disqus_thread">Comment</a>
+  </div>
+</div>
+
+<div class="entry autopagerize_page_element">
+  <h2><a href="/memo/2006/03/17/3/"></a></h2>
+
+  <div class="body">
+    <p>出社。</p>
+
+  </div>
+
+  <div class="meta">
+    by typester /
+    at <a href="/memo/2006/03/17/3/">2006-03-17T12:34:00</a> /
+    <a href="/memo/tag/life/">life</a>
+    / <a href="/memo/2006/03/17/3/#disqus_thread">Comment</a>
+  </div>
+</div>
+
+<div class="entry autopagerize_page_element">
+  <h2><a href="/memo/2006/03/17/2/">Gyao用</a></h2>
+
+  <div class="body">
+    <p>// ==UserScript== // @name Gyao link fixer // @namespace http://unknownplace.org/ // @description fix gyao movie links</p>
+<pre><code>// @include      http://www.gyao.jp/*
+
+// ==/UserScript==
+
+(function() {
+    var anchors = document.getElementsByTagName(&apos;a&apos;);
+
+    for (var i = 0; i &lt; anchors.length; i++) {
+        var anchor = anchors[i];
+        if (anchor.href.match(/javascript:directScreen/)) {
+            var content = anchor.href.match(/cnt\d+/);
+            var rate    = anchor.href.match(/bit\d+/);
+            var user    = document.cookie.match(/Cookie_UserId=(\w+)/)[1];
+
+            anchor.href
+                = &apos;http://www.gyao.jp/sityou/asx.php?contentsId=&apos; + content +
+                &apos;&amp;userNo=&apos; + user + &apos;&amp;rateId=&apos; + rate;
+        }
+    }
+})();
+</code></pre>
+
+  </div>
+
+  <div class="meta">
+    by typester /
+    at <a href="/memo/2006/03/17/2/">2006-03-17T04:24:00</a> /
+    <a href="/memo/tag/gyao/">gyao</a>
+    &middot; <a href="/memo/tag/greasemonkey/">greasemonkey</a>
+    / <a href="/memo/2006/03/17/2/#disqus_thread">Comment</a>
+  </div>
+</div>
+
+<div class="entry autopagerize_page_element">
+  <h2><a href="/memo/2006/03/17/1/"></a></h2>
+
+  <div class="body">
+    <p>退社。</p>
+
+  </div>
+
+  <div class="meta">
+    by typester /
+    at <a href="/memo/2006/03/17/1/">2006-03-17T03:39:00</a> /
+    <a href="/memo/tag/life/">life</a>
+    / <a href="/memo/2006/03/17/1/#disqus_thread">Comment</a>
+  </div>
+</div>
+
+<div class="entry autopagerize_page_element">
+  <h2><a href="/memo/2006/03/16/5/">盗聴</a></h2>
+
+  <div class="body">
+    <ul><li>perldoc DB</li><li>Devel::SimpleTrace</li></ul>
+
+  </div>
+
+  <div class="meta">
+    by typester /
+    at <a href="/memo/2006/03/16/5/">2006-03-16T16:24:00</a> /
+    <a href="/memo/tag/life/">life</a>
+    / <a href="/memo/2006/03/16/5/#disqus_thread">Comment</a>
+  </div>
+</div>
+
+<div class="entry autopagerize_page_element">
+  <h2><a href="/memo/2006/03/16/4/"></a></h2>
+
+  <div class="body">
+    <p>もはや apache2 は svn 専用。</p>
+
+  </div>
+
+  <div class="meta">
+    by typester /
+    at <a href="/memo/2006/03/16/4/">2006-03-16T15:54:00</a> /
+    <a href="/memo/tag/life/">life</a>
+    / <a href="/memo/2006/03/16/4/#disqus_thread">Comment</a>
+  </div>
+</div>
+
+
+
+
+<div id="pager" class="autopagerize_insert_before">
+  <p class="pages">
+    <a class="prev" rel="previous" href="/memo/page/123/">&laquo; Prev</a>
+    <a href="/memo/page/120/">120</a>
+    <a href="/memo/page/121/">121</a>
+    <a href="/memo/page/122/">122</a>
+    <a href="/memo/page/123/">123</a>
+    <span class="current">124</span>
+    <a href="/memo/page/125/">125</a>
+    <a href="/memo/page/126/">126</a>
+    <a href="/memo/page/127/">127</a>
+    <a href="/memo/page/128/">128</a>
+    <a href="/memo/page/129/">129</a>
+    <a class="next" rel="next" href="/memo/page/125/">Next &raquo;</a>
+  </p>
+  <p class="info">(Page 124 of 203)</p>
+</div>
+
+
+</div>
+
+<p id="footer">
+  Copyright &copy; 2005-2013
+      by <a class="author" href="/about/#me">Daisuke Murase (typester)</a> /
+  Site generated by <a href="https://github.com/typester/nim">nim</a> /
+  Comments powered by <a href="http://disqus.com">DISQUS</a>.
+</p>
+
+</div>
+
+
+<script type="text/javascript">
+//<![CDATA[
+(function() {
+	var links = document.getElementsByTagName('a');
+	var query = '?';
+	for(var i = 0; i < links.length; i++) {
+	if(links[i].href.indexOf('#disqus_thread') >= 0) {
+		query += 'url' + i + '=' + encodeURIComponent(links[i].href) + '&';
+	}
+	}
+	document.write('<script charset="utf-8" type="text/javascript" src="http://disqus.com/forums/unknownplace/get_num_replies.js' + query + '"></' + 'script>');
+})();
+//]]>
+</script>
+
+
+<script type="text/javascript">
+var gaJsHost = (("https:" == document.location.protocol) ? "https://ssl." : "http://www.");
+document.write(unescape("%3Cscript src='" + gaJsHost + "google-analytics.com/ga.js' type='text/javascript'%3E%3C/script%3E"));
+</script>
+<script type="text/javascript">
+try {
+var pageTracker = _gat._getTracker("UA-53067-1");
+pageTracker._trackPageview();
+} catch(err) {}</script>
+
+<script>
+function googleTranslateElementInit() {
+  new google.translate.TranslateElement({
+    pageLanguage: 'ja',
+    gaTrack: true,
+    gaId: 'UA-53067',
+    floatPosition: google.translate.TranslateElement.FloatPosition.BOTTOM_RIGHT
+  });
+}
+</script><script src="//translate.google.com/translate_a/element.js?cb=googleTranslateElementInit"></script>
+
+</body>
+</html>

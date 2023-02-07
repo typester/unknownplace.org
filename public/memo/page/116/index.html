@@ -1,0 +1,284 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="ja" xml:lang="ja">
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <title>memo - unknownplace.org</title>
+  <link rel="stylesheet" type="text/css" href="http://yui.yahooapis.com/3.0.0/build/cssreset/reset-min.css" />
+  <link rel="stylesheet" type="text/css" href="http://yui.yahooapis.com/3.0.0/build/cssfonts/fonts-min.css" />
+  <link rel="stylesheet" href="/css/style.css" type="text/css" />
+  <meta property="fb:admins" content="1093631929" />
+  <meta name="robots" content="noindex" />
+  <link rel="alternate" type="application/rss+xml" href="http://unknownplace.org/memo/index.rss" />
+</head>
+<body>
+
+<div id="container">
+<div id="header">
+    <h1><a href="/">unknownplace.org</a></h1> /
+<a href="/memo/">memo</a>
+</div>
+
+<div id="content">
+
+<div class="entry autopagerize_page_element">
+  <h2><a href="/memo/2006/04/17/2/">Flickr 認証の問題点</a></h2>
+
+  <div class="body">
+    <p>まぁしょうがないのかもしれないが。</p>
+<p>Flickr の認証 API を使うアプリケーションは、アプリケーション自身の権限を read のみ、read/write、read/write/delete という設定をでき、ユーザーは最初にログインするときにその権限を確認のうえログインができるようになっているのだけど、最小の権限が read という問題。</p>
+<p>認証のみの目的で利用するような場合にも read になるわけだが、この権限ではログインしたユーザーの写真をアプリ側ですべてみることができてしまう。</p>
+<p>たとえ完全に private な写真であっても。</p>
+<p>認証のみの権限があるといいなぁ。</p>
+
+  </div>
+
+  <div class="meta">
+    by typester /
+    at <a href="/memo/2006/04/17/2/">2006-04-17T11:15:00</a> /
+    <a href="/memo/tag/life/">life</a>
+    &middot; <a href="/memo/tag/web/">web</a>
+    &middot; <a href="/memo/tag/flickr/">flickr</a>
+    / <a href="/memo/2006/04/17/2/#disqus_thread">Comment</a>
+  </div>
+</div>
+
+<div class="entry autopagerize_page_element">
+  <h2><a href="/memo/2006/04/17/1/"></a></h2>
+
+  <div class="body">
+    <p>出社。</p>
+
+  </div>
+
+  <div class="meta">
+    by typester /
+    at <a href="/memo/2006/04/17/1/">2006-04-17T09:59:00</a> /
+    <a href="/memo/tag/life/">life</a>
+    / <a href="/memo/2006/04/17/1/#disqus_thread">Comment</a>
+  </div>
+</div>
+
+<div class="entry autopagerize_page_element">
+  <h2><a href="/memo/2006/04/16/5/"></a></h2>
+
+  <div class="body">
+    <p>退社。</p>
+
+  </div>
+
+  <div class="meta">
+    by typester /
+    at <a href="/memo/2006/04/16/5/">2006-04-16T22:12:00</a> /
+    <a href="/memo/tag/life/">life</a>
+    / <a href="/memo/2006/04/16/5/#disqus_thread">Comment</a>
+  </div>
+</div>
+
+<div class="entry autopagerize_page_element">
+  <h2><a href="/memo/2006/04/16/4/"></a></h2>
+
+  <div class="body">
+    <pre><code>$c-&gt;stash( XMLin( $content, <span class="string">ForceArray</span> =&gt; [<span class="cperl-nonoverridable">qw</span><span class="string">/photo/</span>]) );
+</code></pre>
+<p>でいいやもう。</p>
+
+  </div>
+
+  <div class="meta">
+    by typester /
+    at <a href="/memo/2006/04/16/4/">2006-04-16T15:02:00</a> /
+    <a href="/memo/tag/life/">life</a>
+    / <a href="/memo/2006/04/16/4/#disqus_thread">Comment</a>
+  </div>
+</div>
+
+<div class="entry autopagerize_page_element">
+  <h2><a href="/memo/2006/04/16/3/">配列を何個かごとに分割したい</a></h2>
+
+  <div class="body">
+    <p>以下のような Flickr API の レスポンスをパースしようとしていて</p>
+<pre><code><span class="nxml-processing-instruction-delimiter">&lt;?</span><span class="nxml-processing-instruction-target">xml</span> <span class="nxml-attribute-local-name">version</span>=<span class="nxml-attribute-value-delimiter">&quot;</span><span class="nxml-attribute-value">1.0</span><span class="nxml-attribute-value-delimiter">&quot;</span> <span class="nxml-attribute-local-name">encoding</span>=<span class="nxml-attribute-value-delimiter">&quot;</span><span class="nxml-attribute-value">utf-8</span><span class="nxml-attribute-value-delimiter">&quot;</span> <span class="nxml-processing-instruction-delimiter">?&gt;</span>
+<span class="nxml-tag-delimiter">&lt;</span><span class="nxml-element-local-name">rsp</span> <span class="nxml-attribute-local-name">stat</span>=<span class="nxml-attribute-value-delimiter">&quot;</span><span class="nxml-attribute-value">ok</span><span class="nxml-attribute-value-delimiter">&quot;</span><span class="nxml-tag-delimiter">&gt;</span>
+<span class="nxml-tag-delimiter">&lt;</span><span class="nxml-element-local-name">photos</span> <span class="nxml-attribute-local-name">page</span>=<span class="nxml-attribute-value-delimiter">&quot;</span><span class="nxml-attribute-value">1</span><span class="nxml-attribute-value-delimiter">&quot;</span> <span class="nxml-attribute-local-name">pages</span>=<span class="nxml-attribute-value-delimiter">&quot;</span><span class="nxml-attribute-value">4</span><span class="nxml-attribute-value-delimiter">&quot;</span> <span class="nxml-attribute-local-name">perpage</span>=<span class="nxml-attribute-value-delimiter">&quot;</span><span class="nxml-attribute-value">100</span><span class="nxml-attribute-value-delimiter">&quot;</span> <span class="nxml-attribute-local-name">total</span>=<span class="nxml-attribute-value-delimiter">&quot;</span><span class="nxml-attribute-value">333</span><span class="nxml-attribute-value-delimiter">&quot;</span><span class="nxml-tag-delimiter">&gt;</span>
+    <span class="nxml-tag-delimiter">&lt;</span><span class="nxml-element-local-name">photo</span> <span class="nxml-attribute-local-name">id</span>=<span class="nxml-attribute-value-delimiter">&quot;</span><span class="nxml-attribute-value">126831864</span><span class="nxml-attribute-value-delimiter">&quot;</span> <span class="nxml-attribute-local-name">owner</span>=<span class="nxml-attribute-value-delimiter">&quot;</span><span class="nxml-attribute-value">29838003@N00</span><span class="nxml-attribute-value-delimiter">&quot;</span> <span class="nxml-attribute-local-name">secret</span>=<span class="nxml-attribute-value-delimiter">&quot;</span><span class="nxml-attribute-value">b12ca76f6a</span><span class="nxml-attribute-value-delimiter">&quot;</span> <span class="nxml-attribute-local-name">server</span>=<span class="nxml-attribute-value-delimiter">&quot;</span><span class="nxml-attribute-value">54</span><span class="nxml-attribute-value-delimiter">&quot;</span> <span class="nxml-attribute-local-name">title</span>=<span class="nxml-attribute-value-delimiter">&quot;</span><span class="nxml-attribute-value">達人</span><span class="nxml-attribute-value-delimiter">&quot;</span> <span class="nxml-attribute-local-name">ispublic</span>=<span class="nxml-attribute-value-delimiter">&quot;</span><span class="nxml-attribute-value">1</span><span class="nxml-attribute-value-delimiter">&quot;</span> <span class="nxml-attribute-local-name">isfriend</span>=<span class="nxml-attribute-value-delimiter">&quot;</span><span class="nxml-attribute-value">0</span><span class="nxml-attribute-value-delimiter">&quot;</span> <span class="nxml-attribute-local-name">isfamily</span>=<span class="nxml-attribute-value-delimiter">&quot;</span><span class="nxml-attribute-value">0</span><span class="nxml-attribute-value-delimiter">&quot;</span> <span class="nxml-tag-slash">/</span><span class="nxml-tag-delimiter">&gt;</span>
+    <span class="nxml-tag-delimiter">&lt;</span><span class="nxml-element-local-name">photo</span> <span class="nxml-attribute-local-name">id</span>=<span class="nxml-attribute-value-delimiter">&quot;</span><span class="nxml-attribute-value">126831781</span><span class="nxml-attribute-value-delimiter">&quot;</span> <span class="nxml-attribute-local-name">owner</span>=<span class="nxml-attribute-value-delimiter">&quot;</span><span class="nxml-attribute-value">29838003@N00</span><span class="nxml-attribute-value-delimiter">&quot;</span> <span class="nxml-attribute-local-name">secret</span>=<span class="nxml-attribute-value-delimiter">&quot;</span><span class="nxml-attribute-value">5a9b9f4075</span><span class="nxml-attribute-value-delimiter">&quot;</span> <span class="nxml-attribute-local-name">server</span>=<span class="nxml-attribute-value-delimiter">&quot;</span><span class="nxml-attribute-value">44</span><span class="nxml-attribute-value-delimiter">&quot;</span> <span class="nxml-attribute-local-name">title</span>=<span class="nxml-attribute-value-delimiter">&quot;</span><span class="nxml-attribute-value">party room</span><span class="nxml-attribute-value-delimiter">&quot;</span> <span class="nxml-attribute-local-name">ispublic</span>=<span class="nxml-attribute-value-delimiter">&quot;</span><span class="nxml-attribute-value">1</span><span class="nxml-attribute-value-delimiter">&quot;</span> <span class="nxml-attribute-local-name">isfriend</span>=<span class="nxml-attribute-value-delimiter">&quot;</span><span class="nxml-attribute-value">0</span><span class="nxml-attribute-value-delimiter">&quot;</span> <span class="nxml-attribute-local-name">isfamily</span>=<span class="nxml-attribute-value-delimiter">&quot;</span><span class="nxml-attribute-value">0</span><span class="nxml-attribute-value-delimiter">&quot;</span> <span class="nxml-tag-slash">/</span><span class="nxml-tag-delimiter">&gt;</span>
+    <span class="nxml-tag-delimiter">&lt;</span><span class="nxml-element-local-name">photo</span> <span class="nxml-attribute-local-name">id</span>=<span class="nxml-attribute-value-delimiter">&quot;</span><span class="nxml-attribute-value">124231350</span><span class="nxml-attribute-value-delimiter">&quot;</span> <span class="nxml-attribute-local-name">owner</span>=<span class="nxml-attribute-value-delimiter">&quot;</span><span class="nxml-attribute-value">29838003@N00</span><span class="nxml-attribute-value-delimiter">&quot;</span> <span class="nxml-attribute-local-name">secret</span>=<span class="nxml-attribute-value-delimiter">&quot;</span><span class="nxml-attribute-value">d7a463ebb6</span><span class="nxml-attribute-value-delimiter">&quot;</span> <span class="nxml-attribute-local-name">server</span>=<span class="nxml-attribute-value-delimiter">&quot;</span><span class="nxml-attribute-value">41</span><span class="nxml-attribute-value-delimiter">&quot;</span> <span class="nxml-attribute-local-name">title</span>=<span class="nxml-attribute-value-delimiter">&quot;</span><span class="nxml-attribute-value">P3290041.JPG</span><span class="nxml-attribute-value-delimiter">&quot;</span> <span class="nxml-attribute-local-name">ispublic</span>=<span class="nxml-attribute-value-delimiter">&quot;</span><span class="nxml-attribute-value">1</span><span class="nxml-attribute-value-delimiter">&quot;</span> <span class="nxml-attribute-local-name">isfriend</span>=<span class="nxml-attribute-value-delimiter">&quot;</span><span class="nxml-attribute-value">0</span><span class="nxml-attribute-value-delimiter">&quot;</span> <span class="nxml-attribute-local-name">isfamily</span>=<span class="nxml-attribute-value-delimiter">&quot;</span><span class="nxml-attribute-value">0</span><span class="nxml-attribute-value-delimiter">&quot;</span> <span class="nxml-tag-slash">/</span><span class="nxml-tag-delimiter">&gt;</span><span class="nxml-text">
+     :
+</span></code></pre>
+<p>こんなコード書いたの、</p>
+<pre><code>text</code></pre>
+<p>:O</p>
+<p><code>@matches</code> をかっこよく分割したい。</p>
+
+  </div>
+
+  <div class="meta">
+    by typester /
+    at <a href="/memo/2006/04/16/3/">2006-04-16T14:42:00</a> /
+    <a href="/memo/tag/perl/">perl</a>
+    / <a href="/memo/2006/04/16/3/#disqus_thread">Comment</a>
+  </div>
+</div>
+
+<div class="entry autopagerize_page_element">
+  <h2><a href="/memo/2006/04/16/2/"></a></h2>
+
+  <div class="body">
+    <p>マックのコーヒーがうまくなってる件。普通にのめるよ。すごい。</p>
+<p>ファストフードでは一番うまいんじゃない？これ。いつからだろ。。</p>
+
+  </div>
+
+  <div class="meta">
+    by typester /
+    at <a href="/memo/2006/04/16/2/">2006-04-16T11:55:00</a> /
+    <a href="/memo/tag/life/">life</a>
+    / <a href="/memo/2006/04/16/2/#disqus_thread">Comment</a>
+  </div>
+</div>
+
+<div class="entry autopagerize_page_element">
+  <h2><a href="/memo/2006/04/16/1/">fotologue の URL</a></h2>
+
+  <div class="body">
+    <pre><code>http://fotologue.jp/typester#/path/to
+</code></pre>
+<p>みたいな書き方良いね。一瞬普通のURLにみえる。</p>
+
+  </div>
+
+  <div class="meta">
+    by typester /
+    at <a href="/memo/2006/04/16/1/">2006-04-16T00:46:00</a> /
+    <a href="/memo/tag/web/">web</a>
+    / <a href="/memo/2006/04/16/1/#disqus_thread">Comment</a>
+  </div>
+</div>
+
+<div class="entry autopagerize_page_element">
+  <h2><a href="/memo/2006/04/15/3/">50mm 1.2</a></h2>
+
+  <div class="body">
+    <p><a href="http://page8.auctions.yahoo.co.jp/jp/auction/h38369829">ヤフオクに出てて</a>ヲチしてたけどやっぱ人気だなぁ。上がりまくり。</p>
+<p>今の F1.4 で満足してるのでまぁそんなに欲しくないのだけど。</p>
+
+  </div>
+
+  <div class="meta">
+    by typester /
+    at <a href="/memo/2006/04/15/3/">2006-04-15T23:44:00</a> /
+    <a href="/memo/tag/life/">life</a>
+    &middot; <a href="/memo/tag/photo/">photo</a>
+    / <a href="/memo/2006/04/15/3/#disqus_thread">Comment</a>
+  </div>
+</div>
+
+<div class="entry autopagerize_page_element">
+  <h2><a href="/memo/2006/04/15/2/"></a></h2>
+
+  <div class="body">
+    <p>出社。</p>
+
+  </div>
+
+  <div class="meta">
+    by typester /
+    at <a href="/memo/2006/04/15/2/">2006-04-15T17:10:00</a> /
+    <a href="/memo/tag/life/">life</a>
+    / <a href="/memo/2006/04/15/2/#disqus_thread">Comment</a>
+  </div>
+</div>
+
+<div class="entry autopagerize_page_element">
+  <h2><a href="/memo/2006/04/15/1/">ダウン</a></h2>
+
+  <div class="body">
+    <p>久々に寝込んでしまった。しかもなんか食あたりっぽいもの。</p>
+<p>何がいけなかったのだろう。</p>
+<p>いろいろ迷惑かけてしまった。</p>
+<p>いちおう復活したっぽい。</p>
+
+  </div>
+
+  <div class="meta">
+    by typester /
+    at <a href="/memo/2006/04/15/1/">2006-04-15T16:17:00</a> /
+    <a href="/memo/tag/life/">life</a>
+    / <a href="/memo/2006/04/15/1/#disqus_thread">Comment</a>
+  </div>
+</div>
+
+
+
+
+<div id="pager" class="autopagerize_insert_before">
+  <p class="pages">
+    <a class="prev" rel="previous" href="/memo/page/115/">&laquo; Prev</a>
+    <a href="/memo/page/112/">112</a>
+    <a href="/memo/page/113/">113</a>
+    <a href="/memo/page/114/">114</a>
+    <a href="/memo/page/115/">115</a>
+    <span class="current">116</span>
+    <a href="/memo/page/117/">117</a>
+    <a href="/memo/page/118/">118</a>
+    <a href="/memo/page/119/">119</a>
+    <a href="/memo/page/120/">120</a>
+    <a href="/memo/page/121/">121</a>
+    <a class="next" rel="next" href="/memo/page/117/">Next &raquo;</a>
+  </p>
+  <p class="info">(Page 116 of 203)</p>
+</div>
+
+
+</div>
+
+<p id="footer">
+  Copyright &copy; 2005-2013
+      by <a class="author" href="/about/#me">Daisuke Murase (typester)</a> /
+  Site generated by <a href="https://github.com/typester/nim">nim</a> /
+  Comments powered by <a href="http://disqus.com">DISQUS</a>.
+</p>
+
+</div>
+
+
+<script type="text/javascript">
+//<![CDATA[
+(function() {
+	var links = document.getElementsByTagName('a');
+	var query = '?';
+	for(var i = 0; i < links.length; i++) {
+	if(links[i].href.indexOf('#disqus_thread') >= 0) {
+		query += 'url' + i + '=' + encodeURIComponent(links[i].href) + '&';
+	}
+	}
+	document.write('<script charset="utf-8" type="text/javascript" src="http://disqus.com/forums/unknownplace/get_num_replies.js' + query + '"></' + 'script>');
+})();
+//]]>
+</script>
+
+
+<script type="text/javascript">
+var gaJsHost = (("https:" == document.location.protocol) ? "https://ssl." : "http://www.");
+document.write(unescape("%3Cscript src='" + gaJsHost + "google-analytics.com/ga.js' type='text/javascript'%3E%3C/script%3E"));
+</script>
+<script type="text/javascript">
+try {
+var pageTracker = _gat._getTracker("UA-53067-1");
+pageTracker._trackPageview();
+} catch(err) {}</script>
+
+<script>
+function googleTranslateElementInit() {
+  new google.translate.TranslateElement({
+    pageLanguage: 'ja',
+    gaTrack: true,
+    gaId: 'UA-53067',
+    floatPosition: google.translate.TranslateElement.FloatPosition.BOTTOM_RIGHT
+  });
+}
+</script><script src="//translate.google.com/translate_a/element.js?cb=googleTranslateElementInit"></script>
+
+</body>
+</html>

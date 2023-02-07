@@ -1,0 +1,280 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="ja" xml:lang="ja">
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <title>memo - unknownplace.org</title>
+  <link rel="stylesheet" type="text/css" href="http://yui.yahooapis.com/3.0.0/build/cssreset/reset-min.css" />
+  <link rel="stylesheet" type="text/css" href="http://yui.yahooapis.com/3.0.0/build/cssfonts/fonts-min.css" />
+  <link rel="stylesheet" href="/css/style.css" type="text/css" />
+  <meta property="fb:admins" content="1093631929" />
+  <meta name="robots" content="noindex" />
+  <link rel="alternate" type="application/rss+xml" href="http://unknownplace.org/memo/index.rss" />
+</head>
+<body>
+
+<div id="container">
+<div id="header">
+    <h1><a href="/">unknownplace.org</a></h1> /
+<a href="/memo/">memo</a>
+</div>
+
+<div id="content">
+
+<div class="entry autopagerize_page_element">
+  <h2><a href="/memo/2006/06/20/2/">PRAGMA synchronous</a></h2>
+
+  <div class="body">
+    <p>IRC で興味深い話題。</p>
+<p>SQLite には synchronous という PRAGMA があり、これが off(0) だと MySQL でいうと MyISAM っぽく、full(2) だと InnoDB っぽくなるらしい。デフォルトは full。</p>
+<p>ので、パフォーマンス重視の場合、PRAGMA synchronous = off; しろと。</p>
+<ul><li><a href="http://www.sqlite.org/cvstrac/wiki?p=SpeedComparison">http://www.sqlite.org/cvstrac/wiki?p=SpeedComparison</a></li><li><a href="http://www.sqlite.org/pragma.html#pragma_synchronous">http://www.sqlite.org/pragma.html#pragma_synchronous</a></li></ul>
+
+  </div>
+
+  <div class="meta">
+    by typester /
+    at <a href="/memo/2006/06/20/2/">2006-06-20T19:12:00</a> /
+    <a href="/memo/tag/sqlite/">sqlite</a>
+    / <a href="/memo/2006/06/20/2/#disqus_thread">Comment</a>
+  </div>
+</div>
+
+<div class="entry autopagerize_page_element">
+  <h2><a href="/memo/2006/06/20/1/"></a></h2>
+
+  <div class="body">
+    <blockquote><p><a href="http://d.hatena.ne.jp/shag/20060616">shag の日記 - undef な SCALAR を ARRAY でデリファレンスすると、値が変わる</a></p></blockquote>
+<p>ん、これ普通じゃね。値が変わるというか、初期化されてるだけじゃないかしら。</p>
+
+  </div>
+
+  <div class="meta">
+    by typester /
+    at <a href="/memo/2006/06/20/1/">2006-06-20T15:22:00</a> /
+    <a href="/memo/tag/perl/">perl</a>
+    / <a href="/memo/2006/06/20/1/#disqus_thread">Comment</a>
+  </div>
+</div>
+
+<div class="entry autopagerize_page_element">
+  <h2><a href="/memo/2006/06/19/1/"></a></h2>
+
+  <div class="body">
+    <p>出社。</p>
+
+  </div>
+
+  <div class="meta">
+    by typester /
+    at <a href="/memo/2006/06/19/1/">2006-06-19T05:06:00</a> /
+    <a href="/memo/tag/life/">life</a>
+    / <a href="/memo/2006/06/19/1/#disqus_thread">Comment</a>
+  </div>
+</div>
+
+<div class="entry autopagerize_page_element">
+  <h2><a href="/memo/2006/06/18/3/"></a></h2>
+
+  <div class="body">
+    <p>やべぇ、帰らねば。</p>
+
+  </div>
+
+  <div class="meta">
+    by typester /
+    at <a href="/memo/2006/06/18/3/">2006-06-18T22:23:00</a> /
+    <a href="/memo/tag/life/">life</a>
+    / <a href="/memo/2006/06/18/3/#disqus_thread">Comment</a>
+  </div>
+</div>
+
+<div class="entry autopagerize_page_element">
+  <h2><a href="/memo/2006/06/18/2/">undefined symbol: FT_GlyphSlot_Embolden</a></h2>
+
+  <div class="body">
+    <p>ものすごーくひさしぶりに Gimp を使おうとしたら</p>
+<pre><code>gimp: symbol lookup error: /usr/lib/libcairo.so.2: undefined symbol: FT_GlyphSlot_Embolden
+</code></pre>
+<p>とか言うエラーで起動しやがらねぇ＠ubuntu breezy</p>
+<p>ぐぐったら</p>
+<blockquote><p><a href="http://lists.debian.or.jp/debian-users/200602/msg00213.html">[debian-users:45959] Re: etchでKDEが起動しくなった</a></p><p>libxft2が中途半端な状態でtesting行きになったために同様の問題多数で阿鼻叫喚になっていますね (http://bugs.debian.org/cgi-bin/pkgreport.cgi?pkg=libxft2)。</p><p>libfreetype6をunstableから持ってくることで当面は解決できるようです。</p></blockquote>
+<p>とかが最初にきた。あらまぁ。utunbuもかよ。</p>
+<p>apt-line に dapper のやつ追加して</p>
+<pre><code>sudo aptitude install libfreetype6 -t dapper
+</code></pre>
+<p>したら起動するようになった。</p>
+
+  </div>
+
+  <div class="meta">
+    by typester /
+    at <a href="/memo/2006/06/18/2/">2006-06-18T16:42:00</a> /
+    <a href="/memo/tag/life/">life</a>
+    &middot; <a href="/memo/tag/linux/">linux</a>
+    / <a href="/memo/2006/06/18/2/#disqus_thread">Comment</a>
+  </div>
+</div>
+
+<div class="entry autopagerize_page_element">
+  <h2><a href="/memo/2006/06/18/1/">ubuntu on Parallels</a></h2>
+
+  <div class="body">
+    <p>OSX を快適な開発環境にすべく、parallels 上に ubuntu を入れてみた。</p>
+<p>キーリピート設定はちゃんとできたが、Parallels Tools がないのでいまいち。。</p>
+<p>フォーラムによれば次期メジャーバージョンでは Linux 用の Prallels Tools もつくらしいので、それ待ちかな。</p>
+
+  </div>
+
+  <div class="meta">
+    by typester /
+    at <a href="/memo/2006/06/18/1/">2006-06-18T16:01:00</a> /
+    <a href="/memo/tag/life/">life</a>
+    / <a href="/memo/2006/06/18/1/#disqus_thread">Comment</a>
+  </div>
+</div>
+
+<div class="entry autopagerize_page_element">
+  <h2><a href="/memo/2006/06/17/2/">Text::Trac</a></h2>
+
+  <div class="body">
+    <blockquote><p><a href="http://mizzy.org/program/text-track00.html">mizzy.org - Text::Trac - Trac Wiki 記法パーサ</a></p><p>IRC の #catlxom での会話の流れで、自分が Text::Trac をつくることになりました。といってもまだつくりかけなので、CPAN にアップするのはまだ先になりそう。</p></blockquote>
+<p>先になりそうとかいってますが、このペースでいけばこの週末中にはあがっちゃいそうです。</p>
+<p>あー、catlxomどしようなぁ。</p>
+
+  </div>
+
+  <div class="meta">
+    by typester /
+    at <a href="/memo/2006/06/17/2/">2006-06-17T22:53:00</a> /
+    <a href="/memo/tag/perl/">perl</a>
+    / <a href="/memo/2006/06/17/2/#disqus_thread">Comment</a>
+  </div>
+</div>
+
+<div class="entry autopagerize_page_element">
+  <h2><a href="/memo/2006/06/17/1/"></a></h2>
+
+  <div class="body">
+    <p>出社。</p>
+
+  </div>
+
+  <div class="meta">
+    by typester /
+    at <a href="/memo/2006/06/17/1/">2006-06-17T16:24:00</a> /
+    <a href="/memo/tag/life/">life</a>
+    / <a href="/memo/2006/06/17/1/#disqus_thread">Comment</a>
+  </div>
+</div>
+
+<div class="entry autopagerize_page_element">
+  <h2><a href="/memo/2006/06/16/2/"></a></h2>
+
+  <div class="body">
+    <blockquote><p><a href="http://d.hatena.ne.jp/drawnboy/20060616/1150384749">Nowhere Near - Catlxom::Plugin::Format::Hatena</a></p></blockquote>
+<p>コミットしろYO</p>
+<blockquote><p>やっぱり、こんなリクエストがきたら、このプラグインを使って…みたいなことが YAML で書きたいなあ。。</p></blockquote>
+<p>これは、こんなリクエストがきたらというのはそれぞれのプラグイン内でやっちゃう。というのがblosxom, catlxom流です。</p>
+<p>具体的には、startをフックしてそこでやります。このあたりはblosxomいじったことがあると違和感ないと思います。</p>
+<p>あとデフォルトではプラグインディレクトリにプラグインを放りこむと全部有効になります。これもblosxomの流れをくんでそうなっています。</p>
+
+  </div>
+
+  <div class="meta">
+    by typester /
+    at <a href="/memo/2006/06/16/2/">2006-06-16T11:25:00</a> /
+    <a href="/memo/tag/catlxom/">catlxom</a>
+    / <a href="/memo/2006/06/16/2/#disqus_thread">Comment</a>
+  </div>
+</div>
+
+<div class="entry autopagerize_page_element">
+  <h2><a href="/memo/2006/06/16/1/"></a></h2>
+
+  <div class="body">
+    <p>退社。</p>
+
+  </div>
+
+  <div class="meta">
+    by typester /
+    at <a href="/memo/2006/06/16/1/">2006-06-16T01:35:00</a> /
+    <a href="/memo/tag/life/">life</a>
+    / <a href="/memo/2006/06/16/1/#disqus_thread">Comment</a>
+  </div>
+</div>
+
+
+
+
+<div id="pager" class="autopagerize_insert_before">
+  <p class="pages">
+    <a class="prev" rel="previous" href="/memo/page/98/">&laquo; Prev</a>
+    <a href="/memo/page/95/">95</a>
+    <a href="/memo/page/96/">96</a>
+    <a href="/memo/page/97/">97</a>
+    <a href="/memo/page/98/">98</a>
+    <span class="current">99</span>
+    <a href="/memo/page/100/">100</a>
+    <a href="/memo/page/101/">101</a>
+    <a href="/memo/page/102/">102</a>
+    <a href="/memo/page/103/">103</a>
+    <a href="/memo/page/104/">104</a>
+    <a class="next" rel="next" href="/memo/page/100/">Next &raquo;</a>
+  </p>
+  <p class="info">(Page 99 of 203)</p>
+</div>
+
+
+</div>
+
+<p id="footer">
+  Copyright &copy; 2005-2013
+      by <a class="author" href="/about/#me">Daisuke Murase (typester)</a> /
+  Site generated by <a href="https://github.com/typester/nim">nim</a> /
+  Comments powered by <a href="http://disqus.com">DISQUS</a>.
+</p>
+
+</div>
+
+
+<script type="text/javascript">
+//<![CDATA[
+(function() {
+	var links = document.getElementsByTagName('a');
+	var query = '?';
+	for(var i = 0; i < links.length; i++) {
+	if(links[i].href.indexOf('#disqus_thread') >= 0) {
+		query += 'url' + i + '=' + encodeURIComponent(links[i].href) + '&';
+	}
+	}
+	document.write('<script charset="utf-8" type="text/javascript" src="http://disqus.com/forums/unknownplace/get_num_replies.js' + query + '"></' + 'script>');
+})();
+//]]>
+</script>
+
+
+<script type="text/javascript">
+var gaJsHost = (("https:" == document.location.protocol) ? "https://ssl." : "http://www.");
+document.write(unescape("%3Cscript src='" + gaJsHost + "google-analytics.com/ga.js' type='text/javascript'%3E%3C/script%3E"));
+</script>
+<script type="text/javascript">
+try {
+var pageTracker = _gat._getTracker("UA-53067-1");
+pageTracker._trackPageview();
+} catch(err) {}</script>
+
+<script>
+function googleTranslateElementInit() {
+  new google.translate.TranslateElement({
+    pageLanguage: 'ja',
+    gaTrack: true,
+    gaId: 'UA-53067',
+    floatPosition: google.translate.TranslateElement.FloatPosition.BOTTOM_RIGHT
+  });
+}
+</script><script src="//translate.google.com/translate_a/element.js?cb=googleTranslateElementInit"></script>
+
+</body>
+</html>

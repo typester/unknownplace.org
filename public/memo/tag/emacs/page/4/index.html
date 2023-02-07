@@ -1,0 +1,343 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="ja" xml:lang="ja">
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <title>memo - unknownplace.org</title>
+  <link rel="stylesheet" type="text/css" href="http://yui.yahooapis.com/3.0.0/build/cssreset/reset-min.css" />
+  <link rel="stylesheet" type="text/css" href="http://yui.yahooapis.com/3.0.0/build/cssfonts/fonts-min.css" />
+  <link rel="stylesheet" href="/css/style.css" type="text/css" />
+  <meta property="fb:admins" content="1093631929" />
+  <meta name="robots" content="noindex" />
+  <link rel="alternate" type="application/rss+xml" href="http://unknownplace.org/memo/index.rss" />
+</head>
+<body>
+
+<div id="container">
+<div id="header">
+    <h1><a href="/">unknownplace.org</a></h1> /
+<a href="/memo/">memo</a>
+</div>
+
+<div id="content">
+
+<div class="entry autopagerize_page_element">
+  <h2><a href="/memo/2008/01/08/1/">mmm-mode</a></h2>
+
+  <div class="body">
+    <blockquote><p><a href="http://d.hatena.ne.jp/ZIGOROu/20080107/1199720692">mmm-mode and nxml-mode - Yet Another Hackadelic</a></p></blockquote>
+<p>mmm-mode はいままで3回くらい挑戦してると思うけどうまく使えたためしがないのであきらめている。</p>
+<p>今度社内でemacs自慢大会やるつもりなのでそのときにだれかやってくれないかな。</p>
+
+  </div>
+
+  <div class="meta">
+    by typester /
+    at <a href="/memo/2008/01/08/1/">2008-01-08T01:53:00</a> /
+    <a href="/memo/tag/emacs/">emacs</a>
+    / <a href="/memo/2008/01/08/1/#disqus_thread">Comment</a>
+  </div>
+</div>
+
+<div class="entry autopagerize_page_element">
+  <h2><a href="/memo/2007/12/21/1/">こうしたいflymake</a></h2>
+
+  <div class="body">
+    <blockquote><p><a href="http://dev.ariel-networks.com/Members/matsuyama/flymake-for-javascript">Emacs で JavaScript のシンタックスエラーを検出する</a></p></blockquote>
+<p>これ読んですぐ導入したflymake。上記サイトのを少し改造したらperlでもできたのでいまはjsとperlでリアルタイムでシンタックスエラーチェックができている。</p>
+<p>僕はすごくtypoがおおいと思うのだけどこれを導入してからtypoではまることがずいぶん減った。もうないとこまるelispのひとつになってる。</p>
+<p>ちなみにperl版はこんな感じにしている。</p>
+<pre><code>(<span class="keyword">require</span> &apos;<span class="constant">flymake</span>)
+
+<span class="comment-delimiter">;; </span><span class="comment">flymake for perl
+</span>(<span class="keyword">defvar</span> <span class="variable-name">flymake-perl-err-line-patterns</span> &apos;((<span class="string">&quot;</span><span class="string"><span class="regexp-grouping-backslash">\\</span></span><span class="string"><span class="regexp-grouping-construct">(</span></span><span class="string">.*</span><span class="string"><span class="regexp-grouping-backslash">\\</span></span><span class="string"><span class="regexp-grouping-construct">)</span></span><span class="string"> at </span><span class="string"><span class="regexp-grouping-backslash">\\</span></span><span class="string"><span class="regexp-grouping-construct">(</span></span><span class="string">[</span><span class="string"><span class="negation-char">^</span></span><span class="string"> \n]+</span><span class="string"><span class="regexp-grouping-backslash">\\</span></span><span class="string"><span class="regexp-grouping-construct">)</span></span><span class="string"> line </span><span class="string"><span class="regexp-grouping-backslash">\\</span></span><span class="string"><span class="regexp-grouping-construct">(</span></span><span class="string">[0-9]+</span><span class="string"><span class="regexp-grouping-backslash">\\</span></span><span class="string"><span class="regexp-grouping-construct">)</span></span><span class="string">[,.\n]&quot;</span> 2 3 nil 1)))
+(<span class="keyword">defconst</span> <span class="variable-name">flymake-allowed-perl-file-name-masks</span> &apos;((<span class="string">&quot;\\.pl$&quot;</span> flymake-perl-init)
+                                               (<span class="string">&quot;\\.pm$&quot;</span> flymake-perl-init)
+                                               (<span class="string">&quot;\\.t$&quot;</span> flymake-perl-init)))
+
+(<span class="keyword">defun</span> <span class="function-name">flymake-perl-init</span> ()
+  (<span class="keyword">let*</span> ((temp-file (flymake-init-create-temp-buffer-copy
+                     &apos;flymake-create-temp-inplace))
+         (local-file (file-relative-name
+                      temp-file
+                      (file-name-directory buffer-file-name))))
+    (list <span class="string">&quot;perl&quot;</span> (list <span class="string">&quot;-wc&quot;</span> local-file))))
+
+(<span class="keyword">defun</span> <span class="function-name">flymake-perl-load</span> ()
+  (interactive)
+  (<span class="keyword">defadvice</span> <span class="function-name">flymake-post-syntax-check</span> (before flymake-force-check-was-interrupted)
+    (setq flymake-check-was-interrupted t))
+  (ad-activate &apos;flymake-post-syntax-check)
+  (setq flymake-allowed-file-name-masks (append flymake-allowed-file-name-masks flymake-allowed-perl-file-name-masks))
+  (setq flymake-err-line-patterns flymake-perl-err-line-patterns)
+  (flymake-mode t))
+
+(add-hook &apos;cperl-mode-hook &apos;(<span class="keyword">lambda</span> () (flymake-perl-load)))
+</code></pre>
+<p>でも、これだと単純に <code>perl -wc</code> しているだけで編集中の lib パスなどを @INC につっこまないため、その lib 以下にあるモジュールを use したりするとそこでエラーになってしまう。</p>
+<p>なので今はモジュールやCatalystアプリの開発するときはいちいち emacs 上で <code>M-x setenv</code> してその lib パスを PERL5LIB にセットしている。。ちょうめんどくさい。。</p>
+<p>そんでこれを自動化したいわけだがどうすればいいのかなぁ。</p>
+
+  </div>
+
+  <div class="meta">
+    by typester /
+    at <a href="/memo/2007/12/21/1/">2007-12-21T13:47:00</a> /
+    <a href="/memo/tag/emacs/">emacs</a>
+    / <a href="/memo/2007/12/21/1/#disqus_thread">Comment</a>
+  </div>
+</div>
+
+<div class="entry autopagerize_page_element">
+  <h2><a href="/memo/2007/12/10/1/">auto-save-buffers-enhancedでsvkのcoパス更新</a></h2>
+
+  <div class="body">
+    <p><code>~/.svk/config</code> を起動時にしか見に行かないということで、emacs起動後にcoパスが増えた場合などリロードしたいとおもったら</p>
+<pre><code>M-: (auto-save-buffers-enhanced-add-svk-checkout-path-into-include-regexps)
+</code></pre>
+<p>とすればいいらしい。メモメモ。</p>
+
+  </div>
+
+  <div class="meta">
+    by typester /
+    at <a href="/memo/2007/12/10/1/">2007-12-10T14:24:00</a> /
+    <a href="/memo/tag/emacs/">emacs</a>
+    / <a href="/memo/2007/12/10/1/#disqus_thread">Comment</a>
+  </div>
+</div>
+
+<div class="entry autopagerize_page_element">
+  <h2><a href="/memo/2007/10/18/1/">こうだったらいいのに auto-save-buffers</a></h2>
+
+  <div class="body">
+    <p>開いてるファイルが svn(k) の copath だったらON、それ以外だったらOFFって自動でなるといいのになー。</p>
+<p>今は</p>
+<pre><code>(run-with-idle-timer 0.5 t &apos;auto-save-buffers <span class="string">&quot;^/home/typester/dev/&quot;</span> <span class="string">&quot;^$&quot;</span>)
+</code></pre>
+<p>とかしてるけれど、その領域でもたまにsvn管理じゃないファイルつかったりするし、それで自動保存されると困るし。</p>
+
+  </div>
+
+  <div class="meta">
+    by typester /
+    at <a href="/memo/2007/10/18/1/">2007-10-18T13:32:00</a> /
+    <a href="/memo/tag/emacs/">emacs</a>
+    / <a href="/memo/2007/10/18/1/#disqus_thread">Comment</a>
+  </div>
+</div>
+
+<div class="entry autopagerize_page_element">
+  <h2><a href="/memo/2007/10/17/1/">bm.el</a></h2>
+
+  <div class="body">
+    <p>(global-set-key &quot;\M-1&quot; &apos;bm-toggle) (global-set-key &quot;\M-3&quot; &apos;bm-next) (global-set-key &quot;\M-2&quot; &apos;bm-previous)</p>
+<p>とかで設定してるけどまったく使ってない。</p>
+
+  </div>
+
+  <div class="meta">
+    by typester /
+    at <a href="/memo/2007/10/17/1/">2007-10-17T10:42:00</a> /
+    <a href="/memo/tag/emacs/">emacs</a>
+    / <a href="/memo/2007/10/17/1/#disqus_thread">Comment</a>
+  </div>
+</div>
+
+<div class="entry autopagerize_page_element">
+  <h2><a href="/memo/2007/10/05/2/">できた</a></h2>
+
+  <div class="body">
+    <p>(remove-hook &apos;kill-buffer-query-functions &apos;server-kill-buffer-query-function)</p>
+<ul><li>ref: <a href="http://aki.issp.u-tokyo.ac.jp/itoh/hiChangeLog/html/2007-04.html#2007-04-09-1">hiChangeLog / 2007-04</a></li></ul>
+
+  </div>
+
+  <div class="meta">
+    by typester /
+    at <a href="/memo/2007/10/05/2/">2007-10-05T16:46:00</a> /
+    <a href="/memo/tag/emacs/">emacs</a>
+    / <a href="/memo/2007/10/05/2/#disqus_thread">Comment</a>
+  </div>
+</div>
+
+<div class="entry autopagerize_page_element">
+  <h2><a href="/memo/2007/10/05/1/">emacsclient で開いたバッファを閉じるときに</a></h2>
+
+  <div class="body">
+    <blockquote><p>Buffer `svk-commitvP9pW.tmp&apos; still has clients; kill it? (yes or no)</p></blockquote>
+<p>などといわれるのをなくしたいのだが、どうすればいいのか！ 強制yesでいいんだけど。</p>
+<p>それとも <code>C-x #</code> 的なもので保存せずに閉じるものあるのかな。</p>
+
+  </div>
+
+  <div class="meta">
+    by typester /
+    at <a href="/memo/2007/10/05/1/">2007-10-05T16:19:00</a> /
+    <a href="/memo/tag/life/">life</a>
+    &middot; <a href="/memo/tag/emacs/">emacs</a>
+    / <a href="/memo/2007/10/05/1/#disqus_thread">Comment</a>
+  </div>
+</div>
+
+<div class="entry autopagerize_page_element">
+  <h2><a href="/memo/2007/02/12/1/">snippet.el いれた</a></h2>
+
+  <div class="body">
+    <blockquote><p><a href="http://www.goodpic.com/mt/archives2/2007/02/emacs_snippetel_html.html">emacs + snippet.el の定型文補完（スニペット）で楽々HTML編集：Goodpic</a></p></blockquote>
+<p>を見て便利そうなので導入。</p>
+<p>elisp よくわかんねーので、<code>psgml-mode</code> と <code>cperl-mode</code> で動かしたかっただけなのにものすごい時間かかった。。</p>
+<pre><code>; snippet.el
+(<span class="keyword">require</span> <span class="string">&apos;snippet)
+(require &apos;</span>psgml)
+(snippet-with-abbrev-table <span class="string">&apos;xml-mode-abbrev-table
+  (&quot;ahref&quot; .  &quot;&lt;a href=\&quot;$${url}\&quot; title=\&quot;$${title}\&quot;&gt;$${title}&lt;/a&gt;&quot;))
+
+(defvar cperl-mode-abbrev-table nil
+  &quot;Abbrev table in use in CPerl mode.&quot;)
+(define-abbrev-table &apos;</span>cperl-mode-abbrev-table ())
+(snippet-with-abbrev-table <span class="string">&apos;cperl-mode-abbrev-table
+  (&quot;formy&quot; .  &quot;for my $${item} ($${items}) {\n}&quot;)
+  (&quot;cataction&quot;  .  &quot;sub $${fn} :$${attribute} {\n$&gt;my ($self, $c) = </span><span class="cperl-array">@_</span><span class="string">;\n}&quot;))
+</span></code></pre>
+<p>こんなんでいけた。</p>
+<p>psgmlのxml-modeは普通にやったら <code>xml-mode-abbrev-table</code> なんてねーよっておこられるので、先に <code>(require &apos;psgml)</code> しておいたらいけた。</p>
+<p>cperl-mode も同じ方法でやろうとしたらなんかエラーになったのでソース見たら、<code>cperl-mode-abbrev-table</code> がすでに定義されてあったら cperl-mode 側では上書きしないっぽい感じになっていたのでてけとうに定義してやったらいけた。うむ、よくわからん。</p>
+<p>まぁつかえたからいいや的な。</p>
+<p>あとはabbrev-tableふやすだけ～。</p>
+
+  </div>
+
+  <div class="meta">
+    by typester /
+    at <a href="/memo/2007/02/12/1/">2007-02-12T15:24:00</a> /
+    <a href="/memo/tag/emacs/">emacs</a>
+    / <a href="/memo/2007/02/12/1/#disqus_thread">Comment</a>
+  </div>
+</div>
+
+<div class="entry autopagerize_page_element">
+  <h2><a href="/memo/2006/12/14/2/">ido-mode</a></h2>
+
+  <div class="body">
+    <p>(iswitchb-mode 1)</p>
+<p>をやめて</p>
+<pre><code>(ido-mode t)
+</code></pre>
+<p>をためしてみてる。</p>
+<blockquote><p><a href="http://platypope.org/blog/2006/9/8/i-need-a-cool-european-accent">platypope.org / blog / I need a cool European accent</a></p></blockquote>
+<p>より。</p>
+<p>iswitchbライクなバッファ切り替えと同じようなのをfind-fileでも使える。あとfind-file中にC-bするとバッファ切り替えに切り替わるのは人によっては便利かな。逆も可(バッファ切り替えじにC-fでfind-file)</p>
+<p>どうなんだろうなこれは。すぐ戻すかもしれない。</p>
+<p>あとnXML-modeもいれてみたけど、まだ使ってみていない。</p>
+
+  </div>
+
+  <div class="meta">
+    by typester /
+    at <a href="/memo/2006/12/14/2/">2006-12-14T16:37:00</a> /
+    <a href="/memo/tag/emacs/">emacs</a>
+    / <a href="/memo/2006/12/14/2/#disqus_thread">Comment</a>
+  </div>
+</div>
+
+<div class="entry autopagerize_page_element">
+  <h2><a href="/memo/2006/10/04/5/">Local variables on Recent emacs</a></h2>
+
+  <div class="body">
+    <p>最近のemacsではLocal variablesがあるファイルを開こうとすると</p>
+<pre><code>The local variables list in clmemo.txt
+contains values that may not be safe (*).
+
+Do you want to apply it?  You can type
+y  -- to apply the local variables list.
+n  -- to ignore the local variables list.
+!  -- to apply the local variables list, and permanently mark these
+      values (*) as safe (in the future, they will be set automatically.)
+
+    mode : change-log
+  * clmemo-mode : t
+    tab-width : 4
+    left-margin : 4
+</code></pre>
+<p>とかでるようになったらしい。へぇ、いいね。</p>
+
+  </div>
+
+  <div class="meta">
+    by typester /
+    at <a href="/memo/2006/10/04/5/">2006-10-04T11:38:00</a> /
+    <a href="/memo/tag/emacs/">emacs</a>
+    / <a href="/memo/2006/10/04/5/#disqus_thread">Comment</a>
+  </div>
+</div>
+
+
+
+
+<div id="pager" class="autopagerize_insert_before">
+  <p class="pages">
+    <a class="prev" rel="previous" href="/memo/tag/emacs/page/3/">&laquo; Prev</a>
+    <a href="/memo/tag/emacs/">1</a>
+    <a href="/memo/tag/emacs/page/2/">2</a>
+    <a href="/memo/tag/emacs/page/3/">3</a>
+    <span class="current">4</span>
+    <a href="/memo/tag/emacs/page/5/">5</a>
+    <a href="/memo/tag/emacs/page/6/">6</a>
+    <a class="next" rel="next" href="/memo/tag/emacs/page/5/">Next &raquo;</a>
+  </p>
+  <p class="info">(Page 4 of 6)</p>
+</div>
+
+
+</div>
+
+<p id="footer">
+  Copyright &copy; 2005-2013
+      by <a class="author" href="/about/#me">Daisuke Murase (typester)</a> /
+  Site generated by <a href="https://github.com/typester/nim">nim</a> /
+  Comments powered by <a href="http://disqus.com">DISQUS</a>.
+</p>
+
+</div>
+
+
+<script type="text/javascript">
+//<![CDATA[
+(function() {
+	var links = document.getElementsByTagName('a');
+	var query = '?';
+	for(var i = 0; i < links.length; i++) {
+	if(links[i].href.indexOf('#disqus_thread') >= 0) {
+		query += 'url' + i + '=' + encodeURIComponent(links[i].href) + '&';
+	}
+	}
+	document.write('<script charset="utf-8" type="text/javascript" src="http://disqus.com/forums/unknownplace/get_num_replies.js' + query + '"></' + 'script>');
+})();
+//]]>
+</script>
+
+
+<script type="text/javascript">
+var gaJsHost = (("https:" == document.location.protocol) ? "https://ssl." : "http://www.");
+document.write(unescape("%3Cscript src='" + gaJsHost + "google-analytics.com/ga.js' type='text/javascript'%3E%3C/script%3E"));
+</script>
+<script type="text/javascript">
+try {
+var pageTracker = _gat._getTracker("UA-53067-1");
+pageTracker._trackPageview();
+} catch(err) {}</script>
+
+<script>
+function googleTranslateElementInit() {
+  new google.translate.TranslateElement({
+    pageLanguage: 'ja',
+    gaTrack: true,
+    gaId: 'UA-53067',
+    floatPosition: google.translate.TranslateElement.FloatPosition.BOTTOM_RIGHT
+  });
+}
+</script><script src="//translate.google.com/translate_a/element.js?cb=googleTranslateElementInit"></script>
+
+</body>
+</html>

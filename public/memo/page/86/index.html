@@ -1,0 +1,297 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="ja" xml:lang="ja">
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <title>memo - unknownplace.org</title>
+  <link rel="stylesheet" type="text/css" href="http://yui.yahooapis.com/3.0.0/build/cssreset/reset-min.css" />
+  <link rel="stylesheet" type="text/css" href="http://yui.yahooapis.com/3.0.0/build/cssfonts/fonts-min.css" />
+  <link rel="stylesheet" href="/css/style.css" type="text/css" />
+  <meta property="fb:admins" content="1093631929" />
+  <meta name="robots" content="noindex" />
+  <link rel="alternate" type="application/rss+xml" href="http://unknownplace.org/memo/index.rss" />
+</head>
+<body>
+
+<div id="container">
+<div id="header">
+    <h1><a href="/">unknownplace.org</a></h1> /
+<a href="/memo/">memo</a>
+</div>
+
+<div id="content">
+
+<div class="entry autopagerize_page_element">
+  <h2><a href="/memo/2006/08/09/1/"></a></h2>
+
+  <div class="body">
+    <p>退社。</p>
+
+  </div>
+
+  <div class="meta">
+    by typester /
+    at <a href="/memo/2006/08/09/1/">2006-08-09T00:38:00</a> /
+    <a href="/memo/tag/life/">life</a>
+    / <a href="/memo/2006/08/09/1/#disqus_thread">Comment</a>
+  </div>
+</div>
+
+<div class="entry autopagerize_page_element">
+  <h2><a href="/memo/2006/08/08/3/">Behaviour.jsライクな設定でエレメントに音を鳴らすイベントをつけるライブラリ</a></h2>
+
+  <div class="body">
+    <p>を作った。</p>
+<blockquote><p><a href="http://svn.unknownplace.org/public/library/js/trunk/JSound/">http://svn.unknownplace.org/public/library/js/trunk/JSound/</a></p></blockquote>
+<p>使い方は</p>
+<pre><code>&lt;script type=<span class="string">"text/javascript"</span> src=<span class="string">"/js/prototype.js"</span>&gt;&lt;/script&gt;
+&lt;script type=<span class="string">"text/javascript"</span> src=<span class="string">"/js/sound.js"</span>&gt;&lt;/script&gt;
+&lt;script type=<span class="string">"text/javascript"</span>&gt;
+
+    Sound.swf = <span class="string">'sound.swf'</span>; <span class="comment-delimiter">// </span><span class="comment">sound.swf &#12398;&#12497;&#12473;&#12434;&#25351;&#23450; (&#12487;&#12501;&#12457;&#12523;&#12488; /swf/sound.swf)
+</span>
+    <span class="comment-delimiter">// </span><span class="comment">&#35373;&#23450;
+</span>    <span class="type">var</span> <span class="variable-name">rules</span> = {
+        <span class="comment-delimiter">// </span><span class="comment">CSS&#12521;&#12452;&#12463;&#12394;&#12475;&#12524;&#12463;&#12479;&#12391;&#12456;&#12524;&#12513;&#12531;&#12488;&#12434;&#25351;&#23450;
+</span>        <span class="string">'a'</span>: {
+            <span class="constant">onmouseover</span>: <span class="string">'/static/sample/foo.mp3'</span>, <span class="comment-delimiter">// </span><span class="comment">&#12452;&#12505;&#12531;&#12488;&#12392;&#12469;&#12454;&#12531;&#12489;&#12501;&#12449;&#12452;&#12523;&#25351;&#23450;
+</span>            onclick: <span class="string">'/static/sample/foo.mp3'</span>
+        },
+        <span class="string">'#foo a'</span>: {
+            <span class="constant">onmouseover</span>: <span class="string">'/static/sample/foo.mp3'</span>
+        },
+        <span class="string">'.blah a'</span>: {
+            <span class="constant">onmouseover</span>: [
+                <span class="string">'/static/sample/foo.mp3'</span>,  <span class="comment-delimiter">// </span><span class="comment">&#12469;&#12454;&#12531;&#12489;&#12501;&#12449;&#12452;&#12523;&#12434;&#37197;&#21015;&#12391;&#25351;&#23450;&#12377;&#12427;&#12392;
+</span>                <span class="string">'/static/sample/bar.mp3'</span>   <span class="comment-delimiter">// </span><span class="comment">&#12381;&#12398;&#20013;&#12363;&#12425;&#12521;&#12531;&#12480;&#12512;&#12391;&#20877;&#29983;&#12373;&#12428;&#12427;
+</span>            ]
+        }
+    };
+
+    <span class="comment-delimiter">// </span><span class="comment">&#12452;&#12505;&#12531;&#12488;&#30331;&#37682;
+</span>    SoundEvent.onloadregister(rules);
+
+&lt;/script&gt;
+</code></pre>
+<p>こんな。prototype.js 1.5 以上が必要。重複するエレメントがあるばあい下に書いた方が有効になります。なのでa全体に適用とかいうセレクタは一番上に。</p>
+<p>Javascript Sound library とか id:brazil さんの FlashProxy とか見てたら面白くなってきて、自分でも作ってみたという感じ。</p>
+<p>MTASC + ExternalInterface おもろいわぁ。</p>
+
+  </div>
+
+  <div class="meta">
+    by typester /
+    at <a href="/memo/2006/08/08/3/">2006-08-08T21:57:00</a> /
+    <a href="/memo/tag/javascript/">javascript</a>
+    / <a href="/memo/2006/08/08/3/#disqus_thread">Comment</a>
+  </div>
+</div>
+
+<div class="entry autopagerize_page_element">
+  <h2><a href="/memo/2006/08/08/2/">(function(){ なんかコード })();</a></h2>
+
+  <div class="body">
+    <p>ずっと何でこんな書き方すんだろとおもってたんだけど、MTASCのサイト見ててわかった。</p>
+<p>JavaScriptやActionScriptって変数のスコープがブロックじゃなくて関数なんだね。だからperlとかの感じでブロック作ろうとするとタイトルのような書き方になっちゃうわけか。</p>
+
+  </div>
+
+  <div class="meta">
+    by typester /
+    at <a href="/memo/2006/08/08/2/">2006-08-08T18:17:00</a> /
+    <a href="/memo/tag/javascript/">javascript</a>
+    / <a href="/memo/2006/08/08/2/#disqus_thread">Comment</a>
+  </div>
+</div>
+
+<div class="entry autopagerize_page_element">
+  <h2><a href="/memo/2006/08/08/1/"></a></h2>
+
+  <div class="body">
+    <p>出社。</p>
+
+  </div>
+
+  <div class="meta">
+    by typester /
+    at <a href="/memo/2006/08/08/1/">2006-08-08T10:32:00</a> /
+    <a href="/memo/tag/life/">life</a>
+    / <a href="/memo/2006/08/08/1/#disqus_thread">Comment</a>
+  </div>
+</div>
+
+<div class="entry autopagerize_page_element">
+  <h2><a href="/memo/2006/08/07/5/"></a></h2>
+
+  <div class="body">
+    <p>退社。</p>
+
+  </div>
+
+  <div class="meta">
+    by typester /
+    at <a href="/memo/2006/08/07/5/">2006-08-07T23:15:00</a> /
+    <a href="/memo/tag/life/">life</a>
+    / <a href="/memo/2006/08/07/5/#disqus_thread">Comment</a>
+  </div>
+</div>
+
+<div class="entry autopagerize_page_element">
+  <h2><a href="/memo/2006/08/07/4/">ユーコンブレンド 100g</a></h2>
+
+  <div class="body">
+    <p>なんか月曜はお試しに豆50g配布中とかで、オーシャンサイドブレンドを50gもゲット。すごい。</p>
+<p>鎌倉店++</p>
+
+  </div>
+
+  <div class="meta">
+    by typester /
+    at <a href="/memo/2006/08/07/4/">2006-08-07T11:50:00</a> /
+    <a href="/memo/tag/life/">life</a>
+    &middot; <a href="/memo/tag/starbucks/">starbucks</a>
+    / <a href="/memo/2006/08/07/4/#disqus_thread">Comment</a>
+  </div>
+</div>
+
+<div class="entry autopagerize_page_element">
+  <h2><a href="/memo/2006/08/07/3/"></a></h2>
+
+  <div class="body">
+    <p>遅レス読んでると、babieさんはplaggerを動かすPCは常時立ち上げっぱなしのサーバー的なものであると思っている感じがするが全然そんなことはない。</p>
+<p><code>Subscription::Bloglines</code> とか <code>Subscription::Livedoor</code> とかつかえばBloglinesやLDRにフィードの巡回は任せられるのでplagger動かすPCがたまにしか起動しないものでも取りこぼしはない。</p>
+
+  </div>
+
+  <div class="meta">
+    by typester /
+    at <a href="/memo/2006/08/07/3/">2006-08-07T10:58:00</a> /
+    <a href="/memo/tag/plagger/">plagger</a>
+    / <a href="/memo/2006/08/07/3/#disqus_thread">Comment</a>
+  </div>
+</div>
+
+<div class="entry autopagerize_page_element">
+  <h2><a href="/memo/2006/08/07/2/">昼寝スペース</a></h2>
+
+  <div class="body">
+    <p>久しぶりに会社に泊まったので、寝るついでにうまいことして簡易ベッドを会社の席の横に設置。</p>
+<p>思い立ったらすぐ仮眠可能。</p>
+
+  </div>
+
+  <div class="meta">
+    by typester /
+    at <a href="/memo/2006/08/07/2/">2006-08-07T10:54:00</a> /
+    <a href="/memo/tag/life/">life</a>
+    / <a href="/memo/2006/08/07/2/#disqus_thread">Comment</a>
+  </div>
+</div>
+
+<div class="entry autopagerize_page_element">
+  <h2><a href="/memo/2006/08/07/1/">F1見逃した</a></h2>
+
+  <div class="body">
+    <p>歴史的瞬間が！！＞＜＞＜＜＜</p>
+
+  </div>
+
+  <div class="meta">
+    by typester /
+    at <a href="/memo/2006/08/07/1/">2006-08-07T04:20:00</a> /
+    <a href="/memo/tag/life/">life</a>
+    &middot; <a href="/memo/tag/f1/">f1</a>
+    / <a href="/memo/2006/08/07/1/#disqus_thread">Comment</a>
+  </div>
+</div>
+
+<div class="entry autopagerize_page_element">
+  <h2><a href="/memo/2006/08/06/2/">コーディングスピード</a></h2>
+
+  <div class="body">
+    <p>前よりは大分はやくなったかなぁ。</p>
+<p>前までは、どうしようかなーどうしようかなーと考えてまったく進まない状態がかなり長かったんだけど、miyagawaさんとかうちのCTOとか見てたらとにかく速くて。あーこれはコード書きながら考えてんだな、と思ってそれからそれをまねしようとしてきたけどなかなかできなかったけど最近は出来てる気がする。</p>
+
+  </div>
+
+  <div class="meta">
+    by typester /
+    at <a href="/memo/2006/08/06/2/">2006-08-06T23:31:00</a> /
+    <a href="/memo/tag/life/">life</a>
+    / <a href="/memo/2006/08/06/2/#disqus_thread">Comment</a>
+  </div>
+</div>
+
+
+
+
+<div id="pager" class="autopagerize_insert_before">
+  <p class="pages">
+    <a class="prev" rel="previous" href="/memo/page/85/">&laquo; Prev</a>
+    <a href="/memo/page/82/">82</a>
+    <a href="/memo/page/83/">83</a>
+    <a href="/memo/page/84/">84</a>
+    <a href="/memo/page/85/">85</a>
+    <span class="current">86</span>
+    <a href="/memo/page/87/">87</a>
+    <a href="/memo/page/88/">88</a>
+    <a href="/memo/page/89/">89</a>
+    <a href="/memo/page/90/">90</a>
+    <a href="/memo/page/91/">91</a>
+    <a class="next" rel="next" href="/memo/page/87/">Next &raquo;</a>
+  </p>
+  <p class="info">(Page 86 of 203)</p>
+</div>
+
+
+</div>
+
+<p id="footer">
+  Copyright &copy; 2005-2013
+      by <a class="author" href="/about/#me">Daisuke Murase (typester)</a> /
+  Site generated by <a href="https://github.com/typester/nim">nim</a> /
+  Comments powered by <a href="http://disqus.com">DISQUS</a>.
+</p>
+
+</div>
+
+
+<script type="text/javascript">
+//<![CDATA[
+(function() {
+	var links = document.getElementsByTagName('a');
+	var query = '?';
+	for(var i = 0; i < links.length; i++) {
+	if(links[i].href.indexOf('#disqus_thread') >= 0) {
+		query += 'url' + i + '=' + encodeURIComponent(links[i].href) + '&';
+	}
+	}
+	document.write('<script charset="utf-8" type="text/javascript" src="http://disqus.com/forums/unknownplace/get_num_replies.js' + query + '"></' + 'script>');
+})();
+//]]>
+</script>
+
+
+<script type="text/javascript">
+var gaJsHost = (("https:" == document.location.protocol) ? "https://ssl." : "http://www.");
+document.write(unescape("%3Cscript src='" + gaJsHost + "google-analytics.com/ga.js' type='text/javascript'%3E%3C/script%3E"));
+</script>
+<script type="text/javascript">
+try {
+var pageTracker = _gat._getTracker("UA-53067-1");
+pageTracker._trackPageview();
+} catch(err) {}</script>
+
+<script>
+function googleTranslateElementInit() {
+  new google.translate.TranslateElement({
+    pageLanguage: 'ja',
+    gaTrack: true,
+    gaId: 'UA-53067',
+    floatPosition: google.translate.TranslateElement.FloatPosition.BOTTOM_RIGHT
+  });
+}
+</script><script src="//translate.google.com/translate_a/element.js?cb=googleTranslateElementInit"></script>
+
+</body>
+</html>

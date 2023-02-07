@@ -1,0 +1,208 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="ja" xml:lang="ja">
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <title>local::lib を切り替える - unknownplace.org</title>
+  <link rel="stylesheet" type="text/css" href="http://yui.yahooapis.com/3.0.0/build/cssreset/reset-min.css" />
+  <link rel="stylesheet" type="text/css" href="http://yui.yahooapis.com/3.0.0/build/cssfonts/fonts-min.css" />
+  <link rel="stylesheet" href="/css/style.css" type="text/css" />
+  <meta property="fb:admins" content="1093631929" />
+  <link rel="alternate" type="application/rss+xml" href="http://unknownplace.org/memo/index.rss" />
+</head>
+<body>
+
+<div id="container">
+<div id="header">
+    <h1><a href="/">unknownplace.org</a></h1> /
+<a href="/memo/">memo</a>
+</div>
+
+<div id="content">
+<div class="entry autopagerize_page_element">
+  <h2><a href="/memo/2010/03/01/1/">local::lib を切り替える</a></h2>
+
+  <div class="body">
+    <p>レガシーなアプリをメンテするのにレガシーな Perl モジュールが必要になることがあり、そのために古いアプリ用には専用の <code>local::lib</code> ディレクトリを切っているわけですが、普段から日常的に <code>local::lib</code> を使用しているため shell が上がったタイミングではデフォルトの <code>local::lib</code> 環境変数がセットされていて切り替えが非常に面倒だった。</p>
+<p>これまではそれほど頻繁に使用しなかったので放置していたのだが、ここのところ頻繁に必要になるためいい加減うざくなってきて簡単に <code>local::lib</code> を切り替えられるよう設定をしてみた。</p>
+<p>zsh に次のような関数をつくり、それで <code>local::lib</code> を切り替えるようにする。</p>
+<pre><code>function locallib () {
+    INSTALL_BASE=$1
+    if [ -d $INSTALL_BASE ]; then
+        eval $(~/bin/use-locallib $INSTALL_BASE)
+    fi
+}
+</code></pre>
+<p>これは</p>
+<pre><code>$ locallib ~/perl5
+</code></pre>
+<p>などのように <code>INSTALL_BASE</code> を指定して使う。指定されたパスが存在したら <code>use-locallib</code> というコマンドを使用して環境変数を切り替えるという内容。</p>
+<p>この <code>use-locallib</code> コマンドは以下のようなソースになっていて、古い <code>local::lib</code> の環境変数をクリアするとともに、新しい <code>local::lib</code> の環境変数を <code>print</code> するというものになっている。</p>
+<pre><code><span class="comment-delimiter">#</span><span class="comment">!/usr/bin/env perl
+</span>
+<span class="keyword">use</span> <span class="function-name">strict</span>;
+<span class="keyword">use</span> <span class="function-name">warnings</span>;
+<span class="keyword">use</span> <span class="function-name">Pod::Usage</span>;
+
+<span class="keyword">use</span> <span class="function-name">Config</span>;
+<span class="keyword">use</span> <span class="function-name">File::Spec</span>;
+
+<span class="keyword">my</span> <span class="variable-name">$install_base</span> = <span class="cperl-array">$ARGV</span>[0]
+    <span class="type">or</span> pod2usage(-1);
+
+$install_base = File::Spec-&gt;rel2abs($install_base);
+
+<span class="keyword">my</span> <span class="variable-name">$path</span>     = <span class="cperl-hash">$ENV</span>{<span class="string">PATH</span>};
+<span class="keyword">my</span> <span class="variable-name">$perl5lib</span> = <span class="cperl-hash">$ENV</span>{<span class="string">PERL5LIB</span>};
+
+<span class="cperl-nonoverridable">push</span> <span class="cperl-array">@INC</span>, File::Spec-&gt;catdir($install_base, <span class="string">&apos;lib&apos;</span>, <span class="string">&apos;perl5&apos;</span>);
+
+<span class="keyword">require</span> <span class="keyword">local</span>::lib;
+<span class="keyword">my</span> <span class="cperl-hash">%env</span> = <span class="keyword">local</span>::lib-&gt;build_environment_vars_for($install_base, 1);
+
+<span class="comment-delimiter"># </span><span class="comment">remove $PERL5LIB set by old local::lib if it exists.
+</span><span class="keyword">if</span> (<span class="keyword">my</span> <span class="variable-name">$old_base</span> = <span class="cperl-hash">$ENV</span>{<span class="string">PERL_MM_OPT</span>}) {
+    <span class="keyword">my</span> <span class="cperl-hash">%mmopt</span>;
+    <span class="keyword">for</span> <span class="keyword">my</span> <span class="variable-name">$opt</span> (<span class="cperl-nonoverridable">split</span> <span class="constant">/</span><span class="string">:</span><span class="builtin">+</span><span class="constant">/</span>, $old_base) {
+        <span class="keyword">my</span> (<span class="variable-name">$k</span>, <span class="variable-name">$v</span>) = <span class="cperl-nonoverridable">split</span> <span class="constant">/</span><span class="string">=</span><span class="constant">/</span>, $opt;
+        <span class="cperl-hash">$mmopt</span>{$k} = $v;
+    }
+
+    <span class="keyword">if</span> (<span class="keyword">my</span> <span class="variable-name">$old_installbase</span> = <span class="cperl-hash">$mmopt</span>{<span class="string">INSTALL_BASE</span>}) {
+        <span class="keyword">if</span> ($old_installbase <span class="type">eq</span> $install_base) {
+            <span class="comment-delimiter"># </span><span class="comment">do nothing if install_base is equal to old one
+</span>            <span class="keyword">exit</span>;
+        }
+
+        <span class="keyword">my</span> <span class="cperl-array">@old_perl5lib</span> = (
+            File::Spec-&gt;catdir($old_installbase, <span class="string">&apos;lib&apos;</span>, <span class="string">&apos;perl5&apos;</span>),
+            File::Spec-&gt;catdir($old_installbase, <span class="string">&apos;lib&apos;</span>, <span class="string">&apos;perl5&apos;</span>, <span class="cperl-hash">$Config</span>{<span class="string">archname</span>}),
+        );
+
+        <span class="cperl-hash">$env</span>{<span class="string">PERL5LIB</span>} = <span class="keyword">do</span> {
+            <span class="keyword">my</span> <span class="cperl-array">@env</span>;
+            <span class="constant">ENV:</span> <span class="keyword">for</span> <span class="keyword">my</span> <span class="variable-name">$e</span> (<span class="cperl-nonoverridable">grep</span> { $_ } <span class="cperl-nonoverridable">split</span> <span class="cperl-hash">$Config</span>{<span class="string">path_sep</span>}, <span class="cperl-hash">$env</span>{<span class="string">PERL5LIB</span>}) {
+                <span class="keyword">for</span> <span class="keyword">my</span> <span class="variable-name">$old</span> (<span class="cperl-array">@old_perl5lib</span>) {
+                    <span class="keyword">next</span> <span class="constant">ENV</span> <span class="keyword">if</span> $old <span class="type">eq</span> $e;
+                }
+                <span class="cperl-nonoverridable">push</span> <span class="cperl-array">@env</span>, $e;
+            }
+            <span class="type">join</span> <span class="cperl-hash">$Config</span>{<span class="string">path_sep</span>}, <span class="cperl-array">@env</span>;
+        };
+
+        <span class="keyword">my</span> <span class="variable-name">$old_path</span> = File::Spec-&gt;catdir($old_installbase, <span class="string">&apos;bin&apos;</span>);
+        <span class="cperl-hash">$env</span>{<span class="string">PATH</span>} = <span class="keyword">do</span> {
+            <span class="keyword">my</span> <span class="cperl-array">@p</span>;
+            <span class="keyword">for</span> <span class="keyword">my</span> <span class="variable-name">$p</span> (<span class="cperl-nonoverridable">grep</span> {$_} <span class="cperl-nonoverridable">split</span> <span class="cperl-hash">$Config</span>{<span class="string">path_sep</span>}, <span class="cperl-hash">$env</span>{<span class="string">PATH</span>}) {
+                <span class="keyword">next</span> <span class="keyword">if</span> $p <span class="type">eq</span> $old_path;
+                <span class="cperl-nonoverridable">push</span> <span class="cperl-array">@p</span>, $p;
+            }
+            <span class="type">join</span> <span class="cperl-hash">$Config</span>{<span class="string">path_sep</span>}, <span class="cperl-array">@p</span>;
+        };
+    }
+}
+
+<span class="keyword">while</span> (<span class="keyword">my</span> (<span class="variable-name">$k</span>, <span class="variable-name">$v</span>) = <span class="cperl-nonoverridable">each</span> <span class="cperl-hash">%env</span>) {
+    <span class="cperl-nonoverridable">print</span> <span class="cperl-nonoverridable">qq</span><span class="string">[export $k=&quot;$v&quot;\n]</span>;
+}
+<span class="comment">
+=head1 </span><span class="variable-name">NAME</span><span class="comment">
+
+use-locallib - set/switch local::lib environment
+
+=head1 </span><span class="variable-name">SYNOPSIS</span><span class="comment">
+
+use-locallib (MODULE INSTALL BASE)
+</span></code></pre>
+<p>これで <code>local::lib</code> を簡単に切り替えられるようになるけれど、複数の <code>local::lib</code> 環境を同時に使用しているとどのシェルがどの <code>local::lib</code> を使用しているかわからなくなってしまう。</p>
+<p>そのためシェルのプロンプトに <code>INSTALL_BASE</code> を表示されるようにしてしのいだ。</p>
+<p><a href="http://www.flickr.com/photos/typester/4397750144/" title="show INSTALL_BASE in terminal prompt by typester, on Flickr"><img alt="show INSTALL_BASE in terminal prompt" height="100" src="http://farm3.static.flickr.com/2758/4397750144_cd22b17a99_o.png" width="280" /></a></p>
+<p>これは単純に以下のような <code>PERL_MM_OPT</code> の <code>INSTALL_BASE</code> をプリントするスクリプトを PROMPT 設定から読んでいるだけである。</p>
+<pre><code><span class="comment-delimiter">#</span><span class="comment">!/usr/bin/env perl
+</span>
+<span class="keyword">use</span> <span class="function-name">strict</span>;
+<span class="keyword">use</span> <span class="function-name">warnings</span>;
+
+<span class="keyword">my</span> <span class="cperl-hash">%mm_opt</span>;
+<span class="keyword">for</span> <span class="keyword">my</span> <span class="variable-name">$opt</span> (<span class="cperl-nonoverridable">split</span> <span class="constant">/</span><span class="string">:</span><span class="builtin">+</span><span class="constant">/</span>, <span class="cperl-hash">$ENV</span>{<span class="string">PERL_MM_OPT</span>} || <span class="string">&apos;&apos;</span>) {
+    <span class="keyword">my</span> (<span class="variable-name">$k</span>, <span class="variable-name">$v</span>) = <span class="cperl-nonoverridable">split</span> <span class="constant">/</span><span class="string">=</span><span class="constant">/</span>, $opt;
+    <span class="cperl-hash">$mm_opt</span>{$k} = $v;
+}
+
+<span class="keyword">my</span> <span class="variable-name">$install_base</span> = <span class="cperl-hash">$mm_opt</span>{<span class="string">INSTALL_BASE</span>};
+<span class="keyword">if</span> (<span class="cperl-hash">$ENV</span>{<span class="string">HOME</span>}) {
+    $install_base =~ <span class="cperl-nonoverridable">s</span><span class="constant">/</span><span class="function-name">^</span><span class="cperl-hash">$ENV</span><span class="variable-name">{</span><span class="string">HOME</span><span class="variable-name">}</span><span class="constant">/</span><span class="string">~</span><span class="constant">/</span>;
+}
+
+<span class="cperl-nonoverridable">print</span> $install_base || <span class="string">&apos;none&apos;</span>;
+</code></pre>
+
+  </div>
+
+  <div class="meta">
+    by typester /
+    at <a href="/memo/2010/03/01/1/">2010-03-01T17:17:00</a> /
+    <a href="/memo/tag/perl/">perl</a>
+    &middot; <a href="/memo/tag/zsh/">zsh</a>
+    / <a href="/memo/2010/03/01/1/#disqus_thread">Comments(0)</a>
+  </div>
+</div>
+
+<div id="disqus_thread"></div>
+
+<script type="text/javascript">
+    var disqus_url = location.protocol + "//" + location.host + "/memo/2010/03/01/1/";
+</script>
+<script type="text/javascript" src="http://disqus.com/forums/unknownplace/embed.js"></script>
+
+</div>
+
+<p id="footer">
+  Copyright &copy; 2005-2013
+      by <a class="author" href="/about/#me">Daisuke Murase (typester)</a> /
+  Site generated by <a href="https://github.com/typester/nim">nim</a> /
+  Comments powered by <a href="http://disqus.com">DISQUS</a>.
+</p>
+
+</div>
+
+
+<script type="text/javascript">
+//<![CDATA[
+(function() {
+	var links = document.getElementsByTagName('a');
+	var query = '?';
+	for(var i = 0; i < links.length; i++) {
+	if(links[i].href.indexOf('#disqus_thread') >= 0) {
+		query += 'url' + i + '=' + encodeURIComponent(links[i].href) + '&';
+	}
+	}
+	document.write('<script charset="utf-8" type="text/javascript" src="http://disqus.com/forums/unknownplace/get_num_replies.js' + query + '"></' + 'script>');
+})();
+//]]>
+</script>
+
+
+<script type="text/javascript">
+var gaJsHost = (("https:" == document.location.protocol) ? "https://ssl." : "http://www.");
+document.write(unescape("%3Cscript src='" + gaJsHost + "google-analytics.com/ga.js' type='text/javascript'%3E%3C/script%3E"));
+</script>
+<script type="text/javascript">
+try {
+var pageTracker = _gat._getTracker("UA-53067-1");
+pageTracker._trackPageview();
+} catch(err) {}</script>
+
+<script>
+function googleTranslateElementInit() {
+  new google.translate.TranslateElement({
+    pageLanguage: 'ja',
+    gaTrack: true,
+    gaId: 'UA-53067',
+    floatPosition: google.translate.TranslateElement.FloatPosition.BOTTOM_RIGHT
+  });
+}
+</script><script src="//translate.google.com/translate_a/element.js?cb=googleTranslateElementInit"></script>
+
+</body>
+</html>

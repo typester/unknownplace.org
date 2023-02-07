@@ -1,0 +1,290 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="ja" xml:lang="ja">
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <title>memo - unknownplace.org</title>
+  <link rel="stylesheet" type="text/css" href="http://yui.yahooapis.com/3.0.0/build/cssreset/reset-min.css" />
+  <link rel="stylesheet" type="text/css" href="http://yui.yahooapis.com/3.0.0/build/cssfonts/fonts-min.css" />
+  <link rel="stylesheet" href="/css/style.css" type="text/css" />
+  <meta property="fb:admins" content="1093631929" />
+  <meta name="robots" content="noindex" />
+  <link rel="alternate" type="application/rss+xml" href="http://unknownplace.org/memo/index.rss" />
+</head>
+<body>
+
+<div id="container">
+<div id="header">
+    <h1><a href="/">unknownplace.org</a></h1> /
+<a href="/memo/">memo</a>
+</div>
+
+<div id="content">
+
+<div class="entry autopagerize_page_element">
+  <h2><a href="/memo/2006/01/25/4/"></a></h2>
+
+  <div class="body">
+    <p>会社PCのWindows削除してDebianいれた。</p>
+<p>デスクトップ環境とか久々に入れるなぁ。とりあえずKDEとemacs-snapshotとfirefoxいれた。</p>
+<p>めちゃ快適な雰囲気。IMは何入れようかなぁ。SKKに挑戦してみようか。</p>
+
+  </div>
+
+  <div class="meta">
+    by typester /
+    at <a href="/memo/2006/01/25/4/">2006-01-25T18:06:00</a> /
+    <a href="/memo/tag/life/">life</a>
+    / <a href="/memo/2006/01/25/4/#disqus_thread">Comment</a>
+  </div>
+</div>
+
+<div class="entry autopagerize_page_element">
+  <h2><a href="/memo/2006/01/25/3/"></a></h2>
+
+  <div class="body">
+    <p>出社。</p>
+
+  </div>
+
+  <div class="meta">
+    by typester /
+    at <a href="/memo/2006/01/25/3/">2006-01-25T11:13:00</a> /
+    <a href="/memo/tag/life/">life</a>
+    / <a href="/memo/2006/01/25/3/#disqus_thread">Comment</a>
+  </div>
+</div>
+
+<div class="entry autopagerize_page_element">
+  <h2><a href="/memo/2006/01/25/2/"></a></h2>
+
+  <div class="body">
+    <p>退社。</p>
+
+  </div>
+
+  <div class="meta">
+    by typester /
+    at <a href="/memo/2006/01/25/2/">2006-01-25T01:13:00</a> /
+    <a href="/memo/tag/life/">life</a>
+    / <a href="/memo/2006/01/25/2/#disqus_thread">Comment</a>
+  </div>
+</div>
+
+<div class="entry autopagerize_page_element">
+  <h2><a href="/memo/2006/01/25/1/"></a></h2>
+
+  <div class="body">
+    <p>やばい、風邪っぽい。</p>
+
+  </div>
+
+  <div class="meta">
+    by typester /
+    at <a href="/memo/2006/01/25/1/">2006-01-25T00:45:00</a> /
+    <a href="/memo/tag/life/">life</a>
+    / <a href="/memo/2006/01/25/1/#disqus_thread">Comment</a>
+  </div>
+</div>
+
+<div class="entry autopagerize_page_element">
+  <h2><a href="/memo/2006/01/24/3/"></a></h2>
+
+  <div class="body">
+    <p>下記スクリプト、今思ったけど Catalyst App の Model を外部から使うときも便利かも。</p>
+<pre><code><span class="keyword">use</span> <span class="function-name">FindBin</span>;
+<span class="keyword">use</span> <span class="function-name">lib</span> <span class="string">&quot;$FindBin::Bin/../lib&quot;</span>;
+
+<span class="keyword">use</span> <span class="function-name">DBIx::Class::Loader::Pluggable</span>;
+
+DBIx::Class::Loader::Pluggable-&gt;new(
+    <span class="string">dsn</span> =&gt; <span class="string">&apos;dbi:...&apos;</span>,
+    <span class="string">namespace</span> =&gt; <span class="string">&apos;MyApp::Model::DBIC&apos;</span>,
+);
+</code></pre>
+<p>とかでテーブルクラスもロードしてくれる。</p>
+
+  </div>
+
+  <div class="meta">
+    by typester /
+    at <a href="/memo/2006/01/24/3/">2006-01-24T23:05:00</a> /
+    <a href="/memo/tag/life/">life</a>
+    / <a href="/memo/2006/01/24/3/#disqus_thread">Comment</a>
+  </div>
+</div>
+
+<div class="entry autopagerize_page_element">
+  <h2><a href="/memo/2006/01/24/2/">下書き</a></h2>
+
+  <div class="body">
+    <p>package DBIx::Class::Loader::Pluggable; use strict;</p>
+<pre><code><span class="keyword">use</span> <span class="function-name">base</span> <span class="cperl-nonoverridable">qw</span><span class="string">/DBIx::Class::Loader/</span>;
+<span class="keyword">require</span> <span class="function-name">Module::Pluggable::Fast</span>;
+
+<span class="keyword">sub</span> <span class="function-name">new</span> {
+    <span class="keyword">my</span> <span class="variable-name">$class</span> = <span class="cperl-nonoverridable">shift</span>;
+    <span class="keyword">my</span> <span class="cperl-hash">%attr</span>  = <span class="cperl-array">@_</span>;
+
+    <span class="keyword">my</span> <span class="variable-name">$self</span> = $class-&gt;SUPER::new(<span class="cperl-array">@_</span>);
+
+    Module::Pluggable::Fast-&gt;import(
+        <span class="string">name</span>    =&gt; <span class="string">&apos;_components&apos;</span>,
+        <span class="string">require</span> =&gt; 1,
+        <span class="string">search</span>  =&gt; [ <span class="cperl-hash">$attr</span>{<span class="string">namespace</span>} ],
+    );
+    <span class="type">__PACKAGE__</span>-&gt;_components;
+
+    $self;
+}
+
+1;
+</code></pre>
+
+  </div>
+
+  <div class="meta">
+    by typester /
+    at <a href="/memo/2006/01/24/2/">2006-01-24T19:59:00</a> /
+    <a href="/memo/tag/perl/">perl</a>
+    / <a href="/memo/2006/01/24/2/#disqus_thread">Comment</a>
+  </div>
+</div>
+
+<div class="entry autopagerize_page_element">
+  <h2><a href="/memo/2006/01/24/1/"></a></h2>
+
+  <div class="body">
+    <p>出社。</p>
+
+  </div>
+
+  <div class="meta">
+    by typester /
+    at <a href="/memo/2006/01/24/1/">2006-01-24T11:17:00</a> /
+    <a href="/memo/tag/life/">life</a>
+    / <a href="/memo/2006/01/24/1/#disqus_thread">Comment</a>
+  </div>
+</div>
+
+<div class="entry autopagerize_page_element">
+  <h2><a href="/memo/2006/01/23/4/"></a></h2>
+
+  <div class="body">
+    <p>退社。</p>
+
+  </div>
+
+  <div class="meta">
+    by typester /
+    at <a href="/memo/2006/01/23/4/">2006-01-23T23:31:00</a> /
+    <a href="/memo/tag/life/">life</a>
+    / <a href="/memo/2006/01/23/4/#disqus_thread">Comment</a>
+  </div>
+</div>
+
+<div class="entry autopagerize_page_element">
+  <h2><a href="/memo/2006/01/23/3/">イタリアンロースト 100g</a></h2>
+
+  <div class="body">
+    
+  </div>
+
+  <div class="meta">
+    by typester /
+    at <a href="/memo/2006/01/23/3/">2006-01-23T11:38:00</a> /
+    <a href="/memo/tag/life/">life</a>
+    &middot; <a href="/memo/tag/starbucks/">starbucks</a>
+    / <a href="/memo/2006/01/23/3/#disqus_thread">Comment</a>
+  </div>
+</div>
+
+<div class="entry autopagerize_page_element">
+  <h2><a href="/memo/2006/01/23/2/"></a></h2>
+
+  <div class="body">
+    <p>出社。</p>
+
+  </div>
+
+  <div class="meta">
+    by typester /
+    at <a href="/memo/2006/01/23/2/">2006-01-23T09:41:00</a> /
+    <a href="/memo/tag/life/">life</a>
+    / <a href="/memo/2006/01/23/2/#disqus_thread">Comment</a>
+  </div>
+</div>
+
+
+
+
+<div id="pager" class="autopagerize_insert_before">
+  <p class="pages">
+    <a class="prev" rel="previous" href="/memo/page/146/">&laquo; Prev</a>
+    <a href="/memo/page/143/">143</a>
+    <a href="/memo/page/144/">144</a>
+    <a href="/memo/page/145/">145</a>
+    <a href="/memo/page/146/">146</a>
+    <span class="current">147</span>
+    <a href="/memo/page/148/">148</a>
+    <a href="/memo/page/149/">149</a>
+    <a href="/memo/page/150/">150</a>
+    <a href="/memo/page/151/">151</a>
+    <a href="/memo/page/152/">152</a>
+    <a class="next" rel="next" href="/memo/page/148/">Next &raquo;</a>
+  </p>
+  <p class="info">(Page 147 of 203)</p>
+</div>
+
+
+</div>
+
+<p id="footer">
+  Copyright &copy; 2005-2013
+      by <a class="author" href="/about/#me">Daisuke Murase (typester)</a> /
+  Site generated by <a href="https://github.com/typester/nim">nim</a> /
+  Comments powered by <a href="http://disqus.com">DISQUS</a>.
+</p>
+
+</div>
+
+
+<script type="text/javascript">
+//<![CDATA[
+(function() {
+	var links = document.getElementsByTagName('a');
+	var query = '?';
+	for(var i = 0; i < links.length; i++) {
+	if(links[i].href.indexOf('#disqus_thread') >= 0) {
+		query += 'url' + i + '=' + encodeURIComponent(links[i].href) + '&';
+	}
+	}
+	document.write('<script charset="utf-8" type="text/javascript" src="http://disqus.com/forums/unknownplace/get_num_replies.js' + query + '"></' + 'script>');
+})();
+//]]>
+</script>
+
+
+<script type="text/javascript">
+var gaJsHost = (("https:" == document.location.protocol) ? "https://ssl." : "http://www.");
+document.write(unescape("%3Cscript src='" + gaJsHost + "google-analytics.com/ga.js' type='text/javascript'%3E%3C/script%3E"));
+</script>
+<script type="text/javascript">
+try {
+var pageTracker = _gat._getTracker("UA-53067-1");
+pageTracker._trackPageview();
+} catch(err) {}</script>
+
+<script>
+function googleTranslateElementInit() {
+  new google.translate.TranslateElement({
+    pageLanguage: 'ja',
+    gaTrack: true,
+    gaId: 'UA-53067',
+    floatPosition: google.translate.TranslateElement.FloatPosition.BOTTOM_RIGHT
+  });
+}
+</script><script src="//translate.google.com/translate_a/element.js?cb=googleTranslateElementInit"></script>
+
+</body>
+</html>

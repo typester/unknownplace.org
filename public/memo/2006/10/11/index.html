@@ -1,0 +1,218 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="ja" xml:lang="ja">
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <title>2006/10/11 - memo - unknownplace.org</title>
+  <link rel="stylesheet" type="text/css" href="http://yui.yahooapis.com/3.0.0/build/cssreset/reset-min.css" />
+  <link rel="stylesheet" type="text/css" href="http://yui.yahooapis.com/3.0.0/build/cssfonts/fonts-min.css" />
+  <link rel="stylesheet" href="/css/style.css" type="text/css" />
+  <meta property="fb:admins" content="1093631929" />
+  <meta name="robots" content="noindex" />
+  <link rel="alternate" type="application/rss+xml" href="http://unknownplace.org/memo/index.rss" />
+</head>
+<body>
+
+<div id="container">
+<div id="header">
+    <h1><a href="/">unknownplace.org</a></h1> /
+<a href="/memo/">memo</a>
+</div>
+
+<div id="content">
+
+<div class="entry autopagerize_page_element">
+  <h2 id="e006"><a href="/memo/2006/10/11/6/">todo.sh + do.pl</a></h2>
+
+  <div class="body">
+    <p>ニューtodoスタイルはtodo.shと自作のdo.plで行くことにした。</p>
+<p>Get back to work をやるためには今これしてるっていうフラグが必要なんだけど、todo.sh にはそれがないのでプライオリティで代用。</p>
+<p>今やってるタスクがプライオリティA、それ以外がプライオリティなし。それを簡単にON/OFFできるようにしたのがdo.pl</p>
+<p><code>do.pl -do 1</code> でタスク1にAがつき、<code>do.pl -done</code> でそれが作業済みに。<code>do.pl -pause</code> で作業中フラグを消す。という感じ。</p>
+<p>んで、最初は <code>alias do=&apos;~/bin/do.pl -do&apos;</code> とかやろうとしたんだけど、これだと普通のdo使おうとしたとき困るのでtodo.shをハック。</p>
+<pre><code>    --- todo.sh     2006-07-30 05:20:31.000000000 +0900
+    +++ /home/typester/bin/todo.sh  2006-10-11 16:21:33.000000000 +0900
+    @@ -259,7 +259,7 @@
+                    echo <span class="string">"$item: No such todo."</span>
+             fi ;;
+
+    -<span class="string">"do"</span> )
+    +<span class="string">"_do"</span> )
+            errmsg=<span class="string">"usage: $0 do ITEM#"</span>
+            item=$2
+            [ -z <span class="string">"$item"</span> ] &amp;&amp; die <span class="string">"$errmsg"</span>
+    @@ -278,6 +278,22 @@
+                    echo <span class="string">"$item:  No such todo."</span>
+            fi ;;
+
+    +<span class="string">"do"</span> )
+    +       errmsg=<span class="string">"usage: $0 do ITEM#"</span>
+    +       item=$2
+    +       [ -z <span class="string">"$item"</span> ] &amp;&amp; die <span class="string">"$errmsg"</span>
+    +       [[ <span class="string">"$item"</span> = +([0-9]) ]] || die <span class="string">"$errmsg"</span>
+    +       $HOME/bin/<span class="keyword">do</span>.pl -<span class="keyword">do</span> $2
+    +       ;;
+    +
+    +<span class="string">"done"</span> )
+    +       $HOME/bin/<span class="keyword">do</span>.pl -done
+    +       ;;
+    +
+    +<span class="string">"pause"</span> )
+    +       $HOME/bin/<span class="keyword">do</span>.pl -pause
+    +       ;;
+    +
+     <span class="string">"list"</span> | <span class="string">"ls"</span> )
+            item=$2
+            <span class="keyword">if</span> [ -z <span class="string">"$item"</span> ]; then
+</code></pre>
+<p>.plたたいてるだけという。shわかんね＞＜</p>
+<p>で、<code>alias t=&apos;~/bin/todo.sh&apos;</code> した。</p>
+
+  </div>
+
+  <div class="meta">
+    by typester /
+    at <a href="/memo/2006/10/11/6/">2006-10-11T16:23:00</a> /
+    <a href="/memo/tag/life/">life</a>
+    / <a href="/memo/2006/10/11/6/#disqus_thread">Comment</a>
+  </div>
+</div>
+
+<div class="entry autopagerize_page_element">
+  <h2 id="e005"><a href="/memo/2006/10/11/5/">slimtimerの使い方</a></h2>
+
+  <div class="body">
+    <p>なんていうか、ガッツリタスク管理ツールとしてつかうのではなくて、すぐやるタスクだけ登録しておいてつかっていた。</p>
+<p>ずっとまえに<a href="http://d.hatena.ne.jp/naoya/20050602/1117681685" title="naoyaのはてなダイアリー - Get Back to Work で自己管理">naoyaさんが書いていたGet Back to Work</a>的な使い方。すぐ仕事放置して他のことやってしまうので。。</p>
+
+  </div>
+
+  <div class="meta">
+    by typester /
+    at <a href="/memo/2006/10/11/5/">2006-10-11T14:11:00</a> /
+    <a href="/memo/tag/life/">life</a>
+    / <a href="/memo/2006/10/11/5/#disqus_thread">Comment</a>
+  </div>
+</div>
+
+<div class="entry autopagerize_page_element">
+  <h2 id="e004"><a href="/memo/2006/10/11/4/"></a></h2>
+
+  <div class="body">
+    <p>今日もガツガツタスクをこなしていくぜ！ とおもったら<a href="http://www.slimtimer.com/">slimtimer</a>が死亡中。。</p>
+<p>いきなり途方にくれて、意外と依存してたんだなぁと改めて思う。</p>
+<p><a href="http://hiveminder.com/">hiveminder</a>, <a href="http://bestpractical.typepad.com/worst_impractical/2006/09/todopl_or_how_i.html">todo.pl</a>, <a href="http://todotxt.com/library/todo.sh/">todo.sh</a> などを試し中。</p>
+<p>todo.sh いいな。</p>
+
+  </div>
+
+  <div class="meta">
+    by typester /
+    at <a href="/memo/2006/10/11/4/">2006-10-11T13:47:00</a> /
+    <a href="/memo/tag/life/">life</a>
+    / <a href="/memo/2006/10/11/4/#disqus_thread">Comment</a>
+  </div>
+</div>
+
+<div class="entry autopagerize_page_element">
+  <h2 id="e003"><a href="/memo/2006/10/11/3/"></a></h2>
+
+  <div class="body">
+    <p>iTunes をアイドル状態にしておいておくと固まる気がしてきた。</p>
+<p>一晩放置したら固まってたよ。。</p>
+
+  </div>
+
+  <div class="meta">
+    by typester /
+    at <a href="/memo/2006/10/11/3/">2006-10-11T13:11:00</a> /
+    <a href="/memo/tag/osx/">osx</a>
+    / <a href="/memo/2006/10/11/3/#disqus_thread">Comment</a>
+  </div>
+</div>
+
+<div class="entry autopagerize_page_element">
+  <h2 id="e002"><a href="/memo/2006/10/11/2/"></a></h2>
+
+  <div class="body">
+    <p>出社。</p>
+
+  </div>
+
+  <div class="meta">
+    by typester /
+    at <a href="/memo/2006/10/11/2/">2006-10-11T10:35:00</a> /
+    <a href="/memo/tag/life/">life</a>
+    / <a href="/memo/2006/10/11/2/#disqus_thread">Comment</a>
+  </div>
+</div>
+
+<div class="entry autopagerize_page_element">
+  <h2 id="e001"><a href="/memo/2006/10/11/1/"></a></h2>
+
+  <div class="body">
+    <p>退社。</p>
+
+  </div>
+
+  <div class="meta">
+    by typester /
+    at <a href="/memo/2006/10/11/1/">2006-10-11T00:40:00</a> /
+    <a href="/memo/tag/life/">life</a>
+    / <a href="/memo/2006/10/11/1/#disqus_thread">Comment</a>
+  </div>
+</div>
+
+
+
+</div>
+
+<p id="footer">
+  Copyright &copy; 2005-2013
+      by <a class="author" href="/about/#me">Daisuke Murase (typester)</a> /
+  Site generated by <a href="https://github.com/typester/nim">nim</a> /
+  Comments powered by <a href="http://disqus.com">DISQUS</a>.
+</p>
+
+</div>
+
+
+<script type="text/javascript">
+//<![CDATA[
+(function() {
+	var links = document.getElementsByTagName('a');
+	var query = '?';
+	for(var i = 0; i < links.length; i++) {
+	if(links[i].href.indexOf('#disqus_thread') >= 0) {
+		query += 'url' + i + '=' + encodeURIComponent(links[i].href) + '&';
+	}
+	}
+	document.write('<script charset="utf-8" type="text/javascript" src="http://disqus.com/forums/unknownplace/get_num_replies.js' + query + '"></' + 'script>');
+})();
+//]]>
+</script>
+
+
+<script type="text/javascript">
+var gaJsHost = (("https:" == document.location.protocol) ? "https://ssl." : "http://www.");
+document.write(unescape("%3Cscript src='" + gaJsHost + "google-analytics.com/ga.js' type='text/javascript'%3E%3C/script%3E"));
+</script>
+<script type="text/javascript">
+try {
+var pageTracker = _gat._getTracker("UA-53067-1");
+pageTracker._trackPageview();
+} catch(err) {}</script>
+
+<script>
+function googleTranslateElementInit() {
+  new google.translate.TranslateElement({
+    pageLanguage: 'ja',
+    gaTrack: true,
+    gaId: 'UA-53067',
+    floatPosition: google.translate.TranslateElement.FloatPosition.BOTTOM_RIGHT
+  });
+}
+</script><script src="//translate.google.com/translate_a/element.js?cb=googleTranslateElementInit"></script>
+
+</body>
+</html>

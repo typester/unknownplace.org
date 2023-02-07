@@ -1,0 +1,375 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="ja" xml:lang="ja">
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <title>memo - unknownplace.org</title>
+  <link rel="stylesheet" type="text/css" href="http://yui.yahooapis.com/3.0.0/build/cssreset/reset-min.css" />
+  <link rel="stylesheet" type="text/css" href="http://yui.yahooapis.com/3.0.0/build/cssfonts/fonts-min.css" />
+  <link rel="stylesheet" href="/css/style.css" type="text/css" />
+  <meta property="fb:admins" content="1093631929" />
+  <meta name="robots" content="noindex" />
+  <link rel="alternate" type="application/rss+xml" href="http://unknownplace.org/memo/index.rss" />
+</head>
+<body>
+
+<div id="container">
+<div id="header">
+    <h1><a href="/">unknownplace.org</a></h1> /
+<a href="/memo/">memo</a>
+</div>
+
+<div id="content">
+
+<div class="entry autopagerize_page_element">
+  <h2><a href="/memo/2008/02/19/3/">git-svn 作業フロー</a></h2>
+
+  <div class="body">
+    <p>plagger レポジトリで作業するとする。svkとの比較つき。</p>
+<h4>まず git レポジトリ作成</h4>
+<pre><code>git svn init -s http://svn.bulknews.net/repos/plagger/ plagger
+</code></pre>
+<p>これで、plaggerってディレクトリにgitレポジトリができる。svk mirror的なものですね</p>
+<h4>次にsvnとデータをsyncさせる。</h4>
+<pre><code>cd plagger
+git svn fetch
+</code></pre>
+<p>これは svk sync 的なもので対象の変更をすべてtrackしてmerge情報とかを記録する。なので重い。体感では svk sync 以上。</p>
+<p>ちなみに最初の init の代わりに clone とすると一気に fetch までしてくれる。</p>
+<h4>trunk で作業するよ (ここからが通常のワークフロー)</h4>
+<pre><code>git checkout trunk
+</code></pre>
+<p>で trunk に移動。</p>
+<p>svn が変更されてるかもしれないので</p>
+<pre><code>git svn rebase
+</code></pre>
+<p>でチェック。(svk pull 的なもの)</p>
+<p>いろいろ編集後</p>
+<pre><code>git commit -a
+</code></pre>
+<p>で git レポジトリにコミット。この時点ではローカルの git レポジトリにしか反映されてない。</p>
+<p>svn に反映させるには</p>
+<pre><code>git svn dcommit
+</code></pre>
+<p>とする。これが svk push 的なもの。</p>
+<p>ここまでが一応 co から ci までの流れ。</p>
+<p>もう少し例。</p>
+<h4>fastladder-crawler ブランチで作業してみる</h4>
+<p>ブランチに移動</p>
+<pre><code>git checkout fastladder-crawler
+</code></pre>
+<p>いろいろ変更後コミット</p>
+<pre><code>git commit -a
+</code></pre>
+<h4>このブランチをtrunkにマージしよう</h4>
+<p>まずtrunkに移動して</p>
+<pre><code>git checkout trunk
+</code></pre>
+<p>マージ</p>
+<pre><code>git merge fastladder-crawler
+</code></pre>
+<p>これだけ。すばらしく簡単。</p>
+<h4>ローカルブランチを作って作業も簡単</h4>
+<p>まずtrunkのローカルブランチをつくる。まずtrunkへ移動</p>
+<pre><code>git checkout trunk
+</code></pre>
+<p>test という名前のブランチ作成してそこに移動</p>
+<pre><code>git branch test
+git checkout test
+</code></pre>
+<p>これは以下で一発にできる</p>
+<pre><code>git checkout -b test
+</code></pre>
+<p>いろいろ編集して test ブランチにコミット</p>
+<pre><code>git commit -a
+</code></pre>
+<p>それを trunk に反映</p>
+<pre><code>git checkout trunk
+git merge test
+</code></pre>
+<p>用が済んだらtestブランチ削除</p>
+<pre><code>git merge -d test
+</code></pre>
+<p>とかいう感じ。</p>
+<p>ブランチ作ったりマージしたりがさくさくできて気持ちいい。svk ユーザーは一度さわってみるといいと思う。</p>
+
+  </div>
+
+  <div class="meta">
+    by typester /
+    at <a href="/memo/2008/02/19/3/">2008-02-19T22:56:00</a> /
+    <a href="/memo/tag/git/">git</a>
+    / <a href="/memo/2008/02/19/3/#disqus_thread">Comment</a>
+  </div>
+</div>
+
+<div class="entry autopagerize_page_element">
+  <h2><a href="/memo/2008/02/19/2/">zsh の prompt に git のブランチ情報を表示</a></h2>
+
+  <div class="body">
+    <p><a href="http://unknownplace.org/memo/2008/02/04">svk でやってたもの</a>の git 版。</p>
+<p><a href="http://www.flickr.com/photos/typester/2276187593/" title="git branch info in zsh prompt by typester, on Flickr"><img alt="git branch info in zsh prompt" height="169" src="http://farm3.static.flickr.com/2243/2276187593_458d4fe402_o.png" width="356" /></a></p>
+<p><code>ref: refs/heads/</code> という部分を消していいのか、ほかのものが入る場合があるのかよくわからなかったので全表示している。</p>
+<p>まぁぱっと見で git とわかるからいいかということでとりあえず。</p>
+<p>codereposにあげてあるよ。</p>
+<p>あぁ、なんか ref: とかすらでずに sha-1 ハッシュ値だけのときもある。もう少し調べないとだめだ。</p>
+
+  </div>
+
+  <div class="meta">
+    by typester /
+    at <a href="/memo/2008/02/19/2/">2008-02-19T18:09:00</a> /
+    <a href="/memo/tag/git/">git</a>
+    &middot; <a href="/memo/tag/zsh/">zsh</a>
+    / <a href="/memo/2008/02/19/2/#disqus_thread">Comment</a>
+  </div>
+</div>
+
+<div class="entry autopagerize_page_element">
+  <h2><a href="/memo/2008/02/19/1/">git</a></h2>
+
+  <div class="body">
+    <p>cho45 さんがイイヨイイヨいっていたので git &amp; git-svn ちょっと試し中。</p>
+<p>大体基本的な使い方はわかった。</p>
+<p>マージが簡単なのはほんとにいい。svk の smerge がより簡単になった感じだ。</p>
+<p>ブランチの処理もsvkよりこっちのほうが好き。作りまくって、マージしたら消す。</p>
+<p>まだわからないのは適当な場所で git init してスクラッチ的にプロジェクトつくったときそれを svn のほうにマージするにはどうしたらいいのかがまだわからない。</p>
+<p>git-svn なレポジトリからスクラッチのほうを pull すればいいのかな？ あとでためそう。</p>
+<p>あと svk とちがって zsh の補完がかなり高機能でうれしい。svk のはほとんどないも同然。(あるけど遅いので使ってない)</p>
+<p>もうしばらく使ってみてから使うかどうか決める。</p>
+
+  </div>
+
+  <div class="meta">
+    by typester /
+    at <a href="/memo/2008/02/19/1/">2008-02-19T16:14:00</a> /
+    <a href="/memo/tag/git/">git</a>
+    / <a href="/memo/2008/02/19/1/#disqus_thread">Comment</a>
+  </div>
+</div>
+
+<div class="entry autopagerize_page_element">
+  <h2><a href="/memo/2008/02/17/1/">utf8::is_utf8</a></h2>
+
+  <div class="body">
+    <p>miyagawaさんが#catalystでいってたことやっと理解できた、きがする。</p>
+<pre><code><span class="keyword">use</span> <span class="function-name">Data::Dumper</span>;
+
+<span class="keyword">my</span> <span class="variable-name">$s</span> = <span class="string">&quot;H\x{c3}\x{ab}llo&quot;</span>;
+
+utf8::decode($s);
+
+<span class="type">warn</span> Dumper $s;        <span class="comment-delimiter"># </span><span class="comment">=&gt; &quot;H\x{eb}llo&quot;
+</span><span class="type">warn</span> utf8::is_utf8($s) <span class="comment-delimiter"># </span><span class="comment">=&gt; 1
+</span></code></pre>
+<p>だけれども</p>
+<pre><code><span class="keyword">my</span> <span class="variable-name">$s</span> = <span class="string">&quot;H\x{eb}llo&quot;</span>;
+
+<span class="type">warn</span> utf8::is_utf8($s) <span class="comment-delimiter"># </span><span class="comment">=&gt; Warning: something&apos;s wrong
+</span></code></pre>
+<p>ということで、<code>&quot;\x{6751}\x{702c}\x{5927}\x{8f14}&quot;</code> などというData::Dumper表記でかならずしも utf-8フラグがたつわけじゃない。ということがいいたかったんだと思うのだけれど、</p>
+<p>そもそも ë が latin-1 では <code>&quot;\x{eb}&quot;</code> だけど utf-8 では <code>&quot;\x{c4}\x{ab}&quot;</code> であるということを僕が認識してなかったせいでおかしなことになった。すみません。</p>
+
+  </div>
+
+  <div class="meta">
+    by typester /
+    at <a href="/memo/2008/02/17/1/">2008-02-17T23:07:00</a> /
+    <a href="/memo/tag/perl/">perl</a>
+    / <a href="/memo/2008/02/17/1/#disqus_thread">Comment</a>
+  </div>
+</div>
+
+<div class="entry autopagerize_page_element">
+  <h2><a href="/memo/2008/02/16/1/">Catalyst::Controller::Resources</a></h2>
+
+  <div class="body">
+    <p>かっこいい。</p>
+<p>オレオレ規約をもとに雛形を生成するヘルパースクリプトでがんばるよりこういう自分用のコントローラをつくるほうがスマートだなぁ。</p>
+<p>Catalystユーザー的にはオールドタイプな自分としては見習おうと思った。</p>
+
+  </div>
+
+  <div class="meta">
+    by typester /
+    at <a href="/memo/2008/02/16/1/">2008-02-16T19:34:00</a> /
+    <a href="/memo/tag/perl/">perl</a>
+    &middot; <a href="/memo/tag/catalyst/">catalyst</a>
+    / <a href="/memo/2008/02/16/1/#disqus_thread">Comment</a>
+  </div>
+</div>
+
+<div class="entry autopagerize_page_element">
+  <h2><a href="/memo/2008/02/09/1/">OpenFL + Plagger::Plugin::Store::Fastladderも実戦投入した！</a></h2>
+
+  <div class="body">
+    <p>といっても今まで使ってたyamlに <code>- module: Store::Fastladder</code> の項目を追加しただけだけど。</p>
+<p>今までの <code>Store::DBIC</code> (PlaggerLDR) のも残してあるので今はどちらも使える状態。</p>
+<p>ちなみに使用感は PlaggerLDR とほとんど同じだなぁ。グリモンなくても使えたりするのが Store::Fastladder のほうがいいところだけど、いますぐ PlaggerLDR から乗り換えるメリットはあまりないのかも。(PlaggerLDR使ってる人はね)</p>
+<p>PlaggerLDRよくわからんくてつかってないけど、使いたかったというような人にはかなりおすすめだ。動作している OpenFL の環境があれば Store::Fastladder は plagger の yaml にそのデータベース情報を書くだけで動作する。</p>
+<p>あと、OpenFL のデータベースは SQLite じゃなくて mysql を使ってる。PlaggerLDR で経験したのだが、SQLite だとフィード増えてくるとかなり重くなる。せいぜい数ヶ月が限度。</p>
+
+  </div>
+
+  <div class="meta">
+    by typester /
+    at <a href="/memo/2008/02/09/1/">2008-02-09T01:37:00</a> /
+    <a href="/memo/tag/plagger/">plagger</a>
+    / <a href="/memo/2008/02/09/1/#disqus_thread">Comment</a>
+  </div>
+</div>
+
+<div class="entry autopagerize_page_element">
+  <h2><a href="/memo/2008/02/08/1/">ユニークなランダム文字列</a></h2>
+
+  <div class="body">
+    <p>すでに生成したIDかどうかを気にする必要がないユニークな文字列を作成しようとした場合</p>
+<pre><code><span class="keyword">use</span> <span class="function-name">Data::UUID</span>;
+<span class="keyword">use</span> <span class="function-name">MIME::Base64::URLSafe</span>;
+
+<span class="cperl-nonoverridable">print</span> urlsafe_b64encode( Data::UUID-&gt;new-&gt;create );
+</code></pre>
+<p>こんな感じにやるのがいいのかなぁ。これで22文字。</p>
+<p>んー。</p>
+<p>エントリーのURLとかにつかいたくてもう少し短くしたいけど、文字列生成したときに重複してないか調べるためにDBを引くというのがイヤダナー。</p>
+
+  </div>
+
+  <div class="meta">
+    by typester /
+    at <a href="/memo/2008/02/08/1/">2008-02-08T14:19:00</a> /
+    <a href="/memo/tag/perl/">perl</a>
+    / <a href="/memo/2008/02/08/1/#disqus_thread">Comment</a>
+  </div>
+</div>
+
+<div class="entry autopagerize_page_element">
+  <h2><a href="/memo/2008/02/07/4/">plaggerをfastladderのクローラーとして使う</a></h2>
+
+  <div class="body">
+    <p>のを作ってみた。</p>
+<blockquote><p><a href="http://plagger.org/trac/changeset/2000">http://plagger.org/trac/changeset/2000</a></p></blockquote>
+<p>やっとPlaggerLDRいらずになるかなー。</p>
+<p>まだDBのカラムの役割とかよくわかってなくて適当な値いれてたりするとこあります。</p>
+
+  </div>
+
+  <div class="meta">
+    by typester /
+    at <a href="/memo/2008/02/07/4/">2008-02-07T18:30:00</a> /
+    <a href="/memo/tag/plagger/">plagger</a>
+    / <a href="/memo/2008/02/07/4/#disqus_thread">Comment</a>
+  </div>
+</div>
+
+<div class="entry autopagerize_page_element">
+  <h2><a href="/memo/2008/02/07/3/"></a></h2>
+
+  <div class="body">
+    <p>クローラー動かすのに</p>
+<pre><code>sudo gem install rfeedfinder
+</code></pre>
+<p>も必要だった。</p>
+<p>あれクローラーじゃなくてfeedをsubscribeするときに必要だったのかも。覚えてないけどとりあえず必要。</p>
+
+  </div>
+
+  <div class="meta">
+    by typester /
+    at <a href="/memo/2008/02/07/3/">2008-02-07T18:29:00</a> /
+    <a href="/memo/tag/ruby/">ruby</a>
+    / <a href="/memo/2008/02/07/3/#disqus_thread">Comment</a>
+  </div>
+</div>
+
+<div class="entry autopagerize_page_element">
+  <h2><a href="/memo/2008/02/07/2/"></a></h2>
+
+  <div class="body">
+    <p>メモついてるYO! ってつっこまれた。</p>
+<blockquote><p><a href="http://fastladder.googlecode.com/svn/trunk/fastladder/INSTALL.txt">http://fastladder.googlecode.com/svn/trunk/fastladder/INSTALL.txt</a></p></blockquote>
+<p>ほうほう。</p>
+
+  </div>
+
+  <div class="meta">
+    by typester /
+    at <a href="/memo/2008/02/07/2/">2008-02-07T15:18:00</a> /
+    <a href="/memo/tag/ruby/">ruby</a>
+    / <a href="/memo/2008/02/07/2/#disqus_thread">Comment</a>
+  </div>
+</div>
+
+
+
+
+<div id="pager" class="autopagerize_insert_before">
+  <p class="pages">
+    <a class="prev" rel="previous" href="/memo/page/24/">&laquo; Prev</a>
+    <a href="/memo/page/21/">21</a>
+    <a href="/memo/page/22/">22</a>
+    <a href="/memo/page/23/">23</a>
+    <a href="/memo/page/24/">24</a>
+    <span class="current">25</span>
+    <a href="/memo/page/26/">26</a>
+    <a href="/memo/page/27/">27</a>
+    <a href="/memo/page/28/">28</a>
+    <a href="/memo/page/29/">29</a>
+    <a href="/memo/page/30/">30</a>
+    <a class="next" rel="next" href="/memo/page/26/">Next &raquo;</a>
+  </p>
+  <p class="info">(Page 25 of 203)</p>
+</div>
+
+
+</div>
+
+<p id="footer">
+  Copyright &copy; 2005-2013
+      by <a class="author" href="/about/#me">Daisuke Murase (typester)</a> /
+  Site generated by <a href="https://github.com/typester/nim">nim</a> /
+  Comments powered by <a href="http://disqus.com">DISQUS</a>.
+</p>
+
+</div>
+
+
+<script type="text/javascript">
+//<![CDATA[
+(function() {
+	var links = document.getElementsByTagName('a');
+	var query = '?';
+	for(var i = 0; i < links.length; i++) {
+	if(links[i].href.indexOf('#disqus_thread') >= 0) {
+		query += 'url' + i + '=' + encodeURIComponent(links[i].href) + '&';
+	}
+	}
+	document.write('<script charset="utf-8" type="text/javascript" src="http://disqus.com/forums/unknownplace/get_num_replies.js' + query + '"></' + 'script>');
+})();
+//]]>
+</script>
+
+
+<script type="text/javascript">
+var gaJsHost = (("https:" == document.location.protocol) ? "https://ssl." : "http://www.");
+document.write(unescape("%3Cscript src='" + gaJsHost + "google-analytics.com/ga.js' type='text/javascript'%3E%3C/script%3E"));
+</script>
+<script type="text/javascript">
+try {
+var pageTracker = _gat._getTracker("UA-53067-1");
+pageTracker._trackPageview();
+} catch(err) {}</script>
+
+<script>
+function googleTranslateElementInit() {
+  new google.translate.TranslateElement({
+    pageLanguage: 'ja',
+    gaTrack: true,
+    gaId: 'UA-53067',
+    floatPosition: google.translate.TranslateElement.FloatPosition.BOTTOM_RIGHT
+  });
+}
+</script><script src="//translate.google.com/translate_a/element.js?cb=googleTranslateElementInit"></script>
+
+</body>
+</html>

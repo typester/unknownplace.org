@@ -1,0 +1,441 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="ja" xml:lang="ja">
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <title>memo - unknownplace.org</title>
+  <link rel="stylesheet" type="text/css" href="http://yui.yahooapis.com/3.0.0/build/cssreset/reset-min.css" />
+  <link rel="stylesheet" type="text/css" href="http://yui.yahooapis.com/3.0.0/build/cssfonts/fonts-min.css" />
+  <link rel="stylesheet" href="/css/style.css" type="text/css" />
+  <meta property="fb:admins" content="1093631929" />
+  <meta name="robots" content="noindex" />
+  <link rel="alternate" type="application/rss+xml" href="http://unknownplace.org/memo/index.rss" />
+</head>
+<body>
+
+<div id="container">
+<div id="header">
+    <h1><a href="/">unknownplace.org</a></h1> /
+<a href="/memo/">memo</a>
+</div>
+
+<div id="content">
+
+<div class="entry autopagerize_page_element">
+  <h2><a href="/memo/2012/01/24/2/">Objective-C スレッドと libuv スレッドとのやりとり</a></h2>
+
+  <div class="body">
+    <p>libuv 専用スレッドと通常の Objective-C スレッドとのやりとりの仕方、ついでに書いておく。</p>
+<p>tl;dr - libuv スレッドから Objective-C スレッドに対して何か送るときは Objective-C の作法がそのまま使える。逆は <code>uv_async</code> を使う</p>
+<h4>libuv スレッドから Objective-C スレッド</h4>
+<p>これは Objective-C の世界の作法がそのまま使える。</p>
+<p>iOS4+ と OSX 10.6+ であれば GCD で、</p>
+<pre><code>dispatch_async(dispatch_get_main_queue(), ^{
+    // ここはメインスレッド
+});
+</code></pre>
+<p>のようなのを書くだけでメインスレッドの動作を定義できるから、そこでメソッド呼ぶなり Notification を発行するなりすれば良いので楽ちん。</p>
+<p>それ以下の環境だったら <code>performSelector:onThread:withObject:waitUntilDone:</code> 系のを使う。</p>
+<h4>Objective-C スレッドから libuv スレッド</h4>
+<p>libuv スレッドでは NSRunLoop が回ってないので上記の作法は使えない。代わりに <code>uv_async</code> を使う。</p>
+<p>まず、libuv スレッドで async コールバックを設定：</p>
+<pre><code>static void async_cb(uv_async_t* handle, int status) {
+
+}
+
+uv_async_init(self-&gt;loop, &amp;self-&gt;async, async_cb);
+</code></pre>
+<p>で、呼び出し側（Objective-Cスレッド）から</p>
+<pre><code>uv_async_send(&amp;obj-&gt;async);
+</code></pre>
+<p>とすれば <code>async_cb</code> が libuv スレッドで発動するという寸法。</p>
+<p>データを渡したいときは</p>
+<pre><code>@synchronized (obj.send_queue) {
+    [obj.send_queue addObject:@<span class="string">"foo"</span>];
+}
+
+uv_async_send(&amp;obj-&gt;async);
+</code></pre>
+<p>という感じにしておいて、取り出す側も</p>
+<pre><code>static void async_cb(uv_async_t* handle, int status) {
+    NSArray* queue;
+
+    @synchronized (self.send_queue) {
+        queue = [NSArray arrayWithArray:self.send_queue];
+        [self.send_queue removeAllObjects];
+    }
+
+    // 処理
+}
+</code></pre>
+<p>みたいにすれば良い。</p>
+<p>async コールバックは複数作ることができるから、用途に応じてコールバックを使い分けるのがよさそう。(データ送信用、スレッド終了用など)</p>
+
+  </div>
+
+  <div class="meta">
+    by typester /
+    at <a href="/memo/2012/01/24/2/">2012-01-24T14:12:00</a> /
+    <a href="/memo/tag/objc/">objc</a>
+    &middot; <a href="/memo/tag/libuv/">libuv</a>
+    / <a href="/memo/2012/01/24/2/#disqus_thread">Comment</a>
+  </div>
+</div>
+
+<div class="entry autopagerize_page_element">
+  <h2><a href="/memo/2012/01/24/1/">libuv (libev) と Objective-C autorelease のはまりポイント</a></h2>
+
+  <div class="body">
+    <p>iOS や Mac アプリで HTTP 以外のネットワーク機能をつけたいといった場合に、libuv や libev を組み込んで使うというのを割とよくする。方法としては以下のような感じでその機能用のスレッドをつくる：</p>
+<pre><code>-(void)run {
+    NSThread* thread = [[NSThread alloc] initWithTarget:self
+                                               selector:@selector(loop)
+                                                 object:nil];
+    self.thread = thread;
+    [thread release];
+
+    [thread start];
+}
+</code></pre>
+<p>スレッドの中身は大体こんな感じ：</p>
+<pre><code>-(void)loop {
+    NSAutoreleasePool* pool = [[NSAutoreleasePool alloc] init];
+
+    uv_loop_t* loop = uv_loop_new();
+
+    // いろいろ初期化
+    // ...
+
+    // libuv イベントループ
+    uv_run(loop);
+
+    uv_loop_delete(loop);
+
+    [pool drain];
+}
+</code></pre>
+<p>このスレッドは <code>uv_run</code> でブロックしてしまう。本来ここではCocoaのイベントループ(NSRunLoop)をまわす部分だが、かわりに libuv のイベントループを回している感じになっている。</p>
+<p>したがってこのスレッドで Objective-C を混ぜる場合には autorelease がスレッド終了まで基本的にされなくなるから注意が必要。</p>
+<p>これを解決する方法で最初に思いつくのは、<code>uv_run</code> (<code>ev_run</code>) のかわりに <code>uv_run_once</code> (<code>ev_run(..., EVRUN_ONCE)</code>) を使うことだ。</p>
+<pre><code>while (1) {
+    NSAutoreleasePool* pool = [[NSAutoreleasePool alloc] init];
+    uv_run_once(loop);
+    [pool drain];
+}
+</code></pre>
+<p>これは一見簡単だけど while ループをとめるフラグを別途用意しないといけないし、<code>uv_run</code> とちがってループを抜けるときには各イベントハンドラが終了しているかを確かめる必要もありめんどくさい。</p>
+<p>結果いまはこんな感じにしている：</p>
+<pre><code>static void idle_cb(uv_idle_t* handle, int status) {
+    uv_idle_stop(handle);
+    [(NSAutoreleasePool*)handle-&gt;data drain];
+    handle-&gt;data = NULL;
+}
+
+static void check_cb(uv_check_t* handle, int status) {
+    uv_idle_t* idle = (uv_idle_t*)handle-&gt;data;
+    if (NULL != idle-&gt;data) return;
+
+    NSAutoreleasePool* pool = [[NSAutoreleasePool alloc] init];
+    idle-&gt;data = (void*)pool;
+    uv_idle_start(idle, idle_cb);
+}
+
+-(void)loop {
+    uv_loop_t* loop = uv_loop_new();
+
+    uv_check_t check;
+    uv_check_init(loop, &amp;check);
+    uv_check_start(&amp;check, check_cb);
+
+    uv_idle_t idle;
+    uv_idle_init(loop, &amp;idle);
+    check.data = (void*)&amp;idle;
+    idle.data = NULL;
+
+    // いろいろ初期化
+    // ...
+
+    uv_run(loop);
+
+    uv_loop_delete(loop);
+}
+</code></pre>
+<p><code>uv_check</code> (<code>ev_check</code>) で <code>NSAutoreleasePool</code> をつくりつつ idle タイマーを作って、 その idle タイマー時に <code>[pool drain]</code> する。 これだとイベントが詰まっている場合は drain は呼ばれず、キリの良いときに呼んでくれるから <code>run_once</code> でいちいちやるよりは効率も良さそうな気がする。</p>
+<p>このコードでは省略しているけど実際に使うときには <code>check</code> や <code>idle</code> も終了しないと <code>uv_run</code> から抜けてこないのでどこかのオブジェクトにまとめて突っ込んでおいたりして使うのが吉。</p>
+<p>こういうのを何も考えずに Objective-C をまぜるともりもりメモリ食うようになるから気をつけよう！</p>
+
+  </div>
+
+  <div class="meta">
+    by typester /
+    at <a href="/memo/2012/01/24/1/">2012-01-24T13:06:00</a> /
+    <a href="/memo/tag/objc/">objc</a>
+    &middot; <a href="/memo/tag/libuv/">libuv</a>
+    / <a href="/memo/2012/01/24/1/#disqus_thread">Comment</a>
+  </div>
+</div>
+
+<div class="entry autopagerize_page_element">
+  <h2><a href="/memo/2011/12/01/1/">libuv の Perl バインディング</a></h2>
+
+  <div class="body">
+    <p>気分転換プロジェクトとして、<a href="https://github.com/joyent/libuv">libuv</a>のPerlバインディングを書いている。</p>
+<blockquote><p><a href="https://github.com/typester/p5-UV">typester/p5-UV - GitHub</a></p></blockquote>
+<p>現状、timerとtcp周りを一通り実装したところ。</p>
+<p>実装は愚直にlibuvの関数とperlの関数を1:1に（<code>uv_tcp_init(...)</code>を<code>UV::tcp_init(...)</code>というような形で）マッピングしている。 この実装はlow level APIと位置づけ、その上に使いやすい高レベルなインタフェースをPerl上で用意したいつもり。</p>
+<p>このlow level APIをつかったTCP echo serverはこんな感じになる:</p>
+<pre><code><span class="keyword">use</span> <span class="function-name">strict</span>;
+<span class="keyword">use</span> <span class="function-name">warnings</span>;
+
+<span class="keyword">use</span> <span class="function-name">UV</span>;
+
+<span class="keyword">my</span> <span class="variable-name">$server</span> = UV::tcp_init();
+UV::tcp_bind($server, <span class="string">&apos;0.0.0.0&apos;</span>, 3000)
+    &amp;&amp; <span class="keyword">die</span> <span class="string">&apos;bind error: &apos;</span>, UV::strerror(UV::last_error());
+
+UV::<span class="type">listen</span>($server, 10, <span class="keyword">sub</span> {
+    <span class="keyword">my</span> <span class="variable-name">$client</span> = UV::tcp_init();
+    UV::<span class="type">accept</span>($server, $client) &amp;&amp; <span class="keyword">die</span> <span class="string">&apos;accept failed: &apos;</span>, UV::strerror(UV::last_error());
+
+    UV::read_start($client, <span class="keyword">sub</span> {
+        <span class="keyword">my</span> (<span class="variable-name">$nread</span>, <span class="variable-name">$buf</span>) = <span class="cperl-array">@_</span>;
+
+        <span class="keyword">if</span> ($nread &lt; 0) {
+            <span class="keyword">my</span> <span class="variable-name">$err</span> = UV::last_error();
+            <span class="keyword">if</span> ($err <span class="negation-char">!</span>= UV::EOF) {
+                <span class="type">warn</span> <span class="string">&apos;client read error: &apos;</span>, UV::strerror($err);
+            }
+            UV::<span class="type">close</span>($client);
+        }
+        <span class="keyword">elsif</span> ($nread == 0) {
+            <span class="comment-delimiter"># </span><span class="comment">nothing to read
+</span>        }
+        <span class="keyword">else</span> {
+            UV::<span class="type">write</span>($client, $buf, <span class="keyword">sub</span> {
+                <span class="keyword">my</span> (<span class="variable-name">$status</span>) = <span class="cperl-array">@_</span>;
+
+                <span class="keyword">if</span> ($status) {
+                    <span class="type">warn</span> <span class="string">&apos;client write error: &apos;</span>, UV::strerror(UV::last_error());
+                    UV::<span class="type">close</span>($client);
+                }
+            });
+        }
+    });
+
+}) &amp;&amp; <span class="keyword">die</span> <span class="string">&apos;listen error: &apos;</span>, UV::strerror(UV::last_error());
+
+UV::run();
+</code></pre>
+<p>見てわかるようにperlモジュールとしての使いかってはわるいが、libuvを使い慣れた人なら迷いなく使うことが出来るようになっている。 これは僕にとっては発見だった。</p>
+<p>また、このサンプルをみてもわかるように<code>listen</code>とか<code>accept</code>とかまでラップしている関係上、libuvをAnyEventのバックエンドとしてつかうのは現状は無理そう。</p>
+<p>libuv自体はWindowsでも動くはずだが、メインマシンをAirにして以来Windows環境を仮想環境でも持ち歩いていないため確認できていない。 Windows対応してくれる人募集！</p>
+<p>開発を始めるためのステップ：</p>
+<pre><code>$ cpanm Module::Install
+$ cpanm Module::Install::XSUtil
+
+$ git clone git://github.com/typester/p5-UV.git
+$ cd p5-UV
+$ git submodule update --init
+$ perl Makefile.PL
+$ make
+$ make test
+</code></pre>
+
+  </div>
+
+  <div class="meta">
+    by typester /
+    at <a href="/memo/2011/12/01/1/">2011-12-01T11:38:00</a> /
+    <a href="/memo/tag/perl/">perl</a>
+    &middot; <a href="/memo/tag/libuv/">libuv</a>
+    / <a href="/memo/2011/12/01/1/#disqus_thread">Comment</a>
+  </div>
+</div>
+
+<div class="entry autopagerize_page_element">
+  <h2><a href="/memo/2011/11/15/1/">ngx-queue.h</a></h2>
+
+  <div class="body">
+    <p>libuv のソースを見ていたら、<code>ngx_queue_*</code> という API が出てきてびっくり。どうやら nginx から <code>ngx-queue.h</code> っていうリンクドリストの実装を持ってきているようだ。</p>
+<blockquote><p><a href="https://github.com/joyent/libuv/blob/master/include/uv-private/ngx-queue.h">include/uv-private/ngx-queue.h at master from joyent/libuv - GitHub</a></p></blockquote>
+<p>なかなかおもしろい。これ、いろんなところで使えそうなので手元でも試してみた。</p>
+<pre><code><span class="preprocessor">#include</span> <span class="string">&lt;stdio.h&gt;</span>
+<span class="preprocessor">#include</span> <span class="string">&lt;assert.h&gt;</span>
+<span class="preprocessor">#include</span> <span class="string">&lt;stdlib.h&gt;</span>
+<span class="preprocessor">#include</span> <span class="string">&lt;string.h&gt;</span>
+<span class="preprocessor">#include</span> <span class="string">&lt;stddef.h&gt;</span>
+
+<span class="preprocessor">#include</span> <span class="string">"ngx-queue.h"</span>
+
+<span class="keyword">typedef</span> <span class="keyword">struct</span> {
+    <span class="type">ngx_queue_t</span> <span class="variable-name">queue</span>;
+    <span class="type">char</span>* <span class="variable-name">data</span>;
+} <span class="variable-name">chunk_t</span>;
+
+<span class="type">chunk_t</span>* <span class="function-name">chunk_init</span>(<span class="keyword">const</span> <span class="type">char</span>* <span class="variable-name">data</span>, <span class="type">size_t</span> <span class="variable-name">len</span>) {
+    <span class="type">chunk_t</span>* <span class="variable-name">c</span> = malloc(<span class="keyword">sizeof</span>(chunk_t));
+    assert(c);
+
+    ngx_queue_init(&amp;c-&gt;queue);
+
+    c-&gt;data = malloc(len + 1);
+    assert(c-&gt;data);
+    memcpy(c-&gt;data, data, len);
+    c-&gt;data[len] = <span class="string">'\0'</span>;
+
+    <span class="keyword">return</span> c;
+}
+
+<span class="type">void</span> <span class="function-name">chunk_delete</span>(<span class="type">chunk_t</span>* <span class="variable-name">c</span>) {
+    ngx_queue_remove(&amp;c-&gt;queue);
+    free(c-&gt;data);
+    free(c);
+}
+
+<span class="type">int</span> <span class="function-name">main</span>(<span class="type">int</span> <span class="variable-name">argc</span>, <span class="type">char</span>** <span class="variable-name">argv</span>) {
+    <span class="type">ngx_queue_t</span> <span class="variable-name">queue</span>;
+    <span class="type">chunk_t</span>* <span class="variable-name">chunk</span>;
+
+    ngx_queue_init(&amp;queue);
+
+    chunk = chunk_init(<span class="string">"foo"</span>, 3);
+    ngx_queue_insert_tail(&amp;queue, &amp;chunk-&gt;queue);
+
+    chunk = chunk_init(<span class="string">"bar"</span>, 3);
+    ngx_queue_insert_tail(&amp;queue, &amp;chunk-&gt;queue);
+
+    chunk = chunk_init(<span class="string">"buz"</span>, 3);
+    ngx_queue_insert_tail(&amp;queue, &amp;chunk-&gt;queue);
+
+    <span class="keyword">while</span> (<span class="negation-char">!</span>ngx_queue_empty(&amp;queue)) {
+        <span class="type">ngx_queue_t</span>* <span class="variable-name">q</span> = ngx_queue_head(&amp;queue);
+        <span class="type">chunk_t</span>* <span class="variable-name">c</span> = ngx_queue_data(q, chunk_t, queue);
+
+        printf(<span class="string">"data: %s\n"</span>, c-&gt;data);
+
+        chunk_delete(c);
+    }
+
+
+    chunk = chunk_init(<span class="string">"foo"</span>, 3);
+    ngx_queue_insert_tail(&amp;queue, &amp;chunk-&gt;queue);
+
+    chunk = chunk_init(<span class="string">"bar"</span>, 3);
+    ngx_queue_insert_tail(&amp;queue, &amp;chunk-&gt;queue);
+
+    chunk = chunk_init(<span class="string">"buz"</span>, 3);
+    ngx_queue_insert_tail(&amp;queue, &amp;chunk-&gt;queue);
+
+    <span class="keyword">while</span> (<span class="negation-char">!</span>ngx_queue_empty(&amp;queue)) {
+        <span class="type">ngx_queue_t</span>* <span class="variable-name">q</span> = ngx_queue_last(&amp;queue);
+        <span class="type">chunk_t</span>* <span class="variable-name">c</span> = ngx_queue_data(q, chunk_t, queue);
+
+        printf(<span class="string">"data: %s\n"</span>, c-&gt;data);
+
+        chunk_delete(c);
+    }
+
+    <span class="keyword">return</span> 0;
+}
+</code></pre>
+<p>出力は</p>
+<pre><code>$ ./a.out
+data: foo
+data: bar
+data: buz
+data: buz
+data: bar
+data: foo
+</code></pre>
+<p>これは使えるなぁ。</p>
+
+  </div>
+
+  <div class="meta">
+    by typester /
+    at <a href="/memo/2011/11/15/1/">2011-11-15T17:38:00</a> /
+    <a href="/memo/tag/libuv/">libuv</a>
+    &middot; <a href="/memo/tag/nginx/">nginx</a>
+    / <a href="/memo/2011/11/15/1/#disqus_thread">Comment</a>
+  </div>
+</div>
+
+<div class="entry autopagerize_page_element">
+  <h2><a href="/memo/2011/11/10/2/">libuv を iOS 対応した件</a></h2>
+
+  <div class="body">
+    <p>だいぶ前から iPhone アプリ作成でネットワーク系の機能を作るときには <a href="http://software.schmorp.de/pkg/libev.html">libev</a> を愛用してるのだが、今日 node をいじっていたら <a href="https://github.com/joyent/libuv">libuv</a> がなかなかよさそうに感じた。</p>
+<p>libuv は libev が Windows で動かないからっていう理由で始まったプロジェクトだとおもうけど、Linux などの環境においても libev をラップしつつ、より便利な機能が追加されていていわば C でネットワークプログラミングするためのフレームワークといえるくらいになってる、みたい。（まだ詳しく見たわけじゃないけど）</p>
+<p>libev は基本的に io 監視と timer のみで、socket の生成などは基本的に自分で syscall 呼んでつくる必要があるけど、libuv は <code>uv_tcp_*</code> とか <code>uv_udp_*</code> といったAPI郡をもってて便利そう。 あと、非同期 DNS ルックアップがサポートされてるのはうれしい。これ、 libev になくて不便だった。</p>
+<p>そういうとこまでラップしないと同じコードを Windows でも動かすってのは無理だからそうなったんだとおもうけど、結果として大変便利なライブラリになっているのではないか。</p>
+<p>あと、テストケースが充実しているので、（たぶん）すべての機能のサンプルコードがテストを見ればOKっていうのもうれしい。</p>
+<p>っていうわけで iOS 対応のパッチを書きました。</p>
+<blockquote><p><a href="https://github.com/joyent/libuv/pull/243">#243: Added experimental iOS support by typester for joyent/libuv - Pull Request - GitHub</a></p></blockquote>
+<p>iOS で動かない理由はハードウェア時間をnano秒で取得してる関数が iOS にはない CoreServices.framework に依存しちゃってるからってことだけなので、それを使わないように修正をした。</p>
+<p>現状のパッチは iOS 用にビルドするときのみ CoreServices 非依存のコードを使うようにしているけど、これに依存してることで uv.a を組み込むだけじゃなくて、 CoreServices.framework に別途リンクする必要があってめんどいからパフォーマンスや精度が問題なければ非依存のコードの方に統一してしまった方がいいと思う。っていうようなことは pull req に返信が来たら伝えようとは思っている。</p>
+<p>とりあえず、これで使えるようになったから。さっそく今作ってるアプリに組み込んでにようと思う。</p>
+
+  </div>
+
+  <div class="meta">
+    by typester /
+    at <a href="/memo/2011/11/10/2/">2011-11-10T20:51:00</a> /
+    <a href="/memo/tag/libuv/">libuv</a>
+    &middot; <a href="/memo/tag/iphone/">iphone</a>
+    / <a href="/memo/2011/11/10/2/#disqus_thread">Comment</a>
+  </div>
+</div>
+
+
+
+</div>
+
+<p id="footer">
+  Copyright &copy; 2005-2013
+      by <a class="author" href="/about/#me">Daisuke Murase (typester)</a> /
+  Site generated by <a href="https://github.com/typester/nim">nim</a> /
+  Comments powered by <a href="http://disqus.com">DISQUS</a>.
+</p>
+
+</div>
+
+
+<script type="text/javascript">
+//<![CDATA[
+(function() {
+	var links = document.getElementsByTagName('a');
+	var query = '?';
+	for(var i = 0; i < links.length; i++) {
+	if(links[i].href.indexOf('#disqus_thread') >= 0) {
+		query += 'url' + i + '=' + encodeURIComponent(links[i].href) + '&';
+	}
+	}
+	document.write('<script charset="utf-8" type="text/javascript" src="http://disqus.com/forums/unknownplace/get_num_replies.js' + query + '"></' + 'script>');
+})();
+//]]>
+</script>
+
+
+<script type="text/javascript">
+var gaJsHost = (("https:" == document.location.protocol) ? "https://ssl." : "http://www.");
+document.write(unescape("%3Cscript src='" + gaJsHost + "google-analytics.com/ga.js' type='text/javascript'%3E%3C/script%3E"));
+</script>
+<script type="text/javascript">
+try {
+var pageTracker = _gat._getTracker("UA-53067-1");
+pageTracker._trackPageview();
+} catch(err) {}</script>
+
+<script>
+function googleTranslateElementInit() {
+  new google.translate.TranslateElement({
+    pageLanguage: 'ja',
+    gaTrack: true,
+    gaId: 'UA-53067',
+    floatPosition: google.translate.TranslateElement.FloatPosition.BOTTOM_RIGHT
+  });
+}
+</script><script src="//translate.google.com/translate_a/element.js?cb=googleTranslateElementInit"></script>
+
+</body>
+</html>

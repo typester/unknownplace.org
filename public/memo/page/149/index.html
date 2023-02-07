@@ -1,0 +1,275 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="ja" xml:lang="ja">
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <title>memo - unknownplace.org</title>
+  <link rel="stylesheet" type="text/css" href="http://yui.yahooapis.com/3.0.0/build/cssreset/reset-min.css" />
+  <link rel="stylesheet" type="text/css" href="http://yui.yahooapis.com/3.0.0/build/cssfonts/fonts-min.css" />
+  <link rel="stylesheet" href="/css/style.css" type="text/css" />
+  <meta property="fb:admins" content="1093631929" />
+  <meta name="robots" content="noindex" />
+  <link rel="alternate" type="application/rss+xml" href="http://unknownplace.org/memo/index.rss" />
+</head>
+<body>
+
+<div id="container">
+<div id="header">
+    <h1><a href="/">unknownplace.org</a></h1> /
+<a href="/memo/">memo</a>
+</div>
+
+<div id="content">
+
+<div class="entry autopagerize_page_element">
+  <h2><a href="/memo/2006/01/20/1/"></a></h2>
+
+  <div class="body">
+    <p>退社。</p>
+
+  </div>
+
+  <div class="meta">
+    by typester /
+    at <a href="/memo/2006/01/20/1/">2006-01-20T01:05:00</a> /
+    <a href="/memo/tag/life/">life</a>
+    / <a href="/memo/2006/01/20/1/#disqus_thread">Comment</a>
+  </div>
+</div>
+
+<div class="entry autopagerize_page_element">
+  <h2><a href="/memo/2006/01/19/6/">カメラ業界</a></h2>
+
+  <div class="body">
+    <p>このタイミングで、どっかがポジティブなプレス打ったら人気でまくりなきがす。</p>
+
+  </div>
+
+  <div class="meta">
+    by typester /
+    at <a href="/memo/2006/01/19/6/">2006-01-19T21:06:00</a> /
+    <a href="/memo/tag/life/">life</a>
+    / <a href="/memo/2006/01/19/6/#disqus_thread">Comment</a>
+  </div>
+</div>
+
+<div class="entry autopagerize_page_element">
+  <h2><a href="/memo/2006/01/19/5/">daap_proxy.pl の使い方</a></h2>
+
+  <div class="body">
+    <p>わかりにくいっぽいので、メモを書いておく。</p>
+<blockquote><p>環境1:</p><ul><li>自宅サーバー unknownplace.org:3689 で mt-daap だとかそれ系の iTunes サーバーが動いている</li><li>それをリモートのクライアントWindowsPC(ここではThinkPad)からみたい</li></ul></blockquote>
+<ol><li><a href="http://www.apple.com/jp/ftp-info/reference/bonjourforwindows.html">Bonjour for Windows</a>インストール</li><li>svk co http://svn.bulknews.net/repos/trickster/trunk/Net-Rendezvous-Publish-Backend-BonjourWin32/</li><li>1 でインストールされた dns-sd.exe をどっかパスの通ってるところか、examplesディレクトリにコピー</li><li>examplesディレクトリで <code>perl daap_proxy.pl --remote-server unknownplace.org</code> 実行</li></ol>
+<blockquote><p>環境2:</p><ul><li>1と同じだが自宅サーバーの3689ポートは空けてなくsshポートフォワードを使う場合</li></ul></blockquote>
+<ol><li>上記の3までやる</li><li>ssh -L 9999:unknownplace.org:3689 とかしてポートフォワードる</li><li><code>perl daap_proxy.pl --port 9998 --remote-port 9999</code></li></ol>
+<blockquote><p>環境3:</p><ul><li>1と同じだがクライアントにOSXを使う場合</li></ul></blockquote>
+<ol><li>Net::Rendezvous::Publish::Backend::Apple インストール</li><li>svk co http://svn.bulknews.net/repos/trickster/trunk/Net-Rendezvous-Publish-Backend-BonjourWin32/</li><li><code>./examples/daap_proxy.pl --remote-server unknownplace.org</code></li></ol>
+<p>とかいう感じ。</p>
+<p>POE 周りのモジュールのインストールも必要。</p>
+<p>BonjourWin32 周りはもっとなんとかしたいかなぁ。</p>
+<p>あと、サーバーに miyagawa さんの <a href="http://svn.bulknews.net/repos/trickster/trunk/samples/daap-mirror-proxy.pl">daap-mirror-proxy.pl</a> を使うとリモートのiTunes共有をローカルのiTunes共有にマージできて、なかなかすばらしげ。</p>
+
+  </div>
+
+  <div class="meta">
+    by typester /
+    at <a href="/memo/2006/01/19/5/">2006-01-19T16:17:00</a> /
+    <a href="/memo/tag/life/">life</a>
+    &middot; <a href="/memo/tag/trickster/">trickster</a>
+    / <a href="/memo/2006/01/19/5/#disqus_thread">Comment</a>
+  </div>
+</div>
+
+<div class="entry autopagerize_page_element">
+  <h2><a href="/memo/2006/01/19/4/"></a></h2>
+
+  <div class="body">
+    <p>出社。</p>
+
+  </div>
+
+  <div class="meta">
+    by typester /
+    at <a href="/memo/2006/01/19/4/">2006-01-19T14:17:00</a> /
+    <a href="/memo/tag/life/">life</a>
+    / <a href="/memo/2006/01/19/4/#disqus_thread">Comment</a>
+  </div>
+</div>
+
+<div class="entry autopagerize_page_element">
+  <h2><a href="/memo/2006/01/19/3/"></a></h2>
+
+  <div class="body">
+    <p>寝坊。</p>
+
+  </div>
+
+  <div class="meta">
+    by typester /
+    at <a href="/memo/2006/01/19/3/">2006-01-19T11:35:00</a> /
+    <a href="/memo/tag/life/">life</a>
+    / <a href="/memo/2006/01/19/3/#disqus_thread">Comment</a>
+  </div>
+</div>
+
+<div class="entry autopagerize_page_element">
+  <h2><a href="/memo/2006/01/19/2/"></a></h2>
+
+  <div class="body">
+    <p>さっきのスクリーンショットは Net::DAAP::Server な DAAP 鯖につないだもので、正規の iTunes だと外部アドレスからの接続を受け入れてない可能性があるらしいので、そのままでは使えないかもしれない。</p>
+
+  </div>
+
+  <div class="meta">
+    by typester /
+    at <a href="/memo/2006/01/19/2/">2006-01-19T00:12:00</a> /
+    <a href="/memo/tag/life/">life</a>
+    / <a href="/memo/2006/01/19/2/#disqus_thread">Comment</a>
+  </div>
+</div>
+
+<div class="entry autopagerize_page_element">
+  <h2><a href="/memo/2006/01/19/1/"></a></h2>
+
+  <div class="body">
+    <p>退社。</p>
+
+  </div>
+
+  <div class="meta">
+    by typester /
+    at <a href="/memo/2006/01/19/1/">2006-01-19T00:02:00</a> /
+    <a href="/memo/tag/life/">life</a>
+    / <a href="/memo/2006/01/19/1/#disqus_thread">Comment</a>
+  </div>
+</div>
+
+<div class="entry autopagerize_page_element">
+  <h2><a href="/memo/2006/01/18/2/">daap_proxy.pl その後</a></h2>
+
+  <div class="body">
+    <p><a href="http://poe.perl.org/?POE_Cookbook">POE の Cookbook</a> にのってる <a href="http://poe.perl.org/?POE_Cookbook/TCP_Port_Redirection">TCP Forward サンプル</a>を元に、とりあえず動くのをつくって<a href="http://trickster.bulknews.net/trac.cgi/browser/trunk/Net-Rendezvous-Publish-Backend-BonjourWin32/examples/daap_proxy.pl" title="trunk/Net-Rendezvous-Publish-Backend-BonjourWin32/examples/daap_proxy.pl">コミット</a>。</p>
+<p><img alt="daap fwd" height="163" src="http://static.flickr.com/30/88182148_5d2b492c3f_o.png" width="176" /></p>
+<p>これで家の iTunes を会社の iTunes 共有に追加できたりする。</p>
+<pre><code>GET daap://address:3689/server-info HTTP/1.1
+</code></pre>
+<p>とかって通信してるはずなのに、それをそのまま中継して動く不思議。</p>
+<p>ちゃんとDAAPしゃべって中継したい！ 共有名変えたり、認証かけたり。</p>
+<p>現状は daap_proxy.pl というよりは daap_fwd.pl か。</p>
+
+  </div>
+
+  <div class="meta">
+    by typester /
+    at <a href="/memo/2006/01/18/2/">2006-01-18T21:50:00</a> /
+    <a href="/memo/tag/perl/">perl</a>
+    / <a href="/memo/2006/01/18/2/#disqus_thread">Comment</a>
+  </div>
+</div>
+
+<div class="entry autopagerize_page_element">
+  <h2><a href="/memo/2006/01/18/1/"></a></h2>
+
+  <div class="body">
+    <p>今日は出社ってかかれねーなーとかおもってるあなた、スルドイ。</p>
+<p>実は昨日の帰還報告時からずっと会社にいます。。</p>
+
+  </div>
+
+  <div class="meta">
+    by typester /
+    at <a href="/memo/2006/01/18/1/">2006-01-18T13:46:00</a> /
+    <a href="/memo/tag/life/">life</a>
+    / <a href="/memo/2006/01/18/1/#disqus_thread">Comment</a>
+  </div>
+</div>
+
+<div class="entry autopagerize_page_element">
+  <h2><a href="/memo/2006/01/17/1/">帰還</a></h2>
+
+  <div class="body">
+    <p>富士山ちょーきれいだった。</p>
+
+  </div>
+
+  <div class="meta">
+    by typester /
+    at <a href="/memo/2006/01/17/1/">2006-01-17T21:31:00</a> /
+    <a href="/memo/tag/life/">life</a>
+    / <a href="/memo/2006/01/17/1/#disqus_thread">Comment</a>
+  </div>
+</div>
+
+
+
+
+<div id="pager" class="autopagerize_insert_before">
+  <p class="pages">
+    <a class="prev" rel="previous" href="/memo/page/148/">&laquo; Prev</a>
+    <a href="/memo/page/145/">145</a>
+    <a href="/memo/page/146/">146</a>
+    <a href="/memo/page/147/">147</a>
+    <a href="/memo/page/148/">148</a>
+    <span class="current">149</span>
+    <a href="/memo/page/150/">150</a>
+    <a href="/memo/page/151/">151</a>
+    <a href="/memo/page/152/">152</a>
+    <a href="/memo/page/153/">153</a>
+    <a href="/memo/page/154/">154</a>
+    <a class="next" rel="next" href="/memo/page/150/">Next &raquo;</a>
+  </p>
+  <p class="info">(Page 149 of 203)</p>
+</div>
+
+
+</div>
+
+<p id="footer">
+  Copyright &copy; 2005-2013
+      by <a class="author" href="/about/#me">Daisuke Murase (typester)</a> /
+  Site generated by <a href="https://github.com/typester/nim">nim</a> /
+  Comments powered by <a href="http://disqus.com">DISQUS</a>.
+</p>
+
+</div>
+
+
+<script type="text/javascript">
+//<![CDATA[
+(function() {
+	var links = document.getElementsByTagName('a');
+	var query = '?';
+	for(var i = 0; i < links.length; i++) {
+	if(links[i].href.indexOf('#disqus_thread') >= 0) {
+		query += 'url' + i + '=' + encodeURIComponent(links[i].href) + '&';
+	}
+	}
+	document.write('<script charset="utf-8" type="text/javascript" src="http://disqus.com/forums/unknownplace/get_num_replies.js' + query + '"></' + 'script>');
+})();
+//]]>
+</script>
+
+
+<script type="text/javascript">
+var gaJsHost = (("https:" == document.location.protocol) ? "https://ssl." : "http://www.");
+document.write(unescape("%3Cscript src='" + gaJsHost + "google-analytics.com/ga.js' type='text/javascript'%3E%3C/script%3E"));
+</script>
+<script type="text/javascript">
+try {
+var pageTracker = _gat._getTracker("UA-53067-1");
+pageTracker._trackPageview();
+} catch(err) {}</script>
+
+<script>
+function googleTranslateElementInit() {
+  new google.translate.TranslateElement({
+    pageLanguage: 'ja',
+    gaTrack: true,
+    gaId: 'UA-53067',
+    floatPosition: google.translate.TranslateElement.FloatPosition.BOTTOM_RIGHT
+  });
+}
+</script><script src="//translate.google.com/translate_a/element.js?cb=googleTranslateElementInit"></script>
+
+</body>
+</html>

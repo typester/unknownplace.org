@@ -1,0 +1,646 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="ja" xml:lang="ja">
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <title>memo - unknownplace.org</title>
+  <link rel="stylesheet" type="text/css" href="http://yui.yahooapis.com/3.0.0/build/cssreset/reset-min.css" />
+  <link rel="stylesheet" type="text/css" href="http://yui.yahooapis.com/3.0.0/build/cssfonts/fonts-min.css" />
+  <link rel="stylesheet" href="/css/style.css" type="text/css" />
+  <meta property="fb:admins" content="1093631929" />
+  <meta name="robots" content="noindex" />
+  <link rel="alternate" type="application/rss+xml" href="http://unknownplace.org/memo/index.rss" />
+</head>
+<body>
+
+<div id="container">
+<div id="header">
+    <h1><a href="/">unknownplace.org</a></h1> /
+<a href="/memo/">memo</a>
+</div>
+
+<div id="content">
+
+<div class="entry autopagerize_page_element">
+  <h2><a href="/memo/2013/01/23/1/">plenv が良い感じ</a></h2>
+
+  <div class="body">
+    <p>perlbrew 使ってたんだけど、tokuhirom がつくってる <a href="http://blog.64p.org/entry/2013/01/21/134639">plenv</a> にスイッチした。</p>
+<p>perlbrew よりシンプルでなにやってるかわかるのがなにより。 というか perlbrew がよく分からなすぎるという話もある。</p>
+<p>plenv だとさらに <code>.perl-version</code> というファイルに perl のバージョンをいれておくと、そのディレクトリ以下では自動的にそのバージョンの perl が使われるという機能があって、これがだいぶはかどる。</p>
+<p>perlbrew で入れた各種 perl は <code>-g</code> つけわすれて SEGV したときこまってて別途 <code>--as=5.14.2-debug</code> みたいのをつくってたけど、 その経験を生かして今度は最初から</p>
+<pre><code>$ plenv install 5.14.2 -D=DEBUGGING=-g
+</code></pre>
+<p>な感じで全部入れるようにした。ちなみにこの install オプションはまだドキュメントになってないのでまだ変わるかもしれないから、この記述は参考にしないようおねがいいたす。</p>
+<p>perlbrew と比べるといったんラッパーをかます分 bootstrap が遅いというのがあって、 flymake とかだと結構気になるけど、 perl のバージョン検出の仕組みはシンプルだから elisp でかき直すのもすぐできそう。</p>
+
+  </div>
+
+  <div class="meta">
+    by typester /
+    at <a href="/memo/2013/01/23/1/">2013-01-23T11:36:00</a> /
+    <a href="/memo/tag/perl/">perl</a>
+    / <a href="/memo/2013/01/23/1/#disqus_thread">Comment</a>
+  </div>
+</div>
+
+<div class="entry autopagerize_page_element">
+  <h2><a href="/memo/2012/12/25/1/">Any::Moose とか幻想やったんや</a></h2>
+
+  <div class="body">
+    <p><code>Any::Moose</code> は <code>Moose</code> と <code>Mouse</code> のラッパーで、バックエンドがどちらになるかは <code>use Any::Moose</code> した時点で <code>Moose</code> or <code>Mouse</code> がロードされているかによって変わる。</p>
+<p>どこかで <code>use Moose</code> していたら <code>use Any::Moose</code> は <code>use Moose</code> としてうごくし、 そうじゃない場合は <code>use Mouse</code> としてうごく。</p>
+<p>これはなんのためにあるかというと、MouseとMooseの両方のモジュールを混ぜて使うと壊れるからなんだけど、 そもそも混ぜて使って問題になるのは Mouse のクラスを Moose で extends したりとか、そういう Moose 周りの機能を相互に使おうとした場合だけであって、混ぜて使っていてもそれぞれのクラスを普通に使い合う分にはなんの問題もない。</p>
+<p>また、昔はruntimeの速度にそこまで性能差はなかったということもある。(<code>make_immutable</code> してたら Moose もそこまで遅くない)</p>
+<p>しかし現在では gfx マジックによって Mouse は激しく高速化されており、runtime での速度差もかなりある。 したがって、Moose的な意味で相互利用する場合でなければ、<code>Any::Moose</code> が勝手に Moose になるとうれしくない場合がほとんどだ。</p>
+<p>さらに、MooseとMouseの非互換によって、バックエンドがMouseのときはうまく動いていたコードが、 どこからMooseモジュールを使用したことによってバックエンドがMooseに切り替わった瞬間に動かなくなるという事例もある。</p>
+<p>結論として <code>Any::Moose</code> つかわないで <code>Mouse</code> を直で使う、で誰も困らないなーとおもってるのでそうしていこうと考えております。</p>
+<p>もし混ぜることがあったとしても Moose からつかうときは non Moose なクラスとして扱うようにすれば別に問題ないでしょう。(僕はそもそもMoose使わないけどw)</p>
+
+  </div>
+
+  <div class="meta">
+    by typester /
+    at <a href="/memo/2012/12/25/1/">2012-12-25T11:02:00</a> /
+    <a href="/memo/tag/perl/">perl</a>
+    / <a href="/memo/2012/12/25/1/#disqus_thread">Comment</a>
+  </div>
+</div>
+
+<div class="entry autopagerize_page_element">
+  <h2><a href="/memo/2012/09/30/2/">バッテリーのこり60秒で通知の話</a></h2>
+
+  <div class="body">
+    <p>僕のトークでなんか気になった人がいるとのことなので僕の使っているスクリプトを置いておきますね。</p>
+<pre><code><span class="comment-delimiter">#</span><span class="comment">!/usr/bin/env perl
+</span>
+<span class="keyword">use</span> <span class="function-name">strict</span>;
+<span class="keyword">use</span> <span class="function-name">warnings</span>;
+<span class="keyword">use</span> <span class="function-name">utf8</span>;
+
+<span class="keyword">use</span> <span class="function-name">Cocoa::BatteryInfo</span>;
+<span class="keyword">use</span> <span class="function-name">Cocoa::EventLoop</span>;
+<span class="keyword">use</span> <span class="function-name">Cocoa::Growl</span> <span class="string">&apos;:all&apos;</span>;
+
+growl_register(
+    <span class="string">app</span>           =&gt; <span class="string">&apos;Battery Notifier&apos;</span>,
+    <span class="string">notifications</span> =&gt; [<span class="string">&apos;NotifyLastOneMinite&apos;</span>, <span class="string">&apos;NotifyTimeRemaining&apos;</span>],
+);
+
+Cocoa::BatteryInfo::time_remaining_handler {
+    <span class="keyword">my</span> <span class="variable-name">$sec</span> = Cocoa::BatteryInfo-&gt;time_remaining_estimate;
+
+    <span class="keyword">return</span> <span class="keyword">unless</span> $sec =~ <span class="constant">/</span><span class="builtin">\</span><span class="type">d</span><span class="constant">/</span>;
+
+    <span class="keyword">if</span> ($sec &lt;= 60) {
+        growl_notify(
+            <span class="string">name</span>        =&gt; <span class="string">&apos;NotifyLastOneMinite&apos;</span>,
+            <span class="string">title</span>       =&gt; <span class="string">&apos;バッテリー切れまで&apos;</span>,
+            <span class="string">description</span> =&gt; <span class="type">sprintf</span> <span class="string">&apos;残り </span><span class="cperl-hash">%d</span><span class="string"> 秒&apos;</span>, $sec,
+        );
+    }
+    <span class="keyword">else</span> {
+        <span class="keyword">my</span> <span class="variable-name">$time</span>;
+
+        <span class="keyword">if</span> ($sec &gt;= 60*60) {
+            $time = <span class="type">sprintf</span> <span class="string">&apos;</span><span class="cperl-hash">%d</span><span class="string"> 時間 </span><span class="cperl-hash">%d</span><span class="string"> 分 </span><span class="cperl-hash">%d</span><span class="string"> 秒&apos;</span>,
+                <span class="type">int</span>($sec / (60*60)), <span class="type">int</span>(($sec % (60*60)) / 60), $sec % 60;
+        }
+        <span class="keyword">elsif</span> ($sec &gt; 60) {
+            $time = <span class="type">sprintf</span> <span class="string">&apos;</span><span class="cperl-hash">%d</span><span class="string"> 分 </span><span class="cperl-hash">%d</span><span class="string"> 秒&apos;</span>,
+                <span class="type">int</span>($sec / 60), $sec % 60;
+        }
+        <span class="keyword">else</span> {
+            $time = <span class="type">sprintf</span> <span class="string">&apos;</span><span class="cperl-hash">%d</span><span class="string"> 秒&apos;</span>, $sec;
+        }
+
+        growl_notify(
+            <span class="string">name</span>        =&gt; <span class="string">&apos;NotifyTimeRemaining&apos;</span>,
+            <span class="string">title</span>       =&gt; <span class="string">&apos;バッテリー切れまで&apos;</span>,
+            <span class="string">description</span> =&gt; <span class="type">sprintf</span> <span class="string">&apos;残り </span><span class="cperl-hash">%s</span><span class="string">&apos;</span>, $time,
+        );
+    }
+};
+
+Cocoa::EventLoop-&gt;run;
+</code></pre>
+<p>これを LaunchAgent でログイン時に自動で立ち上がるようにしております。</p>
+<p>で、これをうごかしているとバッテリー残り時間が変化したタイミングで Growl 通知が来るのですが、 普通は <code>NotifyTimeRemaining</code> という通知が来ます。もしそのときに残りが60秒いないだったらその代わりに <code>NotifyLastOneMinite</code> という通知が来ます。</p>
+<p>毎回通知されるのはうざいので僕は <code>NotifyTimeRemaining</code> というほうは Growl の設定でオフにしています。</p>
+<p>で、だいたい使っている感覚としては60秒でまず通知が来て、 その後もういちど、残り0秒という通知がきて、その直後にハイバネートする、というような感じのようです。</p>
+
+  </div>
+
+  <div class="meta">
+    by typester /
+    at <a href="/memo/2012/09/30/2/">2012-09-30T13:14:00</a> /
+    <a href="/memo/tag/perl/">perl</a>
+    &middot; <a href="/memo/tag/osx/">osx</a>
+    / <a href="/memo/2012/09/30/2/#disqus_thread">Comment</a>
+  </div>
+</div>
+
+<div class="entry autopagerize_page_element">
+  <h2><a href="/memo/2012/09/30/1/">YAPC::Asia 2012</a></h2>
+
+  <div class="body">
+    <p>今回は前夜祭でも話すことになって、始めて前夜祭からの参加になったけど、なかなかおもしろかった。</p>
+<p>トークは二つってのはかなり久しぶりだけど、どちらも20分だし、YAPC向けになにか特別ネタを用意したというわけではなく、普段やってることや考えていることを話しただけでだいぶがんばってない感じのトークです</p>
+<h4>UV - libuv binding for Perl</h4>
+<p><script async="async" class="speakerdeck-embed" data-id="5063ff80ca5241000204982f" data-ratio="1.3333333333333333" src="//speakerdeck.com/assets/embed.js"></script></p>
+<h4>Perlハッカーは息をするようにCPANモジュールを書く</h4>
+<p><script async="async" class="speakerdeck-embed" data-id="50668ff0244a9d000204654c" data-ratio="1.3333333333333333" src="//speakerdeck.com/assets/embed.js"></script></p>
+<p>というようなトークたちです。</p>
+<p>今回は基本的にホールで電源ある席を陣取り、コード書きつつトークを見る、というスタイルで参加。</p>
+<p>Padre の話は聞けなかったんだけど、Adam Kennedy さんはなんというか堂々としていて自信に満ちていてかっこよかった。あう言う大人になりたい。 Cocoa ネイティブ対応はなんか気が向いたら見てみようかなーって言う感じ。</p>
+<p>Ingy はなんかすごいおじいちゃんっぽくなってておもしろかった。</p>
+<p>NYTProf の話は Phase0 のスピリチュアルなところが結構響いた。これは見せたい人が一杯いるのでスライドを待つ。 実際の最適化の話はおおむね賛成できるかなーというところ。pidのオプションとかしらなかったなー。</p>
+<p>mizzy さんはほんとにいいひとだな！ って思いました。</p>
+<p>あと、antipop さんは<del>きもい</del>すごい</p>
+
+  </div>
+
+  <div class="meta">
+    by typester /
+    at <a href="/memo/2012/09/30/1/">2012-09-30T12:38:00</a> /
+    <a href="/memo/tag/perl/">perl</a>
+    &middot; <a href="/memo/tag/yapcasia/">yapcasia</a>
+    / <a href="/memo/2012/09/30/1/#disqus_thread">Comment</a>
+  </div>
+</div>
+
+<div class="entry autopagerize_page_element">
+  <h2><a href="/memo/2012/09/04/1/">Cocoa::BatteryInfo has been released!</a></h2>
+
+  <div class="body">
+    <p>本日二回ほどバッテリー切れで黒い画面をみて、「システムのバッテリー残量警告でるのはやすぎなんだよなーもっとぎりぎりの残量通知が欲しいよなー」、とか思いつつバッテリー周りのAPIドキュメントを眺めていたら気がついたらCPANモジュールができていた…。</p>
+<blockquote><p><a href="https://metacpan.org/module/Cocoa::BatteryInfo">Cocoa::BatteryInfo - Getting battery informations on your Mac - metacpan.org</a></p></blockquote>
+<p>単純なバッテリー情報の取得の他にも、 <code>Cocoa::EventLoop</code> との合わせ技で OS からのバッテリー関連通知を受け取るという機能もあるので残量監視スクリプトなど作るのに最適です。</p>
+<p>というとネタモジュールな感じだけど、ノートブックのインターナルバッテリー以外にも OS X Server に接続している UPS の情報などもとれたりしますのでわりとそっち系では実用モジュールなのではないかと思われる。</p>
+
+  </div>
+
+  <div class="meta">
+    by typester /
+    at <a href="/memo/2012/09/04/1/">2012-09-04T18:29:00</a> /
+    <a href="/memo/tag/perl/">perl</a>
+    &middot; <a href="/memo/tag/osx/">osx</a>
+    / <a href="/memo/2012/09/04/1/#disqus_thread">Comment</a>
+  </div>
+</div>
+
+<div class="entry autopagerize_page_element">
+  <h2><a href="/memo/2012/09/03/1/">JSON::Types ってのを書いた</a></h2>
+
+  <div class="body">
+    <blockquote><p><a href="https://metacpan.org/release/JSON-Types">JSON-Types-0.01 - variable type utility for JSON encoding - metacpan.org</a></p></blockquote>
+<p>Perl から JSON 吐くときに、ここは絶対数値で（文字列で）だしたい、みたいなときに</p>
+<pre><code><span class="keyword">use</span> <span class="function-name">JSON</span>;
+
+<span class="cperl-nonoverridable">print</span> encode_json({
+    <span class="string">number</span> =&gt; $num + 0,
+    <span class="string">string</span> =&gt; $str . <span class="string">&apos;&apos;</span>,
+    <span class="string">bool</span>   =&gt; $bool ? \1 : \0,
+});
+</code></pre>
+<p>みたいにすることがあるかもしれませんが、これってやっぱりハックなので可読性悪いしわかりにくいってことで、</p>
+<pre><code><span class="keyword">use</span> <span class="function-name">JSON</span>;
+<span class="keyword">use</span> <span class="function-name">JSON::Types</span>;
+
+<span class="cperl-nonoverridable">print</span> encode_json({
+    <span class="string">number</span> =&gt; number $num,
+    <span class="string">string</span> =&gt; string $str,
+    <span class="string">bool</span>   =&gt; bool $bool,
+});
+</code></pre>
+<p>みたいな感じで、まぁ内部的にやってることは同じなのですが可読性を上げていこう！というような趣旨のモジュールです。</p>
+<p>追伸： Acme::Hidek のリリースで hidek さんの誕生日を知りました。おめでとうございます！</p>
+
+  </div>
+
+  <div class="meta">
+    by typester /
+    at <a href="/memo/2012/09/03/1/">2012-09-03T20:22:00</a> /
+    <a href="/memo/tag/perl/">perl</a>
+    / <a href="/memo/2012/09/03/1/#disqus_thread">Comment</a>
+  </div>
+</div>
+
+<div class="entry autopagerize_page_element">
+  <h2><a href="/memo/2012/08/31/1/">最近の Module::Install で Travis るときの注意ポイント</a></h2>
+
+  <div class="body">
+    <p><a href="http://travis-ci.org/">Travis</a> は Github 連携の CI サービスで、結構前に Perl にも対応しているので最近更新したレポジトリには基本的に <code>.travis.yml</code> を置いて便利に使わせていただいていたのですが、 いままで使っていた設定だとtravis上でうまくテストが通らなくなってしまった。</p>
+<p>今まで使っていた方法は、まず <a href="http://d.hatena.ne.jp/gfx/20101101/1288608299">gfx 考案の Makefile.PL</a> をベースに Makefile.PL をこんなかんじで書く：</p>
+<pre><code><span class="keyword">use</span> <span class="function-name">strict</span>;
+<span class="keyword">use</span> <span class="function-name">warnings</span>;
+
+<span class="keyword">BEGIN</span> {
+    <span class="keyword">my</span> <span class="cperl-array">@devmods</span> = <span class="cperl-nonoverridable">qw</span><span class="string">(
+        Module::Install::AuthorTests
+        Module::Install::ReadmeFromPod
+        Module::Install::Repository
+    )</span>;
+    <span class="keyword">my</span> <span class="cperl-array">@not_available</span>;
+
+    <span class="keyword">eval</span> <span class="cperl-nonoverridable">qq</span><span class="string">{use inc::Module::Install; 1;}</span> <span class="type">or</span> <span class="cperl-nonoverridable">push</span> <span class="cperl-array">@not_available</span>, <span class="string">&apos;inc::Module::Install&apos;</span>;
+    <span class="keyword">for</span> <span class="keyword">my</span> <span class="variable-name">$mod</span> (<span class="cperl-array">@devmods</span>) {
+        <span class="keyword">eval</span> <span class="cperl-nonoverridable">qq</span><span class="string">{require $mod}</span> <span class="type">or</span> <span class="cperl-nonoverridable">push</span> <span class="cperl-array">@not_available</span>, $mod;
+    }
+    <span class="keyword">if</span> (<span class="cperl-array">@not_available</span>) {
+        <span class="cperl-nonoverridable">print</span> <span class="cperl-nonoverridable">qq</span><span class="string">{# The following modules are not available.\n}</span>;
+        <span class="cperl-nonoverridable">print</span> <span class="cperl-nonoverridable">qq</span><span class="string">{# `$^X $0 | cpanm` will install them:\n}</span>;
+        <span class="cperl-nonoverridable">print</span> $_, <span class="string">&quot;\n&quot;</span> <span class="keyword">for</span> <span class="cperl-array">@not_available</span>;
+        <span class="cperl-nonoverridable">print</span> <span class="string">&quot;\n&quot;</span>;
+        <span class="keyword">exit</span> -1;
+    }
+}
+
+<span class="keyword">use</span> <span class="function-name">inc::Module::Install</span>;
+
+name <span class="string">&apos;Test-RedisServer&apos;</span>;
+all_from <span class="string">&apos;lib/Test/RedisServer.pm&apos;</span>;
+
+test_requires <span class="string">&apos;Redis&apos;</span>;
+test_requires <span class="string">&apos;Test::More&apos;</span> =&gt; <span class="string">&apos;0.86&apos;</span>;
+test_requires <span class="string">&apos;Test::TCP&apos;</span>  =&gt; <span class="string">&apos;1.17&apos;</span>;
+
+requires <span class="string">&apos;perl&apos;</span>       =&gt; <span class="string">&apos;5.008001&apos;</span>;
+requires <span class="string">&apos;File::Temp&apos;</span> =&gt; <span class="string">&apos;0.19&apos;</span>; <span class="comment-delimiter"># </span><span class="comment">newdir
+</span>requires <span class="string">&apos;Any::Moose&apos;</span> =&gt; <span class="string">&apos;0.18&apos;</span>;
+
+readme_from <span class="string">&apos;lib/Test/RedisServer.pm&apos;</span>;
+author_tests <span class="string">&apos;xt&apos;</span>;
+auto_set_repository;
+
+WriteAll;
+</code></pre>
+<p>こうすると <code>perl Makefile.PL | cpanm</code> で必要な Module::Install モジュールが入るので、<code>.travis.yml</code> を</p>
+<pre><code><span class="constant">language</span>: <span class="string">"perl"</span>
+before_install:
+    - perl Makefile.PL | cpanm
+</code></pre>
+<p>こんな感じにするだけでOK。でした。前までは。</p>
+<p>.travis.yml はこのままでいいんですが、最近の Module::Install は <code>use inc::Module::Install</code> したときに</p>
+<pre><code>include /Users/typester/dev/Test-RedisServer/inc/Module/Install.pm
+</code></pre>
+<p>みたいのを標準出力に出力するので、それが cpanm に渡ってしまいおかしなことになっている模様。</p>
+<p>苦肉の策として</p>
+<pre><code>    {
+        <span class="keyword">local</span> <span class="variable-name">*STDOUT</span>;
+        <span class="keyword">eval</span> <span class="cperl-nonoverridable">qq</span><span class="string">{use inc::Module::Install; 1;}</span> <span class="type">or</span> <span class="cperl-nonoverridable">push</span> <span class="cperl-array">@not_available</span>, <span class="string">&apos;inc::Module::Install&apos;</span>;
+    }
+</code></pre>
+<p>みたいのを入れてしのいだ。</p>
+<p>最終的な Makefile.PL は<a href="https://github.com/typester/Test-RedisServer/blob/master/Makefile.PL">こちら</a>。 Travis のときは author_tests 走らないようにとかもしてある。</p>
+
+  </div>
+
+  <div class="meta">
+    by typester /
+    at <a href="/memo/2012/08/31/1/">2012-08-31T10:51:00</a> /
+    <a href="/memo/tag/perl/">perl</a>
+    &middot; <a href="/memo/tag/travis/">travis</a>
+    / <a href="/memo/2012/08/31/1/#disqus_thread">Comment</a>
+  </div>
+</div>
+
+<div class="entry autopagerize_page_element">
+  <h2><a href="/memo/2012/08/08/1/">Githubの各種イベント通知をPubSubHubbubで受け取るの巻</a></h2>
+
+  <div class="body">
+    <p>tl;dr - 通常のHookではなく<a href="http://developer.github.com/v3/repos/hooks/#pubsubhubbub">PubSubHubbub</a>のほうのHookを使えばGithubの<a href="http://developer.github.com/v3/events/types/">すべてのイベント</a>をひとつのWebHookで受け取ることができる。</p>
+<p>Github の WebHook ではレポジトリの更新しか受け取れず、issue とかも受け取れたら便利なのになーと思いつつ API ドキュメントを見てみると Hook を API から登録したりすることができるようになっていた。 だがこれは所詮は Web から登録できる Hook をいじるもので、この<a href="https://api.github.com/hooks">リスト</a>にあるものしか登録できない。 また、それぞれの Hook について登録できるイベントはリストで定義されている物に制限されているようで、たとえば WebHook だと push イベントしか設定することはできないみたい。（API 経由でも設定できなかった）</p>
+<p>一方、それとは別に用意されている <a href="http://developer.github.com/v3/repos/hooks/#pubsubhubbub">PubSubHubbub</a> の Hook をつかうと、どうやら一つの WebHook URL に任意のイベントを送ることができるようだ。</p>
+<p>やり方は簡単で、<code>https://github.com/typester/p5-UV</code> の <code>push</code> イベントを <code>http://unknownplace.org/webhook</code> で受け取りたいとすると、</p>
+<pre><code>$ curl -u typester -i \
+  https:<span class="comment-delimiter">//</span><span class="comment">api.github.com/hub \
+</span>  -F <span class="string">"hub.mode=subscribe"</span> \
+  -F <span class="string">"hub.topic=https://github.com/typester/p5-UV/events/push"</span> \
+  -F <span class="string">"hub.callback=http://unknownplace.org/webhook"</span>
+</code></pre>
+<p>というような感じで API をたたけば登録完了。これで指定した URL に対してイベントが送られてくるようになる。 他のイベントも受け取りたいというときは、これを受け取りたいイベント分繰り返せば良い。</p>
+<p>Hook に送られてくるのは JSON だが、デフォルトだと通常の <a href="http://help.github.com/post-receive-hooks/">WebHook と同じ</a>ように <code>payload={json}</code> みたいな形で送られてくる。 ドキュメントによれば、<code>-H &quot;Accept: application/json&quot;</code> を上のリクエストにつけるか、イベントタイプを <code>https://github.com/typester/p5-UV/events/push.json</code> みたいに <code>.json</code> を加えてやるかすると、生の JSON が POST されるようになるらしい。が、僕は今までの WebHook スクリプトを流用したのでこれはためしていない。</p>
+<p>登録した Hook の一覧は普通の Hook API で、</p>
+<pre><code>$ curl -u typester -i https://api.github.com/repos/typester/p5-UV/hooks
+</code></pre>
+<p>このようにするとで取得可能っぽい。僕の場合は WebHook と同じ分類で（イベントだけが複数ある）リストに載っていたが、生 JSON を受け取るように設定していた場合どのように載るのかは不明。</p>
+<p>WebHook スクリプトは以下のような通知を受け取ったら IRC に投げる、みたいのを使っている。</p>
+<pre><code><span class="comment-delimiter">#</span><span class="comment">!/usr/bin/env perl
+</span>
+<span class="keyword">use</span> <span class="function-name">strict</span>;
+<span class="keyword">use</span> <span class="function-name">warnings</span>;
+<span class="keyword">use</span> <span class="function-name">utf8</span>;
+
+<span class="keyword">use</span> <span class="function-name">Twiggy::Server</span>;
+<span class="keyword">use</span> <span class="function-name">Getopt::Long</span>;
+<span class="keyword">use</span> File::<span class="type">chdir</span>;
+<span class="keyword">use</span> <span class="function-name">Encode</span>;
+
+<span class="keyword">use</span> <span class="function-name">AnyEvent</span>;
+<span class="keyword">use</span> <span class="function-name">AnyEvent::IRC::Client</span>;
+<span class="keyword">use</span> <span class="function-name">Log::Minimal</span>;
+
+<span class="keyword">use</span> <span class="function-name">Plack</span>;
+<span class="keyword">use</span> <span class="function-name">Plack::Request</span>;
+<span class="keyword">use</span> <span class="function-name">JSON::XS</span>;
+
+<span class="keyword">my</span> <span class="variable-name">$conf</span> = {
+    <span class="string">irc</span> =&gt; {
+        <span class="string">server</span>   =&gt; <span class="string">&apos;irc.example.com&apos;</span>,
+        <span class="string">port</span>     =&gt; 6667,
+        <span class="string">ssl</span>      =&gt; 1,
+        <span class="string">channel</span>  =&gt; <span class="string">&apos;#example-project&apos;</span>,
+        <span class="string">nick</span>     =&gt; <span class="string">&apos;github&apos;</span>,
+    },
+
+    <span class="string">commit_hook</span> =&gt; <span class="keyword">sub</span> {
+        <span class="keyword">my</span> (<span class="variable-name">$branch</span>) = <span class="cperl-array">@_</span>;
+
+        <span class="keyword">if</span> ($branch <span class="type">eq</span> <span class="string">&apos;develop&apos;</span>) {
+            <span class="keyword">local</span> <span class="variable-name">$CWD</span> = <span class="string">&apos;/path/to/project&apos;</span>;
+            <span class="type">system</span> <span class="string">&apos;git&apos;</span>, <span class="cperl-nonoverridable">qw</span><span class="string">!--git-dir=.git pull!</span>;
+            <span class="type">system</span> <span class="string">&apos;curl&apos;</span>, <span class="string">&apos;http://127.0.0.1:8080/jenkins-ci/job/project/build&apos;</span>;
+        }
+    },
+};
+
+GetOptions(
+    \my <span class="cperl-hash">%option</span>,
+    <span class="cperl-nonoverridable">qw</span><span class="string">/host=s port=i/</span>,
+);
+<span class="cperl-hash">$option</span>{<span class="string">host</span>} ||= <span class="string">&apos;0.0.0.0&apos;</span>;
+<span class="cperl-hash">$option</span>{<span class="string">port</span>} ||= 5000;
+
+<span class="keyword">my</span> <span class="variable-name">$cv</span> = AnyEvent-&gt;condvar;
+
+<span class="keyword">my</span> <span class="variable-name">$irc</span> = AnyEvent::IRC::Client-&gt;new;
+$irc-&gt;enable_ssl <span class="keyword">if</span> $conf-&gt;{<span class="string">irc</span>}{<span class="string">ssl</span>};
+
+<span class="keyword">my</span> <span class="variable-name">$connector</span> = <span class="keyword">sub</span> {
+    $irc-&gt;<span class="type">connect</span>($conf-&gt;{<span class="string">irc</span>}{<span class="string">server</span>}, $conf-&gt;{<span class="string">irc</span>}{<span class="string">port</span>}, {
+        <span class="string">nick</span> =&gt; $conf-&gt;{<span class="string">irc</span>}{<span class="string">nick</span>},
+        $conf-&gt;{<span class="string">irc</span>}{<span class="string">password</span>} ? (<span class="string">password</span> =&gt; $conf-&gt;{<span class="string">irc</span>}{<span class="string">password</span>}) : (),
+    });
+};
+
+$irc-&gt;reg_cb(
+    <span class="string">registered</span> =&gt; <span class="keyword">sub</span> {
+        <span class="keyword">my</span> (<span class="variable-name">$irc</span>) = <span class="cperl-array">@_</span>;
+        $irc-&gt;send_srv( <span class="string">JOIN</span> =&gt; $conf-&gt;{<span class="string">irc</span>}{<span class="string">channel</span>} );
+    },
+
+    <span class="string">disconnect</span> =&gt; <span class="keyword">sub</span> {
+        warnf <span class="string">&apos;IRC Disconnected: </span><span class="cperl-hash">%s</span><span class="string">&apos;</span>, <span class="cperl-array">$_</span>[1];
+        $connector-&gt;();
+    },
+
+    <span class="string">debug_send</span> =&gt; <span class="keyword">sub</span> {
+        <span class="keyword">my</span> (<span class="variable-name">$irc</span>, <span class="variable-name">$command</span>, <span class="cperl-array">@params</span>) = <span class="cperl-array">@_</span>;
+        debugf <span class="string">&apos;&gt; </span><span class="cperl-hash">%s</span><span class="string"> </span><span class="cperl-hash">%s</span><span class="string">&apos;</span>, $command, <span class="type">join</span> <span class="string">&apos; &apos;</span>, <span class="cperl-array">@params</span>;
+    },
+    <span class="string">debug_recvd</span> =&gt; <span class="keyword">sub</span> {
+        <span class="keyword">my</span> (<span class="variable-name">$irc</span>, <span class="variable-name">$msg</span>) = <span class="cperl-array">@_</span>;
+        debugf <span class="string">&apos;&lt; </span><span class="cperl-hash">%s</span><span class="string">&apos;</span>, $msg;
+    },
+);
+$connector-&gt;();
+
+<span class="keyword">my</span> <span class="variable-name">$app</span> = <span class="keyword">sub</span> {
+    <span class="keyword">my</span> <span class="variable-name">$req</span> = Plack::Request-&gt;new(<span class="cperl-nonoverridable">shift</span>);
+
+    <span class="keyword">if</span> ($req-&gt;method <span class="type">eq</span> <span class="string">&apos;POST&apos;</span> <span class="type">and</span> <span class="keyword">my</span> <span class="variable-name">$payload</span> = $req-&gt;param(<span class="string">&apos;payload&apos;</span>)) {
+        <span class="keyword">my</span> <span class="variable-name">$json</span>    = decode_json($payload);
+        <span class="keyword">my</span> <span class="variable-name">$channel</span> = $conf-&gt;{<span class="string">irc</span>}{<span class="string">channel</span>};
+
+        <span class="keyword">if</span> ($json-&gt;{<span class="string">commits</span>}) {
+            <span class="comment-delimiter"># </span><span class="comment">push event
+</span>            (<span class="keyword">my</span> <span class="variable-name">$branch</span> = $json-&gt;{<span class="string">ref</span>}) =~ <span class="cperl-nonoverridable">s</span><span class="constant">!</span><span class="string">refs/heads/</span><span class="constant">!!</span>;
+
+            <span class="keyword">if</span> ($channel) {
+                <span class="keyword">for</span> <span class="keyword">my</span> <span class="variable-name">$commit</span> (@{ $json-&gt;{<span class="string">commits</span>} }) {
+                    $irc-&gt;send_srv(
+                        <span class="string">NOTICE</span> =&gt; $channel,
+                        encode_utf8 <span class="type">sprintf</span> <span class="string">&apos;</span><span class="cperl-hash">%s</span><span class="string"> committed to </span><span class="cperl-hash">%s</span><span class="string"> &quot;</span><span class="cperl-hash">%s</span><span class="string">&quot; </span><span class="cperl-hash">%s</span><span class="string">&apos;</span>,
+                        $commit-&gt;{<span class="string">author</span>}{<span class="string">username</span>} || $commit-&gt;{<span class="string">author</span>}{<span class="string">name</span>}, $branch,
+                        $commit-&gt;{<span class="string">message</span>}, $commit-&gt;{<span class="string">url</span>},
+                    );
+                }
+
+                <span class="keyword">my</span> <span class="variable-name">$hook</span> = $conf-&gt;{<span class="string">commit_hook</span>};
+                $hook-&gt;($branch) <span class="keyword">if</span> $hook;
+            }
+        }
+        <span class="keyword">elsif</span> (<span class="keyword">my</span> <span class="variable-name">$issue</span> = $json-&gt;{<span class="string">issue</span>}) {
+            <span class="keyword">my</span> <span class="variable-name">$sender</span> = $json-&gt;{<span class="string">sender</span>};
+
+            <span class="keyword">if</span> (<span class="keyword">my</span> <span class="variable-name">$comment</span> = $json-&gt;{<span class="string">comment</span>}) {
+                <span class="comment-delimiter"># </span><span class="comment">issue comment event
+</span>                <span class="keyword">my</span> (<span class="variable-name">$body</span>) = $comment-&gt;{<span class="string">body</span>} =~ <span class="constant">/</span><span class="function-name">^</span><span class="keyword">(</span><span class="function-name">.</span><span class="builtin">*\</span><span class="type">S</span><span class="function-name">.</span><span class="builtin">*</span><span class="keyword">)</span><span class="function-name">$</span><span class="constant">/</span><span class="cperl-nonoverridable">m</span>;
+
+                $irc-&gt;send_srv(
+                    <span class="string">NOTICE</span> =&gt; $channel,
+                    encode_utf8 <span class="type">sprintf</span> <span class="string">&apos;</span><span class="cperl-hash">%s</span><span class="string"> commented issue #</span><span class="cperl-hash">%d</span><span class="string"> </span><span class="cperl-hash">%s</span><span class="string"> </span><span class="cperl-hash">%s</span><span class="string">&apos;</span>,
+                    $sender-&gt;{<span class="string">login</span>}, $issue-&gt;{<span class="string">number</span>}, $body || <span class="string">&apos;&apos;</span>, $issue-&gt;{<span class="string">html_url</span>},
+                );
+            }
+            <span class="keyword">else</span> {
+                <span class="comment-delimiter"># </span><span class="comment">issues event
+</span>                $irc-&gt;send_srv(
+                    <span class="string">NOTICE</span> =&gt; $channel,
+                    encode_utf8 <span class="type">sprintf</span> <span class="string">&apos;</span><span class="cperl-hash">%s</span><span class="string"> </span><span class="cperl-hash">%s</span><span class="string"> issue #</span><span class="cperl-hash">%d</span><span class="string"> </span><span class="cperl-hash">%s</span><span class="string"> </span><span class="cperl-hash">%s</span><span class="string">&apos;</span>,
+                    $sender-&gt;{<span class="string">login</span>}, $json-&gt;{<span class="string">action</span>}, $issue-&gt;{<span class="string">number</span>}, $issue-&gt;{<span class="string">title</span>}, $issue-&gt;{<span class="string">html_url</span>},
+                );
+            }
+        }
+
+        <span class="keyword">return</span> [200, [], [<span class="string">&apos;&apos;</span>]];
+    }
+
+    <span class="keyword">return</span> [403, [], [<span class="string">&apos;Forbidden&apos;</span>]];
+};
+
+AnyEvent::post_detect {
+    <span class="keyword">if</span> ($AnyEvent::MODEL <span class="type">eq</span> <span class="string">&apos;AnyEvent::Impl::EV&apos;</span>) {
+        <span class="cperl-nonoverridable">no</span> <span class="function-name">warnings</span> <span class="string">&apos;once&apos;</span>;
+        $EV::DIED = <span class="keyword">sub</span> { $cv-&gt;croak($@) };
+    }
+};
+
+<span class="keyword">my</span> <span class="variable-name">$server</span> = Twiggy::Server-&gt;new(<span class="cperl-hash">%option</span>);
+$server-&gt;register_service($app);
+
+$cv-&gt;<span class="type">recv</span>;
+</code></pre>
+<p>現在 push, issues, issue-comment イベントを受け取ってる。 issues とれるとやっぱりだいぶ良い感じ。 あと pullreq 多用しているプロジェクトだとそのイベントもあるので通知させるようにすると捗りそう。</p>
+
+  </div>
+
+  <div class="meta">
+    by typester /
+    at <a href="/memo/2012/08/08/1/">2012-08-08T10:55:00</a> /
+    <a href="/memo/tag/github/">github</a>
+    &middot; <a href="/memo/tag/perl/">perl</a>
+    / <a href="/memo/2012/08/08/1/#disqus_thread">Comment</a>
+  </div>
+</div>
+
+<div class="entry autopagerize_page_element">
+  <h2><a href="/memo/2012/07/31/1/">Test::RedisServer ってのを書いた</a></h2>
+
+  <div class="body">
+    <p>最近 Redis ずいてるわけですが、<code>redis-server</code> は</p>
+<pre><code>$ redis-server /path/to/redis.conf
+</code></pre>
+<p>or</p>
+<pre><code>$ cat redis.conf | redis-server -
+</code></pre>
+<p>みたいな形式でしか起動できず、これをがんばって <code>exec</code> してテスト用とかに使うコードを3回くらい書いたところで面倒になってモジュール化しました。</p>
+<blockquote><p><a href="http://search.cpan.org/dist/Test-RedisServer/">Daisuke Murase / Test-RedisServer - search.cpan.org</a></p></blockquote>
+<p>基本的に <code>Test::mysqld</code> のパクりなのでサクッとかけました。kazuho++</p>
+
+  </div>
+
+  <div class="meta">
+    by typester /
+    at <a href="/memo/2012/07/31/1/">2012-07-31T00:09:00</a> /
+    <a href="/memo/tag/perl/">perl</a>
+    &middot; <a href="/memo/tag/redis/">redis</a>
+    / <a href="/memo/2012/07/31/1/#disqus_thread">Comment</a>
+  </div>
+</div>
+
+<div class="entry autopagerize_page_element">
+  <h2><a href="/memo/2012/07/21/1/">OSX のコマンドラインから、wi-fi の情報をつかって位置情報を得る</a></h2>
+
+  <div class="body">
+    <blockquote><p><a href="http://blog.64p.org/entry/2012/07/21/082209">linux のコマンドラインから、wi-fi の情報をつかって位置情報を得る - tokuhirom&apos;s blog.</a></p></blockquote>
+<p>を見て、面白そうだと思ったのでそのMac版。MacでコマンドラインからWiFiスポットをスキャンするのは、</p>
+<pre><code>/System/Library/PrivateFrameworks/Apple80211.framework/Versions/A/Resources/airport -s
+</code></pre>
+<p>でいけます。ってことで、</p>
+<pre><code><span class="keyword">use</span> <span class="function-name">strict</span>;
+<span class="keyword">use</span> <span class="function-name">warnings</span>;
+<span class="keyword">use</span> <span class="function-name">utf8</span>;
+<span class="keyword">use</span> 5.012;
+
+<span class="keyword">use</span> <span class="function-name">JSON</span>;
+<span class="keyword">use</span> <span class="function-name">LWP::UserAgent</span>;
+
+<span class="keyword">my</span> <span class="cperl-array">@addresses</span> = <span class="keyword">do</span> {
+    <span class="keyword">my</span> <span class="cperl-array">@lines</span> = <span class="cperl-nonoverridable">split</span> <span class="constant">/</span><span class="builtin">\</span><span class="type">n</span><span class="constant">/</span>, <span class="cperl-nonoverridable">qx</span><span class="string">{/System/Library/PrivateFrameworks/Apple80211.framework/Versions/A/Resources/airport -s}</span>;
+    <span class="cperl-nonoverridable">shift</span> <span class="cperl-array">@lines</span>;
+
+    <span class="keyword">my</span> <span class="cperl-array">@r</span>;
+    <span class="cperl-nonoverridable">push</span> <span class="cperl-array">@r</span>, (<span class="cperl-nonoverridable">split</span> <span class="constant">/</span><span class="builtin">\</span><span class="type">s</span><span class="builtin">+</span><span class="constant">/</span>, $_)[2] <span class="keyword">for</span> <span class="cperl-array">@lines</span>;
+
+    <span class="cperl-array">@r</span>;
+};
+
+<span class="keyword">my</span> <span class="variable-name">$query</span> = encode_json({
+    <span class="string">version</span>          =&gt; <span class="string">&apos;1.1.0&apos;</span>,
+    <span class="string">host</span>             =&gt; <span class="string">&apos;maps.google.com&apos;</span>,
+    <span class="string">request_address</span>  =&gt; JSON::true,
+    <span class="string">address_language</span> =&gt; <span class="string">&apos;ja_JP&apos;</span>,
+    <span class="string">wifi_towers</span>      =&gt; [
+        <span class="cperl-nonoverridable">map</span> +{
+            <span class="string">mac_address</span>     =&gt; $_,
+            <span class="string">signal_strength</span> =&gt; 8,
+            <span class="string">age</span>             =&gt; 0,
+        }, <span class="cperl-array">@addresses</span>,
+    ],
+});
+
+<span class="keyword">my</span> <span class="variable-name">$ua</span>  = LWP::UserAgent-&gt;new;
+<span class="keyword">my</span> <span class="variable-name">$res</span> = $ua-&gt;post(<span class="string">&apos;http://www.google.com/loc/json&apos;</span>, <span class="string">Content</span> =&gt; $query);
+$res-&gt;is_success <span class="type">or</span> <span class="keyword">die</span> $res-&gt;status_line;
+
+<span class="keyword">use</span> <span class="function-name">YAML</span>;
+<span class="type">warn</span> Dump decode_json($res-&gt;content);
+</code></pre>
+<p>ってな感じでOKです！</p>
+
+  </div>
+
+  <div class="meta">
+    by typester /
+    at <a href="/memo/2012/07/21/1/">2012-07-21T12:32:00</a> /
+    <a href="/memo/tag/perl/">perl</a>
+    &middot; <a href="/memo/tag/osx/">osx</a>
+    / <a href="/memo/2012/07/21/1/#disqus_thread">Comment</a>
+  </div>
+</div>
+
+
+
+
+<div id="pager" class="autopagerize_insert_before">
+  <p class="pages">
+    <span class="prev">&laquo; Prev</span>
+    <span class="current">1</span>
+    <a href="/memo/tag/perl/page/2/">2</a>
+    <a href="/memo/tag/perl/page/3/">3</a>
+    <a href="/memo/tag/perl/page/4/">4</a>
+    <a href="/memo/tag/perl/page/5/">5</a>
+    <a href="/memo/tag/perl/page/6/">6</a>
+    <a href="/memo/tag/perl/page/7/">7</a>
+    <a href="/memo/tag/perl/page/8/">8</a>
+    <a href="/memo/tag/perl/page/9/">9</a>
+    <a href="/memo/tag/perl/page/10/">10</a>
+    <a class="next" rel="next" href="/memo/tag/perl/page/2/">Next &raquo;</a>
+  </p>
+  <p class="info">(Page 1 of 30)</p>
+</div>
+
+
+</div>
+
+<p id="footer">
+  Copyright &copy; 2005-2013
+      by <a class="author" href="/about/#me">Daisuke Murase (typester)</a> /
+  Site generated by <a href="https://github.com/typester/nim">nim</a> /
+  Comments powered by <a href="http://disqus.com">DISQUS</a>.
+</p>
+
+</div>
+
+
+<script type="text/javascript">
+//<![CDATA[
+(function() {
+	var links = document.getElementsByTagName('a');
+	var query = '?';
+	for(var i = 0; i < links.length; i++) {
+	if(links[i].href.indexOf('#disqus_thread') >= 0) {
+		query += 'url' + i + '=' + encodeURIComponent(links[i].href) + '&';
+	}
+	}
+	document.write('<script charset="utf-8" type="text/javascript" src="http://disqus.com/forums/unknownplace/get_num_replies.js' + query + '"></' + 'script>');
+})();
+//]]>
+</script>
+
+
+<script type="text/javascript">
+var gaJsHost = (("https:" == document.location.protocol) ? "https://ssl." : "http://www.");
+document.write(unescape("%3Cscript src='" + gaJsHost + "google-analytics.com/ga.js' type='text/javascript'%3E%3C/script%3E"));
+</script>
+<script type="text/javascript">
+try {
+var pageTracker = _gat._getTracker("UA-53067-1");
+pageTracker._trackPageview();
+} catch(err) {}</script>
+
+<script>
+function googleTranslateElementInit() {
+  new google.translate.TranslateElement({
+    pageLanguage: 'ja',
+    gaTrack: true,
+    gaId: 'UA-53067',
+    floatPosition: google.translate.TranslateElement.FloatPosition.BOTTOM_RIGHT
+  });
+}
+</script><script src="//translate.google.com/translate_a/element.js?cb=googleTranslateElementInit"></script>
+
+</body>
+</html>

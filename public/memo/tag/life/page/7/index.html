@@ -1,0 +1,367 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="ja" xml:lang="ja">
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <title>memo - unknownplace.org</title>
+  <link rel="stylesheet" type="text/css" href="http://yui.yahooapis.com/3.0.0/build/cssreset/reset-min.css" />
+  <link rel="stylesheet" type="text/css" href="http://yui.yahooapis.com/3.0.0/build/cssfonts/fonts-min.css" />
+  <link rel="stylesheet" href="/css/style.css" type="text/css" />
+  <meta property="fb:admins" content="1093631929" />
+  <meta name="robots" content="noindex" />
+  <link rel="alternate" type="application/rss+xml" href="http://unknownplace.org/memo/index.rss" />
+</head>
+<body>
+
+<div id="container">
+<div id="header">
+    <h1><a href="/">unknownplace.org</a></h1> /
+<a href="/memo/">memo</a>
+</div>
+
+<div id="content">
+
+<div class="entry autopagerize_page_element">
+  <h2><a href="/memo/2007/11/06/1/">Prism</a></h2>
+
+  <div class="body">
+    <p>というのを教えてもらった。</p>
+<blockquote><p><a href="http://labs.mozilla.com/2007/10/prism/">http://labs.mozilla.com/2007/10/prism/</a></p></blockquote>
+<p>昔、</p>
+<blockquote><p><a href="http://unknownplace.org/memo/2006/09/15#e002">unknownplace.org - 2006/09/15 - bubbles</a></p><p>これずっと欲しかったアプリだわぁ。Geckoベースなやつないかな。</p></blockquote>
+<p>とかいってたけど、まさにこれ。結構いいんじゃないコレ。</p>
+
+  </div>
+
+  <div class="meta">
+    by typester /
+    at <a href="/memo/2007/11/06/1/">2007-11-06T19:11:00</a> /
+    <a href="/memo/tag/life/">life</a>
+    / <a href="/memo/2007/11/06/1/#disqus_thread">Comment</a>
+  </div>
+</div>
+
+<div class="entry autopagerize_page_element">
+  <h2><a href="/memo/2007/10/18/2/">元気玉メールをIMで通知する</a></h2>
+
+  <div class="body">
+    <p>弊社には元気玉という仕組みがあって、詳しくは<a href="http://pc.nikkeibp.co.jp/article/NPC/20061023/251448/" title="24： 時々、元気玉が飛び交います：日経パソコンオンライン">代表のブログを参照</a>、これに誰よりも速く返信するために元気玉という文字がメールの件名に含まれていた場合即座にIMに通知するような仕組みを作った。</p>
+<p>うちで使用しているメール配信ソフトウェアは postfix+maildrop で、IMへの通知には <a href="http://im.kayac.com" title="im.kayac.com - Simple instant message (IM) posting API">im.kayac.com</a> のAPIを使用。</p>
+<p>非常に簡単にできた。まずmaildropのフィルタ <code>~/.mailfilter</code>:</p>
+<pre><code>DECODED_SUBJECT = <span class="string">""</span>
+<span class="keyword">if</span> ( /^Subject:\s*(.*)$/ )
+{
+        MATCH1 = escape($MATCH1)
+        DECODED_SUBJECT = `echo $MATCH1 |/home/typester/bin/subjectdecoder.pl`
+}
+
+<span class="keyword">if</span> ( $DECODED_SUBJECT =~ /&#20803;&#27671;&#29577;/ )
+{
+        cc <span class="string">"|/home/typester/bin/mail2im.pl"</span>
+}
+</code></pre>
+<p>二つのスクリプトを読んでます。subjectdecoder は単にMIMEエンコードされてる件名をutf-8にして戻してあげるだけのもので、mail2im.plが実際にIMメッセージを送るスクリプト。以下がその中身。</p>
+<p>subjectdecoder.pl:</p>
+<pre><code><span class="comment-delimiter">#</span><span class="comment">!/usr/bin/env perl
+</span>
+<span class="keyword">use</span> <span class="function-name">strict</span>;
+<span class="keyword">use</span> <span class="function-name">warnings</span>;
+
+<span class="keyword">use</span> <span class="function-name">Encode</span>;
+
+<span class="keyword">my</span> <span class="variable-name">$subject</span> = <span class="keyword">do</span> { <span class="keyword">local</span> <span class="variable-name">$/</span>; &lt;STDIN&gt; };
+$subject =~ <span class="cperl-nonoverridable">s</span><span class="constant">/</span><span class="builtin">\</span><span class="string">\</span><span class="keyword">(</span><span class="function-name">.</span><span class="keyword">)</span><span class="constant">/</span><span class="string">$1</span><span class="constant">/</span><span class="cperl-nonoverridable">gs</span>;
+
+<span class="cperl-nonoverridable">print</span> encode(<span class="string">&apos;utf-8&apos;</span>, decode(<span class="string">&apos;MIME-Header&apos;</span>, $subject));
+</code></pre>
+<p>mail2im.pl:</p>
+<pre><code><span class="comment-delimiter">#</span><span class="comment">!/usr/bin/env perl
+</span>
+<span class="keyword">use</span> <span class="function-name">strict</span>;
+<span class="keyword">use</span> <span class="function-name">warnings</span>;
+
+<span class="keyword">my</span> <span class="variable-name">$mail</span> = <span class="keyword">do</span> { <span class="keyword">local</span> <span class="variable-name">$/</span>; &lt;STDIN&gt; };
+
+<span class="keyword">use</span> <span class="function-name">Encode</span>;
+<span class="keyword">use</span> <span class="function-name">Email::MIME</span>;
+<span class="keyword">use</span> <span class="function-name">Mail::Address</span>;
+
+<span class="keyword">my</span> <span class="variable-name">$msg</span> = Email::MIME-&gt;new($mail);
+
+<span class="keyword">my</span> <span class="variable-name">$subject</span> = encode(<span class="string">&apos;utf-8&apos;</span>, $msg-&gt;header(<span class="string">&apos;Subject&apos;</span>));
+<span class="keyword">my</span> (<span class="variable-name">$from</span>)  = Mail::Address-&gt;parse( $msg-&gt;header(<span class="string">&apos;From&apos;</span>) );
+
+<span class="keyword">exit</span> <span class="keyword">unless</span> $subject &amp;&amp; $from;
+
+<span class="keyword">use</span> <span class="function-name">LWP::UserAgent</span>;
+<span class="keyword">use</span> <span class="function-name">HTTP::Request::Common</span>;
+
+<span class="keyword">my</span> <span class="variable-name">$res</span> = LWP::UserAgent-&gt;new-&gt;request(
+    POST <span class="string">&quot;http://im.kayac.com/api/post/typester&quot;</span>,
+    [ <span class="string">message</span> =&gt; <span class="string">&quot;[E-Mail] $subject (@{[$from-&gt;address]})&quot;</span> ]
+);
+</code></pre>
+<p>件名デコードしないとmaildropで日本語の件名のマッチングができないのが面倒だけど(これってなんとかならんのかな)、それでも簡単にできた！ im.kayac.com++ (自画自賛</p>
+
+  </div>
+
+  <div class="meta">
+    by typester /
+    at <a href="/memo/2007/10/18/2/">2007-10-18T17:22:00</a> /
+    <a href="/memo/tag/life/">life</a>
+    &middot; <a href="/memo/tag/mail/">mail</a>
+    &middot; <a href="/memo/tag/im/">im</a>
+    / <a href="/memo/2007/10/18/2/#disqus_thread">Comment</a>
+  </div>
+</div>
+
+<div class="entry autopagerize_page_element">
+  <h2><a href="/memo/2007/10/12/1/">Module::Install</a></h2>
+
+  <div class="body">
+    <blockquote><p><a href="http://clouder.jp/yoshiki/mt/archives/001006.html">Clouder::Blogger: Module::Installを使ったプロジェクトのincディレクトリについて</a></p><p>CodeReposとかみると、あんまりModule::Installを使ってる人がいないので、あんまりModule::Installって使われてないのかな？</p></blockquote>
+<p>えーー。</p>
+<pre><code>$ <span class="cperl-nonoverridable">grep</span> <span class="string">&apos;inc::Module::Install&apos;</span> lang/perl/**<span class="constant">/</span><span class="string">Makefile</span><span class="function-name">.</span><span class="string">PL
+lang</span><span class="constant">/</span><span class="cperl-nonoverridable">perl</span>/Gopper/trunk/Makefile.PL:<span class="keyword">use</span> <span class="function-name">inc::Module::Install</span>;
+lang/perl/JSONRPC-Transport-TCP/trunk/Makefile.PL:<span class="keyword">use</span> <span class="function-name">inc::Module::Install</span>;
+lang/perl/KGopherd/Makefile.PL:<span class="keyword">use</span> <span class="function-name">inc::Module::Install</span>;
+lang/perl/Mozilla-Screenshot/trunk/Makefile.PL:<span class="keyword">use</span> <span class="function-name">inc::Module::Install</span>;
+lang/perl/Mozilla-UserPreferences/trunk/Makefile.PL:<span class="keyword">use</span> <span class="function-name">inc::Module::Install</span>;
+lang/perl/POE-Component-Server-JSONRPC/trunk/Makefile.PL:<span class="keyword">use</span> <span class="function-name">inc::Module::Install</span>;
+lang/perl/PlPy/trunk/PlPy/Makefile.PL:<span class="keyword">use</span> <span class="function-name">inc::Module::Install</span>;
+lang/perl/Senna-Storage/trunk/Makefile.PL:<span class="keyword">use</span> <span class="function-name">inc::Module::Install</span>;
+lang/perl/Text-Nyarlax/trunk/Makefile.PL:<span class="keyword">use</span> <span class="function-name">inc::Module::Install</span>;
+lang/perl/URI-KeywordExtract/trunk/Makefile.PL:<span class="keyword">use</span> <span class="function-name">inc::Module::Install</span>;
+lang/perl/WWW-LivedoorPICS/trunk/Makefile.PL:<span class="keyword">use</span> <span class="function-name">inc::Module::Install</span>;
+lang/perl/WWW-Various-Scrapers/trunk/Makefile.PL:<span class="keyword">use</span> <span class="function-name">inc::Module::Install</span>;
+lang/perl/WebService-Coneco/trunk/Makefile.PL:<span class="keyword">use</span> <span class="function-name">inc::Module::Install</span>;
+lang/perl/WebService-Veoh/trunk/Makefile.PL:<span class="keyword">use</span> <span class="function-name">inc::Module::Install</span>;
+lang/perl/WebService-YouTube/tags/WebService-YouTube-1.0.2/Makefile.PL:<span class="keyword">use</span> <span class="function-name">inc::Module::Install</span>;
+lang/perl/WebService-YouTube/tags/WebService-YouTube-v1.0.1/Makefile.PL:<span class="keyword">use</span> <span class="function-name">inc::Module::Install</span>;
+lang/perl/WebService-YouTube/trunk/Makefile.PL:<span class="keyword">use</span> <span class="function-name">inc::Module::Install</span>;
+</code></pre>
+<p>けっこうあるじゃん！</p>
+<p>Module::Starterはあんまりつかってるひといないかもね。</p>
+<p>miyagawaさんの<a href="http://svn.bulknews.net/repos/public/misc/pmsetup">pmsetup</a>がシンプルでいい感じです。</p>
+
+  </div>
+
+  <div class="meta">
+    by typester /
+    at <a href="/memo/2007/10/12/1/">2007-10-12T08:07:00</a> /
+    <a href="/memo/tag/life/">life</a>
+    / <a href="/memo/2007/10/12/1/#disqus_thread">Comment</a>
+  </div>
+</div>
+
+<div class="entry autopagerize_page_element">
+  <h2><a href="/memo/2007/10/05/1/">emacsclient で開いたバッファを閉じるときに</a></h2>
+
+  <div class="body">
+    <blockquote><p>Buffer `svk-commitvP9pW.tmp&apos; still has clients; kill it? (yes or no)</p></blockquote>
+<p>などといわれるのをなくしたいのだが、どうすればいいのか！ 強制yesでいいんだけど。</p>
+<p>それとも <code>C-x #</code> 的なもので保存せずに閉じるものあるのかな。</p>
+
+  </div>
+
+  <div class="meta">
+    by typester /
+    at <a href="/memo/2007/10/05/1/">2007-10-05T16:19:00</a> /
+    <a href="/memo/tag/life/">life</a>
+    &middot; <a href="/memo/tag/emacs/">emacs</a>
+    / <a href="/memo/2007/10/05/1/#disqus_thread">Comment</a>
+  </div>
+</div>
+
+<div class="entry autopagerize_page_element">
+  <h2><a href="/memo/2007/10/02/2/">やっぱり</a></h2>
+
+  <div class="body">
+    <p>miyagawaさんと桜井侑斗は似ている説。</p>
+<blockquote><p><a href="http://www.tv-asahi.co.jp/den-o/">http://www.tv-asahi.co.jp/den-o/</a></p></blockquote>
+<p>どうか。</p>
+
+  </div>
+
+  <div class="meta">
+    by typester /
+    at <a href="/memo/2007/10/02/2/">2007-10-02T09:19:00</a> /
+    <a href="/memo/tag/life/">life</a>
+    / <a href="/memo/2007/10/02/2/#disqus_thread">Comment</a>
+  </div>
+</div>
+
+<div class="entry autopagerize_page_element">
+  <h2><a href="/memo/2007/10/02/1/">Shibuya.pm tech talk #8</a></h2>
+
+  <div class="body">
+    <p>Flash with perlとかいうタイトルでLTしてきました。with perl の部分ありませんでしたがｗ</p>
+<p>スライドはここにおいておきます。</p>
+<blockquote><p><a href="http://unknownplace.org/slides/shibuyapm-8/start.html">http://unknownplace.org/slides/shibuyapm-8/start.html</a></p></blockquote>
+<p>まとめでいうのわすれたのだけど、ここで紹介したファイルアップロード、クロスドメイン通信、XMLSocketなんかを全部jsから使えるってのがアツイです。みんなやってみて！</p>
+<p>あと、PSPでスライド操作するやつもcodereposに上げました。</p>
+<blockquote><p><a href="http://coderepos.org/share/browser/lang/perl/misc/typester-shibuyapm-8-psp">http://coderepos.org/share/browser/lang/perl/misc/typester-shibuyapm-8-psp</a></p></blockquote>
+<p>時間なかったのでPSP側の画面真っ白なんだけど、時間表示したり、IRCチャット表示したりとか、作りこんだら楽しそうかも。</p>
+
+  </div>
+
+  <div class="meta">
+    by typester /
+    at <a href="/memo/2007/10/02/1/">2007-10-02T07:17:00</a> /
+    <a href="/memo/tag/life/">life</a>
+    &middot; <a href="/memo/tag/shibuya.pm/">shibuya.pm</a>
+    / <a href="/memo/2007/10/02/1/#disqus_thread">Comment</a>
+  </div>
+</div>
+
+<div class="entry autopagerize_page_element">
+  <h2><a href="/memo/2007/09/27/1/"></a></h2>
+
+  <div class="body">
+    <p>danさんのところで</p>
+<blockquote><p><a href="http://blog.livedoor.jp/dankogai/archives/50912230.html">404 Blog Not Found:プログラムの楽しさを子供に教えるべきか?</a></p><p>世の中には、「この時期に習っておかないと一生自分のものにならない」というものもあれば、「いつはじめても、モノにできる」というものもある。「流暢な外国語」は前者だが、プログラミングは明らかに後者。</p></blockquote>
+<p>をとかいうのを読んで、あー、ぼくも小さいころから楽器を習わされていて、たしかに大人になってからはじめたら到底今のレベルにはたどり着けないなーとおもった。親に感謝しなければ。</p>
+<p>しかしもう5年くらいまったくひいていない。だめすぎる。。＞＜</p>
+<p>つわけで弦を買った。</p>
+<p><a href="http://www.flickr.com/photos/typester/1443456112/" title="Photo Sharing"><img alt="fiddle strings" height="333" src="http://farm2.static.flickr.com/1365/1443456112_e7233b5000.jpg" width="500" /></a></p>
+<p>明日からちゃんと毎日ひく所存です。</p>
+
+  </div>
+
+  <div class="meta">
+    by typester /
+    at <a href="/memo/2007/09/27/1/">2007-09-27T00:16:00</a> /
+    <a href="/memo/tag/life/">life</a>
+    / <a href="/memo/2007/09/27/1/#disqus_thread">Comment</a>
+  </div>
+</div>
+
+<div class="entry autopagerize_page_element">
+  <h2><a href="/memo/2007/09/18/1/">CCFF7</a></h2>
+
+  <div class="body">
+    <p>週末会社に送られてきているのを発見して、ちょいと拝借してやってみてたのだけど、意外と面白くて連休でクリアしてしまった。</p>
+<p>アクションなのだけど難易度的にはすごく簡単で、たいていの敵が初回で、もしくは1,2回やりなおせばクリアできる。約12時間くらいで終わってしまった。ミッションはまったくやってないけど。</p>
+<p>強くてニューゲーム的なことができるみたいだけど、ストーリー悲しすぎるのでもう一度やるきにはならない。。。</p>
+<p>ほんとうにかなしいなぁ。書いてたら思い出してきた。＞＜</p>
+<p>FF7好きだった人はやるべきゲームかと。</p>
+
+  </div>
+
+  <div class="meta">
+    by typester /
+    at <a href="/memo/2007/09/18/1/">2007-09-18T08:29:00</a> /
+    <a href="/memo/tag/life/">life</a>
+    &middot; <a href="/memo/tag/game/">game</a>
+    / <a href="/memo/2007/09/18/1/#disqus_thread">Comment</a>
+  </div>
+</div>
+
+<div class="entry autopagerize_page_element">
+  <h2><a href="/memo/2007/09/17/1/">コミュニケーション能力</a></h2>
+
+  <div class="body">
+    <p>意外と思う人もいるかもしれないけど、技術者には重要だよね。特にオープンソースなところでは。</p>
+<p>codereposもそうだけど。意見とか、わからないこととか、ひとりでうだうだいってないでIRCにきて他のコミッターと話をすればいい。</p>
+<p>そゆことがCatalystやDBICのコミュニティでできないのが悔しい。言葉の壁が思ったより厚くていまだに超えられない。IRCだとなにいってるかわかってもこっちのいいたいことがうまくいえない。考えてる間に話し進むし。ムキィ。</p>
+
+  </div>
+
+  <div class="meta">
+    by typester /
+    at <a href="/memo/2007/09/17/1/">2007-09-17T23:32:00</a> /
+    <a href="/memo/tag/life/">life</a>
+    / <a href="/memo/2007/09/17/1/#disqus_thread">Comment</a>
+  </div>
+</div>
+
+<div class="entry autopagerize_page_element">
+  <h2><a href="/memo/2007/09/13/3/">会社名、所属明らかにしてブログ書くこと</a></h2>
+
+  <div class="body">
+    <p>個人的なブログで、個人的な意見をかいているとしても、好き勝手書いてもいいとは思えないよ。</p>
+<p>これって、会社を自分の会社だって思えているかどうかだと思うのだけど。大企業になるとそうは思えなくなるのかもしれないなぁ。</p>
+
+  </div>
+
+  <div class="meta">
+    by typester /
+    at <a href="/memo/2007/09/13/3/">2007-09-13T23:08:00</a> /
+    <a href="/memo/tag/life/">life</a>
+    / <a href="/memo/2007/09/13/3/#disqus_thread">Comment</a>
+  </div>
+</div>
+
+
+
+
+<div id="pager" class="autopagerize_insert_before">
+  <p class="pages">
+    <a class="prev" rel="previous" href="/memo/tag/life/page/6/">&laquo; Prev</a>
+    <a href="/memo/tag/life/page/3/">3</a>
+    <a href="/memo/tag/life/page/4/">4</a>
+    <a href="/memo/tag/life/page/5/">5</a>
+    <a href="/memo/tag/life/page/6/">6</a>
+    <span class="current">7</span>
+    <a href="/memo/tag/life/page/8/">8</a>
+    <a href="/memo/tag/life/page/9/">9</a>
+    <a href="/memo/tag/life/page/10/">10</a>
+    <a href="/memo/tag/life/page/11/">11</a>
+    <a href="/memo/tag/life/page/12/">12</a>
+    <a class="next" rel="next" href="/memo/tag/life/page/8/">Next &raquo;</a>
+  </p>
+  <p class="info">(Page 7 of 120)</p>
+</div>
+
+
+</div>
+
+<p id="footer">
+  Copyright &copy; 2005-2013
+      by <a class="author" href="/about/#me">Daisuke Murase (typester)</a> /
+  Site generated by <a href="https://github.com/typester/nim">nim</a> /
+  Comments powered by <a href="http://disqus.com">DISQUS</a>.
+</p>
+
+</div>
+
+
+<script type="text/javascript">
+//<![CDATA[
+(function() {
+	var links = document.getElementsByTagName('a');
+	var query = '?';
+	for(var i = 0; i < links.length; i++) {
+	if(links[i].href.indexOf('#disqus_thread') >= 0) {
+		query += 'url' + i + '=' + encodeURIComponent(links[i].href) + '&';
+	}
+	}
+	document.write('<script charset="utf-8" type="text/javascript" src="http://disqus.com/forums/unknownplace/get_num_replies.js' + query + '"></' + 'script>');
+})();
+//]]>
+</script>
+
+
+<script type="text/javascript">
+var gaJsHost = (("https:" == document.location.protocol) ? "https://ssl." : "http://www.");
+document.write(unescape("%3Cscript src='" + gaJsHost + "google-analytics.com/ga.js' type='text/javascript'%3E%3C/script%3E"));
+</script>
+<script type="text/javascript">
+try {
+var pageTracker = _gat._getTracker("UA-53067-1");
+pageTracker._trackPageview();
+} catch(err) {}</script>
+
+<script>
+function googleTranslateElementInit() {
+  new google.translate.TranslateElement({
+    pageLanguage: 'ja',
+    gaTrack: true,
+    gaId: 'UA-53067',
+    floatPosition: google.translate.TranslateElement.FloatPosition.BOTTOM_RIGHT
+  });
+}
+</script><script src="//translate.google.com/translate_a/element.js?cb=googleTranslateElementInit"></script>
+
+</body>
+</html>

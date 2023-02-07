@@ -1,0 +1,539 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="ja" xml:lang="ja">
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <title>memo - unknownplace.org</title>
+  <link rel="stylesheet" type="text/css" href="http://yui.yahooapis.com/3.0.0/build/cssreset/reset-min.css" />
+  <link rel="stylesheet" type="text/css" href="http://yui.yahooapis.com/3.0.0/build/cssfonts/fonts-min.css" />
+  <link rel="stylesheet" href="/css/style.css" type="text/css" />
+  <meta property="fb:admins" content="1093631929" />
+  <meta name="robots" content="noindex" />
+  <link rel="alternate" type="application/rss+xml" href="http://unknownplace.org/memo/index.rss" />
+</head>
+<body>
+
+<div id="container">
+<div id="header">
+    <h1><a href="/">unknownplace.org</a></h1> /
+<a href="/memo/">memo</a>
+</div>
+
+<div id="content">
+
+<div class="entry autopagerize_page_element">
+  <h2><a href="/memo/2011/03/08/1/">iOS の socket(2) は 0 を返すことがある</a></h2>
+
+  <div class="body">
+    <p>iOS 4.2.1。</p>
+<p>-1 チェックしかしていなくて、まさかここだとは思わずごちゃごちゃ迷走してしまった。。 あり得ないと思うことは表明(assert)しとくっていう基本をちゃんとしたい。</p>
+<p>0 のときは無視して単純にもう一度 socket(2) を呼んであげるとちゃんと返ってくると言う謎。 その実装で fd も増えていかないのでとりあえずしのぐ。</p>
+
+  </div>
+
+  <div class="meta">
+    by typester /
+    at <a href="/memo/2011/03/08/1/">2011-03-08T07:35:00</a> /
+    <a href="/memo/tag/iphone/">iphone</a>
+    / <a href="/memo/2011/03/08/1/#disqus_thread">Comment</a>
+  </div>
+</div>
+
+<div class="entry autopagerize_page_element">
+  <h2><a href="/memo/2011/03/04/1/">iPhoneアプリケーション多言語化をpoファイルを使ってやる方法</a></h2>
+
+  <div class="body">
+    <p>iPhoneアプリケーションを他言語対応したいとしたら、Apple側がすでに用意してくれている方法を使うのが自然かと思う。 僕も最初はその方法を試した。ドキュメント的には以下がエントリポイントだろうか：</p>
+<blockquote><p><a href="http://developer.apple.com/library/ios/#documentation/MacOSX/Conceptual/BPInternational/BPInternational.html">iOS Reference Library - Internationalization Programming Topics</a></p></blockquote>
+<p>しかしこの方法にはいろいろな問題があり、大きなアプリケーションを作ろうとするとストレスがかかってくるので現在は使用していない。（小さなプロジェクトでは使うこともある）</p>
+<p>その問題とは以下のようなものだ：</p>
+<ul><li>言語ファイル(Localizable.strings)が独自形式なため、既存の翻訳ツールを使うことが出来ない</li><li>一つ目と少しかぶるが翻訳抜けや言語一覧などをチェックする機能がない</li><li>ibtool のマイグレーション機能がくそで、バージョンアップのたびにリソースファイル内の文字列を頑張って置換する作業が必要になる</li></ul>
+<p>など。これらを解決するために現在は以下のような手法でアプリの多言語化を行っている：</p>
+<ul><li>言語ファイルには一般的なファイルである GNU gettext のカタログファイル形式(.po)を使う</li><li>ソースファイルから <code>NSLocalizedString</code> 系の呼び出しを抽出して .po ファイルの雛型を作成してくれるスクリプト(xgettext.pl)を作成</li><li>.po ファイルを Localizable.string に変換するスクリプト(po2string.pl)を作成</li><li>.nib ファイル内の多言語化が必要な文字情報はすべてインタフェースビルダーでは設定せず <code>.m</code> <code>.mm</code> ファイルからセット（上のツール群をそのまま使うため）</li></ul>
+<p>と言う感じでやっている。その二つのスクリプトはこんな感じ。</p>
+<blockquote><p><a href="https://gist.github.com/854276">https://gist.github.com/854276</a></p></blockquote>
+<p><code>Locale::Maketext::Extract</code> に依存している。</p>
+<pre><code>$ ./xgettext.pl -o resources/ja.po src/*.m
+</code></pre>
+<p>みたいな感じでまず言語カタログを作成。このファイルは Emacs の po-mode や <a href="http://www.poedit.net/">Poedit</a> などのツールで編集することができる。 個人的には Emacs を使い編集しているが、翻訳者のために良いツールを探しているのでおすすめがある方は教えていただきたい。</p>
+<p>このスクリプトのポイントは何回実行しても.poファイル内の<strong>すでに翻訳済みのエントリは変更しない</strong>という点だ。 アプリケーションを更新したらスクリプトを実行し、.poファイル内の未翻訳のところのみ訳す、というサイクルを繰り返すことができる。.poファイルエディタは未翻訳エントリだけを簡単に編集できるというところも便利ポイントかな。</p>
+<p>.po ファイルが翻訳されたら</p>
+<pre><code>$ ./po2strings.pl --po=resources/ja.po --strings=resources/Japanese.lproj/Localizable.strings src/*.m
+</code></pre>
+<p>などのようにしてiPhoneアプリから使える言語ファイルに書き出してやって完了。 ソースファイルを渡す必要があるのはスクリプトソースを見てもらえばわかるがただの手抜きである。</p>
+<p>あ、ちなみにわざわざ <code>NSLocalizedString(...)</code> とか書くのは面倒なので、</p>
+<pre><code>#define L(s) NSLocalizedString(s, nil)
+</code></pre>
+<p>とかを定義しておいて <code>L(@&quot;Hello&quot;)</code> とかでいけるようにしている。（もちろんxgettext.plはその書式にも対応している）</p>
+
+  </div>
+
+  <div class="meta">
+    by typester /
+    at <a href="/memo/2011/03/04/1/">2011-03-04T15:45:00</a> /
+    <a href="/memo/tag/iphone/">iphone</a>
+    / <a href="/memo/2011/03/04/1/#disqus_thread">Comment</a>
+  </div>
+</div>
+
+<div class="entry autopagerize_page_element">
+  <h2><a href="/memo/2011/03/02/1/">bREADER の PDF リフロー表示機能が素晴らしい件</a></h2>
+
+  <div class="body">
+    <p><a href="http://itunes.apple.com/jp/app/bb2c/id298820042?mt=8">BB2C</a> というiPhone用の2chビューワアプリがあるのですが、このアプリは2chビューワとしての評価が高いだけではなく、その凄まじく軽快な動作からiPhoneアプリ開発者で知らない人はモグリだと言われるくらいの良アプリなのです。 最近その<a href="http://vtns.wordpress.com/">作者のブログ</a> に電子書籍の話題が出ていて気になっていたのですが、どうやら次は電子書籍リーダーアプリを開発していたらしい。それが <a href="http://itunes.apple.com/jp/app/id411884081?mt=8">bREADER</a>。</p>
+<p>iPad を買って以来書籍はPDFにして読むのがメインになっていて、大体はi文庫HDで、検索が必要なときはiBooksかMac上で読んでます。</p>
+<p>この環境におおむね満足しているのだけど、電車の中で座れなかったときに本を読もうと思っても iPad を出すのはきびしいし、かといって iPhone だと PDF を等倍表示ではきびしいものがある。(Retinaならよめないことはないけど…) 拡大したら拡大したで、1ページを読むのにページ内をぐるぐるスクロールしつつ読まなくてはいけなくなり大変苦痛である。 文字を拡大したぶんだけページがずれていってくれるePubや青空文庫みたいな形式でなければiPhoneではきびしいなーと思っていました。bREADERをしるまでは！</p>
+<p>この問題はがんばって紙の書籍をスキャンしてPDF化している現状が問題であって、出版社がePubみたいなので最初から電子出版してくれれば解決なんだからそれまで待とう…。 と普通の人は考えます。bREADERの作者はそういう発想はないらしく、力技でこの問題を解決しようとしているようです。</p>
+<p>詳しくは先ほどリンクしたブログを参照していただくとして、手持ちのPDFで試してみた結果を紹介します。</p>
+<p>まずこれがPDFをそのまま表示した時。（iPhoneの画面だとわかりにくいのでわざとコントロールを表示した画面にしています）</p>
+<p><a href="http://www.flickr.com/photos/typester/5491579292/" title="bREADER 通常表示 by typester, on Flickr"><img alt="bREADER 通常表示" height="500" src="http://farm6.static.flickr.com/5211/5491579292_5c9fd02c6c.jpg" width="333" /></a></p>
+<p>iPhoneの普通のPDFリーダーはみんなこんな感じに表示されてしまいます。Retinaディスプレイを搭載したiPhone4でやっとよめるというくらいですが、それでも小さくてつらいです。 つぎに bREADER がうまいことやってくれたあとの画面を見てみましょう</p>
+<p><a href="http://www.flickr.com/photos/typester/5490984773/" title="bREADER リフロー表示 by typester, on Flickr"><img alt="bREADER リフロー表示" height="500" src="http://farm6.static.flickr.com/5011/5490984773_1b3e07f7ef.jpg" width="333" /></a></p>
+<p>このようにまるでePubかと思うような拡大処理をしてくれてものすごく読みやすくなります。 そしてこのアプリの動作自体も BB2C を彷彿とさせる軽快さで、サクサク読み進められます。これはPDF化をがんばってる人でiPhoneのような小さいデバイスで本を読みたいと思っていた人には夢のようなアプリですね！</p>
+<p>ただし現状ではPDFがそのまま自動で上のようなリフロー表示（というらしい）になってくれるわけではありません。ちょっとごにょっと作業をして上げる必要があります。</p>
+<h4>bREADER で PDF をリフロー表示に対応させる手順</h4>
+<p>リフロー表示を行うにはあらかじめMacかPCで書籍の文字情報を解析してメタ情報ファイルを作ってあげる必要があります。 作者がサイト上でそのための<a href="http://vtns.wordpress.com/brc-1/">brc</a>というツールを配布してくださっています。 が、そのツールはPDFに対応していませんのでまずはPDFをPNGとかなんか画像ファイルに変換してあげるという作業が必要になります。</p>
+<ol><li>PDFを連番のPNG画像に変換</li><li>brcでメタ情報ファイルを作成</li><li>zipでかためてbREADERに転送</li></ol>
+<p>ってなかんじになります。</p>
+<h4>PDFを連番のPNG画像に変換</h4>
+<p>これをどうやろうかとおもいまして、最初に Preview.app を試してみたのですがどうも1ページずつしかPNGに保存できないっぽくあきらめ、OSX の機能をつかった pdf2png を適当にでっちあげた。</p>
+<blockquote><p><a href="https://gist.github.com/850786">https://gist.github.com/850786</a></p></blockquote>
+<p>こいつを</p>
+<pre><code>$ gcc -framework Cocoa pdf2png.m -o pdf2png
+</code></pre>
+<p>とかでビルドしてあげて、</p>
+<pre><code>$ ./pdf2png foobar.pdf ./foobar
+</code></pre>
+<p>みたいにすると foobar.pdf を 0001.png みたいな連番の画像にして foobar ディレクトリに保存してくれると言う感じ。出力先のディレクトリはあらかじめ存在している必要があります。 PDFのスケーリングがよくわからなかったので適当に設定してあり、そこは誰か良い感じに書き直してくれればと…！ あと <code>CGBitmapContextCreate</code> の第一引数にNULLをわたしていてそこが OS X 10.6 依存です。それ以前のでうごかしたいときは <code>malloc(w*h*4)</code> したの食わせとけばいいです。</p>
+<h4>brcでメタ情報ファイルを作成</h4>
+<p>先ほど生成した連番PNGが入っているディレクトリを brc コマンドに食わせる</p>
+<pre><code>$ brc ./foobar
+</code></pre>
+<p>これでそのディレクトリに d.brd というファイルが生成されていれば成功。</p>
+<h4>zipでかためてbREADERに転送</h4>
+<pre><code>$ zip -0 foobar.zip *.png d.brd
+</code></pre>
+<p>みたいにして png と d.brd がふくまれた zip ファイルを作り、あとはそれを iTunes で bREADER のデーターフォルダに転送してあげればOK。簡単ですね。</p>
+<h4>まとめ</h4>
+<p>と、ここまで絶賛してきましたが現状では、ページ上部に常に出ている章の名前とか欄外に脚注なんかがあったりすると表示がおかしくなったりします。 とはいえそれでもiPhone上ではこの表示モードを使おうと言うくらいのレベルに既になっていると思います。これはほんとにすごい。</p>
+<p>今後、bREADERもbrcも便利になっていくだろうし、brcはいらなくなる可能性もあるし、非常に楽しみですね！</p>
+<p>bREADER 現バージョンの不満点をあげるとすればアプリ内に時計表示がどこにもなくアプリを落とさない限り時間がわからない、ということくらいでしょうか。 自炊派も、業者派も、iPhoneでPDF（書籍）を読む人すべてにおすすめなアプリです！</p>
+
+  </div>
+
+  <div class="meta">
+    by typester /
+    at <a href="/memo/2011/03/02/1/">2011-03-02T19:17:00</a> /
+    <a href="/memo/tag/iphone/">iphone</a>
+    / <a href="/memo/2011/03/02/1/#disqus_thread">Comment</a>
+  </div>
+</div>
+
+<div class="entry autopagerize_page_element">
+  <h2><a href="/memo/2011/02/18/1/">node.js C/C++ addons 入門</a></h2>
+
+  <div class="body">
+    <p><a href="http://nodejs.org/">node.js</a> のドキュメントを見ていたら C/C++ で簡単に拡張が書けそうだったので試してみた。</p>
+<blockquote><p><a href="http://nodejs.org/docs/v0.4.0/api/addons.html">addons - Node.js Manual &amp; Documentation</a></p></blockquote>
+<p>ドキュメントに載っている hello.cc をみてみると：</p>
+<pre><code><span class="preprocessor">#include</span> <span class="string">&lt;v8.h&gt;</span>
+
+using <span class="type">namespace</span> <span class="variable-name">v8</span>;
+
+<span class="keyword">extern</span> <span class="string">"C"</span> <span class="type">void</span>
+<span class="function-name">init</span> (Handle&lt;Object&gt; target)
+{
+  <span class="type">HandleScope</span> <span class="variable-name">scope</span>;
+  target-&gt;Set(String::New(<span class="string">"hello"</span>), String::New(<span class="string">"world"</span>));
+}
+</code></pre>
+<p>この <code>extern &quot;C&quot; void init (Handle&lt;Object&gt; target)</code> というやつが、jsで <code>require(&quot;hello&quot;)</code> したときに呼ばれる感じらしい。この関数だけは必ず実装する必要がある。</p>
+<p>この中の <code>Handle</code> や <code>HandleScope</code>、<code>String</code> といったものは全部 v8.h で定義された js 操作用のクラス。</p>
+<p>Handle は JavaScript でのデータ全般（数値、文字列、オブジェクト、配列）を表すクラスで、<code>init</code> 関数には何も入っていない空のオブジェクト（ここでは <code>target</code>）が渡される。</p>
+<p>この例ではそのオブジェクトにたいして <code>hello</code> というキーで <code>world</code> という文字列を登録している。</p>
+<p>なので、これを require すると、</p>
+<pre><code>$ node
+&gt; require(<span class="string">"hello"</span>)
+{ <span class="constant">hello</span>: <span class="string">'world'</span> }
+</code></pre>
+<p>こんな感じのオブジェクトが返るっていうわけです。簡単ですね。</p>
+<p>アドオンのビルドには付属の <code>node-waf</code> というコマンドを使う。これは <a href="http://code.google.com/p/waf/">waf</a> に node.js アドオン用の機能を追加したものなのかな？</p>
+<p>この node-waf は wscript という Makefile みたいな設定ファイルを用意してあげる必要がある。ドキュメントに載っているのはこんな感じ：</p>
+<pre><code>srcdir = &apos;.&apos;
+blddir = &apos;build&apos;
+VERSION = &apos;0.0.1&apos;
+
+def set_options(opt):
+  opt.tool_options(&apos;compiler_cxx&apos;)
+
+def configure(conf):
+  conf.check_tool(&apos;compiler_cxx&apos;)
+  conf.check_tool(&apos;node_addon&apos;)
+
+def build(bld):
+  obj = bld.new_task_gen(&apos;cxx&apos;, &apos;shlib&apos;, &apos;node_addon&apos;)
+  obj.target = &apos;hello&apos;
+  obj.source = &apos;hello.cc&apos;
+</code></pre>
+<p>で、</p>
+<pre><code>$ node-waf configure build
+</code></pre>
+<p>とすることで <code>./build/default</code> に <code>hello.node</code> がつくられる。</p>
+<pre><code>$ node
+&gt; require(<span class="string">"./build/default/hello"</span>)
+</code></pre>
+<p>とかすればテストできます。</p>
+<pre><code>$ node-waf install
+</code></pre>
+<p>で、<code>$NODE_PATH</code> で指定されたとこに（たぶん）インストールされ、そうすると単純に <code>require(&quot;hello&quot;)</code> ができるようになる。</p>
+<p>んでもって、C で書きたい！ っていう場合は、</p>
+<pre><code>srcdir = &apos;.&apos;
+blddir = &apos;build&apos;
+VERSION = &apos;0.0.1&apos;
+
+def set_options(opt):
+  opt.tool_options(&apos;compiler_cxx&apos;)
+  opt.tool_options(&apos;compiler_cc&apos;)
+
+def configure(conf):
+  conf.check_tool(&apos;compiler_cxx&apos;)
+  conf.check_tool(&apos;compiler_cc&apos;)
+  conf.check_tool(&apos;node_addon&apos;)
+
+def build(bld):
+  c_obj = bld.new_task_gen(&apos;cc&apos;)
+  c_obj.name = &apos;c_obj&apos;
+  c_obj.target = &apos;hello&apos;
+  c_obj.source = &apos;foo.c bar.c&apos;
+
+  obj = bld.new_task_gen(&apos;cxx&apos;, &apos;shlib&apos;, &apos;node_addon&apos;)
+  obj.target = &apos;hello&apos;
+  obj.source = &apos;hello.cc&apos;
+  obj.add_objects = &apos;c_obj&apos;
+</code></pre>
+<p>こんな感じの wscript を書けばいい模様。とはいえ、<code>v8</code> 自体が C++ 製なので、JavaScript とつなぐところは C++ が必要になる。</p>
+<p>require 時になんかエスクポートしたりとかもっと良い感じのモジュールにするには</p>
+<blockquote><p><a href="http://nodejs.org/docs/v0.4.0/api/modules.html">modules - Node.js Manual &amp; Documentation</a></p></blockquote>
+<p>この辺読めば良さそうですね。</p>
+<p>あと、C++ 側は、v8.h、node.h、を中心に include/node にあるヘッダファイルを見るといろいろわかりそう。IOやTimerをつかうときには libev の使い方も知っておく必要がある。 node.js には libev が組み込まれていて、EV_DEFAULT ループを本体がうごかしているから、そこにたいしておもむろに <code>ev_io_start</code> とかしてあげるだけで拡張内で非同期IO使えます。</p>
+<p>あとはいろんな拡張を参考に。<a href="http://www.google.co.jp/codesearch">Google コード検索</a>で 「compiler_cxx node_addon」というので wscript を検索すると node.js 拡張だけが良い感じで引っかかってくるのでおすすめ。</p>
+
+  </div>
+
+  <div class="meta">
+    by typester /
+    at <a href="/memo/2011/02/18/1/">2011-02-18T09:57:00</a> /
+    <a href="/memo/tag/node/">node</a>
+    / <a href="/memo/2011/02/18/1/#disqus_thread">Comment</a>
+  </div>
+</div>
+
+<div class="entry autopagerize_page_element">
+  <h2><a href="/memo/2011/02/03/1/">OSX で tmpfs 的なことをする方法</a></h2>
+
+  <div class="body">
+    <p>MacBook Air 上で <code>Test::mysqld</code> なテストを走らせていると SSD の寿命縮めそうだなーとおもって tmpfs 的なものが OS X にもないものかと検索したら <code>hdid(8)</code> でできるとのこと。 man の一番下のほうに例が載っている。</p>
+<pre><code>$ hdid -nomount ram://128000
+/dev/disk1
+</code></pre>
+<p>これでメモリから128000セクタ（1セクタ512バイトなので62.5MB）分とって仮想ディスクをつくり、</p>
+<pre><code>$ newfs_hfs /dev/disk1
+Initialized /dev/rdisk1 as a 63 MB HFS Plus volume
+</code></pre>
+<p>HFSで初期化して、あとは普通に</p>
+<pre><code>$ mkdir /tmp/mnt
+$ mount -t hfs /dev/disk1 /tmp/mnt
+</code></pre>
+<p>でマウントすればOK。</p>
+<p>作ったディスクの破棄には</p>
+<pre><code>$ hdidutil detach /dev/disk1
+<span class="string">"disk1"</span> unmounted.
+<span class="string">"disk1"</span> ejected.
+</code></pre>
+<p>とかでいいらしい。</p>
+
+  </div>
+
+  <div class="meta">
+    by typester /
+    at <a href="/memo/2011/02/03/1/">2011-02-03T12:47:00</a> /
+    <a href="/memo/tag/osx/">osx</a>
+    / <a href="/memo/2011/02/03/1/#disqus_thread">Comment</a>
+  </div>
+</div>
+
+<div class="entry autopagerize_page_element">
+  <h2><a href="/memo/2011/02/02/1/">brew install mysql</a></h2>
+
+  <div class="body">
+    <p>なんか <code>mysql_install_db --tmpdir=/tmp</code> とかしないとうまく行かなかったメモ。</p>
+<pre><code>$ brew install mysql
+$ mysql_install_db --tmpdir=/tmp
+$ mysql.server start
+</code></pre>
+
+  </div>
+
+  <div class="meta">
+    by typester /
+    at <a href="/memo/2011/02/02/1/">2011-02-02T16:07:00</a> /
+    <a href="/memo/tag/homebrew/">homebrew</a>
+    &middot; <a href="/memo/tag/mysql/">mysql</a>
+    / <a href="/memo/2011/02/02/1/#disqus_thread">Comment</a>
+  </div>
+</div>
+
+<div class="entry autopagerize_page_element">
+  <h2><a href="/memo/2011/01/28/1/">iPhoneバックグラウンドでのソケット監視のサンプル</a></h2>
+
+  <div class="body">
+    <p>iOS4 からアプリケーションのバックグラウンド動作がサポートされているが、それらはだいぶ制限されたものとなっていて、通常のアプリケーションはバックグラウンドでは最大10分程度しか生存することが出来ない。</p>
+<p>それを回避するために <code>Info.plist</code> に特殊なフラグをたてることで例外的に制限を解除することができるようになっている。そのフラグの種類は</p>
+<ul><li>audio</li><li>location</li><li>voip</li></ul>
+<p>であり、それぞれバックグラウンド音声再生、バックグラウンド位置情報取得、バックグラウンドでのソケット監視（voipの着信監視用）に対応している。 そのうち voip だけ今まで扱ったことがなかったので挙動確認のためやってみた、というのが今回のお話。</p>
+<p>まず書いてみたコード:</p>
+<blockquote><p><a href="https://github.com/typester/voip-socket-test">https://github.com/typester/voip-socket-test</a></p></blockquote>
+<p>ソケットのハンドリングに libev を使っているので、ビルドを通すには <code>$(HOME)/dev/iphone/lib/libev</code> に libev がインストールされている必要がある。 また、AppDelegate.m の <code>#define HOST inet_addr(&quot;127.0.0.1&quot;)</code> という部分を自分のサーバーのIPになおしてあげるというのも必要。</p>
+<p>んで、付属の server.pl が適当に作ったサーバーで、STDIN を読み込んで、入力があったらつながっているiPhoneにその内容を送信するというものになっている。 iPhoneアプリ側はバックグラウンド時にそのパケットを受け取ると受け取った内容をLocalNotificationで表示っていう感じ。</p>
+<p>NSInputStream にたいして</p>
+<pre><code>[stream setProperty:NSStreamNetworkServiceTypeVoIP
+             forKey:NSStreamNetworkServiceType];
+</code></pre>
+<p>とかしてあげとくだけで、アプリがサスペンドしたときには OS 側がソケットの監視を代理でやってくれる。 で、そのソケットにたいして何かイベントが起こるとアプリを起こして処理を戻す。アプリ側は通常のソケット操作だけ実装しておけばいい。</p>
+<p>このアプリのようにネットワーク周りはCで処理している場合、ファイルディスクリプタを NSStream にアップグレードする必要があってそこは若干めんどう。 Cocoa::EventLoop でもおなじことをしているのでその XS 部分からコピペしてきた。</p>
+<p>Skype のバッテリー消費が半端ないのでこの機能にたいしてあまり良い印象はなかったのだが、実際にやってみるとバッテリー消費は思ったより気にならない（いまのところ。あまり検証はしていない）。 おそらく Skype は頻繁にパケットを送受信しているから、アプリが頻繁に起こされ、結果ものすごい勢いでバッテリーが減る、ということなのだろうか。</p>
+<p>とにかく、なかなかおもしろい機能。VoIP アプリ以外でもつかえればなー。</p>
+
+  </div>
+
+  <div class="meta">
+    by typester /
+    at <a href="/memo/2011/01/28/1/">2011-01-28T14:35:00</a> /
+    <a href="/memo/tag/iphone/">iphone</a>
+    / <a href="/memo/2011/01/28/1/#disqus_thread">Comment</a>
+  </div>
+</div>
+
+<div class="entry autopagerize_page_element">
+  <h2><a href="/memo/2011/01/14/1/">ことえりのアイコンをATOKでつかう</a></h2>
+
+  <div class="body">
+    <p>セットアップメモに書き忘れたけど、ATOKのメニューバーアイコンがあまり好きじゃないのでことえりのアイコンをコピーしてきて使ってる。</p>
+<p><a href="http://www.flickr.com/photos/typester/5353694512/" title="use Kotoeri icon with ATOK by typester, on Flickr"><img alt="use Kotoeri icon with ATOK" height="88" src="http://farm6.static.flickr.com/5050/5353694512_0d3b4d7d91_o.png" width="400" /></a></p>
+<p>まずバックアップとっておいて：</p>
+<pre><code>$ cd /Library/Input\ Methods/ATOK23.app/Contents/Resources
+$ for f in Roman{,Button,Selected}.tif; do sudo cp $f ${f}.bak; done
+$ for f in Hiragana{,Button,Selected}.tif; do sudo cp $f ${f}.bak; done
+</code></pre>
+<p>アイコンコピー：</p>
+<pre><code>$ sudo cp /System/Library/Input\ Methods/Kotoeri.app/Contents/Resources/FullRoman.tif RomanSelected.tif
+$ sudo cp /System/Library/Input\ Methods/Kotoeri.app/Contents/Resources/FullRomanButton.tif RomanButton.tif
+$ sudo cp /System/Library/Input\ Methods/Kotoeri.app/Contents/Resources/FullRomanSelected.tif Roman.tif
+
+$ sudo cp /System/Library/Input\ Methods/Kotoeri.app/Contents/Resources/Hiragana.tif HiraganaSelected.tif
+$ sudo cp /System/Library/Input\ Methods/Kotoeri.app/Contents/Resources/HiraganaButton.tif HiraganaButton.tif
+$ sudo cp /System/Library/Input\ Methods/Kotoeri.app/Contents/Resources/HiraganaSelected.tif Hiragana.tif
+</code></pre>
+<p>英数とひらがな入力しか使わないのでその二つのアイコンしか置き換えていない。 あと、全角英数のアイコンをつかっているのはそっちのほうがかわいいから。</p>
+<p>いまの悩みは ESET Cybersecurity のアイコンがかわいくないこと。</p>
+
+  </div>
+
+  <div class="meta">
+    by typester /
+    at <a href="/memo/2011/01/14/1/">2011-01-14T12:09:00</a> /
+    <a href="/memo/tag/osx/">osx</a>
+    &middot; <a href="/memo/tag/atok/">atok</a>
+    / <a href="/memo/2011/01/14/1/#disqus_thread">Comment</a>
+  </div>
+</div>
+
+<div class="entry autopagerize_page_element">
+  <h2><a href="/memo/2011/01/13/1/">MacBook Air セットアップメモ</a></h2>
+
+  <div class="body">
+    <p>11インチのやつ、買いましたよ。よくあるセットアップメモを残す。 SSDの容量が心許ないので、バックアップからの復元はしないで新規で設定した。</p>
+<h4>OS 再インストール</h4>
+<p>まずやっぱ最初はこれ。目的は<strong>大文字小文字を区別するファイルシステムでパーティションを切りなおす</strong>ということのみ。 デフォルトのファイルシステムではWindowsなどとおなじように大文字小文字を区別しない。そういう環境ではたとえば</p>
+<pre><code><span class="preprocessor">#include</span> <span class="string">&lt;STDIO.h&gt;</span>
+</code></pre>
+<p>とか言うコードも通ってしまう。そういう気がつかないうちに仕込まれる各種トラブルの種は気持ち悪いよね。</p>
+<p>注意点としてはAdobe製のソフトはそういうトラブルの種を抱えたコーディングをされているらしいものが多いようで、このファイルシステムにすると動作しないものが結構あるらしい。たとえばPhotoshopは最新版でもうごかないみたい。 （Lightroomは大丈夫）</p>
+<h4>ソフトウェアアップデート</h4>
+<p>とりあえず最新にしておく。</p>
+<h4>ESET Cybersecurity for Mac</h4>
+<p>アンチウィルスソフトはカルペルスキーを使ってきたけど、そんな満足してないってのと、NOD32でおなじみのESETからもMac用のソフトが出たみたいなのでとりあえずその試用版を試してみる。</p>
+<h4>1Password</h4>
+<p>パスワード管理ツール。データはいままでのMacからインポート。</p>
+<h4>Google Chrome</h4>
+<p>もはやこれがメインブラウザ。データまわりはChrome自体でGoogleアカウントいれれば同期が可能。楽ちん。</p>
+<h4>ATOK</h4>
+<p>Macにしてからずっと使ってるので。 これまた設定はいままでのMacからインポート。</p>
+<h4>KeyRemap4Macbook</h4>
+<p>キーバインド変更ツール。キーリピートを高速にしたり、ターミナルで左Commandをメタキーにしたりもろもろキー設定をこれで変更。必須ツール。</p>
+<h4>iTerm2</h4>
+<p>ターミナルはこれ。既存のMacから <code>~/Library/Preferences/com.googlecode.iterm2.plist</code> をコピーすれば設定引き継げる。</p>
+<p>そこで使ってるフォント、CodingFontTobiも入れておく。</p>
+<h4>Quicksilver</h4>
+<p>ランチャー。<a href="http://jibun.atmarkit.co.jp/ljibun01/cs/201001/03/01.html">キーボードトリガーでのアプリケーション切り替え</a>がやっぱり便利。</p>
+<ul><li>Cmd-[ = Emacs</li><li>Cmd-] = iTerm</li><li>Cmd-&apos; = Google Chrome</li></ul>
+<p>って感じで割り当てている。</p>
+<h4>xcode (iOS SDK)</h4>
+<p>gcc など開発ツールのためにインストールは必須。現在は iPhone SDK が xcode も内包しているためiPhone開発をする場合はそれを入れればいい。</p>
+<h4>perlbrew</h4>
+<p>perlbrew で perl と cpanm をいれる</p>
+<pre><code>$ perlbrew install perl-5.12.2 --as 5.12.2
+$ perlbrew install-cpanm
+</code></pre>
+<h4>homebrew</h4>
+<p>homebrew でいろいろいれる</p>
+<pre><code>$ brew install wget
+$ brew install git
+$ brew install tig
+$ brew install lv
+</code></pre>
+<p>などなど。homebrewは<code>/usr/local</code>ではなく<code>~/homebrew</code>で運用。いやー便利ですね！</p>
+<h4>Emacs</h4>
+<pre><code>$ wget http://ftp.gnu.org/pub/gnu/emacs/emacs-23.2.tar.bz2
+$ tar -jxvf emacs-23.2.tar.bz2
+$ cd emacs-23.2
+$ wget https://github.com/downloads/typester/emacs/feature-fullscreen.patch
+$ wget https://github.com/downloads/typester/emacs/fix-shiftmodifier-with-ime.patch
+$ patch -p1 &lt; feature-fullscreen.patch
+$ patch -p1 &lt; fix-shiftmodifier-with-ime.patch
+$ ./configure --with-ns --without-x
+$ make install
+</code></pre>
+<p>で、nextstepディレクトリ以下にEmacs.appができるのでそれを/Applicationsに移動。設定とかは既存の環境からもってきた。</p>
+<h4>encfs</h4>
+<p>sshの秘密鍵とか、Config::Pitの設定ファイルとかはencfsで暗号化した領域に保存するようにしている。 これのインストールが大変面倒だったんだけど、homebrew のおかげですごい楽に入れられるようになった。</p>
+<p><a href="http://code.google.com/p/macfuse/">http://code.google.com/p/macfuse/</a> から MacFUSE の最新版をとってきてインストールしてそのあと、</p>
+<pre><code>$ brew install encfs
+</code></pre>
+<p>でOK。ただ、/usr/local 以外で運用している場合、依存している boost ライブラリ周りでエラーになるみたい。</p>
+<pre><code>$ brew install -vd encfs
+</code></pre>
+<p>としてあげるとエラーになったところでシェルに入ってくれるので、そこで自分でビルドする。 具体的には configure に <code>--with-boost=</code> オプションをつけてあげるだけで良い。あとで Formula に追加してパッチ送ろうかと思う。</p>
+<pre><code>$ ./configure ...
+$ make
+$ make install
+</code></pre>
+<p>とかしたのちシェルを抜けると、homebrew が自動で symlink とか貼ってくれてインストール完了した状態になるみたい。これは便利。</p>
+<h4>ssh クライアント周り</h4>
+<p>keychain いれて、</p>
+<pre><code>$ brew install keychain
+</code></pre>
+<p>.ssh/config とかシェルの設定とかは既存の環境から持ってくる。</p>
+<h4>他</h4>
+<p>とりあえず最小構成はこんな感じであとは必要になったときにいろいろ入れていく。</p>
+<h4>Air のファーストインプレッション</h4>
+<p>CPU パワーが必要になる場面ではやはり非力だけど、それ以外の場面では SSD のおかげかすごい快適。 あとはキーボード、MacBookと比べるとなんというか作りが悪くてタイプ感もいまいち。Escの押しにくさは異常。</p>
+<p>とはいえ軽くて小さくて、バッテリーがすごい持つのはやっぱり良いねー。 CPU は弱いけど全体的なパフォーマンスは良いから自分的にはメインマシンになっていくんだろうな。いままでのMacBookどしよっかな。。</p>
+
+  </div>
+
+  <div class="meta">
+    by typester /
+    at <a href="/memo/2011/01/13/1/">2011-01-13T01:43:00</a> /
+    <a href="/memo/tag/osx/">osx</a>
+    &middot; <a href="/memo/tag/macbook/">macbook</a>
+    / <a href="/memo/2011/01/13/1/#disqus_thread">Comment</a>
+  </div>
+</div>
+
+<div class="entry autopagerize_page_element">
+  <h2><a href="/memo/2011/01/06/1/">CoffeeScript いいねー</a></h2>
+
+  <div class="body">
+    <p>node.js とかが盛り上がっていてもまったく興味をそそられなかったのは、JavaScript 自体があんまり好きじゃないってのがあった。</p>
+<ul><li>function () {} とかのシンタックスシュガーがない</li><li>レキシカルスコープない</li></ul>
+<p>とかもろもろ。基本的に美しくコードがかけない言語だと思ってた。</p>
+<p>っていうのを一気に解決してくれるのが <a href="http://jashkenas.github.com/coffee-script/">CoffeeScript</a>。</p>
+<p>この言語は専用のインタラプタで実行することも出来るけど、 1:1 で JavaScript に変換できるので、変換後のコードは普通の JavaScript インタラプタで実行することができる。 なので普通にWebサイトでつかってるjsもCoffeeScriptで書いて変換したのを使うってことができる。</p>
+<p>具体的なシンタックスについては上記のサイトをみてもらうとして、僕が不満だった部分はほぼなくなっている。インデントによるブロックは僕はあまり好きじゃないけど、Emacs用の<a href="http://ozmm.org/posts/coffee_mode.html">coffee-mode</a>もすでにあるのでたいした問題じゃない。</p>
+<p>js はもうこれでしか書かないなー。あんまり書く機会ないけどさ。</p>
+
+  </div>
+
+  <div class="meta">
+    by typester /
+    at <a href="/memo/2011/01/06/1/">2011-01-06T11:20:00</a> /
+    <a href="/memo/tag/javascript/">javascript</a>
+    &middot; <a href="/memo/tag/coffeescript/">coffeescript</a>
+    / <a href="/memo/2011/01/06/1/#disqus_thread">Comment</a>
+  </div>
+</div>
+
+
+
+
+<div id="pager" class="autopagerize_insert_before">
+  <p class="pages">
+    <a class="prev" rel="previous" href="/memo/page/6/">&laquo; Prev</a>
+    <a href="/memo/page/3/">3</a>
+    <a href="/memo/page/4/">4</a>
+    <a href="/memo/page/5/">5</a>
+    <a href="/memo/page/6/">6</a>
+    <span class="current">7</span>
+    <a href="/memo/page/8/">8</a>
+    <a href="/memo/page/9/">9</a>
+    <a href="/memo/page/10/">10</a>
+    <a href="/memo/page/11/">11</a>
+    <a href="/memo/page/12/">12</a>
+    <a class="next" rel="next" href="/memo/page/8/">Next &raquo;</a>
+  </p>
+  <p class="info">(Page 7 of 203)</p>
+</div>
+
+
+</div>
+
+<p id="footer">
+  Copyright &copy; 2005-2013
+      by <a class="author" href="/about/#me">Daisuke Murase (typester)</a> /
+  Site generated by <a href="https://github.com/typester/nim">nim</a> /
+  Comments powered by <a href="http://disqus.com">DISQUS</a>.
+</p>
+
+</div>
+
+
+<script type="text/javascript">
+//<![CDATA[
+(function() {
+	var links = document.getElementsByTagName('a');
+	var query = '?';
+	for(var i = 0; i < links.length; i++) {
+	if(links[i].href.indexOf('#disqus_thread') >= 0) {
+		query += 'url' + i + '=' + encodeURIComponent(links[i].href) + '&';
+	}
+	}
+	document.write('<script charset="utf-8" type="text/javascript" src="http://disqus.com/forums/unknownplace/get_num_replies.js' + query + '"></' + 'script>');
+})();
+//]]>
+</script>
+
+
+<script type="text/javascript">
+var gaJsHost = (("https:" == document.location.protocol) ? "https://ssl." : "http://www.");
+document.write(unescape("%3Cscript src='" + gaJsHost + "google-analytics.com/ga.js' type='text/javascript'%3E%3C/script%3E"));
+</script>
+<script type="text/javascript">
+try {
+var pageTracker = _gat._getTracker("UA-53067-1");
+pageTracker._trackPageview();
+} catch(err) {}</script>
+
+<script>
+function googleTranslateElementInit() {
+  new google.translate.TranslateElement({
+    pageLanguage: 'ja',
+    gaTrack: true,
+    gaId: 'UA-53067',
+    floatPosition: google.translate.TranslateElement.FloatPosition.BOTTOM_RIGHT
+  });
+}
+</script><script src="//translate.google.com/translate_a/element.js?cb=googleTranslateElementInit"></script>
+
+</body>
+</html>

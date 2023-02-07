@@ -1,0 +1,171 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="ja" xml:lang="ja">
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <title>2009/01/20 - memo - unknownplace.org</title>
+  <link rel="stylesheet" type="text/css" href="http://yui.yahooapis.com/3.0.0/build/cssreset/reset-min.css" />
+  <link rel="stylesheet" type="text/css" href="http://yui.yahooapis.com/3.0.0/build/cssfonts/fonts-min.css" />
+  <link rel="stylesheet" href="/css/style.css" type="text/css" />
+  <meta property="fb:admins" content="1093631929" />
+  <meta name="robots" content="noindex" />
+  <link rel="alternate" type="application/rss+xml" href="http://unknownplace.org/memo/index.rss" />
+</head>
+<body>
+
+<div id="container">
+<div id="header">
+    <h1><a href="/">unknownplace.org</a></h1> /
+<a href="/memo/">memo</a>
+</div>
+
+<div id="content">
+
+<div class="entry autopagerize_page_element">
+  <h2 id="e003"><a href="/memo/2009/01/20/3/">二重connect</a></h2>
+
+  <div class="body">
+    <blockquote><p><a href="http://d.hatena.ne.jp/download_takeshi/20090117/1232201013">Kamaitachi入門（その４） - ダウンロードたけし（寅年）の日記</a></p><p>なのでconnectについてはKamaitachi側ではon_connectとon_invoke_connectの2つをdispatchしていることになりますね。なんで２重に待ち構えるような構成にしてるんだろ？なにか意味があるような気がしますが、よくわかりません。</p></blockquote>
+<p><code>on_connect</code> はTCP接続確立時のハンドラ、<code>on_invoke_connect</code> は他の関数呼び出しと同様 Flash Player から connect 関数がよばれたときに呼ばれるハンドラです。</p>
+<p>RTMP は正直なんでこうなんだろーっていう理解不能な仕様が結構ありますのでサーバー実装だけみてると結構混乱すると思います。</p>
+<p>クライアント側も参照すると多少マシになります。</p>
+<p>いまは Flex SDK を使用すればフリーで as3 な swf をつくることができますので、RTMP 実装で学ぶ as3 入門というのはどうでしょうか。</p>
+<p>あ、<a href="http://wonderfl.kayac.com/">wonderfl</a> もオススメですよ。</p>
+
+  </div>
+
+  <div class="meta">
+    by typester /
+    at <a href="/memo/2009/01/20/3/">2009-01-20T16:36:00</a> /
+    <a href="/memo/tag/kamaitachi/">kamaitachi</a>
+    / <a href="/memo/2009/01/20/3/#disqus_thread">Comment</a>
+  </div>
+</div>
+
+<div class="entry autopagerize_page_element">
+  <h2 id="e002"><a href="/memo/2009/01/20/2/">CarbonEmacs + CodingFontTobi</a></h2>
+
+  <div class="body">
+    <p>フォント設定もさらしておく。</p>
+<p>`~/.emacs.d/conf/carbon-emacs-05font.el</p>
+<pre><code>;; i &lt;3 bitmap font
+(<span class="type">setq</span> <span class="variable-name">mac</span>-allow-anti-aliasing nil)
+
+(create-fontset-from-fontset-spec
+ (concat
+  <span class="string">"-*-fixed-medium-r-normal--10-*-*-*-*-*-fontset-tobi"</span>
+  <span class="string">",ascii:-apple-codingfonttobi-medium-r-normal--16-120-72-72-m-120-*-*"</span>
+  <span class="string">",japanese-jisx0208:-apple-osaka-*"</span>
+  <span class="string">",katakana-jisx0201:-apple-osaka-*"</span>))
+
+(create-fontset-from-fontset-spec
+ (concat
+  <span class="string">"-*-fixed-medium-r-normal--10-*-*-*-*-*-fontset-proggy"</span>
+  <span class="string">",ascii:-apple-proggycleanttsz-medium-r-normal--16-120-72-72-m-120-*-*"</span>
+  <span class="string">",japanese-jisx0208:-apple-osaka-*"</span>
+  <span class="string">",katakana-jisx0201:-apple-osaka-*"</span>))
+
+(set-<span class="keyword">default</span>-font <span class="string">"fontset-tobi"</span>)
+</code></pre>
+<p>CodingFontTobi と Proggy のフォントセットを定義して気分で使い分けてる。</p>
+<p>デフォルトの Monaco+ヒラギノ も捨てがたく、たまに使いたくなったりするのでアンチエイリアスは</p>
+<pre><code>;; アンチエイリアストグル
+(defun my-mac-toggle-antialias ()
+  (interactive)
+  (if mac-allow-anti-aliasing
+      (setq mac-allow-anti-aliasing nil)
+    (setq mac-allow-anti-aliasing t)))
+</code></pre>
+<p>こんなんでトグルできるようにしてる。この関数よびだしたあと画面が更新されると反映される。</p>
+<p>こういう環境依存のコードは今までは自前で環境見てロードしていたのだけど、<a href="http://d.hatena.ne.jp/IMAKADO">id:IMAKADO</a> さんが公開してくれた <a href="http://svn.coderepos.org/share/lang/elisp/init-loader/init-loader.el">init-loader</a> 使うと <code>carbon-emacs-*</code> とか言うファイルは CarbonEmacs の時だけ読む、とかできて便利。</p>
+
+  </div>
+
+  <div class="meta">
+    by typester /
+    at <a href="/memo/2009/01/20/2/">2009-01-20T16:06:00</a> /
+    <a href="/memo/tag/emacs/">emacs</a>
+    / <a href="/memo/2009/01/20/2/#disqus_thread">Comment</a>
+  </div>
+</div>
+
+<div class="entry autopagerize_page_element">
+  <h2 id="e001"><a href="/memo/2009/01/20/1/">CarbonEmacsを使ってみる</a></h2>
+
+  <div class="body">
+    <p>先週 <a href="http://d.hatena.ne.jp/IMAKADO">id:IMAKADO</a> さんにあって、<code>emacs</code> 使いこなしててかっこよかったので影響されて僕も GUI な emacs が使いたくなったのでこの間書いた <a href="http://unknownplace.org/memo/2008/11/06#e001">Cocoa Emacs</a> を使い出そうとしたんだけど、なんかどうがんばってもバッファを縦分割したときのボーダーを表示させることが出来ないという理由であきらめた。(フリンジは消したかった)</p>
+<p>なので CarbonEmacs を入れた。こっちはなんかボーダー出た。</p>
+<p>Cocoa Emacs なら multitty で端末内でファイル開いちゃえばいいんだけど、CarbonEmacs にはそれがないので普通に emacsclient で開き、閉じたら端末にフォーカスが戻るという設定を書いた。</p>
+<p>具体的には emacsclient で開いたときは勝手に CarbonEmacs がアクティブになるので、CarbonEmacs 側で閉じたときに端末に戻るように、</p>
+<pre><code>;; emacsclient&#12391;&#38283;&#12356;&#12383;&#31471;&#26411;&#12434;&#12450;&#12463;&#12486;&#12451;&#12502;&#12395;&#12377;&#12427;&#12290;&#12392;&#12426;&#12354;&#12360;&#12378;iTerm&#27770;&#12417;&#12358;&#12385;
+(add-hook <span class="warning">'</span><span class="string">server-done-hook
+          (lambda ()
+            (do-applescript "tell application \"iTerm\"
+                                activate
+                             end")))
+</span></code></pre>
+<p>とするだけでOKだった。</p>
+
+  </div>
+
+  <div class="meta">
+    by typester /
+    at <a href="/memo/2009/01/20/1/">2009-01-20T11:28:00</a> /
+    <a href="/memo/tag/emacs/">emacs</a>
+    / <a href="/memo/2009/01/20/1/#disqus_thread">Comment</a>
+  </div>
+</div>
+
+
+
+</div>
+
+<p id="footer">
+  Copyright &copy; 2005-2013
+      by <a class="author" href="/about/#me">Daisuke Murase (typester)</a> /
+  Site generated by <a href="https://github.com/typester/nim">nim</a> /
+  Comments powered by <a href="http://disqus.com">DISQUS</a>.
+</p>
+
+</div>
+
+
+<script type="text/javascript">
+//<![CDATA[
+(function() {
+	var links = document.getElementsByTagName('a');
+	var query = '?';
+	for(var i = 0; i < links.length; i++) {
+	if(links[i].href.indexOf('#disqus_thread') >= 0) {
+		query += 'url' + i + '=' + encodeURIComponent(links[i].href) + '&';
+	}
+	}
+	document.write('<script charset="utf-8" type="text/javascript" src="http://disqus.com/forums/unknownplace/get_num_replies.js' + query + '"></' + 'script>');
+})();
+//]]>
+</script>
+
+
+<script type="text/javascript">
+var gaJsHost = (("https:" == document.location.protocol) ? "https://ssl." : "http://www.");
+document.write(unescape("%3Cscript src='" + gaJsHost + "google-analytics.com/ga.js' type='text/javascript'%3E%3C/script%3E"));
+</script>
+<script type="text/javascript">
+try {
+var pageTracker = _gat._getTracker("UA-53067-1");
+pageTracker._trackPageview();
+} catch(err) {}</script>
+
+<script>
+function googleTranslateElementInit() {
+  new google.translate.TranslateElement({
+    pageLanguage: 'ja',
+    gaTrack: true,
+    gaId: 'UA-53067',
+    floatPosition: google.translate.TranslateElement.FloatPosition.BOTTOM_RIGHT
+  });
+}
+</script><script src="//translate.google.com/translate_a/element.js?cb=googleTranslateElementInit"></script>
+
+</body>
+</html>

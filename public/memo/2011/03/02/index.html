@@ -1,0 +1,129 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="ja" xml:lang="ja">
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <title>2011/03/02 - memo - unknownplace.org</title>
+  <link rel="stylesheet" type="text/css" href="http://yui.yahooapis.com/3.0.0/build/cssreset/reset-min.css" />
+  <link rel="stylesheet" type="text/css" href="http://yui.yahooapis.com/3.0.0/build/cssfonts/fonts-min.css" />
+  <link rel="stylesheet" href="/css/style.css" type="text/css" />
+  <meta property="fb:admins" content="1093631929" />
+  <meta name="robots" content="noindex" />
+  <link rel="alternate" type="application/rss+xml" href="http://unknownplace.org/memo/index.rss" />
+</head>
+<body>
+
+<div id="container">
+<div id="header">
+    <h1><a href="/">unknownplace.org</a></h1> /
+<a href="/memo/">memo</a>
+</div>
+
+<div id="content">
+
+<div class="entry autopagerize_page_element">
+  <h2 id="e001"><a href="/memo/2011/03/02/1/">bREADER の PDF リフロー表示機能が素晴らしい件</a></h2>
+
+  <div class="body">
+    <p><a href="http://itunes.apple.com/jp/app/bb2c/id298820042?mt=8">BB2C</a> というiPhone用の2chビューワアプリがあるのですが、このアプリは2chビューワとしての評価が高いだけではなく、その凄まじく軽快な動作からiPhoneアプリ開発者で知らない人はモグリだと言われるくらいの良アプリなのです。 最近その<a href="http://vtns.wordpress.com/">作者のブログ</a> に電子書籍の話題が出ていて気になっていたのですが、どうやら次は電子書籍リーダーアプリを開発していたらしい。それが <a href="http://itunes.apple.com/jp/app/id411884081?mt=8">bREADER</a>。</p>
+<p>iPad を買って以来書籍はPDFにして読むのがメインになっていて、大体はi文庫HDで、検索が必要なときはiBooksかMac上で読んでます。</p>
+<p>この環境におおむね満足しているのだけど、電車の中で座れなかったときに本を読もうと思っても iPad を出すのはきびしいし、かといって iPhone だと PDF を等倍表示ではきびしいものがある。(Retinaならよめないことはないけど…) 拡大したら拡大したで、1ページを読むのにページ内をぐるぐるスクロールしつつ読まなくてはいけなくなり大変苦痛である。 文字を拡大したぶんだけページがずれていってくれるePubや青空文庫みたいな形式でなければiPhoneではきびしいなーと思っていました。bREADERをしるまでは！</p>
+<p>この問題はがんばって紙の書籍をスキャンしてPDF化している現状が問題であって、出版社がePubみたいなので最初から電子出版してくれれば解決なんだからそれまで待とう…。 と普通の人は考えます。bREADERの作者はそういう発想はないらしく、力技でこの問題を解決しようとしているようです。</p>
+<p>詳しくは先ほどリンクしたブログを参照していただくとして、手持ちのPDFで試してみた結果を紹介します。</p>
+<p>まずこれがPDFをそのまま表示した時。（iPhoneの画面だとわかりにくいのでわざとコントロールを表示した画面にしています）</p>
+<p><a href="http://www.flickr.com/photos/typester/5491579292/" title="bREADER 通常表示 by typester, on Flickr"><img alt="bREADER 通常表示" height="500" src="http://farm6.static.flickr.com/5211/5491579292_5c9fd02c6c.jpg" width="333" /></a></p>
+<p>iPhoneの普通のPDFリーダーはみんなこんな感じに表示されてしまいます。Retinaディスプレイを搭載したiPhone4でやっとよめるというくらいですが、それでも小さくてつらいです。 つぎに bREADER がうまいことやってくれたあとの画面を見てみましょう</p>
+<p><a href="http://www.flickr.com/photos/typester/5490984773/" title="bREADER リフロー表示 by typester, on Flickr"><img alt="bREADER リフロー表示" height="500" src="http://farm6.static.flickr.com/5011/5490984773_1b3e07f7ef.jpg" width="333" /></a></p>
+<p>このようにまるでePubかと思うような拡大処理をしてくれてものすごく読みやすくなります。 そしてこのアプリの動作自体も BB2C を彷彿とさせる軽快さで、サクサク読み進められます。これはPDF化をがんばってる人でiPhoneのような小さいデバイスで本を読みたいと思っていた人には夢のようなアプリですね！</p>
+<p>ただし現状ではPDFがそのまま自動で上のようなリフロー表示（というらしい）になってくれるわけではありません。ちょっとごにょっと作業をして上げる必要があります。</p>
+<h4>bREADER で PDF をリフロー表示に対応させる手順</h4>
+<p>リフロー表示を行うにはあらかじめMacかPCで書籍の文字情報を解析してメタ情報ファイルを作ってあげる必要があります。 作者がサイト上でそのための<a href="http://vtns.wordpress.com/brc-1/">brc</a>というツールを配布してくださっています。 が、そのツールはPDFに対応していませんのでまずはPDFをPNGとかなんか画像ファイルに変換してあげるという作業が必要になります。</p>
+<ol><li>PDFを連番のPNG画像に変換</li><li>brcでメタ情報ファイルを作成</li><li>zipでかためてbREADERに転送</li></ol>
+<p>ってなかんじになります。</p>
+<h4>PDFを連番のPNG画像に変換</h4>
+<p>これをどうやろうかとおもいまして、最初に Preview.app を試してみたのですがどうも1ページずつしかPNGに保存できないっぽくあきらめ、OSX の機能をつかった pdf2png を適当にでっちあげた。</p>
+<blockquote><p><a href="https://gist.github.com/850786">https://gist.github.com/850786</a></p></blockquote>
+<p>こいつを</p>
+<pre><code>$ gcc -framework Cocoa pdf2png.m -o pdf2png
+</code></pre>
+<p>とかでビルドしてあげて、</p>
+<pre><code>$ ./pdf2png foobar.pdf ./foobar
+</code></pre>
+<p>みたいにすると foobar.pdf を 0001.png みたいな連番の画像にして foobar ディレクトリに保存してくれると言う感じ。出力先のディレクトリはあらかじめ存在している必要があります。 PDFのスケーリングがよくわからなかったので適当に設定してあり、そこは誰か良い感じに書き直してくれればと…！ あと <code>CGBitmapContextCreate</code> の第一引数にNULLをわたしていてそこが OS X 10.6 依存です。それ以前のでうごかしたいときは <code>malloc(w*h*4)</code> したの食わせとけばいいです。</p>
+<h4>brcでメタ情報ファイルを作成</h4>
+<p>先ほど生成した連番PNGが入っているディレクトリを brc コマンドに食わせる</p>
+<pre><code>$ brc ./foobar
+</code></pre>
+<p>これでそのディレクトリに d.brd というファイルが生成されていれば成功。</p>
+<h4>zipでかためてbREADERに転送</h4>
+<pre><code>$ zip -0 foobar.zip *.png d.brd
+</code></pre>
+<p>みたいにして png と d.brd がふくまれた zip ファイルを作り、あとはそれを iTunes で bREADER のデーターフォルダに転送してあげればOK。簡単ですね。</p>
+<h4>まとめ</h4>
+<p>と、ここまで絶賛してきましたが現状では、ページ上部に常に出ている章の名前とか欄外に脚注なんかがあったりすると表示がおかしくなったりします。 とはいえそれでもiPhone上ではこの表示モードを使おうと言うくらいのレベルに既になっていると思います。これはほんとにすごい。</p>
+<p>今後、bREADERもbrcも便利になっていくだろうし、brcはいらなくなる可能性もあるし、非常に楽しみですね！</p>
+<p>bREADER 現バージョンの不満点をあげるとすればアプリ内に時計表示がどこにもなくアプリを落とさない限り時間がわからない、ということくらいでしょうか。 自炊派も、業者派も、iPhoneでPDF（書籍）を読む人すべてにおすすめなアプリです！</p>
+
+  </div>
+
+  <div class="meta">
+    by typester /
+    at <a href="/memo/2011/03/02/1/">2011-03-02T19:17:00</a> /
+    <a href="/memo/tag/iphone/">iphone</a>
+    / <a href="/memo/2011/03/02/1/#disqus_thread">Comment</a>
+  </div>
+</div>
+
+
+
+</div>
+
+<p id="footer">
+  Copyright &copy; 2005-2013
+      by <a class="author" href="/about/#me">Daisuke Murase (typester)</a> /
+  Site generated by <a href="https://github.com/typester/nim">nim</a> /
+  Comments powered by <a href="http://disqus.com">DISQUS</a>.
+</p>
+
+</div>
+
+
+<script type="text/javascript">
+//<![CDATA[
+(function() {
+	var links = document.getElementsByTagName('a');
+	var query = '?';
+	for(var i = 0; i < links.length; i++) {
+	if(links[i].href.indexOf('#disqus_thread') >= 0) {
+		query += 'url' + i + '=' + encodeURIComponent(links[i].href) + '&';
+	}
+	}
+	document.write('<script charset="utf-8" type="text/javascript" src="http://disqus.com/forums/unknownplace/get_num_replies.js' + query + '"></' + 'script>');
+})();
+//]]>
+</script>
+
+
+<script type="text/javascript">
+var gaJsHost = (("https:" == document.location.protocol) ? "https://ssl." : "http://www.");
+document.write(unescape("%3Cscript src='" + gaJsHost + "google-analytics.com/ga.js' type='text/javascript'%3E%3C/script%3E"));
+</script>
+<script type="text/javascript">
+try {
+var pageTracker = _gat._getTracker("UA-53067-1");
+pageTracker._trackPageview();
+} catch(err) {}</script>
+
+<script>
+function googleTranslateElementInit() {
+  new google.translate.TranslateElement({
+    pageLanguage: 'ja',
+    gaTrack: true,
+    gaId: 'UA-53067',
+    floatPosition: google.translate.TranslateElement.FloatPosition.BOTTOM_RIGHT
+  });
+}
+</script><script src="//translate.google.com/translate_a/element.js?cb=googleTranslateElementInit"></script>
+
+</body>
+</html>

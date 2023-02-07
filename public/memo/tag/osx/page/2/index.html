@@ -1,0 +1,446 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="ja" xml:lang="ja">
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <title>memo - unknownplace.org</title>
+  <link rel="stylesheet" type="text/css" href="http://yui.yahooapis.com/3.0.0/build/cssreset/reset-min.css" />
+  <link rel="stylesheet" type="text/css" href="http://yui.yahooapis.com/3.0.0/build/cssfonts/fonts-min.css" />
+  <link rel="stylesheet" href="/css/style.css" type="text/css" />
+  <meta property="fb:admins" content="1093631929" />
+  <meta name="robots" content="noindex" />
+  <link rel="alternate" type="application/rss+xml" href="http://unknownplace.org/memo/index.rss" />
+</head>
+<body>
+
+<div id="container">
+<div id="header">
+    <h1><a href="/">unknownplace.org</a></h1> /
+<a href="/memo/">memo</a>
+</div>
+
+<div id="content">
+
+<div class="entry autopagerize_page_element">
+  <h2><a href="/memo/2011/11/18/1/">Growl 1.3.1 と Skype</a></h2>
+
+  <div class="body">
+    <p>ひさしぶりにMacを再起動したらSkypeがGrowlを認識しなくなった。</p>
+<p>そういえばGrowlを1.3.1にしてから再起動していなかった。原因はそれだろうと<a href="http://community.skype.com/t5/Skype-5-4-Beta-for-Mac/Growl-1-3-amp-Skype/td-p/195142">Support Forum</a>をのぞいてみると同様の問題を持った人がいっぱいいて、そこに解決法も書かれていた。</p>
+<p>Skypeに内蔵されてるGrowl.frameworkが古いからそれをアップデートしてやればOKということらしい。</p>
+<p>フレームワークのアップデートは自分でファイルを置き換えても良いが、Growl公式サイトでそれ用のツール、Growl Version Detectiveが配布されているのでそれを使用すると良い。</p>
+<blockquote><p><a href="http://growl.info/downloads">Growl - Downloads</a></p></blockquote>
+<p>アプリはこんな感じで、</p>
+<p><a href="http://www.flickr.com/photos/typester/6356048657/" title="Growl Version Detective by typester, on Flickr"><img alt="Growl Version Detective" height="683" src="http://farm7.static.flickr.com/6044/6356048657_1884a847a0_o.png" width="814" /></a></p>
+<p>Skypeを選択してUpdate FWを押すだけで入れ替わる。</p>
+
+  </div>
+
+  <div class="meta">
+    by typester /
+    at <a href="/memo/2011/11/18/1/">2011-11-18T10:23:00</a> /
+    <a href="/memo/tag/osx/">osx</a>
+    / <a href="/memo/2011/11/18/1/#disqus_thread">Comment</a>
+  </div>
+</div>
+
+<div class="entry autopagerize_page_element">
+  <h2><a href="/memo/2011/08/06/1/">Emacs を Lion のフルスクリーン表示に対応させてみた</a></h2>
+
+  <div class="body">
+    <p>git の emacs-23 ブランチに対するパッチ：</p>
+<blockquote><p><a href="https://github.com/downloads/typester/emacs/emacs-23-lion-fullscreen-test.patch">emacs-23-lion-fullscreen-test.patch</a></p></blockquote>
+<p>作ってみたものの、今までのフルスクリーンのほうがデスクトップの背景が Emacs な感じで便利。 っていうわけでお蔵入りかなぁ。</p>
+
+  </div>
+
+  <div class="meta">
+    by typester /
+    at <a href="/memo/2011/08/06/1/">2011-08-06T17:29:00</a> /
+    <a href="/memo/tag/emacs/">emacs</a>
+    &middot; <a href="/memo/tag/osx/">osx</a>
+    / <a href="/memo/2011/08/06/1/#disqus_thread">Comment</a>
+  </div>
+</div>
+
+<div class="entry autopagerize_page_element">
+  <h2><a href="/memo/2011/08/01/1/">Lion ドックの殺しても殺しても復活してくるアイコン</a></h2>
+
+  <div class="body">
+    <p>MissionControl とか AppStore とかのアイコンがドックから消しても消しても再起動するたびに復活してきて大変うざいですが、それらの設定は</p>
+<pre><code>/Library/Preferences/com.apple.dockfixup.plist
+</code></pre>
+<p>の <code>add-app</code> ってところで定義されている模様。</p>
+<pre><code>$ sudo defaults delete /Library/Preferences/com.apple.dockfixup &apos;add-app&apos;
+</code></pre>
+<p>で、全部消しちゃえる。</p>
+
+  </div>
+
+  <div class="meta">
+    by typester /
+    at <a href="/memo/2011/08/01/1/">2011-08-01T10:49:00</a> /
+    <a href="/memo/tag/osx/">osx</a>
+    / <a href="/memo/2011/08/01/1/#disqus_thread">Comment</a>
+  </div>
+</div>
+
+<div class="entry autopagerize_page_element">
+  <h2><a href="/memo/2011/07/27/2/">Lion の /usr/bin/perl とその設定</a></h2>
+
+  <div class="body">
+    <blockquote><p><a href="http://twitter.com/kazuho/status/96099885094412288">http://twitter.com/kazuho/status/96099885094412288</a></p><p>@kazuho: /usr/bin/perl は defaults を見て設定されたバージョンの perl を exec するラッパーじゃないかな</p></blockquote>
+<p>ということで、man 引いてみたらそう言うようなことが書いてありました。kazuho++</p>
+<p>これはじめてしったんですが、 OSX の perl コマンドは <code>defaults</code> や環境変数によって実行バージョンやアーキテクチャを変更できるらしい。</p>
+<pre><code>$ defaults write com.apple.versioner.perl Version 5.10
+</code></pre>
+<p>とすれば 5.10 がデフォルトになったり、</p>
+<pre><code>$ defaults write com.apple.versioner.perl Prefer-32-Bit -bool yes
+</code></pre>
+<p>とかすればさっき<a href="http://unknownplace.org/memo/2011/07/27/1/">意味ないって書いた</a>32bit版のバイナリをつかうようになるみたい。</p>
+<p>環境変数でも設定できたり、ユーザーレベルじゃなくシステムレベルでも設定できるようです。詳しくは <code>man perl</code> してみてください。</p>
+
+  </div>
+
+  <div class="meta">
+    by typester /
+    at <a href="/memo/2011/07/27/2/">2011-07-27T15:21:00</a> /
+    <a href="/memo/tag/osx/">osx</a>
+    &middot; <a href="/memo/tag/perl/">perl</a>
+    / <a href="/memo/2011/07/27/2/#disqus_thread">Comment</a>
+  </div>
+</div>
+
+<div class="entry autopagerize_page_element">
+  <h2><a href="/memo/2011/07/27/1/">Lion の Perl とアーキテクチャ</a></h2>
+
+  <div class="body">
+    <p><a href="http://unknownplace.org/memo/2010/01/08/1/">Snow Leopard の Perl とアーキテクチャ</a> の Lion 版。</p>
+<p>インストールされてるPerlは3つ:</p>
+<pre><code>/usr/bin/perl
+This is perl 5, version 12, subversion 3 (v5.12.3) built for darwin-thread-multi-2level
+
+/usr/bin/perl5.12
+This is perl 5, version 12, subversion 3 (v5.12.3) built for darwin-thread-multi-2level
+
+/usr/bin/perl5.10
+This is perl, v5.10.1 (*) built for darwin-thread-multi-2level
+</code></pre>
+<p><code>/usr/bin/perl</code> と <code>/usr/bin/perl5.12</code> は同じかと思いきやサイズがだいぶ違う。といっても <code>perl -V</code> の出力は全く同じでなぞだが…。(i386の方のバイナリが違うのかもしれない)</p>
+<p>それぞれユニバーサルバイナリとなっていて、</p>
+<pre><code>$ file /usr/bin/perl
+/usr/bin/perl: Mach-O universal binary with 2 architectures
+/usr/bin/perl (for architecture x86_64):        Mach-O 64-bit executable x86_64
+/usr/bin/perl (for architecture i386):  Mach-O executable i386
+
+$ file /usr/bin/perl5.12
+/usr/bin/perl5.12: Mach-O universal binary with 2 architectures
+/usr/bin/perl5.12 (for architecture x86_64):    Mach-O 64-bit executable x86_64
+/usr/bin/perl5.12 (for architecture i386):      Mach-O executable i386
+
+$ file /usr/bin/perl5.10
+/usr/bin/perl5.10: Mach-O universal binary with 2 architectures
+/usr/bin/perl5.10 (for architecture x86_64):    Mach-O 64-bit executable x86_64
+/usr/bin/perl5.10 (for architecture i386):      Mach-O executable i386
+</code></pre>
+<p>という感じで、Snow Leopard の時と違ってアーキテクチャは統一されている。 ppc は完全に切り捨てられてますね。現状 64bit 対応していない CPU では Lion のインストールできないとおもうので i386 バイナリもあまりついている意味はないと思うが…。</p>
+<p>また Snow Leopard のときは <code>/usr/bin/perl5.8.9</code> などとフルバーション表記のバイナリだったが、<code>5.12</code> とかいうバイナリになっているのでもしかしたらソフトウェアアップデートでバージョンをあげることも考えているのかもしれない。</p>
+<h3>追記</h3>
+<p><code>/usr/bin/perl</code> について指摘があり追記しました。</p>
+<blockquote><p><a href="http://unknownplace.org/memo/2011/07/27/2/">Lion の /usr/bin/perl とその設定</a></p></blockquote>
+
+  </div>
+
+  <div class="meta">
+    by typester /
+    at <a href="/memo/2011/07/27/1/">2011-07-27T13:41:00</a> /
+    <a href="/memo/tag/perl/">perl</a>
+    &middot; <a href="/memo/tag/osx/">osx</a>
+    / <a href="/memo/2011/07/27/1/#disqus_thread">Comment</a>
+  </div>
+</div>
+
+<div class="entry autopagerize_page_element">
+  <h2><a href="/memo/2011/07/26/1/">Lion インストール雑感</a></h2>
+
+  <div class="body">
+    <p>DVD 作ってクリーンインストールし、数日間使用しております。</p>
+<p>クリーンインストールしてもリカバリ領域はできる罠：</p>
+<pre><code>/dev/disk0
+   #:                       TYPE NAME                    SIZE       IDENTIFIER
+   0:      GUID_partition_scheme                        *121.3 GB   disk0
+   1:                        EFI                         209.7 MB   disk0s1
+   2:                  Apple_HFS Macintosh HD            120.5 GB   disk0s2
+   3:                 Apple_Boot Recovery HD             650.0 MB   disk0s3
+</code></pre>
+<p>ソフトウェアは必要なものだけTime Machineから復元インストールって感じでやっていて、全部試せてませんが、 いまのところ使用ソフトウェアでそのまま動かなかったものは MacFUSE のみ。これは Macbook Air も 64bit カーネルで起動するようになったため。</p>
+<p>64bit対応の情報は<a href="http://www.offthehill.org/articles/2010/12/31/macfuse-for-64-bit-snow-leopard/">ここ</a>の情報が一番参考になりました。 また、<a href="https://github.com/osxfuse">osxfuse</a>っていう新しいプロジェクトも始まってるようです。（これはまだリリースされてないのでいまのところは↑の記事を参考にするといい）</p>
+<p>Emacsやらなんやらは復元したものがそのまま使えております。</p>
+<p>あと、perlbrew も問題があったようですが次期リリースで修正される模様。 （それまでは<a href="http://www.perlbrew.pl/FixLion.html">ここ</a>を参考に）</p>
+<p>あとはデフォルトではダブルタップによるドラッグができなかったり、Ctrl＋スクロールでの画面拡大ができなかったりしますが、 これはどちらも<strong>ユニバーサルアクセス</strong>の項目に移動しております。トラックパッドの設定にないのでできなくなったのかと思いましたよ！</p>
+<p>xcodeのインストール中にiTunes落としてるのにiTunesを終了してくださいっていわれるときはおそらく裏でiTunesHelperが動いてるので殺してしまえばOKです。</p>
+<p>OSの新機能ですがもともとExposeもほとんど使ってなく、Spacesに至っては使用していなかったため、おそらくMissionControlもあまり使わないでしょう…。 Preview.appのフルスクリーンは結構良いですね。相変わらず左開きに対応しておりませんが、技術書とかにはなかなかいいです。</p>
+<p>あと、UIのフォントがなんか詰まっていて違和感がありますがこれは何が変わったんだろう？</p>
+
+  </div>
+
+  <div class="meta">
+    by typester /
+    at <a href="/memo/2011/07/26/1/">2011-07-26T10:19:00</a> /
+    <a href="/memo/tag/osx/">osx</a>
+    / <a href="/memo/2011/07/26/1/#disqus_thread">Comment</a>
+  </div>
+</div>
+
+<div class="entry autopagerize_page_element">
+  <h2><a href="/memo/2011/03/09/1/">OS X の Keychain Access.app に公開鍵をインポれない問題</a></h2>
+
+  <div class="body">
+    <p>いわく</p>
+<blockquote><p>エラーが発生しました。項目を読み込めません。</p></blockquote>
+<p>適当にググったところ、</p>
+<pre><code>$ security import pub_key.pem -k ~/Library/Keychains/login.keychain
+</code></pre>
+<p>とかすると取り込めるみたい。やってみたらちゃんとできました。</p>
+<p>See also:</p>
+<blockquote><p><a href="http://www.arlt.eu/blog/2009/12/01/importing-iphone-keys-p12-and-pem-into-snow-leopards-keychain/">Importing iPhone Keys (P12 and PEM) into Snow Leopard&apos;s Keychain</a></p></blockquote>
+
+  </div>
+
+  <div class="meta">
+    by typester /
+    at <a href="/memo/2011/03/09/1/">2011-03-09T21:46:00</a> /
+    <a href="/memo/tag/osx/">osx</a>
+    / <a href="/memo/2011/03/09/1/#disqus_thread">Comment</a>
+  </div>
+</div>
+
+<div class="entry autopagerize_page_element">
+  <h2><a href="/memo/2011/02/03/1/">OSX で tmpfs 的なことをする方法</a></h2>
+
+  <div class="body">
+    <p>MacBook Air 上で <code>Test::mysqld</code> なテストを走らせていると SSD の寿命縮めそうだなーとおもって tmpfs 的なものが OS X にもないものかと検索したら <code>hdid(8)</code> でできるとのこと。 man の一番下のほうに例が載っている。</p>
+<pre><code>$ hdid -nomount ram://128000
+/dev/disk1
+</code></pre>
+<p>これでメモリから128000セクタ（1セクタ512バイトなので62.5MB）分とって仮想ディスクをつくり、</p>
+<pre><code>$ newfs_hfs /dev/disk1
+Initialized /dev/rdisk1 as a 63 MB HFS Plus volume
+</code></pre>
+<p>HFSで初期化して、あとは普通に</p>
+<pre><code>$ mkdir /tmp/mnt
+$ mount -t hfs /dev/disk1 /tmp/mnt
+</code></pre>
+<p>でマウントすればOK。</p>
+<p>作ったディスクの破棄には</p>
+<pre><code>$ hdidutil detach /dev/disk1
+<span class="string">"disk1"</span> unmounted.
+<span class="string">"disk1"</span> ejected.
+</code></pre>
+<p>とかでいいらしい。</p>
+
+  </div>
+
+  <div class="meta">
+    by typester /
+    at <a href="/memo/2011/02/03/1/">2011-02-03T12:47:00</a> /
+    <a href="/memo/tag/osx/">osx</a>
+    / <a href="/memo/2011/02/03/1/#disqus_thread">Comment</a>
+  </div>
+</div>
+
+<div class="entry autopagerize_page_element">
+  <h2><a href="/memo/2011/01/14/1/">ことえりのアイコンをATOKでつかう</a></h2>
+
+  <div class="body">
+    <p>セットアップメモに書き忘れたけど、ATOKのメニューバーアイコンがあまり好きじゃないのでことえりのアイコンをコピーしてきて使ってる。</p>
+<p><a href="http://www.flickr.com/photos/typester/5353694512/" title="use Kotoeri icon with ATOK by typester, on Flickr"><img alt="use Kotoeri icon with ATOK" height="88" src="http://farm6.static.flickr.com/5050/5353694512_0d3b4d7d91_o.png" width="400" /></a></p>
+<p>まずバックアップとっておいて：</p>
+<pre><code>$ cd /Library/Input\ Methods/ATOK23.app/Contents/Resources
+$ for f in Roman{,Button,Selected}.tif; do sudo cp $f ${f}.bak; done
+$ for f in Hiragana{,Button,Selected}.tif; do sudo cp $f ${f}.bak; done
+</code></pre>
+<p>アイコンコピー：</p>
+<pre><code>$ sudo cp /System/Library/Input\ Methods/Kotoeri.app/Contents/Resources/FullRoman.tif RomanSelected.tif
+$ sudo cp /System/Library/Input\ Methods/Kotoeri.app/Contents/Resources/FullRomanButton.tif RomanButton.tif
+$ sudo cp /System/Library/Input\ Methods/Kotoeri.app/Contents/Resources/FullRomanSelected.tif Roman.tif
+
+$ sudo cp /System/Library/Input\ Methods/Kotoeri.app/Contents/Resources/Hiragana.tif HiraganaSelected.tif
+$ sudo cp /System/Library/Input\ Methods/Kotoeri.app/Contents/Resources/HiraganaButton.tif HiraganaButton.tif
+$ sudo cp /System/Library/Input\ Methods/Kotoeri.app/Contents/Resources/HiraganaSelected.tif Hiragana.tif
+</code></pre>
+<p>英数とひらがな入力しか使わないのでその二つのアイコンしか置き換えていない。 あと、全角英数のアイコンをつかっているのはそっちのほうがかわいいから。</p>
+<p>いまの悩みは ESET Cybersecurity のアイコンがかわいくないこと。</p>
+
+  </div>
+
+  <div class="meta">
+    by typester /
+    at <a href="/memo/2011/01/14/1/">2011-01-14T12:09:00</a> /
+    <a href="/memo/tag/osx/">osx</a>
+    &middot; <a href="/memo/tag/atok/">atok</a>
+    / <a href="/memo/2011/01/14/1/#disqus_thread">Comment</a>
+  </div>
+</div>
+
+<div class="entry autopagerize_page_element">
+  <h2><a href="/memo/2011/01/13/1/">MacBook Air セットアップメモ</a></h2>
+
+  <div class="body">
+    <p>11インチのやつ、買いましたよ。よくあるセットアップメモを残す。 SSDの容量が心許ないので、バックアップからの復元はしないで新規で設定した。</p>
+<h4>OS 再インストール</h4>
+<p>まずやっぱ最初はこれ。目的は<strong>大文字小文字を区別するファイルシステムでパーティションを切りなおす</strong>ということのみ。 デフォルトのファイルシステムではWindowsなどとおなじように大文字小文字を区別しない。そういう環境ではたとえば</p>
+<pre><code><span class="preprocessor">#include</span> <span class="string">&lt;STDIO.h&gt;</span>
+</code></pre>
+<p>とか言うコードも通ってしまう。そういう気がつかないうちに仕込まれる各種トラブルの種は気持ち悪いよね。</p>
+<p>注意点としてはAdobe製のソフトはそういうトラブルの種を抱えたコーディングをされているらしいものが多いようで、このファイルシステムにすると動作しないものが結構あるらしい。たとえばPhotoshopは最新版でもうごかないみたい。 （Lightroomは大丈夫）</p>
+<h4>ソフトウェアアップデート</h4>
+<p>とりあえず最新にしておく。</p>
+<h4>ESET Cybersecurity for Mac</h4>
+<p>アンチウィルスソフトはカルペルスキーを使ってきたけど、そんな満足してないってのと、NOD32でおなじみのESETからもMac用のソフトが出たみたいなのでとりあえずその試用版を試してみる。</p>
+<h4>1Password</h4>
+<p>パスワード管理ツール。データはいままでのMacからインポート。</p>
+<h4>Google Chrome</h4>
+<p>もはやこれがメインブラウザ。データまわりはChrome自体でGoogleアカウントいれれば同期が可能。楽ちん。</p>
+<h4>ATOK</h4>
+<p>Macにしてからずっと使ってるので。 これまた設定はいままでのMacからインポート。</p>
+<h4>KeyRemap4Macbook</h4>
+<p>キーバインド変更ツール。キーリピートを高速にしたり、ターミナルで左Commandをメタキーにしたりもろもろキー設定をこれで変更。必須ツール。</p>
+<h4>iTerm2</h4>
+<p>ターミナルはこれ。既存のMacから <code>~/Library/Preferences/com.googlecode.iterm2.plist</code> をコピーすれば設定引き継げる。</p>
+<p>そこで使ってるフォント、CodingFontTobiも入れておく。</p>
+<h4>Quicksilver</h4>
+<p>ランチャー。<a href="http://jibun.atmarkit.co.jp/ljibun01/cs/201001/03/01.html">キーボードトリガーでのアプリケーション切り替え</a>がやっぱり便利。</p>
+<ul><li>Cmd-[ = Emacs</li><li>Cmd-] = iTerm</li><li>Cmd-&apos; = Google Chrome</li></ul>
+<p>って感じで割り当てている。</p>
+<h4>xcode (iOS SDK)</h4>
+<p>gcc など開発ツールのためにインストールは必須。現在は iPhone SDK が xcode も内包しているためiPhone開発をする場合はそれを入れればいい。</p>
+<h4>perlbrew</h4>
+<p>perlbrew で perl と cpanm をいれる</p>
+<pre><code>$ perlbrew install perl-5.12.2 --as 5.12.2
+$ perlbrew install-cpanm
+</code></pre>
+<h4>homebrew</h4>
+<p>homebrew でいろいろいれる</p>
+<pre><code>$ brew install wget
+$ brew install git
+$ brew install tig
+$ brew install lv
+</code></pre>
+<p>などなど。homebrewは<code>/usr/local</code>ではなく<code>~/homebrew</code>で運用。いやー便利ですね！</p>
+<h4>Emacs</h4>
+<pre><code>$ wget http://ftp.gnu.org/pub/gnu/emacs/emacs-23.2.tar.bz2
+$ tar -jxvf emacs-23.2.tar.bz2
+$ cd emacs-23.2
+$ wget https://github.com/downloads/typester/emacs/feature-fullscreen.patch
+$ wget https://github.com/downloads/typester/emacs/fix-shiftmodifier-with-ime.patch
+$ patch -p1 &lt; feature-fullscreen.patch
+$ patch -p1 &lt; fix-shiftmodifier-with-ime.patch
+$ ./configure --with-ns --without-x
+$ make install
+</code></pre>
+<p>で、nextstepディレクトリ以下にEmacs.appができるのでそれを/Applicationsに移動。設定とかは既存の環境からもってきた。</p>
+<h4>encfs</h4>
+<p>sshの秘密鍵とか、Config::Pitの設定ファイルとかはencfsで暗号化した領域に保存するようにしている。 これのインストールが大変面倒だったんだけど、homebrew のおかげですごい楽に入れられるようになった。</p>
+<p><a href="http://code.google.com/p/macfuse/">http://code.google.com/p/macfuse/</a> から MacFUSE の最新版をとってきてインストールしてそのあと、</p>
+<pre><code>$ brew install encfs
+</code></pre>
+<p>でOK。ただ、/usr/local 以外で運用している場合、依存している boost ライブラリ周りでエラーになるみたい。</p>
+<pre><code>$ brew install -vd encfs
+</code></pre>
+<p>としてあげるとエラーになったところでシェルに入ってくれるので、そこで自分でビルドする。 具体的には configure に <code>--with-boost=</code> オプションをつけてあげるだけで良い。あとで Formula に追加してパッチ送ろうかと思う。</p>
+<pre><code>$ ./configure ...
+$ make
+$ make install
+</code></pre>
+<p>とかしたのちシェルを抜けると、homebrew が自動で symlink とか貼ってくれてインストール完了した状態になるみたい。これは便利。</p>
+<h4>ssh クライアント周り</h4>
+<p>keychain いれて、</p>
+<pre><code>$ brew install keychain
+</code></pre>
+<p>.ssh/config とかシェルの設定とかは既存の環境から持ってくる。</p>
+<h4>他</h4>
+<p>とりあえず最小構成はこんな感じであとは必要になったときにいろいろ入れていく。</p>
+<h4>Air のファーストインプレッション</h4>
+<p>CPU パワーが必要になる場面ではやはり非力だけど、それ以外の場面では SSD のおかげかすごい快適。 あとはキーボード、MacBookと比べるとなんというか作りが悪くてタイプ感もいまいち。Escの押しにくさは異常。</p>
+<p>とはいえ軽くて小さくて、バッテリーがすごい持つのはやっぱり良いねー。 CPU は弱いけど全体的なパフォーマンスは良いから自分的にはメインマシンになっていくんだろうな。いままでのMacBookどしよっかな。。</p>
+
+  </div>
+
+  <div class="meta">
+    by typester /
+    at <a href="/memo/2011/01/13/1/">2011-01-13T01:43:00</a> /
+    <a href="/memo/tag/osx/">osx</a>
+    &middot; <a href="/memo/tag/macbook/">macbook</a>
+    / <a href="/memo/2011/01/13/1/#disqus_thread">Comment</a>
+  </div>
+</div>
+
+
+
+
+<div id="pager" class="autopagerize_insert_before">
+  <p class="pages">
+    <a class="prev" rel="previous" href="/memo/tag/osx/">&laquo; Prev</a>
+    <a href="/memo/tag/osx/">1</a>
+    <span class="current">2</span>
+    <a href="/memo/tag/osx/page/3/">3</a>
+    <a href="/memo/tag/osx/page/4/">4</a>
+    <a href="/memo/tag/osx/page/5/">5</a>
+    <a class="next" rel="next" href="/memo/tag/osx/page/3/">Next &raquo;</a>
+  </p>
+  <p class="info">(Page 2 of 5)</p>
+</div>
+
+
+</div>
+
+<p id="footer">
+  Copyright &copy; 2005-2013
+      by <a class="author" href="/about/#me">Daisuke Murase (typester)</a> /
+  Site generated by <a href="https://github.com/typester/nim">nim</a> /
+  Comments powered by <a href="http://disqus.com">DISQUS</a>.
+</p>
+
+</div>
+
+
+<script type="text/javascript">
+//<![CDATA[
+(function() {
+	var links = document.getElementsByTagName('a');
+	var query = '?';
+	for(var i = 0; i < links.length; i++) {
+	if(links[i].href.indexOf('#disqus_thread') >= 0) {
+		query += 'url' + i + '=' + encodeURIComponent(links[i].href) + '&';
+	}
+	}
+	document.write('<script charset="utf-8" type="text/javascript" src="http://disqus.com/forums/unknownplace/get_num_replies.js' + query + '"></' + 'script>');
+})();
+//]]>
+</script>
+
+
+<script type="text/javascript">
+var gaJsHost = (("https:" == document.location.protocol) ? "https://ssl." : "http://www.");
+document.write(unescape("%3Cscript src='" + gaJsHost + "google-analytics.com/ga.js' type='text/javascript'%3E%3C/script%3E"));
+</script>
+<script type="text/javascript">
+try {
+var pageTracker = _gat._getTracker("UA-53067-1");
+pageTracker._trackPageview();
+} catch(err) {}</script>
+
+<script>
+function googleTranslateElementInit() {
+  new google.translate.TranslateElement({
+    pageLanguage: 'ja',
+    gaTrack: true,
+    gaId: 'UA-53067',
+    floatPosition: google.translate.TranslateElement.FloatPosition.BOTTOM_RIGHT
+  });
+}
+</script><script src="//translate.google.com/translate_a/element.js?cb=googleTranslateElementInit"></script>
+
+</body>
+</html>

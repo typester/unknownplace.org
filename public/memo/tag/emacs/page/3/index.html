@@ -1,0 +1,411 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="ja" xml:lang="ja">
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <title>memo - unknownplace.org</title>
+  <link rel="stylesheet" type="text/css" href="http://yui.yahooapis.com/3.0.0/build/cssreset/reset-min.css" />
+  <link rel="stylesheet" type="text/css" href="http://yui.yahooapis.com/3.0.0/build/cssfonts/fonts-min.css" />
+  <link rel="stylesheet" href="/css/style.css" type="text/css" />
+  <meta property="fb:admins" content="1093631929" />
+  <meta name="robots" content="noindex" />
+  <link rel="alternate" type="application/rss+xml" href="http://unknownplace.org/memo/index.rss" />
+</head>
+<body>
+
+<div id="container">
+<div id="header">
+    <h1><a href="/">unknownplace.org</a></h1> /
+<a href="/memo/">memo</a>
+</div>
+
+<div id="content">
+
+<div class="entry autopagerize_page_element">
+  <h2><a href="/memo/2009/01/26/3/"></a></h2>
+
+  <div class="body">
+    <p>EmacsWiki のコードが冗長なので短くしてみた。</p>
+<pre><code>(setq erc-prompt (<span class="keyword">lambda</span> ()
+                   (<span class="keyword">let*</span> ((buffer (buffer-name))
+                          (channel (<span class="keyword">when</span> (string-match <span class="string">&quot;</span><span class="string"><span class="regexp-grouping-backslash">\\</span></span><span class="string"><span class="regexp-grouping-construct">(</span></span><span class="string">#[</span><span class="string"><span class="negation-char">^</span></span><span class="string">@]+</span><span class="string"><span class="regexp-grouping-backslash">\\</span></span><span class="string"><span class="regexp-grouping-construct">)</span></span><span class="string">&quot;</span> buffer)
+                                       (match-string 1 buffer))))
+                     (erc-propertize
+                      (concat
+                       (or channel
+                           (<span class="keyword">if</span> (and (boundp &apos;erc-default-recipients) (erc-default-target))
+                               (erc-default-target)
+                             <span class="string">&quot;ERC&quot;</span>))
+                       <span class="string">&quot;&gt;&quot;</span>)
+                      &apos;read-only t &apos;rear-nonsticky t &apos;front-nonsticky t))))
+</code></pre>
+<p>elisp的にはこういうのどうかくのが良いのかわからんけどとりあえず短くはなった。</p>
+
+  </div>
+
+  <div class="meta">
+    by typester /
+    at <a href="/memo/2009/01/26/3/">2009-01-26T14:52:00</a> /
+    <a href="/memo/tag/emacs/">emacs</a>
+    / <a href="/memo/2009/01/26/3/#disqus_thread">Comment</a>
+  </div>
+</div>
+
+<div class="entry autopagerize_page_element">
+  <h2><a href="/memo/2009/01/26/2/"></a></h2>
+
+  <div class="body">
+    <p><a href="http://d.hatena.ne.jp/IMAKADO/">id:IMAKADO</a> さんにバッファ作らずに使わずに正規表現マッチする方法教えてもらったのでちょっと短くできた。</p>
+<pre><code>(setq erc-prompt (<span class="keyword">lambda</span> ()
+                   (<span class="keyword">let*</span> ((buffer (buffer-name))
+                          (channel (<span class="keyword">when</span> (string-match <span class="string">&quot;</span><span class="string"><span class="regexp-grouping-backslash">\\</span></span><span class="string"><span class="regexp-grouping-construct">(</span></span><span class="string">#[</span><span class="string"><span class="negation-char">^</span></span><span class="string">@]+</span><span class="string"><span class="regexp-grouping-backslash">\\</span></span><span class="string"><span class="regexp-grouping-construct">)</span></span><span class="string">&quot;</span> buffer)
+                                       (match-string 1 buffer))))
+                     (<span class="keyword">if</span> channel
+                         (erc-propertize (concat channel <span class="string">&quot;&gt;&quot;</span>) &apos;read-only t &apos;rear-nonsticky t &apos;front-nonsticky t)
+                       (<span class="keyword">if</span> (and (boundp &apos;erc-default-recipients) (erc-default-target))
+                           (erc-propertize (concat (erc-default-target) <span class="string">&quot;&gt;&quot;</span>) &apos;read-only t &apos;rear-nonsticky t &apos;front-nonsticky t)
+                         (erc-propertize (concat <span class="string">&quot;ERC&gt;&quot;</span>) &apos;read-only t &apos;rear-nonsticky t &apos;front-nonsticky t))))))
+</code></pre>
+
+  </div>
+
+  <div class="meta">
+    by typester /
+    at <a href="/memo/2009/01/26/2/">2009-01-26T14:41:00</a> /
+    <a href="/memo/tag/emacs/">emacs</a>
+    / <a href="/memo/2009/01/26/2/#disqus_thread">Comment</a>
+  </div>
+</div>
+
+<div class="entry autopagerize_page_element">
+  <h2><a href="/memo/2009/01/26/1/">ERCのプロンプトにチャンネル名表示</a></h2>
+
+  <div class="body">
+    <p>というネタは <a href="http://www.emacswiki.org/emacs/ErcConfiguration">EmacsWiki: Erc Configuration</a> の Channel-specific prompts に書いてあるんだけど、そこにも書いてあるとおり、初回表示時にはチャンネル名にならないのでこんな感じにハック。</p>
+<pre><code>(setq erc-prompt (<span class="keyword">lambda</span> ()
+                   (<span class="keyword">let*</span> ((buffer (buffer-name))
+                          (channel (<span class="keyword">with-temp-buffer</span>
+                                     (insert buffer)
+                                     (beginning-of-buffer)
+                                     (<span class="keyword">when</span> (re-search-forward <span class="string">&quot;</span><span class="string"><span class="regexp-grouping-backslash">\\</span></span><span class="string"><span class="regexp-grouping-construct">(</span></span><span class="string">#[</span><span class="string"><span class="negation-char">^</span></span><span class="string">@]+</span><span class="string"><span class="regexp-grouping-backslash">\\</span></span><span class="string"><span class="regexp-grouping-construct">)</span></span><span class="string">&quot;</span> nil t)
+                                       (match-string 1)))))
+                     (<span class="keyword">if</span> channel
+                         (erc-propertize (concat channel <span class="string">&quot;&gt;&quot;</span>) &apos;read-only t &apos;rear-nonsticky t &apos;front-nonsticky t)
+                       (<span class="keyword">if</span> (and (boundp &apos;erc-default-recipients) (erc-default-target))
+                           (erc-propertize (concat (erc-default-target) <span class="string">&quot;&gt;&quot;</span>) &apos;read-only t &apos;rear-nonsticky t &apos;front-nonsticky t)
+                         (erc-propertize (concat <span class="string">&quot;ERC&gt;&quot;</span>) &apos;read-only t &apos;rear-nonsticky t &apos;front-nonsticky t))))))
+</code></pre>
+<p>バッファ名からチャンネル名部分とるようにした感じ。</p>
+<p>1:1 トークとかどうなるかわからないのでとりあえず EmacsWiki のルーチンも書いておいた。</p>
+
+  </div>
+
+  <div class="meta">
+    by typester /
+    at <a href="/memo/2009/01/26/1/">2009-01-26T11:41:00</a> /
+    <a href="/memo/tag/emacs/">emacs</a>
+    / <a href="/memo/2009/01/26/1/#disqus_thread">Comment</a>
+  </div>
+</div>
+
+<div class="entry autopagerize_page_element">
+  <h2><a href="/memo/2009/01/23/1/">dopplr.el</a></h2>
+
+  <div class="body">
+    <p>最近 <a href="http://www.emacswiki.org/emacs/?action=browse;oldid=EmacsIRCClient;id=ERC">ERC</a> つかって IRC も emacs でやるようにしたのだけど、昔 irssi 用に作った <a href="http://unknownplace.org/memo/2008/03/21#e002">dopplr.pl</a> とおなじことが emacs でもしたくなったのでちょっと書いてみたりした。</p>
+<blockquote><p><a href="http://gist.github.com/50900">dopplr.el</a></p></blockquote>
+<p>使い方は <a href="http://unknownplace.org/memo/2008/03/21#e002">dopplr.pl</a> と同じで最初に</p>
+<pre><code>(setq dopplr-api-token <span class="string">&quot;your api token&quot;</span>) <span class="comment-delimiter">; </span><span class="comment">M-x customize-group RET dopplr でもできる
+</span></code></pre>
+<p>しておいて、あとは</p>
+<pre><code>M-x dopplr-local-clock RET miyagawa
+</code></pre>
+<p>するという感じになっています。</p>
+<p>dopplr.el などとたいそうな名前ですがまだこれしか作ってません。</p>
+<p>はじめて設定以外で elisp 書いたけどむずかしい。すごいぐちゃぐちゃになってしまった。絶対もっとうまく書けるはず。</p>
+
+  </div>
+
+  <div class="meta">
+    by typester /
+    at <a href="/memo/2009/01/23/1/">2009-01-23T14:38:00</a> /
+    <a href="/memo/tag/emacs/">emacs</a>
+    &middot; <a href="/memo/tag/elisp/">elisp</a>
+    / <a href="/memo/2009/01/23/1/#disqus_thread">Comment</a>
+  </div>
+</div>
+
+<div class="entry autopagerize_page_element">
+  <h2><a href="/memo/2009/01/20/2/">CarbonEmacs + CodingFontTobi</a></h2>
+
+  <div class="body">
+    <p>フォント設定もさらしておく。</p>
+<p>`~/.emacs.d/conf/carbon-emacs-05font.el</p>
+<pre><code>;; i &lt;3 bitmap font
+(<span class="type">setq</span> <span class="variable-name">mac</span>-allow-anti-aliasing nil)
+
+(create-fontset-from-fontset-spec
+ (concat
+  <span class="string">"-*-fixed-medium-r-normal--10-*-*-*-*-*-fontset-tobi"</span>
+  <span class="string">",ascii:-apple-codingfonttobi-medium-r-normal--16-120-72-72-m-120-*-*"</span>
+  <span class="string">",japanese-jisx0208:-apple-osaka-*"</span>
+  <span class="string">",katakana-jisx0201:-apple-osaka-*"</span>))
+
+(create-fontset-from-fontset-spec
+ (concat
+  <span class="string">"-*-fixed-medium-r-normal--10-*-*-*-*-*-fontset-proggy"</span>
+  <span class="string">",ascii:-apple-proggycleanttsz-medium-r-normal--16-120-72-72-m-120-*-*"</span>
+  <span class="string">",japanese-jisx0208:-apple-osaka-*"</span>
+  <span class="string">",katakana-jisx0201:-apple-osaka-*"</span>))
+
+(set-<span class="keyword">default</span>-font <span class="string">"fontset-tobi"</span>)
+</code></pre>
+<p>CodingFontTobi と Proggy のフォントセットを定義して気分で使い分けてる。</p>
+<p>デフォルトの Monaco+ヒラギノ も捨てがたく、たまに使いたくなったりするのでアンチエイリアスは</p>
+<pre><code>;; アンチエイリアストグル
+(defun my-mac-toggle-antialias ()
+  (interactive)
+  (if mac-allow-anti-aliasing
+      (setq mac-allow-anti-aliasing nil)
+    (setq mac-allow-anti-aliasing t)))
+</code></pre>
+<p>こんなんでトグルできるようにしてる。この関数よびだしたあと画面が更新されると反映される。</p>
+<p>こういう環境依存のコードは今までは自前で環境見てロードしていたのだけど、<a href="http://d.hatena.ne.jp/IMAKADO">id:IMAKADO</a> さんが公開してくれた <a href="http://svn.coderepos.org/share/lang/elisp/init-loader/init-loader.el">init-loader</a> 使うと <code>carbon-emacs-*</code> とか言うファイルは CarbonEmacs の時だけ読む、とかできて便利。</p>
+
+  </div>
+
+  <div class="meta">
+    by typester /
+    at <a href="/memo/2009/01/20/2/">2009-01-20T16:06:00</a> /
+    <a href="/memo/tag/emacs/">emacs</a>
+    / <a href="/memo/2009/01/20/2/#disqus_thread">Comment</a>
+  </div>
+</div>
+
+<div class="entry autopagerize_page_element">
+  <h2><a href="/memo/2009/01/20/1/">CarbonEmacsを使ってみる</a></h2>
+
+  <div class="body">
+    <p>先週 <a href="http://d.hatena.ne.jp/IMAKADO">id:IMAKADO</a> さんにあって、<code>emacs</code> 使いこなしててかっこよかったので影響されて僕も GUI な emacs が使いたくなったのでこの間書いた <a href="http://unknownplace.org/memo/2008/11/06#e001">Cocoa Emacs</a> を使い出そうとしたんだけど、なんかどうがんばってもバッファを縦分割したときのボーダーを表示させることが出来ないという理由であきらめた。(フリンジは消したかった)</p>
+<p>なので CarbonEmacs を入れた。こっちはなんかボーダー出た。</p>
+<p>Cocoa Emacs なら multitty で端末内でファイル開いちゃえばいいんだけど、CarbonEmacs にはそれがないので普通に emacsclient で開き、閉じたら端末にフォーカスが戻るという設定を書いた。</p>
+<p>具体的には emacsclient で開いたときは勝手に CarbonEmacs がアクティブになるので、CarbonEmacs 側で閉じたときに端末に戻るように、</p>
+<pre><code>;; emacsclient&#12391;&#38283;&#12356;&#12383;&#31471;&#26411;&#12434;&#12450;&#12463;&#12486;&#12451;&#12502;&#12395;&#12377;&#12427;&#12290;&#12392;&#12426;&#12354;&#12360;&#12378;iTerm&#27770;&#12417;&#12358;&#12385;
+(add-hook <span class="warning">'</span><span class="string">server-done-hook
+          (lambda ()
+            (do-applescript "tell application \"iTerm\"
+                                activate
+                             end")))
+</span></code></pre>
+<p>とするだけでOKだった。</p>
+
+  </div>
+
+  <div class="meta">
+    by typester /
+    at <a href="/memo/2009/01/20/1/">2009-01-20T11:28:00</a> /
+    <a href="/memo/tag/emacs/">emacs</a>
+    / <a href="/memo/2009/01/20/1/#disqus_thread">Comment</a>
+  </div>
+</div>
+
+<div class="entry autopagerize_page_element">
+  <h2><a href="/memo/2008/11/06/1/">emacs23をつかってみた</a></h2>
+
+  <div class="body">
+    <p>昨日のエントリで CarbonEmacs を使えばいいのかもと思ってちょっとためしてみようと思ったのだけど、どうせなら MultiTTY 使いたいなーなどという気持ちが出てきてしまった。</p>
+<p>それで emacs23 ベースな CarbonEmacs 的なのがないかと探してみたら、いまの CVS の emacs は普通に Emacs.app を作ることができるみたい。</p>
+<pre><code>cvs -z3 -d:pserver:anonymous@cvs.savannah.gnu.org:/sources/emacs co emacs
+</code></pre>
+<p>とかで co してきて</p>
+<pre><code>./configure --with-ns
+make
+make install
+</code></pre>
+<p>で nextstep ディレクトリに Emacs.app ができている。</p>
+<p>CLI で起動したい場合は</p>
+<pre><code>Emacs.app/Contents/MacOS/Emacs -nw
+</code></pre>
+<p>でおｋ。emacsclient は</p>
+<pre><code>Emacs.app/Content/MacOS/bin/emacsclient
+</code></pre>
+<p>にある。etags とかもここにある。</p>
+<p>とりあえず multitty をためしてみるために Emacs.app と CLI (-nw) と両方立ち上げて</p>
+<pre><code>emacsclient -t /path/to/file
+</code></pre>
+<p>としてみたところ、ちゃんとどちらの emacs でも同じファイルを開き、編集内容も共有できた。</p>
+<p>これで徐々に GUI な emacs に移行できるかなー。</p>
+
+  </div>
+
+  <div class="meta">
+    by typester /
+    at <a href="/memo/2008/11/06/1/">2008-11-06T13:58:00</a> /
+    <a href="/memo/tag/osx/">osx</a>
+    &middot; <a href="/memo/tag/emacs/">emacs</a>
+    / <a href="/memo/2008/11/06/1/#disqus_thread">Comment</a>
+  </div>
+</div>
+
+<div class="entry autopagerize_page_element">
+  <h2><a href="/memo/2008/04/04/1/">vc-annotate</a></h2>
+
+  <div class="body">
+    <blockquote><p><a href="http://d.hatena.ne.jp/naoya/20080404/1207294998">Emacs の vc-annotate - naoyaのはてなダイアリー</a></p></blockquote>
+<p>そういえば設定したなとおもっておもむろに <code>M-x vc-annotate</code> してみたら git でもできた！</p>
+<p><a href="http://www.flickr.com/photos/typester/2386414551/" title="Untitled by typester, on Flickr"><img alt="untitled" height="562" src="http://farm3.static.flickr.com/2265/2386414551_150b942f0f_o.png" width="820" /></a></p>
+<p>設定はこんなんで</p>
+<blockquote><p><a href="http://svn.coderepos.org/share/dotfiles/emacs/typester/.emacs.d/conf/50_git.el">http://svn.coderepos.org/share/dotfiles/emacs/typester/.emacs.d/conf/50_git.el</a></p></blockquote>
+<p>elファイルはgit自体についてくる。</p>
+
+  </div>
+
+  <div class="meta">
+    by typester /
+    at <a href="/memo/2008/04/04/1/">2008-04-04T17:18:00</a> /
+    <a href="/memo/tag/emacs/">emacs</a>
+    &middot; <a href="/memo/tag/git/">git</a>
+    / <a href="/memo/2008/04/04/1/#disqus_thread">Comment</a>
+  </div>
+</div>
+
+<div class="entry autopagerize_page_element">
+  <h2><a href="/memo/2008/03/18/1/">.emacsを公開した！</a></h2>
+
+  <div class="body">
+    <p>kentaroさんが最近やたらemacsづいてるので影響を受けて先週末に.emacsを整理したのでついでにcodereposにあげてみました。</p>
+<blockquote><p><a href="http://coderepos.org/share/browser/dotfiles/emacs/typester">http://coderepos.org/share/browser/dotfiles/emacs/typester</a></p></blockquote>
+<p>整理したら300行ちょっとしかなくなってしょんぼり。まぁまだ今までやってた設定全部は移せてないのだけども。</p>
+<p>あとmmm-modeに再挑戦したがやっぱりむりだった＞＜ javascript.elでコメントアウトしたりしてるのがその名残。</p>
+<p>nxml-mode + css-mode はうまくいくんだが javascript-mode とだとうまくうごかんなぁ。</p>
+
+  </div>
+
+  <div class="meta">
+    by typester /
+    at <a href="/memo/2008/03/18/1/">2008-03-18T02:34:00</a> /
+    <a href="/memo/tag/emacs/">emacs</a>
+    / <a href="/memo/2008/03/18/1/#disqus_thread">Comment</a>
+  </div>
+</div>
+
+<div class="entry autopagerize_page_element">
+  <h2><a href="/memo/2008/02/21/1/">TDD支援elisp</a></h2>
+
+  <div class="body">
+    <blockquote><p><a href="http://d.hatena.ne.jp/aike/20080217">TDDの勘所とTDD支援超簡易Emacs Lisp - aikeの日記</a></p></blockquote>
+<p>が面白いなーと思ったので自分用に改造してみた。</p>
+<p>モードラインの色を変えるようにしただけだけど。</p>
+<p><a href="http://www.flickr.com/photos/typester/2281395034/" title="2008-02-21_1542 by typester, on Flickr"><img alt="2008-02-21_1542" height="458" src="http://farm3.static.flickr.com/2328/2281395034_e528694896_o.png" width="460" /></a></p>
+<pre><code>;; C-c m &#12391;TDD&#12398;&#12514;&#12540;&#12489;&#20999;&#26367;&#12360;
+
+(<span class="type">defvar</span> <span class="variable-name">tdd</span>-bgcolor-alist
+      <span class="warning">'</span><span class="string">(("Think"      ."snow")
+        ("Red"        ."#ff4444")
+        ("Green"      ."#44dd44")
+        ("Refactoring"."#ffaa44")))
+
+(defvar tdd-bgcolor-mode 3)
+(defvar tdd-bgcolor-mode-name "")
+(let (
+      (cell (or (memq '</span>mode-line-position mode-line-format)
+                (memq <span class="warning">'</span><span class="string">mode-line-buffer-identification mode-line-format)))
+      (newcdr '</span>tdd-bgcolor-mode-name))
+  (unless (member <span class="type">newcdr</span> <span class="variable-name">mode</span>-line-format)
+    (<span class="type">setcdr</span> <span class="variable-name">cell</span> (<span class="type">cons</span> <span class="variable-name">newcdr</span> (<span class="type">cdr</span> <span class="variable-name">cell</span>)))))
+
+(<span class="type">defun</span> <span class="variable-name">tdd</span>-bgcolor-rotate ()
+  (interactive)
+  (let (pair)
+    (<span class="keyword">if</span> (&gt;= tdd-bgcolor-mode 3)
+        (<span class="type">setq</span> <span class="variable-name">tdd</span>-bgcolor-mode 0)
+      (<span class="type">setq</span> <span class="variable-name">tdd</span>-bgcolor-mode
+                (+ tdd-bgcolor-mode 1)))
+    (<span class="type">setq</span> <span class="variable-name">pair</span>
+      (<span class="type">nth</span> <span class="variable-name">tdd</span>-bgcolor-mode tdd-bgcolor-alist))
+    (<span class="type">setq</span> <span class="variable-name">tdd</span>-bgcolor-mode-name (format <span class="string">"[%s]"</span> (<span class="type">car</span> <span class="variable-name">pair</span>)))
+    (<span class="type">message</span> <span class="variable-name">tdd</span>-bgcolor-mode-name)
+    (set-face-foreground <span class="warning">'</span><span class="string">mode-line (cdr pair))))
+
+(global-set-key "\C-cm" '</span>tdd-bgcolor-rotate)
+</code></pre>
+
+  </div>
+
+  <div class="meta">
+    by typester /
+    at <a href="/memo/2008/02/21/1/">2008-02-21T15:44:00</a> /
+    <a href="/memo/tag/emacs/">emacs</a>
+    / <a href="/memo/2008/02/21/1/#disqus_thread">Comment</a>
+  </div>
+</div>
+
+
+
+
+<div id="pager" class="autopagerize_insert_before">
+  <p class="pages">
+    <a class="prev" rel="previous" href="/memo/tag/emacs/page/2/">&laquo; Prev</a>
+    <a href="/memo/tag/emacs/">1</a>
+    <a href="/memo/tag/emacs/page/2/">2</a>
+    <span class="current">3</span>
+    <a href="/memo/tag/emacs/page/4/">4</a>
+    <a href="/memo/tag/emacs/page/5/">5</a>
+    <a href="/memo/tag/emacs/page/6/">6</a>
+    <a class="next" rel="next" href="/memo/tag/emacs/page/4/">Next &raquo;</a>
+  </p>
+  <p class="info">(Page 3 of 6)</p>
+</div>
+
+
+</div>
+
+<p id="footer">
+  Copyright &copy; 2005-2013
+      by <a class="author" href="/about/#me">Daisuke Murase (typester)</a> /
+  Site generated by <a href="https://github.com/typester/nim">nim</a> /
+  Comments powered by <a href="http://disqus.com">DISQUS</a>.
+</p>
+
+</div>
+
+
+<script type="text/javascript">
+//<![CDATA[
+(function() {
+	var links = document.getElementsByTagName('a');
+	var query = '?';
+	for(var i = 0; i < links.length; i++) {
+	if(links[i].href.indexOf('#disqus_thread') >= 0) {
+		query += 'url' + i + '=' + encodeURIComponent(links[i].href) + '&';
+	}
+	}
+	document.write('<script charset="utf-8" type="text/javascript" src="http://disqus.com/forums/unknownplace/get_num_replies.js' + query + '"></' + 'script>');
+})();
+//]]>
+</script>
+
+
+<script type="text/javascript">
+var gaJsHost = (("https:" == document.location.protocol) ? "https://ssl." : "http://www.");
+document.write(unescape("%3Cscript src='" + gaJsHost + "google-analytics.com/ga.js' type='text/javascript'%3E%3C/script%3E"));
+</script>
+<script type="text/javascript">
+try {
+var pageTracker = _gat._getTracker("UA-53067-1");
+pageTracker._trackPageview();
+} catch(err) {}</script>
+
+<script>
+function googleTranslateElementInit() {
+  new google.translate.TranslateElement({
+    pageLanguage: 'ja',
+    gaTrack: true,
+    gaId: 'UA-53067',
+    floatPosition: google.translate.TranslateElement.FloatPosition.BOTTOM_RIGHT
+  });
+}
+</script><script src="//translate.google.com/translate_a/element.js?cb=googleTranslateElementInit"></script>
+
+</body>
+</html>

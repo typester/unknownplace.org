@@ -1,0 +1,357 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="ja" xml:lang="ja">
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <title>memo - unknownplace.org</title>
+  <link rel="stylesheet" type="text/css" href="http://yui.yahooapis.com/3.0.0/build/cssreset/reset-min.css" />
+  <link rel="stylesheet" type="text/css" href="http://yui.yahooapis.com/3.0.0/build/cssfonts/fonts-min.css" />
+  <link rel="stylesheet" href="/css/style.css" type="text/css" />
+  <meta property="fb:admins" content="1093631929" />
+  <meta name="robots" content="noindex" />
+  <link rel="alternate" type="application/rss+xml" href="http://unknownplace.org/memo/index.rss" />
+</head>
+<body>
+
+<div id="container">
+<div id="header">
+    <h1><a href="/">unknownplace.org</a></h1> /
+<a href="/memo/">memo</a>
+</div>
+
+<div id="content">
+
+<div class="entry autopagerize_page_element">
+  <h2><a href="/memo/2006/05/15/3/">モジュール名</a></h2>
+
+  <div class="body">
+    <p>Google 電卓用のモジュールを作った。</p>
+<p><a href="http://svn.unknownplace.org/public/library/perl/trunk/WWW-GoogleCalc/">http://svn.unknownplace.org/public/library/perl/trunk/WWW-GoogleCalc/</a></p>
+<p>なんか名前がむずかしい。</p>
+<p>CPAN みると google 関係だけで</p>
+<ul><li>Net::Google::*</li><li>WWW::Google::*</li><li>WebService::Google::*</li></ul>
+<p>とかありまくるし。どれつかえばええねん。</p>
+<p>こういう、無理矢理ハック系のは WWW かなとおもったので WWW::GoogleCalc としたのだけど、どうなんだろう。</p>
+
+  </div>
+
+  <div class="meta">
+    by typester /
+    at <a href="/memo/2006/05/15/3/">2006-05-15T07:58:00</a> /
+    <a href="/memo/tag/perl/">perl</a>
+    / <a href="/memo/2006/05/15/3/#disqus_thread">Comment</a>
+  </div>
+</div>
+
+<div class="entry autopagerize_page_element">
+  <h2><a href="/memo/2006/05/15/2/">PlaggerLDR</a></h2>
+
+  <div class="body">
+    <p><a href="http://plagger.org/trac/changeset/743">[743] - Plagger - Trac</a></p>
+<p>rating 対応。</p>
+
+  </div>
+
+  <div class="meta">
+    by typester /
+    at <a href="/memo/2006/05/15/2/">2006-05-15T05:58:00</a> /
+    <a href="/memo/tag/plagger/">plagger</a>
+    / <a href="/memo/2006/05/15/2/#disqus_thread">Comment</a>
+  </div>
+</div>
+
+<div class="entry autopagerize_page_element">
+  <h2><a href="/memo/2006/05/15/1/">YAML.pm bug?</a></h2>
+
+  <div class="body">
+    <p>use strict; use warnings;</p>
+<pre><code><span class="keyword">use</span> <span class="function-name">Data::Dumper</span>;
+<span class="keyword">use</span> <span class="function-name">YAML</span>;
+
+<span class="keyword">my</span> <span class="variable-name">$config</span> = {
+    <span class="string">default</span> =&gt; [ 1, { <span class="string">&apos;*&apos;</span> =&gt; 1 }, ],
+    <span class="string">deny</span>    =&gt; [<span class="string">&apos;script&apos;</span>],
+};
+
+<span class="keyword">my</span> <span class="variable-name">$yaml</span> = Dump($config);
+
+<span class="cperl-nonoverridable">print</span> $yaml;
+<span class="cperl-nonoverridable">print</span> Dumper( Load($yaml) );
+</code></pre>
+<p>output:</p>
+<pre><code>---
+default:
+  - 1
+  - &apos;*&apos;: 1
+deny:
+  - script
+YAML Error: Couldn&apos;t parse single line value
+   Code: YAML_PARSE_ERR_SINGLE_LINE
+   Line: 5
+   Document: 1
+ at /usr/local/share/perl/5.8.7/YAML.pm line 60
+</code></pre>
+<p>This code works fine with <code>YAML::Syck</code>.</p>
+
+  </div>
+
+  <div class="meta">
+    by typester /
+    at <a href="/memo/2006/05/15/1/">2006-05-15T04:02:00</a> /
+    <a href="/memo/tag/perl/">perl</a>
+    &middot; <a href="/memo/tag/yaml/">yaml</a>
+    / <a href="/memo/2006/05/15/1/#disqus_thread">Comment</a>
+  </div>
+</div>
+
+<div class="entry autopagerize_page_element">
+  <h2><a href="/memo/2006/05/14/1/"></a></h2>
+
+  <div class="body">
+    <p>出社。</p>
+
+  </div>
+
+  <div class="meta">
+    by typester /
+    at <a href="/memo/2006/05/14/1/">2006-05-14T20:45:00</a> /
+    <a href="/memo/tag/life/">life</a>
+    / <a href="/memo/2006/05/14/1/#disqus_thread">Comment</a>
+  </div>
+</div>
+
+<div class="entry autopagerize_page_element">
+  <h2><a href="/memo/2006/05/13/1/">Hachathon in CL</a></h2>
+
+  <div class="body">
+    <p>中。</p>
+<p>なんか</p>
+
+  </div>
+
+  <div class="meta">
+    by typester /
+    at <a href="/memo/2006/05/13/1/">2006-05-13T03:50:00</a> /
+    <a href="/memo/tag/life/">life</a>
+    &middot; <a href="/memo/tag/plagger/">plagger</a>
+    &middot; <a href="/memo/tag/plaggercon/">plaggercon</a>
+    / <a href="/memo/2006/05/13/1/#disqus_thread">Comment</a>
+  </div>
+</div>
+
+<div class="entry autopagerize_page_element">
+  <h2><a href="/memo/2006/05/12/2/"></a></h2>
+
+  <div class="body">
+    <p>出社。</p>
+
+  </div>
+
+  <div class="meta">
+    by typester /
+    at <a href="/memo/2006/05/12/2/">2006-05-12T13:32:00</a> /
+    <a href="/memo/tag/life/">life</a>
+    / <a href="/memo/2006/05/12/2/#disqus_thread">Comment</a>
+  </div>
+</div>
+
+<div class="entry autopagerize_page_element">
+  <h2><a href="/memo/2006/05/12/1/"></a></h2>
+
+  <div class="body">
+    <p>退社。</p>
+
+  </div>
+
+  <div class="meta">
+    by typester /
+    at <a href="/memo/2006/05/12/1/">2006-05-12T02:26:00</a> /
+    <a href="/memo/tag/life/">life</a>
+    / <a href="/memo/2006/05/12/1/#disqus_thread">Comment</a>
+  </div>
+</div>
+
+<div class="entry autopagerize_page_element">
+  <h2><a href="/memo/2006/05/11/2/"></a></h2>
+
+  <div class="body">
+    <p>なんかぼけてたのなおした。</p>
+
+  </div>
+
+  <div class="meta">
+    by typester /
+    at <a href="/memo/2006/05/11/2/">2006-05-11T06:48:00</a> /
+    <a href="/memo/tag/life/">life</a>
+    / <a href="/memo/2006/05/11/2/#disqus_thread">Comment</a>
+  </div>
+</div>
+
+<div class="entry autopagerize_page_element">
+  <h2><a href="/memo/2006/05/11/1/">PlaggerLDR 改造</a></h2>
+
+  <div class="body">
+    <p>簡易認証追加と <code>server.pl -d</code> のときだけデバッグモードになるように</p>
+<pre><code>Index: lib/PlaggerLDR/Controller/API.pm
+===================================================================
+--- lib/PlaggerLDR/Controller/API.pm    (revision 1819)
++++ lib/PlaggerLDR/Controller/API.pm    (working copy)
+@@ -12,8 +12,9 @@
+ <span class="keyword">my</span> <span class="variable-name">$module</span> = first { $_-&gt;{<span class="string">module</span>} <span class="type">eq</span> <span class="string">&apos;Store::DBIC&apos;</span> } @{$config-&gt;{<span class="string">plugins</span>}};
+ <span class="keyword">my</span> <span class="variable-name">$schema</span> = Plagger::Schema::SQLite-&gt;<span class="type">connect</span>(@{$module-&gt;{<span class="string">config</span>}-&gt;{<span class="string">connect_info</span>}});
+
+-<span class="keyword">sub</span> <span class="function-name">default</span> <span class="constant">:</span> <span class="constant">Private</span> {
++<span class="keyword">sub</span> <span class="function-name">auto</span> <span class="constant">:</span> <span class="constant">Private</span> {
+     <span class="keyword">my</span>(<span class="variable-name">$self</span>, <span class="variable-name">$c</span>) = <span class="cperl-array">@_</span>;
++    $c-&gt;user;
+ }
+
+ <span class="keyword">sub</span> <span class="function-name">subs</span> <span class="constant">:</span> <span class="constant">Local</span> {
+Index: lib/PlaggerLDR.pm
+===================================================================
+--- lib/PlaggerLDR.pm   (revision 1819)
++++ lib/PlaggerLDR.pm   (working copy)
+@@ -3,21 +3,45 @@
+ <span class="keyword">use</span> <span class="function-name">strict</span>;
+ <span class="keyword">use</span> <span class="function-name">warnings</span>;
+
+-<span class="keyword">use</span> <span class="function-name">Catalyst</span> <span class="cperl-nonoverridable">qw</span><span class="string">/-Debug/</span>;
++<span class="keyword">use</span> <span class="function-name">Catalyst</span> <span class="cperl-nonoverridable">qw</span><span class="string">(
++    Authentication
++    Authentication::Credential::Password
++    Authentication::Store::Minimal
+
++    Session
++    Session::State::Cookie
++    Session::Store::FastMmap
++)</span>;
++
+ <span class="type">__PACKAGE__</span>-&gt;config(
+     <span class="string">name</span> =&gt; <span class="string">&apos;PlaggerLDR&apos;</span>,
+     <span class="string">&apos;View::JSON&apos;</span> =&gt; {
+         <span class="string">expose_stash</span> =&gt; <span class="string">&apos;json&apos;</span>,
+     },
++    <span class="string">authentication</span> =&gt; {
++        <span class="string">users</span> =&gt; {
++            <span class="string">your_username</span> =&gt; { <span class="string">password</span> =&gt; <span class="string">&apos;your_password&apos;</span>, },
++        },
++    },
+ );
+ <span class="type">__PACKAGE__</span>-&gt;setup;
+
+ <span class="keyword">sub</span> <span class="function-name">default</span> <span class="constant">:</span> <span class="constant">Private</span> {
+     <span class="keyword">my</span> ( <span class="variable-name">$self</span>, <span class="variable-name">$c</span> ) = <span class="cperl-array">@_</span>;
+
+-    <span class="comment-delimiter"># </span><span class="comment">Hello World
+</span>-    $c-&gt;response-&gt;body( $c-&gt;welcome_message );
++    $c-&gt;login(
++        $c-&gt;req-&gt;params-&gt;{<span class="string">u</span>},
++        $c-&gt;req-&gt;params-&gt;{<span class="string">p</span>},
++    );
++
++    $c-&gt;res-&gt;status(404);
+ }
+
+ 1;
+</code></pre>
+
+  </div>
+
+  <div class="meta">
+    by typester /
+    at <a href="/memo/2006/05/11/1/">2006-05-11T06:22:00</a> /
+    <a href="/memo/tag/plagger/">plagger</a>
+    &middot; <a href="/memo/tag/catalyst/">catalyst</a>
+    / <a href="/memo/2006/05/11/1/#disqus_thread">Comment</a>
+  </div>
+</div>
+
+<div class="entry autopagerize_page_element">
+  <h2><a href="/memo/2006/05/10/1/"></a></h2>
+
+  <div class="body">
+    <p>出社。</p>
+
+  </div>
+
+  <div class="meta">
+    by typester /
+    at <a href="/memo/2006/05/10/1/">2006-05-10T15:20:00</a> /
+    <a href="/memo/tag/life/">life</a>
+    / <a href="/memo/2006/05/10/1/#disqus_thread">Comment</a>
+  </div>
+</div>
+
+
+
+
+<div id="pager" class="autopagerize_insert_before">
+  <p class="pages">
+    <a class="prev" rel="previous" href="/memo/page/107/">&laquo; Prev</a>
+    <a href="/memo/page/104/">104</a>
+    <a href="/memo/page/105/">105</a>
+    <a href="/memo/page/106/">106</a>
+    <a href="/memo/page/107/">107</a>
+    <span class="current">108</span>
+    <a href="/memo/page/109/">109</a>
+    <a href="/memo/page/110/">110</a>
+    <a href="/memo/page/111/">111</a>
+    <a href="/memo/page/112/">112</a>
+    <a href="/memo/page/113/">113</a>
+    <a class="next" rel="next" href="/memo/page/109/">Next &raquo;</a>
+  </p>
+  <p class="info">(Page 108 of 203)</p>
+</div>
+
+
+</div>
+
+<p id="footer">
+  Copyright &copy; 2005-2013
+      by <a class="author" href="/about/#me">Daisuke Murase (typester)</a> /
+  Site generated by <a href="https://github.com/typester/nim">nim</a> /
+  Comments powered by <a href="http://disqus.com">DISQUS</a>.
+</p>
+
+</div>
+
+
+<script type="text/javascript">
+//<![CDATA[
+(function() {
+	var links = document.getElementsByTagName('a');
+	var query = '?';
+	for(var i = 0; i < links.length; i++) {
+	if(links[i].href.indexOf('#disqus_thread') >= 0) {
+		query += 'url' + i + '=' + encodeURIComponent(links[i].href) + '&';
+	}
+	}
+	document.write('<script charset="utf-8" type="text/javascript" src="http://disqus.com/forums/unknownplace/get_num_replies.js' + query + '"></' + 'script>');
+})();
+//]]>
+</script>
+
+
+<script type="text/javascript">
+var gaJsHost = (("https:" == document.location.protocol) ? "https://ssl." : "http://www.");
+document.write(unescape("%3Cscript src='" + gaJsHost + "google-analytics.com/ga.js' type='text/javascript'%3E%3C/script%3E"));
+</script>
+<script type="text/javascript">
+try {
+var pageTracker = _gat._getTracker("UA-53067-1");
+pageTracker._trackPageview();
+} catch(err) {}</script>
+
+<script>
+function googleTranslateElementInit() {
+  new google.translate.TranslateElement({
+    pageLanguage: 'ja',
+    gaTrack: true,
+    gaId: 'UA-53067',
+    floatPosition: google.translate.TranslateElement.FloatPosition.BOTTOM_RIGHT
+  });
+}
+</script><script src="//translate.google.com/translate_a/element.js?cb=googleTranslateElementInit"></script>
+
+</body>
+</html>

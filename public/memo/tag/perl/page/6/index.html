@@ -1,0 +1,358 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="ja" xml:lang="ja">
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <title>memo - unknownplace.org</title>
+  <link rel="stylesheet" type="text/css" href="http://yui.yahooapis.com/3.0.0/build/cssreset/reset-min.css" />
+  <link rel="stylesheet" type="text/css" href="http://yui.yahooapis.com/3.0.0/build/cssfonts/fonts-min.css" />
+  <link rel="stylesheet" href="/css/style.css" type="text/css" />
+  <meta property="fb:admins" content="1093631929" />
+  <meta name="robots" content="noindex" />
+  <link rel="alternate" type="application/rss+xml" href="http://unknownplace.org/memo/index.rss" />
+</head>
+<body>
+
+<div id="container">
+<div id="header">
+    <h1><a href="/">unknownplace.org</a></h1> /
+<a href="/memo/">memo</a>
+</div>
+
+<div id="content">
+
+<div class="entry autopagerize_page_element">
+  <h2><a href="/memo/2008/11/13/2/">MochiKit的にPoCo::Client::HTTPをつかえるラッパーを書いてみた。</a></h2>
+
+  <div class="body">
+    <p>POE は結構好きなんだけど、使ってるにつれていろいろ不満が出てくる。</p>
+<p>Client::HTTP もその一つで、レスポンスを受け取るコールバックに CodeRef を指定できないくていちいちステートを作らないといけないのが嫌なので、こんなのを作ってみました。</p>
+<blockquote><p><a href="http://github.com/typester/poco-client-httpdeferred-perl">POE::Component::Client::HTTPDeferred</a></p></blockquote>
+<p>MochiKit のインタフェースを参考にしてます。</p>
+<p>こんな感じで使う。</p>
+<pre><code><span class="keyword">use</span> <span class="function-name">POE</span> <span class="cperl-nonoverridable">qw</span><span class="string">/Component::Client::HTTPDeferred/</span>;
+<span class="keyword">use</span> <span class="function-name">HTTP::Request::Common</span>;
+
+POE::Session-&gt;create(
+    <span class="string">inline_states</span> =&gt; {
+        <span class="string">_start</span> =&gt; <span class="keyword">sub</span> {
+            <span class="keyword">my</span> <span class="variable-name">$ua</span> = POE::Component::Client::HTTPDeferred-&gt;new;
+            <span class="keyword">my</span> <span class="variable-name">$d</span>  = $ua-&gt;request( GET <span class="string">&apos;http://unknownplace.org/memo/&apos;</span> );
+
+            $d-&gt;addBoth(<span class="keyword">sub</span> {
+                <span class="keyword">my</span> <span class="variable-name">$res</span> = <span class="cperl-nonoverridable">shift</span>;
+
+                <span class="keyword">if</span> ($res-&gt;is_success) {
+                    <span class="cperl-nonoverridable">print</span> $res-&gt;as_string;
+                }
+                <span class="keyword">else</span> {
+                    <span class="type">warn</span> $res-&gt;status_line;
+                }
+
+                $ua-&gt;<span class="type">shutdown</span>;
+            });
+        },
+    },
+);
+POE::Kernel-&gt;run;
+</code></pre>
+<p>js やってる人にはちょっと見慣れた感じじゃない？</p>
+<p>これの Deferred 自体は全然機能足りてないけど、素で PoCo::C::HTTP つかうのと比べるとずいぶん楽になる。DeferredListもほしいな。</p>
+
+  </div>
+
+  <div class="meta">
+    by typester /
+    at <a href="/memo/2008/11/13/2/">2008-11-13T23:04:00</a> /
+    <a href="/memo/tag/perl/">perl</a>
+    &middot; <a href="/memo/tag/poe/">poe</a>
+    / <a href="/memo/2008/11/13/2/#disqus_thread">Comment</a>
+  </div>
+</div>
+
+<div class="entry autopagerize_page_element">
+  <h2><a href="/memo/2008/09/04/1/">TheSchwartzのテストが通らなくてあせった件</a></h2>
+
+  <div class="body">
+    <p>TheSchwartzをインストールしようとしたらテストが通らなかった。</p>
+<p>テストが通らなくても、原因を見ると失敗していても影響ないような失敗をしていることが多いので気軽にソースをのぞいて見たところどうもそんな気楽な感じでもなくて普通にエラーっててどうしたもんかと思った。</p>
+<p>具体的には</p>
+<pre><code>$ prove -bv t/unique.t
+t/unique....
+1..12
+ok 1 - made first feed major job
+ok 2 - The object isa TheSchwartz::JobHandle
+ok 3 - made another feed major job
+ok 4 - no handle
+ok 5 - made scratch major job
+not ok 6 - The object isa TheSchwartz::JobHandle
+
+#   Failed test &apos;The object isa TheSchwartz::JobHandle&apos;
+#   at t/unique.t line 44.
+#     The object isn&apos;t defined
+ok 7 - made first feed major job
+ok 8 - The object isa TheSchwartz::JobHandle
+ok 9 - made another feed major job
+ok 10 - no handle
+ok 11 - made scratch major job
+ok 12 - The object isa TheSchwartz::JobHandle
+# Looks like you failed 1 test of 12.
+ Dubious, test returned 1 (wstat 256, 0x100)
+ Failed 1/12 subtests
+
+Test Summary Report
+-------------------
+t/unique (Wstat: 256 Tests: 12 Failed: 1)
+  Failed test:  6
+  Non-zero exit status: 1
+Files=1, Tests=12,  0 wallclock secs ( 0.02 usr  0.01 sys +  0.14 cusr  0.03 csys =  0.20 CPU)
+Result: FAIL
+</code></pre>
+<p>こんな感じ。</p>
+<p><code>$client-&gt;insert</code> が正しく JobHandle オブジェクトを返していないということは job を insert できてないってことなのでこれは問題である。</p>
+<p>しょうがないのでもう少し追うと、このテストは3回 insert をしていて2回目の insert はわざと失敗させている。TheSchwartz はこの失敗した場合にエラーコード 1062 だけを特別扱いし、それ以外の場合はそのDBが死んだと判断して <code>mark_as_dead</code> する。</p>
+<p><code>Data::ObjectDriver::Driver::DBI</code> の <code>last_error</code> とか <code>Data::ObjectDriver::Driver::DBD::mysql</code> の <code>map_error_code</code> あたりを参照のこと。</p>
+<p>1062 というのはこの <code>DOD::DBD::mysql</code> にハードコードされていて、MySQL の <code>Duplicate entry &apos;%s&apos; for key %d</code> とかいうエラー。</p>
+<p>この辺の実装もどうかと思うが、ここで僕の環境では 1582 というエラーコードが帰ってきていたため、DBが <code>mark_as_dead</code> されてしまい、次のinsertも失敗するということになっていたようだ。</p>
+<p>ちなみにエラーコードは違ったけれども <code>Duplicate entry &apos;1-major&apos; for key &apos;funcid_2&apos;</code> という期待するエラーが返ってきていた。</p>
+<p>この環境の MySQL はずいぶん前に入れた 5.1beta (5.1.18-beta) で、ほかの5.0なマシンではテストとおるので、5.1 になってエラーコード変わったのかなぁと思って<a href="http://dev.mysql.com/doc/refman/5.1/en/error-messages-server.html">マニュアル</a>見てみたけど変わってないので、よくわからないけどとりあえずMySQLを最新(5.1rc)にしてみたらテストとおるようになってしまった。</p>
+<p>古い5.1は罠だということかなー。</p>
+
+  </div>
+
+  <div class="meta">
+    by typester /
+    at <a href="/memo/2008/09/04/1/">2008-09-04T18:11:00</a> /
+    <a href="/memo/tag/perl/">perl</a>
+    &middot; <a href="/memo/tag/theschwartz/">theschwartz</a>
+    &middot; <a href="/memo/tag/mysql/">mysql</a>
+    / <a href="/memo/2008/09/04/1/#disqus_thread">Comment</a>
+  </div>
+</div>
+
+<div class="entry autopagerize_page_element">
+  <h2><a href="/memo/2008/09/01/1/">Yokohama.pm Tech Talk #2 の資料</a></h2>
+
+  <div class="body">
+    <p>yokohama.pm のあとそのままバカンスに突入したため遅くなりましたがさきほど資料を coderepos にアップしました。</p>
+<blockquote><p><a href="http://svn.coderepos.org/share/docs/typester/yokohamapm-2/start.html">Perl RTMP implementation</a></p></blockquote>
+<p>実装も一週間前でログが途絶えてますがgithub &amp; codereposにアップしました。</p>
+<blockquote><ul><li><a href="http://github.com/typester/kamaitachi">http://github.com/typester/kamaitachi</a></li><li><a href="http://git.coderepos.org/cgi-bin/gitweb.cgi?p=share/lang/perl/Kamaitachi.git;a=summary">Git.CodeRepos/share/lang/perl/Kamaitachi.git</a></li></ul></blockquote>
+<p>まだAPIをつくってないので実装が内部に直書きになっていますのでまぁ参考まで。</p>
+<p>この記事時点でのmasterブランチがwebcamからライブ動画を配信するもの、stream_mp3ブランチがmp3をオンデマンド配信する実装となってます。</p>
+
+  </div>
+
+  <div class="meta">
+    by typester /
+    at <a href="/memo/2008/09/01/1/">2008-09-01T11:32:00</a> /
+    <a href="/memo/tag/perl/">perl</a>
+    &middot; <a href="/memo/tag/yokohama.pm/">yokohama.pm</a>
+    / <a href="/memo/2008/09/01/1/#disqus_thread">Comment</a>
+  </div>
+</div>
+
+<div class="entry autopagerize_page_element">
+  <h2><a href="/memo/2008/08/19/1/">Data::AMFの速度</a></h2>
+
+  <div class="body">
+    <blockquote><p><a href="http://blog.s2factory.co.jp/yoshizu/2008/08/amf-perl.html">AMF と Perl について - yoshizu@S2F</a></p></blockquote>
+<p>XS版を作ったとしてもMooseつかっているかぎりCGIでのパフォーマンスは望めないかなぁ。逆にmod_perlとかFastCGIであれば今のでもそんなに遅くはないはず。</p>
+<p>ただ、Remoting(RPC) 目的でAMFを使うのはそんなにメリットないんじゃないかなーとは思う。</p>
+
+  </div>
+
+  <div class="meta">
+    by typester /
+    at <a href="/memo/2008/08/19/1/">2008-08-19T03:00:00</a> /
+    <a href="/memo/tag/perl/">perl</a>
+    / <a href="/memo/2008/08/19/1/#disqus_thread">Comment</a>
+  </div>
+</div>
+
+<div class="entry autopagerize_page_element">
+  <h2><a href="/memo/2008/07/25/2/">Moose版Twircつくた。</a></h2>
+
+  <div class="body">
+    <p>lopnorさんにwassrにいないから不便だよハゲ、などということを言われたのでwassrアカウント作った。</p>
+<p>でwassrはIMに対応してるっぽいので、<a href="http://unknownplace.org/memo/2007/04/15#e001">この辺</a>でつくったTwircというtwitter用のIM-Jabberゲートウェイアプリを改造してtwitter以外のサービスでも汎用的に使えるようにした。</p>
+<pre><code>channels:
+  - name:   &apos;#twitter&apos;
+    target: &apos;twitter@twitter.com&apos;
+  - name:   &apos;#wassr&apos;
+    target: &apos;wassr-bot@wassr.jp&apos;
+</code></pre>
+<p>こんな感じでいろいろサービス増やせるようになった。まぁtwitterはいまIM死んでるから使えないけど。</p>
+<p>ついでにMoose化。ついでにgithubにうつした。</p>
+<blockquote><p>http://github.com/typester/twirc/tree/master</p></blockquote>
+
+  </div>
+
+  <div class="meta">
+    by typester /
+    at <a href="/memo/2008/07/25/2/">2008-07-25T17:55:00</a> /
+    <a href="/memo/tag/perl/">perl</a>
+    / <a href="/memo/2008/07/25/2/#disqus_thread">Comment</a>
+  </div>
+</div>
+
+<div class="entry autopagerize_page_element">
+  <h2><a href="/memo/2008/07/25/1/">MooseX::POE</a></h2>
+
+  <div class="body">
+    <p>ほめてる人が多いけど、僕はなんか微妙だなぁ。</p>
+<p>自分が POE になれてるからだと思うのけど、素で書いたほうがわかりやすい。</p>
+<p>Moose はつかうけど MooseX::POE はつかわない方向。</p>
+
+  </div>
+
+  <div class="meta">
+    by typester /
+    at <a href="/memo/2008/07/25/1/">2008-07-25T14:08:00</a> /
+    <a href="/memo/tag/perl/">perl</a>
+    / <a href="/memo/2008/07/25/1/#disqus_thread">Comment</a>
+  </div>
+</div>
+
+<div class="entry autopagerize_page_element">
+  <h2><a href="/memo/2008/07/23/2/"></a></h2>
+
+  <div class="body">
+    <p>とりあえず <code>Test::WWW::Mechanize::Catalyst</code> は使わずに <code>Catalyst::Test</code> だけでがんばることにした。</p>
+
+  </div>
+
+  <div class="meta">
+    by typester /
+    at <a href="/memo/2008/07/23/2/">2008-07-23T15:38:00</a> /
+    <a href="/memo/tag/perl/">perl</a>
+    &middot; <a href="/memo/tag/catalyst/">catalyst</a>
+    / <a href="/memo/2008/07/23/2/#disqus_thread">Comment</a>
+  </div>
+</div>
+
+<div class="entry autopagerize_page_element">
+  <h2><a href="/memo/2008/07/23/1/">Perl 5.10 + Test::WWW::Mechanize::Catalyst</a></h2>
+
+  <div class="body">
+    <p>うごかんわけだが、みんなどうしてんの？</p>
+<p>5.10 の問題ではなくて、最新版の libwww-perl (5.10に付属)の問題という話だけど、5.8.x でも LWP あげたらおなじことになるのかなー。</p>
+
+  </div>
+
+  <div class="meta">
+    by typester /
+    at <a href="/memo/2008/07/23/1/">2008-07-23T11:32:00</a> /
+    <a href="/memo/tag/perl/">perl</a>
+    &middot; <a href="/memo/tag/catalyst/">catalyst</a>
+    / <a href="/memo/2008/07/23/1/#disqus_thread">Comment</a>
+  </div>
+</div>
+
+<div class="entry autopagerize_page_element">
+  <h2><a href="/memo/2008/06/05/2/">ところで MooseX::Getopt で Pod::Usage 的なことをする方法がわからない</a></h2>
+
+  <div class="body">
+    <p>のだがどうすればいいんだろうか。</p>
+
+  </div>
+
+  <div class="meta">
+    by typester /
+    at <a href="/memo/2008/06/05/2/">2008-06-05T14:11:00</a> /
+    <a href="/memo/tag/perl/">perl</a>
+    &middot; <a href="/memo/tag/moose/">moose</a>
+    / <a href="/memo/2008/06/05/2/#disqus_thread">Comment</a>
+  </div>
+</div>
+
+<div class="entry autopagerize_page_element">
+  <h2><a href="/memo/2008/06/05/1/">App::Flight</a></h2>
+
+  <div class="body">
+    <p>昨日のは <code>App::Flight</code> にしますかね。</p>
+<p>FCGIネームスペースを騙るにはあまりにも僕の使い方にかたよりすぎているしな。</p>
+
+  </div>
+
+  <div class="meta">
+    by typester /
+    at <a href="/memo/2008/06/05/1/">2008-06-05T14:09:00</a> /
+    <a href="/memo/tag/perl/">perl</a>
+    / <a href="/memo/2008/06/05/1/#disqus_thread">Comment</a>
+  </div>
+</div>
+
+
+
+
+<div id="pager" class="autopagerize_insert_before">
+  <p class="pages">
+    <a class="prev" rel="previous" href="/memo/tag/perl/page/5/">&laquo; Prev</a>
+    <a href="/memo/tag/perl/page/2/">2</a>
+    <a href="/memo/tag/perl/page/3/">3</a>
+    <a href="/memo/tag/perl/page/4/">4</a>
+    <a href="/memo/tag/perl/page/5/">5</a>
+    <span class="current">6</span>
+    <a href="/memo/tag/perl/page/7/">7</a>
+    <a href="/memo/tag/perl/page/8/">8</a>
+    <a href="/memo/tag/perl/page/9/">9</a>
+    <a href="/memo/tag/perl/page/10/">10</a>
+    <a href="/memo/tag/perl/page/11/">11</a>
+    <a class="next" rel="next" href="/memo/tag/perl/page/7/">Next &raquo;</a>
+  </p>
+  <p class="info">(Page 6 of 30)</p>
+</div>
+
+
+</div>
+
+<p id="footer">
+  Copyright &copy; 2005-2013
+      by <a class="author" href="/about/#me">Daisuke Murase (typester)</a> /
+  Site generated by <a href="https://github.com/typester/nim">nim</a> /
+  Comments powered by <a href="http://disqus.com">DISQUS</a>.
+</p>
+
+</div>
+
+
+<script type="text/javascript">
+//<![CDATA[
+(function() {
+	var links = document.getElementsByTagName('a');
+	var query = '?';
+	for(var i = 0; i < links.length; i++) {
+	if(links[i].href.indexOf('#disqus_thread') >= 0) {
+		query += 'url' + i + '=' + encodeURIComponent(links[i].href) + '&';
+	}
+	}
+	document.write('<script charset="utf-8" type="text/javascript" src="http://disqus.com/forums/unknownplace/get_num_replies.js' + query + '"></' + 'script>');
+})();
+//]]>
+</script>
+
+
+<script type="text/javascript">
+var gaJsHost = (("https:" == document.location.protocol) ? "https://ssl." : "http://www.");
+document.write(unescape("%3Cscript src='" + gaJsHost + "google-analytics.com/ga.js' type='text/javascript'%3E%3C/script%3E"));
+</script>
+<script type="text/javascript">
+try {
+var pageTracker = _gat._getTracker("UA-53067-1");
+pageTracker._trackPageview();
+} catch(err) {}</script>
+
+<script>
+function googleTranslateElementInit() {
+  new google.translate.TranslateElement({
+    pageLanguage: 'ja',
+    gaTrack: true,
+    gaId: 'UA-53067',
+    floatPosition: google.translate.TranslateElement.FloatPosition.BOTTOM_RIGHT
+  });
+}
+</script><script src="//translate.google.com/translate_a/element.js?cb=googleTranslateElementInit"></script>
+
+</body>
+</html>

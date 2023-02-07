@@ -1,0 +1,152 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="ja" xml:lang="ja">
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <title>バッテリーのこり60秒で通知の話 - unknownplace.org</title>
+  <link rel="stylesheet" type="text/css" href="http://yui.yahooapis.com/3.0.0/build/cssreset/reset-min.css" />
+  <link rel="stylesheet" type="text/css" href="http://yui.yahooapis.com/3.0.0/build/cssfonts/fonts-min.css" />
+  <link rel="stylesheet" href="/css/style.css" type="text/css" />
+  <meta property="fb:admins" content="1093631929" />
+  <link rel="alternate" type="application/rss+xml" href="http://unknownplace.org/memo/index.rss" />
+</head>
+<body>
+
+<div id="container">
+<div id="header">
+    <h1><a href="/">unknownplace.org</a></h1> /
+<a href="/memo/">memo</a>
+</div>
+
+<div id="content">
+<div class="entry autopagerize_page_element">
+  <h2><a href="/memo/2012/09/30/2/">バッテリーのこり60秒で通知の話</a></h2>
+
+  <div class="body">
+    <p>僕のトークでなんか気になった人がいるとのことなので僕の使っているスクリプトを置いておきますね。</p>
+<pre><code><span class="comment-delimiter">#</span><span class="comment">!/usr/bin/env perl
+</span>
+<span class="keyword">use</span> <span class="function-name">strict</span>;
+<span class="keyword">use</span> <span class="function-name">warnings</span>;
+<span class="keyword">use</span> <span class="function-name">utf8</span>;
+
+<span class="keyword">use</span> <span class="function-name">Cocoa::BatteryInfo</span>;
+<span class="keyword">use</span> <span class="function-name">Cocoa::EventLoop</span>;
+<span class="keyword">use</span> <span class="function-name">Cocoa::Growl</span> <span class="string">&apos;:all&apos;</span>;
+
+growl_register(
+    <span class="string">app</span>           =&gt; <span class="string">&apos;Battery Notifier&apos;</span>,
+    <span class="string">notifications</span> =&gt; [<span class="string">&apos;NotifyLastOneMinite&apos;</span>, <span class="string">&apos;NotifyTimeRemaining&apos;</span>],
+);
+
+Cocoa::BatteryInfo::time_remaining_handler {
+    <span class="keyword">my</span> <span class="variable-name">$sec</span> = Cocoa::BatteryInfo-&gt;time_remaining_estimate;
+
+    <span class="keyword">return</span> <span class="keyword">unless</span> $sec =~ <span class="constant">/</span><span class="builtin">\</span><span class="type">d</span><span class="constant">/</span>;
+
+    <span class="keyword">if</span> ($sec &lt;= 60) {
+        growl_notify(
+            <span class="string">name</span>        =&gt; <span class="string">&apos;NotifyLastOneMinite&apos;</span>,
+            <span class="string">title</span>       =&gt; <span class="string">&apos;バッテリー切れまで&apos;</span>,
+            <span class="string">description</span> =&gt; <span class="type">sprintf</span> <span class="string">&apos;残り </span><span class="cperl-hash">%d</span><span class="string"> 秒&apos;</span>, $sec,
+        );
+    }
+    <span class="keyword">else</span> {
+        <span class="keyword">my</span> <span class="variable-name">$time</span>;
+
+        <span class="keyword">if</span> ($sec &gt;= 60*60) {
+            $time = <span class="type">sprintf</span> <span class="string">&apos;</span><span class="cperl-hash">%d</span><span class="string"> 時間 </span><span class="cperl-hash">%d</span><span class="string"> 分 </span><span class="cperl-hash">%d</span><span class="string"> 秒&apos;</span>,
+                <span class="type">int</span>($sec / (60*60)), <span class="type">int</span>(($sec % (60*60)) / 60), $sec % 60;
+        }
+        <span class="keyword">elsif</span> ($sec &gt; 60) {
+            $time = <span class="type">sprintf</span> <span class="string">&apos;</span><span class="cperl-hash">%d</span><span class="string"> 分 </span><span class="cperl-hash">%d</span><span class="string"> 秒&apos;</span>,
+                <span class="type">int</span>($sec / 60), $sec % 60;
+        }
+        <span class="keyword">else</span> {
+            $time = <span class="type">sprintf</span> <span class="string">&apos;</span><span class="cperl-hash">%d</span><span class="string"> 秒&apos;</span>, $sec;
+        }
+
+        growl_notify(
+            <span class="string">name</span>        =&gt; <span class="string">&apos;NotifyTimeRemaining&apos;</span>,
+            <span class="string">title</span>       =&gt; <span class="string">&apos;バッテリー切れまで&apos;</span>,
+            <span class="string">description</span> =&gt; <span class="type">sprintf</span> <span class="string">&apos;残り </span><span class="cperl-hash">%s</span><span class="string">&apos;</span>, $time,
+        );
+    }
+};
+
+Cocoa::EventLoop-&gt;run;
+</code></pre>
+<p>これを LaunchAgent でログイン時に自動で立ち上がるようにしております。</p>
+<p>で、これをうごかしているとバッテリー残り時間が変化したタイミングで Growl 通知が来るのですが、 普通は <code>NotifyTimeRemaining</code> という通知が来ます。もしそのときに残りが60秒いないだったらその代わりに <code>NotifyLastOneMinite</code> という通知が来ます。</p>
+<p>毎回通知されるのはうざいので僕は <code>NotifyTimeRemaining</code> というほうは Growl の設定でオフにしています。</p>
+<p>で、だいたい使っている感覚としては60秒でまず通知が来て、 その後もういちど、残り0秒という通知がきて、その直後にハイバネートする、というような感じのようです。</p>
+
+  </div>
+
+  <div class="meta">
+    by typester /
+    at <a href="/memo/2012/09/30/2/">2012-09-30T13:14:00</a> /
+    <a href="/memo/tag/perl/">perl</a>
+    &middot; <a href="/memo/tag/osx/">osx</a>
+    / <a href="/memo/2012/09/30/2/#disqus_thread">Comments(0)</a>
+  </div>
+</div>
+
+<div id="disqus_thread"></div>
+
+<script type="text/javascript">
+    var disqus_url = location.protocol + "//" + location.host + "/memo/2012/09/30/2/";
+</script>
+<script type="text/javascript" src="http://disqus.com/forums/unknownplace/embed.js"></script>
+
+</div>
+
+<p id="footer">
+  Copyright &copy; 2005-2013
+      by <a class="author" href="/about/#me">Daisuke Murase (typester)</a> /
+  Site generated by <a href="https://github.com/typester/nim">nim</a> /
+  Comments powered by <a href="http://disqus.com">DISQUS</a>.
+</p>
+
+</div>
+
+
+<script type="text/javascript">
+//<![CDATA[
+(function() {
+	var links = document.getElementsByTagName('a');
+	var query = '?';
+	for(var i = 0; i < links.length; i++) {
+	if(links[i].href.indexOf('#disqus_thread') >= 0) {
+		query += 'url' + i + '=' + encodeURIComponent(links[i].href) + '&';
+	}
+	}
+	document.write('<script charset="utf-8" type="text/javascript" src="http://disqus.com/forums/unknownplace/get_num_replies.js' + query + '"></' + 'script>');
+})();
+//]]>
+</script>
+
+
+<script type="text/javascript">
+var gaJsHost = (("https:" == document.location.protocol) ? "https://ssl." : "http://www.");
+document.write(unescape("%3Cscript src='" + gaJsHost + "google-analytics.com/ga.js' type='text/javascript'%3E%3C/script%3E"));
+</script>
+<script type="text/javascript">
+try {
+var pageTracker = _gat._getTracker("UA-53067-1");
+pageTracker._trackPageview();
+} catch(err) {}</script>
+
+<script>
+function googleTranslateElementInit() {
+  new google.translate.TranslateElement({
+    pageLanguage: 'ja',
+    gaTrack: true,
+    gaId: 'UA-53067',
+    floatPosition: google.translate.TranslateElement.FloatPosition.BOTTOM_RIGHT
+  });
+}
+</script><script src="//translate.google.com/translate_a/element.js?cb=googleTranslateElementInit"></script>
+
+</body>
+</html>

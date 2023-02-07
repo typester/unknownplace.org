@@ -1,0 +1,407 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="ja" xml:lang="ja">
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <title>memo - unknownplace.org</title>
+  <link rel="stylesheet" type="text/css" href="http://yui.yahooapis.com/3.0.0/build/cssreset/reset-min.css" />
+  <link rel="stylesheet" type="text/css" href="http://yui.yahooapis.com/3.0.0/build/cssfonts/fonts-min.css" />
+  <link rel="stylesheet" href="/css/style.css" type="text/css" />
+  <meta property="fb:admins" content="1093631929" />
+  <meta name="robots" content="noindex" />
+  <link rel="alternate" type="application/rss+xml" href="http://unknownplace.org/memo/index.rss" />
+</head>
+<body>
+
+<div id="container">
+<div id="header">
+    <h1><a href="/">unknownplace.org</a></h1> /
+<a href="/memo/">memo</a>
+</div>
+
+<div id="content">
+
+<div class="entry autopagerize_page_element">
+  <h2><a href="/memo/2009/11/25/1/">中里情報ソースに困る</a></h2>
+
+  <div class="body">
+    <p>巨人に移籍してしまったため現在まったく情報源がなくこまっている。巨人のサイトとかチェックしてねー。</p>
+
+  </div>
+
+  <div class="meta">
+    by typester /
+    at <a href="/memo/2009/11/25/1/">2009-11-25T15:00:00</a> /
+    <a href="/memo/tag/baseball/">baseball</a>
+    / <a href="/memo/2009/11/25/1/#disqus_thread">Comment</a>
+  </div>
+</div>
+
+<div class="entry autopagerize_page_element">
+  <h2><a href="/memo/2009/11/24/1/">たこthon</a></h2>
+
+  <div class="body">
+    <blockquote><p><a href="http://d.hatena.ne.jp/tomyhero/20091120/1258718763">たこthon 2009/11/23(月) - Lazy Programmer :-p</a></p></blockquote>
+<p>というのに参加してきた。</p>
+<p>tomyhero さんの家なのでどんだけ奇天烈な家なんだろうと思ってワクワクして言ったら予想に反してまともな家でした。でもものすごく遠い。</p>
+<p>たこ焼き食べたり鯛焼き食べたりタコライスたべたりしてあとはハックしたりゲームしたり漫画読んだりする会らしい。</p>
+<p>予想に反して集中できたので</p>
+<ul><li>オレオレlighttpdモジュールを本番投入したり</li><li>前から作ろうと思ってたiPhoneアプリをガリガリ実装したり</li></ul>
+<p>した。iPhoneアプリはほしい機能全部はつけてないけどとりあえずそれ削れば公開はできそうだったので公開してから帰るかとおもってリリース作業してたら最後の最後で謎エラーで手間取りだめだった。今日の夜にでもアップしよう。</p>
+<p>たこ焼き器とPS3欲しくなった。</p>
+<p>Kindleもちょっとだけ欲しくなった。</p>
+
+  </div>
+
+  <div class="meta">
+    by typester /
+    at <a href="/memo/2009/11/24/1/">2009-11-24T09:40:00</a> /
+    <a href="/memo/tag/life/">life</a>
+    / <a href="/memo/2009/11/24/1/#disqus_thread">Comment</a>
+  </div>
+</div>
+
+<div class="entry autopagerize_page_element">
+  <h2><a href="/memo/2009/11/21/2/">mod_accessvalve</a></h2>
+
+  <div class="body">
+    <p>lighttpd で一定時間におけるアクセス数をもとにアクセスを制限したいという用件があったのですが、それにマッチする良いモジュールがなかったので試しに書いてみた。</p>
+<blockquote><p><a href="http://github.com/typester/mod_accessvalve">typester&apos;s mod_accessvalve at master - GitHub</a></p></blockquote>
+<p>設定項目は</p>
+<ul><li><code>accessvalve.bucket-size</code>: <code>reset-interval</code> の時間内に許可するリクエスト数</li><li><code>accessvalve.reset-interval</code>: リクエスト数カウントをリセットする時間（秒） (デフォルト 60)</li><li><code>accessvalve.ban-duration</code>: リクエスト数が <code>bucket-size</code> を超えた場合にアクセスを拒否する時間（秒）(デフォルト 900)</li></ul>
+<p>という感じで。また <code>bucket-size</code> を指定しない、もしくは <code>0</code> に設定するとそのブロックではこの機能は無効になる。</p>
+<p>このようなアクセス制限をあえて HTTPD でやる利点としては、Virtual Hostごとに設定を変えたり、特定のパスだけ制限したりと言うことができると言うことかなぁ。あとは 503 エラーとかかえせたりとかか。その分無駄なループが発生するのでオーバーヘッドになる。</p>
+<p>最初 lighttpd のサイトを検索すると <code>mod_throttle</code> というのを誰かが書いているのが見つかってそれを使おうとしたのだけど、設定ファイルの patch 処理がされてなく、上記のような設定ファイルの場所によって設定を変えるということができなかったので採用を見送った。</p>
+<p>また、単純なコネクションごとの帯域制限やコネクション数制限は lighttpd に付属の mod_evasive でできる。</p>
+
+  </div>
+
+  <div class="meta">
+    by typester /
+    at <a href="/memo/2009/11/21/2/">2009-11-21T12:08:00</a> /
+    <a href="/memo/tag/lighttpd/">lighttpd</a>
+    / <a href="/memo/2009/11/21/2/#disqus_thread">Comment</a>
+  </div>
+</div>
+
+<div class="entry autopagerize_page_element">
+  <h2><a href="/memo/2009/11/21/1/">なぜか X 関係でビルドできないとき</a></h2>
+
+  <div class="body">
+    <p>lighttpd 1.4.24 以降や現在の SVN head で <code>autogen.sh</code> を走らせてからビルドしようとするとなぜか X 関係のエラーが出て <code>make</code> が失敗するということがありますがそういうときは、</p>
+<pre><code>cp `which libtool` .
+</code></pre>
+<p>とかすると <code>make</code> とおるようになります。それ以上追ってないけど。なんでだろ？</p>
+
+  </div>
+
+  <div class="meta">
+    by typester /
+    at <a href="/memo/2009/11/21/1/">2009-11-21T11:08:00</a> /
+    <a href="/memo/tag/lighttpd/">lighttpd</a>
+    / <a href="/memo/2009/11/21/1/#disqus_thread">Comment</a>
+  </div>
+</div>
+
+<div class="entry autopagerize_page_element">
+  <h2><a href="/memo/2009/11/19/1/">リニューアル</a></h2>
+
+  <div class="body">
+    <p>clmemo を開始してから4年ほど、ずっと変えていなかったサイトをサーバーが死亡したのを機にリニューアル。</p>
+<p>今年初めに作った <a href="http://github.com/typester/nim">nim</a> をつかって全部静的ファイルな構成にしてみる。制限のきついレンタルサーバーならともかく、僕の環境ではまったく意味がない。最初は <code>typester.github.com</code> とかでやろうとおもったけど、その後移転したくなったときリダイレクトとかできないのはいやなのでやめた。</p>
+<p>でも自鯖はめんどくさいので <a href="http://prgmr.com/xen/">prgmr.com</a> 借りた。なかなか良い。</p>
+<p>nim なら clmemo 以外にもコンテンツを扱えるのでぼちぼち増やしていく予定。とりあえずブログかなぁ。</p>
+<p>しかしやっぱりサイトをいじるのは楽しい。最近はブログサービスなどが普及してきてこういうことをやる人が少なくなってしまったけどもったいないなーとおもう。</p>
+
+  </div>
+
+  <div class="meta">
+    by typester /
+    at <a href="/memo/2009/11/19/1/">2009-11-19T00:31:00</a> /
+    <a href="/memo/tag/web/">web</a>
+    &middot; <a href="/memo/tag/life/">life</a>
+    / <a href="/memo/2009/11/19/1/#disqus_thread">Comment</a>
+  </div>
+</div>
+
+<div class="entry autopagerize_page_element">
+  <h2><a href="/memo/2009/07/13/1/">AnyEventでirssiプラグインを書く</a></h2>
+
+  <div class="body">
+    <p>AnyEvent はその名の通りさまざまなイベントインタフェースに対応していて、その中に irssi が使用している Glib も含まれているため、irssiのプラグインの中で普通に AnyEvent を使用することができます。</p>
+<p>キーワード反応を <a href="http://im.kayac.com/">im.kayac.com</a> で自分の IM に通知する <a href="http://svn.coderepos.org/share/lang/perl/irssi/scripts/hilight2im.pl">higlith2im.pl</a> プラグインを AnyEvent を使用するように書き換えたのが以下です。</p>
+<pre><code><span class="keyword">use</span> <span class="function-name">strict</span>;
+<span class="keyword">use</span> <span class="function-name">warnings</span>;
+
+<span class="keyword">use</span> <span class="function-name">Glib</span>;
+
+<span class="keyword">use</span> <span class="function-name">Irssi</span>;
+<span class="keyword">use</span> <span class="function-name">AnyEvent::HTTP</span>;
+
+<span class="keyword">use</span> <span class="function-name">HTTP::Request::Common</span>;
+
+<span class="keyword">our</span> <span class="variable-name">$VERSION</span> = <span class="string">&apos;0.1&apos;</span>;
+
+<span class="keyword">our</span> <span class="cperl-hash">%IRSSI</span> = (
+    <span class="string">name</span>        =&gt; <span class="string">&apos;hilight2im&apos;</span>,
+    <span class="string">description</span> =&gt; <span class="string">&apos;notify hilight message to IM via im.kayac.com api&apos;</span>,
+    <span class="string">authors</span>     =&gt; <span class="string">&apos;Daisuke Murase&apos;</span>,
+);
+
+<span class="keyword">sub</span> <span class="function-name">sig_printtext</span> {
+    <span class="keyword">my</span> (<span class="variable-name">$dest</span>, <span class="variable-name">$text</span>, <span class="variable-name">$stripped</span>) = <span class="cperl-array">@_</span>;
+
+    <span class="keyword">if</span> ( $dest-&gt;{<span class="string">level</span>} &amp; MSGLEVEL_HILIGHT ) {
+        <span class="keyword">my</span> <span class="variable-name">$user</span> = Irssi::settings_get_str(<span class="string">&apos;im_kayac_com_username&apos;</span>) <span class="type">or</span> <span class="keyword">return</span>;
+        <span class="keyword">my</span> <span class="variable-name">$msg</span>  = <span class="type">sprintf</span>(<span class="string">&apos;[irssi] </span><span class="cperl-hash">%s</span><span class="string">&apos;</span>, $stripped);
+
+        <span class="keyword">my</span> <span class="variable-name">$req</span> = POST <span class="string">&quot;http://im.kayac.com/api/post/$user&quot;</span>, [ <span class="string">message</span> =&gt; $msg ];
+        <span class="keyword">my</span> <span class="cperl-hash">%headers</span> = <span class="cperl-nonoverridable">map</span> { $_ =&gt; $req-&gt;header($_), } $req-&gt;headers-&gt;header_field_names;
+
+        <span class="keyword">my</span> <span class="variable-name">$r</span>;
+        $r = http_post $req-&gt;uri, $req-&gt;content, <span class="string">headers</span> =&gt; \<span class="cperl-hash">%headers</span>, <span class="keyword">sub</span> { <span class="cperl-nonoverridable">undef</span> $r };
+    }
+}
+
+Irssi::signal_add(<span class="string">&apos;print text&apos;</span> =&gt; \&amp;sig_printtext);
+Irssi::settings_add_str(<span class="string">&apos;im_kayac_com&apos;</span>, <span class="string">&apos;im_kayac_com_username&apos;</span>, <span class="string">&apos;&apos;</span>);
+</code></pre>
+<p>fork する必要がなくなってシンプルですね！</p>
+<p>...とおもいきや現状の AnyEvent::HTTP はなんと HTTP::Request オブジェクトからのリクエスト送信に対応していないため、自分ですべてのリクエストを組み立てる必要があるようです。これは不便。。</p>
+<p>ですが、irssi の中で普通に AnyEvent を使うことができるのはなかなか便利です。お試しあれ！</p>
+<p>AnyEvent 版は <a href="http://github.com/typester/irssi-plugins/blob/master/hilight2im.pl">github</a> にあげた。</p>
+
+  </div>
+
+  <div class="meta">
+    by typester /
+    at <a href="/memo/2009/07/13/1/">2009-07-13T23:30:00</a> /
+    <a href="/memo/tag/perl/">perl</a>
+    &middot; <a href="/memo/tag/irssi/">irssi</a>
+    / <a href="/memo/2009/07/13/1/#disqus_thread">Comment</a>
+  </div>
+</div>
+
+<div class="entry autopagerize_page_element">
+  <h2><a href="/memo/2009/07/10/1/">AnyEventの良いところを3行で</a></h2>
+
+  <div class="body">
+    <p>教えて！と言われたのでそのとき答えた物をここにも記す。</p>
+<ol><li>POE みたいにきもくない</li><li>Danga::Socket とかだと自分で実装しないといけないread queueとかそういうのも面倒見てくれる便利モジュールがある＞AnyEvent::Handle</li><li>ドキュメントがアツイ</li></ol>
+<p>最後のは主に <a href="http://search.cpan.org/perldoc?AnyEvent::Intro">AnyEvent::Intro</a> のことを言ってますが、これ一通り読めばとりあえず AnyEvent 使えるようになるっていうくらい完璧な内容となっています。</p>
+<p>AnyEventとは何かからはじまり、非同期プログラミングの説明からAnyEventを使用したシンプルな例が続き、AnyEvent::Socket や AnyEvent::Handle を使用するのを順々に詳しく説明してくれています。 どうして AnyEvent::Handle みたいな物を使うといいのかというところまで書かれているので、非同期プログラミングやネットワークプログラミングにあまり詳しくない人でも読めるのではないでしょうか。</p>
+
+  </div>
+
+  <div class="meta">
+    by typester /
+    at <a href="/memo/2009/07/10/1/">2009-07-10T10:32:00</a> /
+    <a href="/memo/tag/perl/">perl</a>
+    / <a href="/memo/2009/07/10/1/#disqus_thread">Comment</a>
+  </div>
+</div>
+
+<div class="entry autopagerize_page_element">
+  <h2><a href="/memo/2009/07/09/1/">AnyEvent で $poe_kernel-&gt;alias_set 的なことをする方法</a></h2>
+
+  <div class="body">
+    <p>最近 <a href="http://search.cpan.org/dist/AnyEvent/">AnyEvent</a> にはまっています。おもしろい！</p>
+<p>AnyEvent と同じ非同期プログラミングフレームワークであるところの <a href="http://search.cpan.org/dist/POE/">POE</a> では</p>
+<pre><code>$kernel-&gt;alias_set(<span class="string">&apos;hoge&apos;</span>);
+</code></pre>
+<p>などとしておくと</p>
+<pre><code>$kernel-&gt;post( <span class="string">hoge</span> =&gt; <span class="string">&apos;state&apos;</span> );
+</code></pre>
+<p>みたいな感じでどこからでもそのコンポーネントを呼び出すことができました。 しかし AnyEvent ではそう言った機能がないため以下のように <a href="http://search.cpan.org/dist/Object-Container/">Object::Container</a> を使って解決することにしました。</p>
+<p>呼び出される側：</p>
+<pre><code><span class="keyword">use</span> <span class="function-name">AnyEvent</span>;
+<span class="keyword">use</span> <span class="function-name">Object::Container</span> <span class="string">&apos;event&apos;</span>;
+
+<span class="keyword">my</span> <span class="variable-name">$cv</span> = AnyEvent-&gt;condvar;
+$cv-&gt;cb(<span class="keyword">sub</span> {
+   <span class="keyword">my</span> (<span class="cperl-array">@args</span>) = $cv-&gt;<span class="type">recv</span>;
+   <span class="comment-delimiter"># </span><span class="comment">ここになんか処理
+</span>});
+event-&gt;register( <span class="string">foo</span> =&gt; <span class="keyword">sub</span> { $cv } );
+</code></pre>
+<p>呼び出す側：</p>
+<pre><code><span class="keyword">use</span> <span class="function-name">AnyEvent</span>;
+<span class="keyword">use</span> <span class="function-name">Object::Container</span> <span class="string">&apos;event&apos;</span>;
+
+event(<span class="string">&apos;foo&apos;</span>)-&gt;<span class="type">send</span>(<span class="cperl-array">@args</span>);
+</code></pre>
+<p>Condvarをグローバルなシングルトンコンテナに入れ、それを使って相互にやりとりをするという感じですね。</p>
+<p>Object::Container は export する機能がなかったのですが、毎回 <code>Object::Container-&gt;get(...)</code> などとかくのがだるかったので import に引数渡すとその名前でコンテナを export する機能をつけました。(0.2以降)</p>
+<p>同等のことはいろいろな方法があると思いますが、これが一応今の所の僕の解となってます。参考までに！</p>
+
+  </div>
+
+  <div class="meta">
+    by typester /
+    at <a href="/memo/2009/07/09/1/">2009-07-09T19:34:00</a> /
+    <a href="/memo/tag/perl/">perl</a>
+    / <a href="/memo/2009/07/09/1/#disqus_thread">Comment</a>
+  </div>
+</div>
+
+<div class="entry autopagerize_page_element">
+  <h2><a href="/memo/2009/07/02/2/">さっきのパッチ取り込んでもらった</a></h2>
+
+  <div class="body">
+    <p>なんと <a href="http://www.fsck.com/">jesse</a> のプロジェクトだったらしい。パッケージ名でなんか見たことあるなーって思ってたんだけど、気がつかなかったなぁ。世間せまい！</p>
+<p>コミット権もらったのでこれからもなんかあったら貢献しよう。</p>
+
+  </div>
+
+  <div class="meta">
+    by typester /
+    at <a href="/memo/2009/07/02/2/">2009-07-02T15:29:00</a> /
+    <a href="/memo/tag/android/">android</a>
+    / <a href="/memo/2009/07/02/2/#disqus_thread">Comment</a>
+  </div>
+</div>
+
+<div class="entry autopagerize_page_element">
+  <h2><a href="/memo/2009/07/02/1/">k9mailを日本語環境でただしく使えるようにした</a></h2>
+
+  <div class="body">
+    <p>GDP1 で android のメールアプリが <code>Connection error</code> と言うエラーで新しいメールをまったく受信してくれない状態になってしまった。GDDフォンだとこの問題はいまのところ出たことはない。</p>
+<p>昔、 brad のブログで <a href="http://code.google.com/p/k9mail/">k9mail</a> というのを見たのを思い出したのでそれを入れてみたのだが、ヘッダーのエンコード処理がされておらず日本語の件名などをつかうと化け化けになってしまう。</p>
+<p>機能的には k9mail のほうが優れていて、このエンコード問題さえ解決できれば使えそうだなーと思ったのでいっちょパッチを書いてみた。</p>
+<pre><code>diff --git a/src/com/android/email/mail/internet/MimeHeader.java b/src/com/android/email/mail/internet/MimeHeader.java
+index 24aad4d..a117e08 100644
+--- a/src/com/android/email/mail/internet/MimeHeader.java
++++ b/src/com/android/email/mail/internet/MimeHeader.java
+@@ -11,6 +11,7 @@ import java.util.List;
+ <span class="type">import</span> <span class="variable-name">com</span>.android.email.Email;
+ <span class="type">import</span> <span class="variable-name">com</span>.android.email.Utility;
+ <span class="type">import</span> <span class="variable-name">com</span>.android.email.mail.MessagingException;
++import org.apache.james.mime4j.codec.EncoderUtil;
+
+ public <span class="type">class</span> <span class="variable-name">MimeHeader</span> {
+     <span class="doc">/**
+@@ -97,12 +98,35 @@ public class MimeHeader {
+         BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(out), 1024);
+         for (Field field : mFields) {
+             if (!Utility.arrayContains(writeOmitFields, field.name)) {
+-                writer.write(field.name + ": " + field.value + "\r\n");
++                String v = field.value;
++
++                if (hasToBeEncoded(v)) {
++                    v = EncoderUtil.encodeEncodedWord(
++                        field.value,
++                        EncoderUtil.Usage.WORD_ENTITY
++                    );
++                }
++
++                writer.write(field.name + ": " + v + "\r\n");
+             }
+         }
+         writer.</span><span class="doc"><span class="constant">flush()</span></span><span class="doc">;
+     }
+
++    // encode non printable characters except LF/CR codes.
++    public boolean hasToBeEncoded(String text) {
++        for (int i = 0; i &lt; text.</span><span class="doc"><span class="constant">length()</span></span><span class="doc">; i++) {
++            char c = text.charAt(i);
++            if (c &lt; 0x20 || 0x7e &lt; c) { // non printable
++                if (c != 0x0a &amp;&amp; c != 0x0d) { // non LF/CR
++                    return true;
++                }
++            }
++        }
++
++        return false;
++    }
++
+     class Field {
+         String name;
+</span></code></pre>
+<p><a href="http://github.com/typester/android-k9mail/commit/9c37dbdf51ec8ef009b4c6564b0cddcf5f25cbc7">github</a> にもあげた。</p>
+<p>この実装がただしいかどうかはわからないけど、これで一応ちゃんとエンコードされるようになる。</p>
+<p>ところで、おもしろいのがこのパッチは com.android. なパッケージを編集してしまっていると言うこと。 なんと k9mail は com.android.* のパッケージも含んでいるのである。android のメール機能を持ってきて再利用している。 これはアプリごとにVMが別れてるandroidだからできることなのかなぁとか思ったりした。</p>
+<p>エンコードされないとかどう見てもバグなので <a href="http://code.google.com/p/k9mail/issues/detail?id=534">issue</a> 登録しておいた。パッチは採用されないと思うけどｗ android のメールではこの問題はおこらないということは com.android.* なところはいじらなくても実現可能ということなので。</p>
+
+  </div>
+
+  <div class="meta">
+    by typester /
+    at <a href="/memo/2009/07/02/1/">2009-07-02T11:37:00</a> /
+    <a href="/memo/tag/android/">android</a>
+    / <a href="/memo/2009/07/02/1/#disqus_thread">Comment</a>
+  </div>
+</div>
+
+
+
+
+<div id="pager" class="autopagerize_insert_before">
+  <p class="pages">
+    <a class="prev" rel="previous" href="/memo/page/10/">&laquo; Prev</a>
+    <a href="/memo/page/7/">7</a>
+    <a href="/memo/page/8/">8</a>
+    <a href="/memo/page/9/">9</a>
+    <a href="/memo/page/10/">10</a>
+    <span class="current">11</span>
+    <a href="/memo/page/12/">12</a>
+    <a href="/memo/page/13/">13</a>
+    <a href="/memo/page/14/">14</a>
+    <a href="/memo/page/15/">15</a>
+    <a href="/memo/page/16/">16</a>
+    <a class="next" rel="next" href="/memo/page/12/">Next &raquo;</a>
+  </p>
+  <p class="info">(Page 11 of 203)</p>
+</div>
+
+
+</div>
+
+<p id="footer">
+  Copyright &copy; 2005-2013
+      by <a class="author" href="/about/#me">Daisuke Murase (typester)</a> /
+  Site generated by <a href="https://github.com/typester/nim">nim</a> /
+  Comments powered by <a href="http://disqus.com">DISQUS</a>.
+</p>
+
+</div>
+
+
+<script type="text/javascript">
+//<![CDATA[
+(function() {
+	var links = document.getElementsByTagName('a');
+	var query = '?';
+	for(var i = 0; i < links.length; i++) {
+	if(links[i].href.indexOf('#disqus_thread') >= 0) {
+		query += 'url' + i + '=' + encodeURIComponent(links[i].href) + '&';
+	}
+	}
+	document.write('<script charset="utf-8" type="text/javascript" src="http://disqus.com/forums/unknownplace/get_num_replies.js' + query + '"></' + 'script>');
+})();
+//]]>
+</script>
+
+
+<script type="text/javascript">
+var gaJsHost = (("https:" == document.location.protocol) ? "https://ssl." : "http://www.");
+document.write(unescape("%3Cscript src='" + gaJsHost + "google-analytics.com/ga.js' type='text/javascript'%3E%3C/script%3E"));
+</script>
+<script type="text/javascript">
+try {
+var pageTracker = _gat._getTracker("UA-53067-1");
+pageTracker._trackPageview();
+} catch(err) {}</script>
+
+<script>
+function googleTranslateElementInit() {
+  new google.translate.TranslateElement({
+    pageLanguage: 'ja',
+    gaTrack: true,
+    gaId: 'UA-53067',
+    floatPosition: google.translate.TranslateElement.FloatPosition.BOTTOM_RIGHT
+  });
+}
+</script><script src="//translate.google.com/translate_a/element.js?cb=googleTranslateElementInit"></script>
+
+</body>
+</html>

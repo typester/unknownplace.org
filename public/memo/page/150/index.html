@@ -1,0 +1,289 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="ja" xml:lang="ja">
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <title>memo - unknownplace.org</title>
+  <link rel="stylesheet" type="text/css" href="http://yui.yahooapis.com/3.0.0/build/cssreset/reset-min.css" />
+  <link rel="stylesheet" type="text/css" href="http://yui.yahooapis.com/3.0.0/build/cssfonts/fonts-min.css" />
+  <link rel="stylesheet" href="/css/style.css" type="text/css" />
+  <meta property="fb:admins" content="1093631929" />
+  <meta name="robots" content="noindex" />
+  <link rel="alternate" type="application/rss+xml" href="http://unknownplace.org/memo/index.rss" />
+</head>
+<body>
+
+<div id="container">
+<div id="header">
+    <h1><a href="/">unknownplace.org</a></h1> /
+<a href="/memo/">memo</a>
+</div>
+
+<div id="content">
+
+<div class="entry autopagerize_page_element">
+  <h2><a href="/memo/2006/01/16/3/"></a></h2>
+
+  <div class="body">
+    <p>山梨キター</p>
+
+  </div>
+
+  <div class="meta">
+    by typester /
+    at <a href="/memo/2006/01/16/3/">2006-01-16T12:37:00</a> /
+    <a href="/memo/tag/life/">life</a>
+    / <a href="/memo/2006/01/16/3/#disqus_thread">Comment</a>
+  </div>
+</div>
+
+<div class="entry autopagerize_page_element">
+  <h2><a href="/memo/2006/01/16/2/">宿泊施設の注意書きに</a></h2>
+
+  <div class="body">
+    <blockquote><p>スパムメール送信・ハッキング・クラッキング行為は絶対に行わないでください。</p></blockquote>
+<p>はっくできない！＞＜</p>
+
+  </div>
+
+  <div class="meta">
+    by typester /
+    at <a href="/memo/2006/01/16/2/">2006-01-16T08:44:00</a> /
+    <a href="/memo/tag/life/">life</a>
+    / <a href="/memo/2006/01/16/2/#disqus_thread">Comment</a>
+  </div>
+</div>
+
+<div class="entry autopagerize_page_element">
+  <h2><a href="/memo/2006/01/16/1/">山梨ってどこよ</a></h2>
+
+  <div class="body">
+    <p>山梨と群馬の違いすらよくわからないけれども、今日明日と山梨です。あれ、群馬だっけ？</p>
+<p>山梨hackthon!</p>
+<p>うそです。</p>
+<p>でも時間を見つけてはっくりたいとおもいます。</p>
+
+  </div>
+
+  <div class="meta">
+    by typester /
+    at <a href="/memo/2006/01/16/1/">2006-01-16T08:40:00</a> /
+    <a href="/memo/tag/life/">life</a>
+    / <a href="/memo/2006/01/16/1/#disqus_thread">Comment</a>
+  </div>
+</div>
+
+<div class="entry autopagerize_page_element">
+  <h2><a href="/memo/2006/01/15/8/"></a></h2>
+
+  <div class="body">
+    <p>あぁ、CPANRecent のクローラとめたままだった。Sorry!</p>
+
+  </div>
+
+  <div class="meta">
+    by typester /
+    at <a href="/memo/2006/01/15/8/">2006-01-15T19:44:00</a> /
+    <a href="/memo/tag/life/">life</a>
+    / <a href="/memo/2006/01/15/8/#disqus_thread">Comment</a>
+  </div>
+</div>
+
+<div class="entry autopagerize_page_element">
+  <h2><a href="/memo/2006/01/15/7/">DBIC の Trigger</a></h2>
+
+  <div class="body">
+    <p>よくわかんないんだが、CDBIのtriggerぽいことをするには</p>
+<pre><code><span class="keyword">sub</span> <span class="function-name">insert</span> {
+    <span class="keyword">my</span> <span class="variable-name">$self</span> = <span class="cperl-nonoverridable">shift</span>;
+    $self-&gt;created_date( DateTime-&gt;now ) <span class="keyword">unless</span> $self-&gt;created_date;
+    $self-&gt;SUPER::insert(<span class="cperl-array">@_</span>);
+}
+</code></pre>
+<p>みたいな感じでいいんかなぁ。</p>
+
+  </div>
+
+  <div class="meta">
+    by typester /
+    at <a href="/memo/2006/01/15/7/">2006-01-15T19:35:00</a> /
+    <a href="/memo/tag/perl/">perl</a>
+    / <a href="/memo/2006/01/15/7/#disqus_thread">Comment</a>
+  </div>
+</div>
+
+<div class="entry autopagerize_page_element">
+  <h2><a href="/memo/2006/01/15/6/">Static::Simple と StackTrace のロード</a></h2>
+
+  <div class="body">
+    <p>はこんな感じでどう。</p>
+<pre><code><span class="type">__PACKAGE__</span>-&gt;setup(
+    <span class="keyword">do</span> {
+        <span class="keyword">my</span> <span class="cperl-array">@plugins</span>;
+        <span class="cperl-nonoverridable">push</span> <span class="cperl-array">@plugins</span>, <span class="string">&apos;StackTrace&apos;</span> <span class="keyword">if</span> <span class="cperl-hash">$ENV</span>{<span class="string">CATALYST_DEBUG</span>};
+        <span class="cperl-nonoverridable">push</span> <span class="cperl-array">@plugins</span>, <span class="string">&apos;Static::Simple&apos;</span> <span class="keyword">if</span> <span class="cperl-hash">$ENV</span>{<span class="string">CATALYST_ENGINE</span>} =~ <span class="constant">/</span><span class="function-name">^</span><span class="string">HTTP</span><span class="constant">/</span>;
+        <span class="cperl-array">@plugins</span>;
+    }
+);
+</code></pre>
+
+  </div>
+
+  <div class="meta">
+    by typester /
+    at <a href="/memo/2006/01/15/6/">2006-01-15T18:32:00</a> /
+    <a href="/memo/tag/perl/">perl</a>
+    &middot; <a href="/memo/tag/catalyst/">catalyst</a>
+    / <a href="/memo/2006/01/15/6/#disqus_thread">Comment</a>
+  </div>
+</div>
+
+<div class="entry autopagerize_page_element">
+  <h2><a href="/memo/2006/01/15/5/">あげた</a></h2>
+
+  <div class="body">
+    <p>1.4.9 に。相変わらず mod_proxy 経由で svn のコミットできない</p>
+<p>svn 側</p>
+<pre><code>svn: Commit failed (details follow):
+svn: OPTIONS request failed on &apos;/public/stuff&apos;
+svn: OPTIONS of &apos;/public/stuff&apos;: 400 Bad Request (http://svn.unknownplace.org)
+</code></pre>
+<p>lighty 側</p>
+<pre><code>2006-01-15 15:57:02: (request.c.985) GET/HEAD/OPTIONS with content-length -&gt; 400
+</code></pre>
+<p>うーむ。OPTIONS ってこのlighttpdの挙動でいいんだっけ？</p>
+
+  </div>
+
+  <div class="meta">
+    by typester /
+    at <a href="/memo/2006/01/15/5/">2006-01-15T15:59:00</a> /
+    <a href="/memo/tag/life/">life</a>
+    / <a href="/memo/2006/01/15/5/#disqus_thread">Comment</a>
+  </div>
+</div>
+
+<div class="entry autopagerize_page_element">
+  <h2><a href="/memo/2006/01/15/4/">lighttpd 1.4.9</a></h2>
+
+  <div class="body">
+    <blockquote><ul><li>added server.core-files option (sandy )</li><li>added docs for mod_status</li><li>added mod_evasive to limit the number of connections by IP ()</li><li>added the power-magnet to mod_cml</li><li>added internal statistics to mod_fastcgi</li><li>added server.statistics-url to get internal statistics from mod_status</li><li>added support for conditional range-requests through If-Range</li><li>added static building via scons</li><li>fixed 100% cpu loops in mod_cgi (&quot;sandy&quot; )</li><li>fixed handling for secure-download.timeout (jamis@37signals.com)</li><li>fixed IE bug in content-charset in the output of mod_dirlisting (sniper@php.net)</li><li>fixed typos and language in the docs (ryan-2005@ryandesign.com)</li><li>fixed assertion in mod_cgi on HEAD request is Content-Length ()</li><li>fixed handling if equal but duplicate If-Modified-Since request headers</li><li>fixed endless loops in mod_fastcgi if backend is dead</li><li>fixed Depth: 1 handling in PROPFIND requests on empty dirs</li><li>fixed encoding of UTF8 encoded dirlistings (Jani Taskinen )</li><li>fixed initial bind to a unix-domain socket through server.bind</li><li>fixed handling of lowercase filesystems</li><li>fixed duplicate request headers cause by mod_setenv</li></ul></blockquote>
+
+  </div>
+
+  <div class="meta">
+    by typester /
+    at <a href="/memo/2006/01/15/4/">2006-01-15T15:34:00</a> /
+    <a href="/memo/tag/life/">life</a>
+    / <a href="/memo/2006/01/15/4/#disqus_thread">Comment</a>
+  </div>
+</div>
+
+<div class="entry autopagerize_page_element">
+  <h2><a href="/memo/2006/01/15/3/">寝坊</a></h2>
+
+  <div class="body">
+    <p>打ち合わせすっぽかした。うう。</p>
+
+  </div>
+
+  <div class="meta">
+    by typester /
+    at <a href="/memo/2006/01/15/3/">2006-01-15T15:04:00</a> /
+    <a href="/memo/tag/life/">life</a>
+    / <a href="/memo/2006/01/15/3/#disqus_thread">Comment</a>
+  </div>
+</div>
+
+<div class="entry autopagerize_page_element">
+  <h2><a href="/memo/2006/01/15/2/">CPANRecentアップデート</a></h2>
+
+  <div class="body">
+    <p>namespaceフィルタに加えてauthorフィルタも追加した。</p>
+<p><a href="http://unknownplace.org/cpanrecent/author/miyagawa">/author/miyagawa</a></p>
+<p>とかで特定の人のログを追えるように。手抜きなので namespace フィルタと併用は出来ない。キーはCPAN IDです。</p>
+<p>miyagawa+naoya+tokuhirom とかすれば複数人を対象にできるます。</p>
+
+  </div>
+
+  <div class="meta">
+    by typester /
+    at <a href="/memo/2006/01/15/2/">2006-01-15T07:27:00</a> /
+    <a href="/memo/tag/perl/">perl</a>
+    / <a href="/memo/2006/01/15/2/#disqus_thread">Comment</a>
+  </div>
+</div>
+
+
+
+
+<div id="pager" class="autopagerize_insert_before">
+  <p class="pages">
+    <a class="prev" rel="previous" href="/memo/page/149/">&laquo; Prev</a>
+    <a href="/memo/page/146/">146</a>
+    <a href="/memo/page/147/">147</a>
+    <a href="/memo/page/148/">148</a>
+    <a href="/memo/page/149/">149</a>
+    <span class="current">150</span>
+    <a href="/memo/page/151/">151</a>
+    <a href="/memo/page/152/">152</a>
+    <a href="/memo/page/153/">153</a>
+    <a href="/memo/page/154/">154</a>
+    <a href="/memo/page/155/">155</a>
+    <a class="next" rel="next" href="/memo/page/151/">Next &raquo;</a>
+  </p>
+  <p class="info">(Page 150 of 203)</p>
+</div>
+
+
+</div>
+
+<p id="footer">
+  Copyright &copy; 2005-2013
+      by <a class="author" href="/about/#me">Daisuke Murase (typester)</a> /
+  Site generated by <a href="https://github.com/typester/nim">nim</a> /
+  Comments powered by <a href="http://disqus.com">DISQUS</a>.
+</p>
+
+</div>
+
+
+<script type="text/javascript">
+//<![CDATA[
+(function() {
+	var links = document.getElementsByTagName('a');
+	var query = '?';
+	for(var i = 0; i < links.length; i++) {
+	if(links[i].href.indexOf('#disqus_thread') >= 0) {
+		query += 'url' + i + '=' + encodeURIComponent(links[i].href) + '&';
+	}
+	}
+	document.write('<script charset="utf-8" type="text/javascript" src="http://disqus.com/forums/unknownplace/get_num_replies.js' + query + '"></' + 'script>');
+})();
+//]]>
+</script>
+
+
+<script type="text/javascript">
+var gaJsHost = (("https:" == document.location.protocol) ? "https://ssl." : "http://www.");
+document.write(unescape("%3Cscript src='" + gaJsHost + "google-analytics.com/ga.js' type='text/javascript'%3E%3C/script%3E"));
+</script>
+<script type="text/javascript">
+try {
+var pageTracker = _gat._getTracker("UA-53067-1");
+pageTracker._trackPageview();
+} catch(err) {}</script>
+
+<script>
+function googleTranslateElementInit() {
+  new google.translate.TranslateElement({
+    pageLanguage: 'ja',
+    gaTrack: true,
+    gaId: 'UA-53067',
+    floatPosition: google.translate.TranslateElement.FloatPosition.BOTTOM_RIGHT
+  });
+}
+</script><script src="//translate.google.com/translate_a/element.js?cb=googleTranslateElementInit"></script>
+
+</body>
+</html>

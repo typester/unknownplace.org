@@ -1,0 +1,144 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="ja" xml:lang="ja">
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <title>memo - unknownplace.org</title>
+  <link rel="stylesheet" type="text/css" href="http://yui.yahooapis.com/3.0.0/build/cssreset/reset-min.css" />
+  <link rel="stylesheet" type="text/css" href="http://yui.yahooapis.com/3.0.0/build/cssfonts/fonts-min.css" />
+  <link rel="stylesheet" href="/css/style.css" type="text/css" />
+  <meta property="fb:admins" content="1093631929" />
+  <meta name="robots" content="noindex" />
+  <link rel="alternate" type="application/rss+xml" href="http://unknownplace.org/memo/index.rss" />
+</head>
+<body>
+
+<div id="container">
+<div id="header">
+    <h1><a href="/">unknownplace.org</a></h1> /
+<a href="/memo/">memo</a>
+</div>
+
+<div id="content">
+
+<div class="entry autopagerize_page_element">
+  <h2><a href="/memo/2009/02/06/1/">Hiveminder.app</a></h2>
+
+  <div class="body">
+    <p>お気に入りのタスク管理ツール <a href="http://hiveminder.com/">Hiveminder</a> をちょっとハックして自分好みにしてみた。</p>
+<p><a href="http://www.flickr.com/photos/typester/3257131671/" title="Hiveminder.app by typester, on Flickr"><img alt="Hiveminder.app" height="554" src="http://farm4.static.flickr.com/3347/3257131671_4449115c2c_o.png" width="505" /></a></p>
+<ul><li>Fluid でアプリケーション的に使えるように</li><li>ページ内の jGrowl の通知を本物の Growl 使うように変更</li><li>いまやってるタスクのタイムをカウント出来る機能</li><li>でそれ(いまやるべきこと)を10分間隔で Growl 通知する機能</li></ul>
+<p>など。すぐに他ごとしてしまう僕のような人には一番最後の機能がなかなか有効なはず。</p>
+<p>スクリプトのダウンロード、使い方などはgithubにアップしたのでそっち見てくださいませ。</p>
+<blockquote><p><a href="http://github.com/typester/hiveminder-local-timetrack/tree/master">typester&apos;s hiveminder-local-timetrack at master - GitHub</a></p></blockquote>
+<p>余談。</p>
+<p>そんなに Hiveminder がいいの？ と聞かれると返答に困るわけですが、<a href="http://search.cpan.org/dist/App-Todo/bin/todo.pl">todo.pl</a> からのブレインダンプでのタスク登録 (todo.pl braindump) とか、指定した日付になるまでタスクリストからタスクを隠せる機能 ([hide until next monday]) だとか、タスクにアイデア的に登録したものをやんないよなーってものは永久に隠せたり（隠してるのはいつでも表示させることが出来るので過去のアイデアリストとして使える）とか他にはない気に入ってるところがたくさんあるので使い続けてます。</p>
+<p>@obra++ bestpractical++</p>
+<p>ってとこですかね！</p>
+<p>あと、いつものように、自分の必要な最小限の機能しかつくってないので、興味ある人いらっしゃいましたら是非とも一緒にハックしましょう。</p>
+
+  </div>
+
+  <div class="meta">
+    by typester /
+    at <a href="/memo/2009/02/06/1/">2009-02-06T20:37:00</a> /
+    <a href="/memo/tag/osx/">osx</a>
+    &middot; <a href="/memo/tag/hiveminder/">hiveminder</a>
+    / <a href="/memo/2009/02/06/1/#disqus_thread">Comment</a>
+  </div>
+</div>
+
+<div class="entry autopagerize_page_element">
+  <h2><a href="/memo/2008/03/21/1/">todo.plが古かったらしい</a></h2>
+
+  <div class="body">
+    <p>hiveminderのtodo.plってbraindumpはできるけど、今あるタスクを一括でテキスト編集しようとするとdownload -&gt; edit -&gt; uploadってやんないといけなくてめんどいよね。なので適当にhmeditってスクリプト書いてやってる。</p>
+<p>っていう話をcho45にしたらなにいってんすかeditdumpでできますよプクｗ みたいな事を言われたのでtodo.plを最新のにしたらできた。くそう。</p>
+<p>今まで使ってたhmeditはこんな感じ。もういらないけど、今までありがとう。</p>
+<pre><code><span class="comment-delimiter">#</span><span class="comment">!/usr/bin/env perl
+</span>
+<span class="keyword">use</span> <span class="function-name">strict</span>;
+<span class="keyword">use</span> <span class="function-name">warnings</span>;
+
+<span class="keyword">use</span> <span class="function-name">File::Temp</span>;
+
+<span class="keyword">my</span> <span class="variable-name">$hm</span>     = <span class="string">&apos;todo.pl&apos;</span>;
+<span class="keyword">my</span> <span class="variable-name">$editor</span> = <span class="cperl-hash">$ENV</span>{<span class="string">EDITOR</span>};
+
+<span class="keyword">my</span> <span class="variable-name">$fh</span> = File::Temp-&gt;new;
+<span class="keyword">my</span> <span class="variable-name">$fn</span> = $fh-&gt;filename;
+$fh-&gt;<span class="type">close</span>;
+
+<span class="type">system</span>(<span class="string">&quot;$hm dl $fn&quot;</span>);
+<span class="keyword">die</span> $! <span class="keyword">unless</span> <span class="function-name">-e</span> $fn <span class="type">and</span> <span class="keyword">my</span> <span class="variable-name">$size</span> = <span class="function-name">-</span><span class="cperl-nonoverridable">s</span><span class="function-name"> _</span>;
+
+<span class="type">system</span>(<span class="string">&quot;$editor $fn&quot;</span>);
+
+<span class="keyword">exit</span> <span class="keyword">if</span> $size == <span class="function-name">-</span><span class="cperl-nonoverridable">s</span> $fn;
+
+<span class="type">system</span>(<span class="string">&quot;$hm ul $fn&quot;</span>);
+</code></pre>
+
+  </div>
+
+  <div class="meta">
+    by typester /
+    at <a href="/memo/2008/03/21/1/">2008-03-21T14:58:00</a> /
+    <a href="/memo/tag/hiveminder/">hiveminder</a>
+    / <a href="/memo/2008/03/21/1/#disqus_thread">Comment</a>
+  </div>
+</div>
+
+
+
+</div>
+
+<p id="footer">
+  Copyright &copy; 2005-2013
+      by <a class="author" href="/about/#me">Daisuke Murase (typester)</a> /
+  Site generated by <a href="https://github.com/typester/nim">nim</a> /
+  Comments powered by <a href="http://disqus.com">DISQUS</a>.
+</p>
+
+</div>
+
+
+<script type="text/javascript">
+//<![CDATA[
+(function() {
+	var links = document.getElementsByTagName('a');
+	var query = '?';
+	for(var i = 0; i < links.length; i++) {
+	if(links[i].href.indexOf('#disqus_thread') >= 0) {
+		query += 'url' + i + '=' + encodeURIComponent(links[i].href) + '&';
+	}
+	}
+	document.write('<script charset="utf-8" type="text/javascript" src="http://disqus.com/forums/unknownplace/get_num_replies.js' + query + '"></' + 'script>');
+})();
+//]]>
+</script>
+
+
+<script type="text/javascript">
+var gaJsHost = (("https:" == document.location.protocol) ? "https://ssl." : "http://www.");
+document.write(unescape("%3Cscript src='" + gaJsHost + "google-analytics.com/ga.js' type='text/javascript'%3E%3C/script%3E"));
+</script>
+<script type="text/javascript">
+try {
+var pageTracker = _gat._getTracker("UA-53067-1");
+pageTracker._trackPageview();
+} catch(err) {}</script>
+
+<script>
+function googleTranslateElementInit() {
+  new google.translate.TranslateElement({
+    pageLanguage: 'ja',
+    gaTrack: true,
+    gaId: 'UA-53067',
+    floatPosition: google.translate.TranslateElement.FloatPosition.BOTTOM_RIGHT
+  });
+}
+</script><script src="//translate.google.com/translate_a/element.js?cb=googleTranslateElementInit"></script>
+
+</body>
+</html>

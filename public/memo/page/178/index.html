@@ -1,0 +1,282 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="ja" xml:lang="ja">
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <title>memo - unknownplace.org</title>
+  <link rel="stylesheet" type="text/css" href="http://yui.yahooapis.com/3.0.0/build/cssreset/reset-min.css" />
+  <link rel="stylesheet" type="text/css" href="http://yui.yahooapis.com/3.0.0/build/cssfonts/fonts-min.css" />
+  <link rel="stylesheet" href="/css/style.css" type="text/css" />
+  <meta property="fb:admins" content="1093631929" />
+  <meta name="robots" content="noindex" />
+  <link rel="alternate" type="application/rss+xml" href="http://unknownplace.org/memo/index.rss" />
+</head>
+<body>
+
+<div id="container">
+<div id="header">
+    <h1><a href="/">unknownplace.org</a></h1> /
+<a href="/memo/">memo</a>
+</div>
+
+<div id="content">
+
+<div class="entry autopagerize_page_element">
+  <h2><a href="/memo/2005/11/18/2/">遅レスにまじれす</a></h2>
+
+  <div class="body">
+    <p><a href="http://d.hatena.ne.jp/babie/20051117#p6">Rails びいきの Catalyst ファースト・インプレッション</a> にこっそりコメントしてみる。</p>
+<blockquote><p>開発スピードがめっちゃ速い</p></blockquote>
+<p>なんつっても開発者がにーｔ</p>
+<blockquote><p>非互換あるし。lib/appname/C/ -&gt; lib/appname/Controller/ とか。</p></blockquote>
+<p>C → Controller てのは Helper で生成されるデフォルトのものが変わっただけで、今も昔もどちらの名前でもちゃんと使える。</p>
+<p><code>-short</code> オプションつければ従来どおり。</p>
+<p>5.33 → 5.5 は Catalyst 本体内部をいじってるようなプログラム以外のアプリであれば問題なくそのまま動く。</p>
+<blockquote><p>人柱感</p></blockquote>
+<p>まだまだ開発者がすさまじくアクティブなので仕様がかわりまくるというのがありますね</p>
+<blockquote><p>なんでスクリプトに appname が全部ついているんだろう？　だるー。いらんだろ。</p></blockquote>
+<p>make install したとき用です。でも正直やるやついねーので微妙です。</p>
+<p>このへんはもう少し話し合うべき。Catalystアプリのインストールと配布方法について。(今のMakefileはひどすぎる)</p>
+<blockquote><p>root以下云々</p></blockquote>
+<p>ファイル名を省略するようなプラグインもあるし、暗黙の了解とかもないよ。好きなように使うよ。</p>
+<blockquote><p>URI とファイルパス・関数名が連動してない。</p></blockquote>
+<p>これも人それぞれですよね。連動さすこともできるし、全部1パッケージに収めることもできるし。</p>
+<p>そんな感じで。</p>
+<p>Rails びいきっていうわりにあんまりたたいてない！</p>
+
+  </div>
+
+  <div class="meta">
+    by typester /
+    at <a href="/memo/2005/11/18/2/">2005-11-18T01:20:00</a> /
+    <a href="/memo/tag/perl/">perl</a>
+    &middot; <a href="/memo/tag/catalyst/">catalyst</a>
+    / <a href="/memo/2005/11/18/2/#disqus_thread">Comment</a>
+  </div>
+</div>
+
+<div class="entry autopagerize_page_element">
+  <h2><a href="/memo/2005/11/18/1/">autrijus movie on nano</a></h2>
+
+  <div class="body">
+    <p><img alt="oscon05_autrijus" src="http://static.flickr.com/24/64203825_7570f6a7a4_m.jpg" /></p>
+
+  </div>
+
+  <div class="meta">
+    by typester /
+    at <a href="/memo/2005/11/18/1/">2005-11-18T00:30:00</a> /
+    <a href="/memo/tag/life/">life</a>
+    / <a href="/memo/2005/11/18/1/#disqus_thread">Comment</a>
+  </div>
+</div>
+
+<div class="entry autopagerize_page_element">
+  <h2><a href="/memo/2005/11/17/6/">iPodLinux on nano</a></h2>
+
+  <div class="body">
+    <p>試してみた。</p>
+<p>素晴らしい。おもちゃが増えたlol</p>
+<p>動画再生もすげ滑らかで、非圧縮AVIで容量食うのがあれだけど、もっとしょぼいのを想像してたので驚いた。iDoom は操作むずすぎ。</p>
+<p>ちゃんとブートローダーで純正 firmware と iPodLinux とを簡単に切り替えられるようになっているのもポイント高い。入れなきゃ損っていう。</p>
+
+  </div>
+
+  <div class="meta">
+    by typester /
+    at <a href="/memo/2005/11/17/6/">2005-11-17T23:35:00</a> /
+    <a href="/memo/tag/life/">life</a>
+    &middot; <a href="/memo/tag/linux/">linux</a>
+    / <a href="/memo/2005/11/17/6/#disqus_thread">Comment</a>
+  </div>
+</div>
+
+<div class="entry autopagerize_page_element">
+  <h2><a href="/memo/2005/11/17/5/">違った</a></h2>
+
+  <div class="body">
+    <p>If-Modified-Since の処理がおかしくてステータス 304 にしてないのに auto で偽返してるのかと思ったけど違って、ステータス 200、$c-&gt;res-＞body にもちゃんと正しい出力がセットされてるのにブラウザから見ると表示が空になる現象。</p>
+<p>lighttpd の compress モジュールはずしたら動いた。なんすかなんすかー。</p>
+
+  </div>
+
+  <div class="meta">
+    by typester /
+    at <a href="/memo/2005/11/17/5/">2005-11-17T16:14:00</a> /
+    <a href="/memo/tag/clon/">clon</a>
+    / <a href="/memo/2005/11/17/5/#disqus_thread">Comment</a>
+  </div>
+</div>
+
+<div class="entry autopagerize_page_element">
+  <h2><a href="/memo/2005/11/17/4/"></a></h2>
+
+  <div class="body">
+    <p>If-Modified-Since の扱いかその周りの処理がおかしい！</p>
+
+  </div>
+
+  <div class="meta">
+    by typester /
+    at <a href="/memo/2005/11/17/4/">2005-11-17T15:29:00</a> /
+    <a href="/memo/tag/clon/">clon</a>
+    / <a href="/memo/2005/11/17/4/#disqus_thread">Comment</a>
+  </div>
+</div>
+
+<div class="entry autopagerize_page_element">
+  <h2><a href="/memo/2005/11/17/3/"></a></h2>
+
+  <div class="body">
+    <p>出社。</p>
+
+  </div>
+
+  <div class="meta">
+    by typester /
+    at <a href="/memo/2005/11/17/3/">2005-11-17T10:41:00</a> /
+    <a href="/memo/tag/life/">life</a>
+    / <a href="/memo/2005/11/17/3/#disqus_thread">Comment</a>
+  </div>
+</div>
+
+<div class="entry autopagerize_page_element">
+  <h2><a href="/memo/2005/11/17/2/">vnc2swf</a></h2>
+
+  <div class="body">
+    <p><a href="http://www.unixuser.org/~euske/vnc2swf/">vnc2swf</a></p>
+<p>試した。すっげい。軽っ！</p>
+<p>再生コントロールを javascript でやるようになってるのも Good。</p>
+
+  </div>
+
+  <div class="meta">
+    by typester /
+    at <a href="/memo/2005/11/17/2/">2005-11-17T03:49:00</a> /
+    <a href="/memo/tag/software/">software</a>
+    / <a href="/memo/2005/11/17/2/#disqus_thread">Comment</a>
+  </div>
+</div>
+
+<div class="entry autopagerize_page_element">
+  <h2><a href="/memo/2005/11/17/1/"></a></h2>
+
+  <div class="body">
+    <p>退社。</p>
+
+  </div>
+
+  <div class="meta">
+    by typester /
+    at <a href="/memo/2005/11/17/1/">2005-11-17T03:03:00</a> /
+    <a href="/memo/tag/life/">life</a>
+    / <a href="/memo/2005/11/17/1/#disqus_thread">Comment</a>
+  </div>
+</div>
+
+<div class="entry autopagerize_page_element">
+  <h2><a href="/memo/2005/11/16/5/">perldoc perllocal</a></h2>
+
+  <div class="body">
+    <p>モジュールのインストール履歴表示。</p>
+
+  </div>
+
+  <div class="meta">
+    by typester /
+    at <a href="/memo/2005/11/16/5/">2005-11-16T18:38:00</a> /
+    <a href="/memo/tag/perl/">perl</a>
+    / <a href="/memo/2005/11/16/5/#disqus_thread">Comment</a>
+  </div>
+</div>
+
+<div class="entry autopagerize_page_element">
+  <h2><a href="/memo/2005/11/16/4/">ValueDomain</a></h2>
+
+  <div class="body">
+    <p>eNom のネームサーバーじゃなくて ValueDomain のそれを使ってる場合 TTL 値を自分で設定できるようになってる。</p>
+<p>いつのまに！</p>
+
+  </div>
+
+  <div class="meta">
+    by typester /
+    at <a href="/memo/2005/11/16/4/">2005-11-16T18:22:00</a> /
+    <a href="/memo/tag/web/">web</a>
+    / <a href="/memo/2005/11/16/4/#disqus_thread">Comment</a>
+  </div>
+</div>
+
+
+
+
+<div id="pager" class="autopagerize_insert_before">
+  <p class="pages">
+    <a class="prev" rel="previous" href="/memo/page/177/">&laquo; Prev</a>
+    <a href="/memo/page/174/">174</a>
+    <a href="/memo/page/175/">175</a>
+    <a href="/memo/page/176/">176</a>
+    <a href="/memo/page/177/">177</a>
+    <span class="current">178</span>
+    <a href="/memo/page/179/">179</a>
+    <a href="/memo/page/180/">180</a>
+    <a href="/memo/page/181/">181</a>
+    <a href="/memo/page/182/">182</a>
+    <a href="/memo/page/183/">183</a>
+    <a class="next" rel="next" href="/memo/page/179/">Next &raquo;</a>
+  </p>
+  <p class="info">(Page 178 of 203)</p>
+</div>
+
+
+</div>
+
+<p id="footer">
+  Copyright &copy; 2005-2013
+      by <a class="author" href="/about/#me">Daisuke Murase (typester)</a> /
+  Site generated by <a href="https://github.com/typester/nim">nim</a> /
+  Comments powered by <a href="http://disqus.com">DISQUS</a>.
+</p>
+
+</div>
+
+
+<script type="text/javascript">
+//<![CDATA[
+(function() {
+	var links = document.getElementsByTagName('a');
+	var query = '?';
+	for(var i = 0; i < links.length; i++) {
+	if(links[i].href.indexOf('#disqus_thread') >= 0) {
+		query += 'url' + i + '=' + encodeURIComponent(links[i].href) + '&';
+	}
+	}
+	document.write('<script charset="utf-8" type="text/javascript" src="http://disqus.com/forums/unknownplace/get_num_replies.js' + query + '"></' + 'script>');
+})();
+//]]>
+</script>
+
+
+<script type="text/javascript">
+var gaJsHost = (("https:" == document.location.protocol) ? "https://ssl." : "http://www.");
+document.write(unescape("%3Cscript src='" + gaJsHost + "google-analytics.com/ga.js' type='text/javascript'%3E%3C/script%3E"));
+</script>
+<script type="text/javascript">
+try {
+var pageTracker = _gat._getTracker("UA-53067-1");
+pageTracker._trackPageview();
+} catch(err) {}</script>
+
+<script>
+function googleTranslateElementInit() {
+  new google.translate.TranslateElement({
+    pageLanguage: 'ja',
+    gaTrack: true,
+    gaId: 'UA-53067',
+    floatPosition: google.translate.TranslateElement.FloatPosition.BOTTOM_RIGHT
+  });
+}
+</script><script src="//translate.google.com/translate_a/element.js?cb=googleTranslateElementInit"></script>
+
+</body>
+</html>

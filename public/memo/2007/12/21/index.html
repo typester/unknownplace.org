@@ -1,0 +1,125 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="ja" xml:lang="ja">
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <title>2007/12/21 - memo - unknownplace.org</title>
+  <link rel="stylesheet" type="text/css" href="http://yui.yahooapis.com/3.0.0/build/cssreset/reset-min.css" />
+  <link rel="stylesheet" type="text/css" href="http://yui.yahooapis.com/3.0.0/build/cssfonts/fonts-min.css" />
+  <link rel="stylesheet" href="/css/style.css" type="text/css" />
+  <meta property="fb:admins" content="1093631929" />
+  <meta name="robots" content="noindex" />
+  <link rel="alternate" type="application/rss+xml" href="http://unknownplace.org/memo/index.rss" />
+</head>
+<body>
+
+<div id="container">
+<div id="header">
+    <h1><a href="/">unknownplace.org</a></h1> /
+<a href="/memo/">memo</a>
+</div>
+
+<div id="content">
+
+<div class="entry autopagerize_page_element">
+  <h2 id="e001"><a href="/memo/2007/12/21/1/">こうしたいflymake</a></h2>
+
+  <div class="body">
+    <blockquote><p><a href="http://dev.ariel-networks.com/Members/matsuyama/flymake-for-javascript">Emacs で JavaScript のシンタックスエラーを検出する</a></p></blockquote>
+<p>これ読んですぐ導入したflymake。上記サイトのを少し改造したらperlでもできたのでいまはjsとperlでリアルタイムでシンタックスエラーチェックができている。</p>
+<p>僕はすごくtypoがおおいと思うのだけどこれを導入してからtypoではまることがずいぶん減った。もうないとこまるelispのひとつになってる。</p>
+<p>ちなみにperl版はこんな感じにしている。</p>
+<pre><code>(<span class="keyword">require</span> &apos;<span class="constant">flymake</span>)
+
+<span class="comment-delimiter">;; </span><span class="comment">flymake for perl
+</span>(<span class="keyword">defvar</span> <span class="variable-name">flymake-perl-err-line-patterns</span> &apos;((<span class="string">&quot;</span><span class="string"><span class="regexp-grouping-backslash">\\</span></span><span class="string"><span class="regexp-grouping-construct">(</span></span><span class="string">.*</span><span class="string"><span class="regexp-grouping-backslash">\\</span></span><span class="string"><span class="regexp-grouping-construct">)</span></span><span class="string"> at </span><span class="string"><span class="regexp-grouping-backslash">\\</span></span><span class="string"><span class="regexp-grouping-construct">(</span></span><span class="string">[</span><span class="string"><span class="negation-char">^</span></span><span class="string"> \n]+</span><span class="string"><span class="regexp-grouping-backslash">\\</span></span><span class="string"><span class="regexp-grouping-construct">)</span></span><span class="string"> line </span><span class="string"><span class="regexp-grouping-backslash">\\</span></span><span class="string"><span class="regexp-grouping-construct">(</span></span><span class="string">[0-9]+</span><span class="string"><span class="regexp-grouping-backslash">\\</span></span><span class="string"><span class="regexp-grouping-construct">)</span></span><span class="string">[,.\n]&quot;</span> 2 3 nil 1)))
+(<span class="keyword">defconst</span> <span class="variable-name">flymake-allowed-perl-file-name-masks</span> &apos;((<span class="string">&quot;\\.pl$&quot;</span> flymake-perl-init)
+                                               (<span class="string">&quot;\\.pm$&quot;</span> flymake-perl-init)
+                                               (<span class="string">&quot;\\.t$&quot;</span> flymake-perl-init)))
+
+(<span class="keyword">defun</span> <span class="function-name">flymake-perl-init</span> ()
+  (<span class="keyword">let*</span> ((temp-file (flymake-init-create-temp-buffer-copy
+                     &apos;flymake-create-temp-inplace))
+         (local-file (file-relative-name
+                      temp-file
+                      (file-name-directory buffer-file-name))))
+    (list <span class="string">&quot;perl&quot;</span> (list <span class="string">&quot;-wc&quot;</span> local-file))))
+
+(<span class="keyword">defun</span> <span class="function-name">flymake-perl-load</span> ()
+  (interactive)
+  (<span class="keyword">defadvice</span> <span class="function-name">flymake-post-syntax-check</span> (before flymake-force-check-was-interrupted)
+    (setq flymake-check-was-interrupted t))
+  (ad-activate &apos;flymake-post-syntax-check)
+  (setq flymake-allowed-file-name-masks (append flymake-allowed-file-name-masks flymake-allowed-perl-file-name-masks))
+  (setq flymake-err-line-patterns flymake-perl-err-line-patterns)
+  (flymake-mode t))
+
+(add-hook &apos;cperl-mode-hook &apos;(<span class="keyword">lambda</span> () (flymake-perl-load)))
+</code></pre>
+<p>でも、これだと単純に <code>perl -wc</code> しているだけで編集中の lib パスなどを @INC につっこまないため、その lib 以下にあるモジュールを use したりするとそこでエラーになってしまう。</p>
+<p>なので今はモジュールやCatalystアプリの開発するときはいちいち emacs 上で <code>M-x setenv</code> してその lib パスを PERL5LIB にセットしている。。ちょうめんどくさい。。</p>
+<p>そんでこれを自動化したいわけだがどうすればいいのかなぁ。</p>
+
+  </div>
+
+  <div class="meta">
+    by typester /
+    at <a href="/memo/2007/12/21/1/">2007-12-21T13:47:00</a> /
+    <a href="/memo/tag/emacs/">emacs</a>
+    / <a href="/memo/2007/12/21/1/#disqus_thread">Comment</a>
+  </div>
+</div>
+
+
+
+</div>
+
+<p id="footer">
+  Copyright &copy; 2005-2013
+      by <a class="author" href="/about/#me">Daisuke Murase (typester)</a> /
+  Site generated by <a href="https://github.com/typester/nim">nim</a> /
+  Comments powered by <a href="http://disqus.com">DISQUS</a>.
+</p>
+
+</div>
+
+
+<script type="text/javascript">
+//<![CDATA[
+(function() {
+	var links = document.getElementsByTagName('a');
+	var query = '?';
+	for(var i = 0; i < links.length; i++) {
+	if(links[i].href.indexOf('#disqus_thread') >= 0) {
+		query += 'url' + i + '=' + encodeURIComponent(links[i].href) + '&';
+	}
+	}
+	document.write('<script charset="utf-8" type="text/javascript" src="http://disqus.com/forums/unknownplace/get_num_replies.js' + query + '"></' + 'script>');
+})();
+//]]>
+</script>
+
+
+<script type="text/javascript">
+var gaJsHost = (("https:" == document.location.protocol) ? "https://ssl." : "http://www.");
+document.write(unescape("%3Cscript src='" + gaJsHost + "google-analytics.com/ga.js' type='text/javascript'%3E%3C/script%3E"));
+</script>
+<script type="text/javascript">
+try {
+var pageTracker = _gat._getTracker("UA-53067-1");
+pageTracker._trackPageview();
+} catch(err) {}</script>
+
+<script>
+function googleTranslateElementInit() {
+  new google.translate.TranslateElement({
+    pageLanguage: 'ja',
+    gaTrack: true,
+    gaId: 'UA-53067',
+    floatPosition: google.translate.TranslateElement.FloatPosition.BOTTOM_RIGHT
+  });
+}
+</script><script src="//translate.google.com/translate_a/element.js?cb=googleTranslateElementInit"></script>
+
+</body>
+</html>

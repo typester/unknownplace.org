@@ -1,0 +1,172 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="ja" xml:lang="ja">
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <title>MacBook Air セットアップメモ - unknownplace.org</title>
+  <link rel="stylesheet" type="text/css" href="http://yui.yahooapis.com/3.0.0/build/cssreset/reset-min.css" />
+  <link rel="stylesheet" type="text/css" href="http://yui.yahooapis.com/3.0.0/build/cssfonts/fonts-min.css" />
+  <link rel="stylesheet" href="/css/style.css" type="text/css" />
+  <meta property="fb:admins" content="1093631929" />
+  <link rel="alternate" type="application/rss+xml" href="http://unknownplace.org/memo/index.rss" />
+</head>
+<body>
+
+<div id="container">
+<div id="header">
+    <h1><a href="/">unknownplace.org</a></h1> /
+<a href="/memo/">memo</a>
+</div>
+
+<div id="content">
+<div class="entry autopagerize_page_element">
+  <h2><a href="/memo/2011/01/13/1/">MacBook Air セットアップメモ</a></h2>
+
+  <div class="body">
+    <p>11インチのやつ、買いましたよ。よくあるセットアップメモを残す。 SSDの容量が心許ないので、バックアップからの復元はしないで新規で設定した。</p>
+<h4>OS 再インストール</h4>
+<p>まずやっぱ最初はこれ。目的は<strong>大文字小文字を区別するファイルシステムでパーティションを切りなおす</strong>ということのみ。 デフォルトのファイルシステムではWindowsなどとおなじように大文字小文字を区別しない。そういう環境ではたとえば</p>
+<pre><code><span class="preprocessor">#include</span> <span class="string">&lt;STDIO.h&gt;</span>
+</code></pre>
+<p>とか言うコードも通ってしまう。そういう気がつかないうちに仕込まれる各種トラブルの種は気持ち悪いよね。</p>
+<p>注意点としてはAdobe製のソフトはそういうトラブルの種を抱えたコーディングをされているらしいものが多いようで、このファイルシステムにすると動作しないものが結構あるらしい。たとえばPhotoshopは最新版でもうごかないみたい。 （Lightroomは大丈夫）</p>
+<h4>ソフトウェアアップデート</h4>
+<p>とりあえず最新にしておく。</p>
+<h4>ESET Cybersecurity for Mac</h4>
+<p>アンチウィルスソフトはカルペルスキーを使ってきたけど、そんな満足してないってのと、NOD32でおなじみのESETからもMac用のソフトが出たみたいなのでとりあえずその試用版を試してみる。</p>
+<h4>1Password</h4>
+<p>パスワード管理ツール。データはいままでのMacからインポート。</p>
+<h4>Google Chrome</h4>
+<p>もはやこれがメインブラウザ。データまわりはChrome自体でGoogleアカウントいれれば同期が可能。楽ちん。</p>
+<h4>ATOK</h4>
+<p>Macにしてからずっと使ってるので。 これまた設定はいままでのMacからインポート。</p>
+<h4>KeyRemap4Macbook</h4>
+<p>キーバインド変更ツール。キーリピートを高速にしたり、ターミナルで左Commandをメタキーにしたりもろもろキー設定をこれで変更。必須ツール。</p>
+<h4>iTerm2</h4>
+<p>ターミナルはこれ。既存のMacから <code>~/Library/Preferences/com.googlecode.iterm2.plist</code> をコピーすれば設定引き継げる。</p>
+<p>そこで使ってるフォント、CodingFontTobiも入れておく。</p>
+<h4>Quicksilver</h4>
+<p>ランチャー。<a href="http://jibun.atmarkit.co.jp/ljibun01/cs/201001/03/01.html">キーボードトリガーでのアプリケーション切り替え</a>がやっぱり便利。</p>
+<ul><li>Cmd-[ = Emacs</li><li>Cmd-] = iTerm</li><li>Cmd-&apos; = Google Chrome</li></ul>
+<p>って感じで割り当てている。</p>
+<h4>xcode (iOS SDK)</h4>
+<p>gcc など開発ツールのためにインストールは必須。現在は iPhone SDK が xcode も内包しているためiPhone開発をする場合はそれを入れればいい。</p>
+<h4>perlbrew</h4>
+<p>perlbrew で perl と cpanm をいれる</p>
+<pre><code>$ perlbrew install perl-5.12.2 --as 5.12.2
+$ perlbrew install-cpanm
+</code></pre>
+<h4>homebrew</h4>
+<p>homebrew でいろいろいれる</p>
+<pre><code>$ brew install wget
+$ brew install git
+$ brew install tig
+$ brew install lv
+</code></pre>
+<p>などなど。homebrewは<code>/usr/local</code>ではなく<code>~/homebrew</code>で運用。いやー便利ですね！</p>
+<h4>Emacs</h4>
+<pre><code>$ wget http://ftp.gnu.org/pub/gnu/emacs/emacs-23.2.tar.bz2
+$ tar -jxvf emacs-23.2.tar.bz2
+$ cd emacs-23.2
+$ wget https://github.com/downloads/typester/emacs/feature-fullscreen.patch
+$ wget https://github.com/downloads/typester/emacs/fix-shiftmodifier-with-ime.patch
+$ patch -p1 &lt; feature-fullscreen.patch
+$ patch -p1 &lt; fix-shiftmodifier-with-ime.patch
+$ ./configure --with-ns --without-x
+$ make install
+</code></pre>
+<p>で、nextstepディレクトリ以下にEmacs.appができるのでそれを/Applicationsに移動。設定とかは既存の環境からもってきた。</p>
+<h4>encfs</h4>
+<p>sshの秘密鍵とか、Config::Pitの設定ファイルとかはencfsで暗号化した領域に保存するようにしている。 これのインストールが大変面倒だったんだけど、homebrew のおかげですごい楽に入れられるようになった。</p>
+<p><a href="http://code.google.com/p/macfuse/">http://code.google.com/p/macfuse/</a> から MacFUSE の最新版をとってきてインストールしてそのあと、</p>
+<pre><code>$ brew install encfs
+</code></pre>
+<p>でOK。ただ、/usr/local 以外で運用している場合、依存している boost ライブラリ周りでエラーになるみたい。</p>
+<pre><code>$ brew install -vd encfs
+</code></pre>
+<p>としてあげるとエラーになったところでシェルに入ってくれるので、そこで自分でビルドする。 具体的には configure に <code>--with-boost=</code> オプションをつけてあげるだけで良い。あとで Formula に追加してパッチ送ろうかと思う。</p>
+<pre><code>$ ./configure ...
+$ make
+$ make install
+</code></pre>
+<p>とかしたのちシェルを抜けると、homebrew が自動で symlink とか貼ってくれてインストール完了した状態になるみたい。これは便利。</p>
+<h4>ssh クライアント周り</h4>
+<p>keychain いれて、</p>
+<pre><code>$ brew install keychain
+</code></pre>
+<p>.ssh/config とかシェルの設定とかは既存の環境から持ってくる。</p>
+<h4>他</h4>
+<p>とりあえず最小構成はこんな感じであとは必要になったときにいろいろ入れていく。</p>
+<h4>Air のファーストインプレッション</h4>
+<p>CPU パワーが必要になる場面ではやはり非力だけど、それ以外の場面では SSD のおかげかすごい快適。 あとはキーボード、MacBookと比べるとなんというか作りが悪くてタイプ感もいまいち。Escの押しにくさは異常。</p>
+<p>とはいえ軽くて小さくて、バッテリーがすごい持つのはやっぱり良いねー。 CPU は弱いけど全体的なパフォーマンスは良いから自分的にはメインマシンになっていくんだろうな。いままでのMacBookどしよっかな。。</p>
+
+  </div>
+
+  <div class="meta">
+    by typester /
+    at <a href="/memo/2011/01/13/1/">2011-01-13T01:43:00</a> /
+    <a href="/memo/tag/osx/">osx</a>
+    &middot; <a href="/memo/tag/macbook/">macbook</a>
+    / <a href="/memo/2011/01/13/1/#disqus_thread">Comments(0)</a>
+  </div>
+</div>
+
+<div id="disqus_thread"></div>
+
+<script type="text/javascript">
+    var disqus_url = location.protocol + "//" + location.host + "/memo/2011/01/13/1/";
+</script>
+<script type="text/javascript" src="http://disqus.com/forums/unknownplace/embed.js"></script>
+
+</div>
+
+<p id="footer">
+  Copyright &copy; 2005-2013
+      by <a class="author" href="/about/#me">Daisuke Murase (typester)</a> /
+  Site generated by <a href="https://github.com/typester/nim">nim</a> /
+  Comments powered by <a href="http://disqus.com">DISQUS</a>.
+</p>
+
+</div>
+
+
+<script type="text/javascript">
+//<![CDATA[
+(function() {
+	var links = document.getElementsByTagName('a');
+	var query = '?';
+	for(var i = 0; i < links.length; i++) {
+	if(links[i].href.indexOf('#disqus_thread') >= 0) {
+		query += 'url' + i + '=' + encodeURIComponent(links[i].href) + '&';
+	}
+	}
+	document.write('<script charset="utf-8" type="text/javascript" src="http://disqus.com/forums/unknownplace/get_num_replies.js' + query + '"></' + 'script>');
+})();
+//]]>
+</script>
+
+
+<script type="text/javascript">
+var gaJsHost = (("https:" == document.location.protocol) ? "https://ssl." : "http://www.");
+document.write(unescape("%3Cscript src='" + gaJsHost + "google-analytics.com/ga.js' type='text/javascript'%3E%3C/script%3E"));
+</script>
+<script type="text/javascript">
+try {
+var pageTracker = _gat._getTracker("UA-53067-1");
+pageTracker._trackPageview();
+} catch(err) {}</script>
+
+<script>
+function googleTranslateElementInit() {
+  new google.translate.TranslateElement({
+    pageLanguage: 'ja',
+    gaTrack: true,
+    gaId: 'UA-53067',
+    floatPosition: google.translate.TranslateElement.FloatPosition.BOTTOM_RIGHT
+  });
+}
+</script><script src="//translate.google.com/translate_a/element.js?cb=googleTranslateElementInit"></script>
+
+</body>
+</html>

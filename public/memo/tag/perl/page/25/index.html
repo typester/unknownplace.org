@@ -1,0 +1,319 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="ja" xml:lang="ja">
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <title>memo - unknownplace.org</title>
+  <link rel="stylesheet" type="text/css" href="http://yui.yahooapis.com/3.0.0/build/cssreset/reset-min.css" />
+  <link rel="stylesheet" type="text/css" href="http://yui.yahooapis.com/3.0.0/build/cssfonts/fonts-min.css" />
+  <link rel="stylesheet" href="/css/style.css" type="text/css" />
+  <meta property="fb:admins" content="1093631929" />
+  <meta name="robots" content="noindex" />
+  <link rel="alternate" type="application/rss+xml" href="http://unknownplace.org/memo/index.rss" />
+</head>
+<body>
+
+<div id="container">
+<div id="header">
+    <h1><a href="/">unknownplace.org</a></h1> /
+<a href="/memo/">memo</a>
+</div>
+
+<div id="content">
+
+<div class="entry autopagerize_page_element">
+  <h2><a href="/memo/2006/02/09/6/">$c-&gt;form の名前がだめ</a></h2>
+
+  <div class="body">
+    <p>ごろうさんが CGI.pm の param の扱いがいけてねーとかいってて、オレは validator がほしいよ、とかいってたんだけど、よく考えたら普通に validator つかえるじゃんか。</p>
+<p>なんかページング処理とかで <code>$c-&gt;req-&gt;params-&gt;{page}</code> を自前でごにょっと処理してて嫌な感じだったんだけど</p>
+<pre><code>$c-&gt;form( <span class="string">page</span> =&gt; [ [<span class="string">&apos;GREATER_THAN&apos;</span>, 1] ] );
+</code></pre>
+<p>とかしとけば <code>$c-&gt;form-&gt;valid(&apos;page&apos;)</code> で綺麗な値がとれると。</p>
+<p>多分、めちゃくちゃ常識だと思われますが、僕は form という名前にだまされたのかこういう用途につかうということをまったく思いつかなかった。</p>
+<p><code>$c-&gt;validator</code> とかにすればいいのに！！</p>
+
+  </div>
+
+  <div class="meta">
+    by typester /
+    at <a href="/memo/2006/02/09/6/">2006-02-09T23:20:00</a> /
+    <a href="/memo/tag/perl/">perl</a>
+    &middot; <a href="/memo/tag/catalyst/">catalyst</a>
+    / <a href="/memo/2006/02/09/6/#disqus_thread">Comment</a>
+  </div>
+</div>
+
+<div class="entry autopagerize_page_element">
+  <h2><a href="/memo/2006/02/08/1/"></a></h2>
+
+  <div class="body">
+    <p>まぁ別に今の実装でもわかってれば特に不便ってわけでもないか。</p>
+
+  </div>
+
+  <div class="meta">
+    by typester /
+    at <a href="/memo/2006/02/08/1/">2006-02-08T00:11:00</a> /
+    <a href="/memo/tag/perl/">perl</a>
+    &middot; <a href="/memo/tag/catalyst/">catalyst</a>
+    / <a href="/memo/2006/02/08/1/#disqus_thread">Comment</a>
+  </div>
+</div>
+
+<div class="entry autopagerize_page_element">
+  <h2><a href="/memo/2006/02/07/8/">Catalyst の config</a></h2>
+
+  <div class="body">
+    <p>基本的なものは <code>MyApp.pm</code> ないで</p>
+<pre><code><span class="type">__PACKAGE__</span>-&gt;config( ... );
+</code></pre>
+<p>で指定し、deploy 先で違うものなんかの設定を myapp.yml に書いて上書きとかってやろうとおもっても、現状の <code>Catalyst.pm</code> では</p>
+<pre><code>$class-&gt;config( { <span class="cperl-hash">%</span><span class="variable-name">$oldconf</span>, <span class="cperl-hash">%</span><span class="variable-name">$conf</span> } );
+</code></pre>
+<p>ってなってるだけだから普通に深い階層になるのがデフォな Catalyst 設定ではいまいち使えないあるね。</p>
+<p>たとえば myapp.yml に</p>
+<pre><code>session:
+   cookie_name: session
+</code></pre>
+<p>とか書くと、<code>$c-&gt;{config}-&gt;{session}</code> のほかのキー消されちゃう＞＜</p>
+<p>こういう使いかたしてる人いねってことかしら？</p>
+
+  </div>
+
+  <div class="meta">
+    by typester /
+    at <a href="/memo/2006/02/07/8/">2006-02-07T23:46:00</a> /
+    <a href="/memo/tag/perl/">perl</a>
+    &middot; <a href="/memo/tag/catalyst/">catalyst</a>
+    / <a href="/memo/2006/02/07/8/#disqus_thread">Comment</a>
+  </div>
+</div>
+
+<div class="entry autopagerize_page_element">
+  <h2><a href="/memo/2006/02/06/10/">cpanrecent_crawler を Schema::Loader にスイッチ</a></h2>
+
+  <div class="body">
+    <p>今朝かいた <a href="http://unknownplace.org/memo/2006/02/06#e003">Catalyst の Model を Schema::Loader でロード</a>ってやつを、CPAN Recent Changes のクローラでやってみた。</p>
+<p>今までは <code>use MyApp;</code> 方式でロードしていて、それからの変更は以下のような感じ。</p>
+<blockquote><p><a href="http://dev.unknownplace.org/public/changeset/223">[223] (changeset) - Public Projects - Trac</a></p></blockquote>
+<p>こんな感じで割りとすぐ移行可能。<code>Class::C3</code> の warning が消えたのがかなりうれしいなぁ。</p>
+
+  </div>
+
+  <div class="meta">
+    by typester /
+    at <a href="/memo/2006/02/06/10/">2006-02-06T22:53:00</a> /
+    <a href="/memo/tag/perl/">perl</a>
+    &middot; <a href="/memo/tag/dbic/">dbic</a>
+    / <a href="/memo/2006/02/06/10/#disqus_thread">Comment</a>
+  </div>
+</div>
+
+<div class="entry autopagerize_page_element">
+  <h2><a href="/memo/2006/02/06/3/"></a></h2>
+
+  <div class="body">
+    <p><a href="http://unknownplace.org/memo/2006/01/24">こないだ書いた</a> Catalyst の DBIC モデルを外部スクリプトから利用するっていうやつ、DBIx::Class::Schema::Loader つかえばいいね。</p>
+<pre><code><span class="keyword">use</span> <span class="function-name">FindBin</span>;
+<span class="keyword">use</span> <span class="function-name">lib</span> <span class="string">&quot;$FindBin::Bin/../lib&quot;</span>;
+
+{
+    <span class="keyword">package</span> <span class="function-name">MyApp::Model::DBIC</span>;
+    <span class="keyword">use</span> <span class="function-name">base</span> <span class="cperl-nonoverridable">qw</span><span class="string">/DBIx::Class::Schema::Loader/</span>;
+
+    <span class="type">__PACKAGE__</span>-&gt;load_from_connection(
+        <span class="string">dsn</span> =&gt; <span class="string">&apos;dbi:...&apos;</span>,
+    );
+    <span class="type">__PACKAGE__</span>-&gt;load_classes;
+}
+</code></pre>
+<p>こんな感じにすれば、<code>MyApp::Model::DBIC::*</code> をロードしてくれる。</p>
+<p>全部ロードしてもいいなら <code>use MyApp;</code> で終わりなんだけど多分ほとんどの場合外部スクリプトから必要なのはモデル部分だけだと思われる。</p>
+<ins>22:55: `load_classes` 書いてなかったので追記。ロードされてねーよ。</ins>
+
+  </div>
+
+  <div class="meta">
+    by typester /
+    at <a href="/memo/2006/02/06/3/">2006-02-06T04:41:00</a> /
+    <a href="/memo/tag/perl/">perl</a>
+    &middot; <a href="/memo/tag/dbic/">dbic</a>
+    / <a href="/memo/2006/02/06/3/#disqus_thread">Comment</a>
+  </div>
+</div>
+
+<div class="entry autopagerize_page_element">
+  <h2><a href="/memo/2006/02/05/7/">Data::Clmemo</a></h2>
+
+  <div class="body">
+    <p>CLON の作成にあたり <a href="http://svn.unknownplace.org/public/CLON/branches/CLON2.0/lib/Data/Clmemo.pm">Data::Clmemo</a> などというものができちゃったわけですが、激しくオレフォーマットな Changelog memo しかパースできないため、CLON の公開にはこれの拡張が必至。</p>
+<p>フォーマットの定義を Data::Clmemo::* でやればいいのかね。DBIC::Loader とかのイメージで。</p>
+
+  </div>
+
+  <div class="meta">
+    by typester /
+    at <a href="/memo/2006/02/05/7/">2006-02-05T20:38:00</a> /
+    <a href="/memo/tag/perl/">perl</a>
+    &middot; <a href="/memo/tag/clon/">clon</a>
+    / <a href="/memo/2006/02/05/7/#disqus_thread">Comment</a>
+  </div>
+</div>
+
+<div class="entry autopagerize_page_element">
+  <h2><a href="/memo/2006/02/05/3/">find_or_new</a></h2>
+
+  <div class="body">
+    <p>sub find_or_new { my $class = shift; my $attr = @_ &gt; 1 ? {@<em>} : $</em>[0]; my $exists = $class-&gt;find($attr); return defined $exists ? $exists : $class-&gt;new($attr); }</p>
+<p><code>find_or_create</code> はあるのにこれはないとか謎い。NOT NULL なカラムもってるテーブルだとあんまりつかえねーよ＞<code>find_or_create</code></p>
+
+  </div>
+
+  <div class="meta">
+    by typester /
+    at <a href="/memo/2006/02/05/3/">2006-02-05T04:31:00</a> /
+    <a href="/memo/tag/perl/">perl</a>
+    &middot; <a href="/memo/tag/dbic/">dbic</a>
+    / <a href="/memo/2006/02/05/3/#disqus_thread">Comment</a>
+  </div>
+</div>
+
+<div class="entry autopagerize_page_element">
+  <h2><a href="/memo/2006/02/04/2/">updated daap_proxy.pl</a></h2>
+
+  <div class="body">
+    <blockquote><p><a href="http://trickster.bulknews.net/trac.cgi/changeset/66">[66] - Trickster 2.0 - Trac</a></p></blockquote>
+<del>TCP Keepalive を有効にしました。1曲終わると rebuffering のまま次の曲に行けないのがなくなったと思います。</del>
+<p>うごいてなかった。違う環境でテストしてたよ。。</p>
+
+  </div>
+
+  <div class="meta">
+    by typester /
+    at <a href="/memo/2006/02/04/2/">2006-02-04T19:18:00</a> /
+    <a href="/memo/tag/perl/">perl</a>
+    &middot; <a href="/memo/tag/trickster/">trickster</a>
+    / <a href="/memo/2006/02/04/2/#disqus_thread">Comment</a>
+  </div>
+</div>
+
+<div class="entry autopagerize_page_element">
+  <h2><a href="/memo/2006/02/01/7/"></a></h2>
+
+  <div class="body">
+    <blockquote><p><a href="http://diary.godtomato.net/takefumi/2006/01/31_01.html">のみまくし日記 - 配列を一気にハッシュへ変換</a></p></blockquote>
+<p>ここに出てきたコードがわからなかったので perldoc ってみた。</p>
+<pre><code>@days{&apos;a&apos;,&apos;c&apos;}      # same as ($days{&apos;a&apos;},$days{&apos;c&apos;})
+</code></pre>
+<p>基本っぺーorz</p>
+
+  </div>
+
+  <div class="meta">
+    by typester /
+    at <a href="/memo/2006/02/01/7/">2006-02-01T22:44:00</a> /
+    <a href="/memo/tag/perl/">perl</a>
+    / <a href="/memo/2006/02/01/7/#disqus_thread">Comment</a>
+  </div>
+</div>
+
+<div class="entry autopagerize_page_element">
+  <h2><a href="/memo/2006/02/01/2/">Uninitialized value in pattern match</a></h2>
+
+  <div class="body">
+    <p>例えば</p>
+<pre><code>push @plugins, &apos;Static::Simple&apos; if $ENV{CATALYST_ENGINE} =~ /^HTTP/;
+</code></pre>
+<p>などとしたときに <code>$ENV{CATALYST_ENGINE}</code> が未定義だとタイトルのように怒られるわけです。</p>
+<pre><code>$ENV{CATALYST_ENGINE} and $ENV{CATALYST_ENGINE} =~ /^HTTP/;
+</code></pre>
+<p>とか</p>
+<pre><code>$ENV{CATALYST_ENGINE} || &apos;&apos; =~ /^HTTP/;
+</code></pre>
+<p>とかするわけですがいまいち冗長！</p>
+<p>これはどうするのが普通なのか。</p>
+
+  </div>
+
+  <div class="meta">
+    by typester /
+    at <a href="/memo/2006/02/01/2/">2006-02-01T04:00:00</a> /
+    <a href="/memo/tag/perl/">perl</a>
+    / <a href="/memo/2006/02/01/2/#disqus_thread">Comment</a>
+  </div>
+</div>
+
+
+
+
+<div id="pager" class="autopagerize_insert_before">
+  <p class="pages">
+    <a class="prev" rel="previous" href="/memo/tag/perl/page/24/">&laquo; Prev</a>
+    <a href="/memo/tag/perl/page/21/">21</a>
+    <a href="/memo/tag/perl/page/22/">22</a>
+    <a href="/memo/tag/perl/page/23/">23</a>
+    <a href="/memo/tag/perl/page/24/">24</a>
+    <span class="current">25</span>
+    <a href="/memo/tag/perl/page/26/">26</a>
+    <a href="/memo/tag/perl/page/27/">27</a>
+    <a href="/memo/tag/perl/page/28/">28</a>
+    <a href="/memo/tag/perl/page/29/">29</a>
+    <a href="/memo/tag/perl/page/30/">30</a>
+    <a class="next" rel="next" href="/memo/tag/perl/page/26/">Next &raquo;</a>
+  </p>
+  <p class="info">(Page 25 of 30)</p>
+</div>
+
+
+</div>
+
+<p id="footer">
+  Copyright &copy; 2005-2013
+      by <a class="author" href="/about/#me">Daisuke Murase (typester)</a> /
+  Site generated by <a href="https://github.com/typester/nim">nim</a> /
+  Comments powered by <a href="http://disqus.com">DISQUS</a>.
+</p>
+
+</div>
+
+
+<script type="text/javascript">
+//<![CDATA[
+(function() {
+	var links = document.getElementsByTagName('a');
+	var query = '?';
+	for(var i = 0; i < links.length; i++) {
+	if(links[i].href.indexOf('#disqus_thread') >= 0) {
+		query += 'url' + i + '=' + encodeURIComponent(links[i].href) + '&';
+	}
+	}
+	document.write('<script charset="utf-8" type="text/javascript" src="http://disqus.com/forums/unknownplace/get_num_replies.js' + query + '"></' + 'script>');
+})();
+//]]>
+</script>
+
+
+<script type="text/javascript">
+var gaJsHost = (("https:" == document.location.protocol) ? "https://ssl." : "http://www.");
+document.write(unescape("%3Cscript src='" + gaJsHost + "google-analytics.com/ga.js' type='text/javascript'%3E%3C/script%3E"));
+</script>
+<script type="text/javascript">
+try {
+var pageTracker = _gat._getTracker("UA-53067-1");
+pageTracker._trackPageview();
+} catch(err) {}</script>
+
+<script>
+function googleTranslateElementInit() {
+  new google.translate.TranslateElement({
+    pageLanguage: 'ja',
+    gaTrack: true,
+    gaId: 'UA-53067',
+    floatPosition: google.translate.TranslateElement.FloatPosition.BOTTOM_RIGHT
+  });
+}
+</script><script src="//translate.google.com/translate_a/element.js?cb=googleTranslateElementInit"></script>
+
+</body>
+</html>

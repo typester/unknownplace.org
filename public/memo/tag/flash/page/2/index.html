@@ -1,0 +1,302 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="ja" xml:lang="ja">
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <title>memo - unknownplace.org</title>
+  <link rel="stylesheet" type="text/css" href="http://yui.yahooapis.com/3.0.0/build/cssreset/reset-min.css" />
+  <link rel="stylesheet" type="text/css" href="http://yui.yahooapis.com/3.0.0/build/cssfonts/fonts-min.css" />
+  <link rel="stylesheet" href="/css/style.css" type="text/css" />
+  <meta property="fb:admins" content="1093631929" />
+  <meta name="robots" content="noindex" />
+  <link rel="alternate" type="application/rss+xml" href="http://unknownplace.org/memo/index.rss" />
+</head>
+<body>
+
+<div id="container">
+<div id="header">
+    <h1><a href="/">unknownplace.org</a></h1> /
+<a href="/memo/">memo</a>
+</div>
+
+<div id="content">
+
+<div class="entry autopagerize_page_element">
+  <h2><a href="/memo/2007/01/11/2/">as2(MTASC) -&gt; as3(Flex2 SDK) の印象</a></h2>
+
+  <div class="body">
+    <p>as2もjsコンポーネントとして使うとか変な使いかたしかしていなかったけど、それと比較したas3のぱっと見の印象。</p>
+<h4>Socketクラス</h4>
+<p>バイナリ通信用のSocketクラスができたらしい。これはアツイ。</p>
+<p>あとas2+XMLSocketのときの1024以上のポートしか通信できないという制限もなくなっているようだ。</p>
+<h4>正規表現</h4>
+<p>つかえるーー。<code>//x</code> とかもつかえる</p>
+<h4>リファレンスはオンラインのみ？</h4>
+<blockquote><p><a href="http://livedocs.macromedia.com/flex/2_jp/langref/index.html">Adobe Flex 2 リファレンスガイド</a></p></blockquote>
+<p>しかないのかな？ 今までのlivedocsと比べるとまぁ許せる範囲だけど。</p>
+
+  </div>
+
+  <div class="meta">
+    by typester /
+    at <a href="/memo/2007/01/11/2/">2007-01-11T03:02:00</a> /
+    <a href="/memo/tag/flash/">flash</a>
+    &middot; <a href="/memo/tag/as3/">as3</a>
+    / <a href="/memo/2007/01/11/2/#disqus_thread">Comment</a>
+  </div>
+</div>
+
+<div class="entry autopagerize_page_element">
+  <h2><a href="/memo/2007/01/11/1/">Flex2 SDK いれた</a></h2>
+
+  <div class="body">
+    <p>as3関係スルーしていたけど、なんか公式でFlex2 SDKとか言うのが無償で公開されていてMTASCライクにコマンドラインからas3アプリを作成できる環境があるようなのでためしてみた。@ colinux (Debian etch)</p>
+<p>Flex2 SDKはjava製なのでまずJavaのRuntimeを入れる必要がある。</p>
+<p>etchにはnon-freeにsun javaが入ってるのでそれを入れる</p>
+<pre><code>$ sudo aptitude install sun-java5-jre
+Reading package lists... Done
+Building dependency tree... Done
+Reading extended state information
+Initializing package states... Done
+Reading task descriptions... Done
+Building tag database... Done
+The following NEW packages will be automatically installed:
+  defoma gsfonts gsfonts-x11 java-common libfontenc1 libfs6 libft-perl libttf2 libxext6 libxfont1 libxi6 libxp6
+  libxtst6 odbcinst1debian1 sun-java5-bin unixodbc xfonts-encodings xfonts-utils xutils xutils-dev
+The following NEW packages will be installed:
+  defoma gsfonts gsfonts-x11 java-common libfontenc1 libfs6 libft-perl libttf2 libxext6 libxfont1 libxi6 libxp6
+  libxtst6 odbcinst1debian1 sun-java5-bin sun-java5-jre unixodbc xfonts-encodings xfonts-utils xutils xutils-dev
+0 packages upgraded, 21 newly installed, 0 to remove and 0 not upgraded.
+Need to get 36.5MB of archives. After unpacking 96.5MB will be used.
+Do you want to continue? [Y/n/?]
+</code></pre>
+<p>X関係のパッケージが山のように入って多少なえるけど続ける。</p>
+<p>あとは <a href="https://www.adobe.com/cfusion/tdrc/index.cfm?product=flex&amp;loc=ja">Flex 2 SDK</a> をダウンロードして適当なところに解凍。</p>
+<pre><code>$ unzip -d ~/app/flex flex_sdk_2.zip
+</code></pre>
+<p>で、もう使える。</p>
+<pre><code>$ ~/app/flex/bin/mxmlc -help
+Adobe Flex Compiler (mxmlc)
+Version 2.0.1 build 155542
+Copyright (c) 2004-2006 Adobe Systems, Inc. All rights reserved.
+</code></pre>
+
+  </div>
+
+  <div class="meta">
+    by typester /
+    at <a href="/memo/2007/01/11/1/">2007-01-11T01:55:00</a> /
+    <a href="/memo/tag/flash/">flash</a>
+    &middot; <a href="/memo/tag/as3/">as3</a>
+    / <a href="/memo/2007/01/11/1/#disqus_thread">Comment</a>
+  </div>
+</div>
+
+<div class="entry autopagerize_page_element">
+  <h2><a href="/memo/2006/12/09/5/">JSコンソールにログをはくActionScript</a></h2>
+
+  <div class="body">
+    <p>いままではLocalConnection使うロガーをつかってたんだけど、JSと同じところで見れたほうが楽かなと思って作ってみた。</p>
+<pre><code><span class="type">import</span> <span class="variable-name">flash</span>.external.ExternalInterface;
+
+<span class="type">class</span> <span class="variable-name">Logger</span> {
+    public <span class="keyword">static</span> <span class="type">function</span> <span class="variable-name">trace</span>(msg) {
+        <span class="keyword">return</span> ExternalInterface.call(<span class="string">"window.console.log"</span>, msg)
+            || ExternalInterface.call(<span class="string">"opera.postError"</span>, msg)
+            || ExternalInterface.call(<span class="string">"printfire"</span>, msg)
+            || ExternalInterface.call(<span class="string">"Debug.writeln"</span>, msg)
+            || ExternalInterface.call(<span class="string">"debug.trace"</span>, msg)
+        ;
+    }
+}
+</code></pre>
+<p>こんな感じの、もてきっとからぱくってきただけだけど。</p>
+<p>MTASCから利用するときはコマンドラインパラメータに <code>-trace Logger.trace</code> とかすればasソース内のtrace()がコンパイル時かってに置換されるのでアプリ内からは普通にtrace()るだけでおｋ</p>
+
+  </div>
+
+  <div class="meta">
+    by typester /
+    at <a href="/memo/2006/12/09/5/">2006-12-09T20:38:00</a> /
+    <a href="/memo/tag/flash/">flash</a>
+    &middot; <a href="/memo/tag/javascript/">javascript</a>
+    &middot; <a href="/memo/tag/mtasc/">mtasc</a>
+    / <a href="/memo/2006/12/09/5/#disqus_thread">Comment</a>
+  </div>
+</div>
+
+<div class="entry autopagerize_page_element">
+  <h2><a href="/memo/2006/12/09/1/">Flash経由でAjax</a></h2>
+
+  <div class="body">
+    <p>っぽいことをするライブラリを作った。</p>
+<blockquote><p><a href="http://svn.unknownplace.org/public/library/js/trunk/Flax/">http://svn.unknownplace.org/public/library/js/trunk/Flax/</a></p></blockquote>
+<pre><code>Flax.Request(
+    &apos;http://example.com/&apos;,
+    {
+        method: &apos;get&apos;,
+        onSuccess: function(data) { alert(data) }
+    }
+);
+</code></pre>
+<p>みたいな。まだすごくシンプルな機能しかないけど、getとpostできる。</p>
+<p>crossdomain.xmlでドメインを制限しつつ自社サービス間とかでAPIを利用しあったりする用に便利かなと思う。</p>
+<p>簡単な使用例として</p>
+<blockquote><p><a href="http://unknownplace.org/tmp/Flax/examples/flickrsearch/" title="Flickr search example">http://unknownplace.org/tmp/Flax/examples/flickrsearch/</a></p></blockquote>
+<p>flickrの検索とかつくった。flickrはJSONPあるからこんなことしなくてもいいんだけど。ほかにいい例がなかった。</p>
+
+  </div>
+
+  <div class="meta">
+    by typester /
+    at <a href="/memo/2006/12/09/1/">2006-12-09T01:24:00</a> /
+    <a href="/memo/tag/javascript/">javascript</a>
+    &middot; <a href="/memo/tag/flash/">flash</a>
+    / <a href="/memo/2006/12/09/1/#disqus_thread">Comment</a>
+  </div>
+</div>
+
+<div class="entry autopagerize_page_element">
+  <h2><a href="/memo/2006/10/13/3/">Flash Resource Viewer</a></h2>
+
+  <div class="body">
+    <p>Flashのドキュメントの見づらさというか使いづらさに閉口してて、ローカルのヘルプファイルを元にWebアプでビューワ作ろうと思ったんだけど、<a href="http://weblogs.macromedia.com/mesh/archives/2004/04/flash_resource.html">Flash Resource Viewer</a>とかいうナイスなアプリを発見した。</p>
+<p>Flash付属のドキュメントを開ける野良アプリ。タブ機能もあって意外となかなか良い。</p>
+<p><a href="http://flickr.com/photo_zoom.gne?id=268438224&amp;size=o" title="Photo Sharing"><img alt="Flash Resource Viewer" height="358" src="http://static.flickr.com/79/268438224_7bbea455c2.jpg" width="500" /></a></p>
+<p>デフォだとFlash8だとエラーで起動しないんだけど、<code>config\app.config</code> を以下のようにしたらちゃんと使えた。</p>
+<pre><code>&lt;?xml version=<span class="string">"1.0"</span> encoding=<span class="string">"utf-8"</span>?&gt;
+&lt;ApplicationSettings xmlns:xsd=<span class="string">"http://www.w3.org/2001/XMLSchema"</span> xmlns:xsi=<span class="string">"http://www.w3.org/2001/XMLSchema-instance"</span>&gt;
+&lt;SearchTermHighlightColor&gt;#FFFF99&lt;/SearchTermHighlightColor&gt;
+&lt;Version&gt;0.93.1592.26849&lt;/Version&gt;
+&lt;HighlightSearchTerm&gt;<span class="constant">true</span>&lt;/HighlightSearchTerm&gt;
+&lt;Language&gt;en&lt;/Language&gt;
+&lt;FlashHowtoDirPath&gt;C:\Documents and Settings\All Users\Application Data\Macromedia\Flash MX 2004\ja\Configuration\HelpPanel\HowDoI&lt;/FlashHowtoDirPath&gt;
+&lt;UserHelpDirPath&gt;C:\Documents and Settings\All Users\Application Data\Macromedia\Flash 8\ja\Configuration\HelpPanel\Help\&lt;/UserHelpDirPath&gt;
+&lt;FlashHelpDirPath&gt;C:\Documents and Settings\All Users\Application Data\Macromedia\Flash 8\ja\Configuration\HelpPanel\Help\&lt;/FlashHelpDirPath&gt;
+&lt;ClearLogOnStart&gt;<span class="constant">false</span>&lt;/ClearLogOnStart&gt;
+&lt;ShowFlashHelpBooks&gt;<span class="constant">true</span>&lt;/ShowFlashHelpBooks&gt;
+&lt;ShowUserHelpBooks&gt;<span class="constant">true</span>&lt;/ShowUserHelpBooks&gt;
+&lt;ShowFlashHowtoBooks&gt;<span class="constant">true</span>&lt;/ShowFlashHowtoBooks&gt;
+&lt;TopMost&gt;<span class="constant">false</span>&lt;/TopMost&gt;
+&lt;StartURL&gt;http:<span class="comment-delimiter">//</span><span class="comment">www.markme.com/mxna/helppanel.cfm?category=Flash&lt;/StartURL&gt;
+</span>&lt;Theme&gt;Default&lt;/Theme&gt;
+&lt;OpenTabsInBackground&gt;<span class="constant">false</span>&lt;/OpenTabsInBackground&gt;
+&lt;UseEcmaRegex&gt;<span class="constant">false</span>&lt;/UseEcmaRegex&gt;
+&lt;HelpPaths /&gt;
+&lt;ToggleNodeOnSelect&gt;<span class="constant">false</span>&lt;/ToggleNodeOnSelect&gt;
+&lt;/ApplicationSettings&gt;
+</code></pre>
+<p><a href="http://weblogs.macromedia.com/mesh/archives/2005/09/flash_resource_5.html" title="Mike Chambers - Flash Resource Manager and Flash 8">ここ</a>のコメント欄にあったやつを <code>s/en/ja/</code> しただけ。</p>
+<p>それにしても、日本のFlashデベロッパはドキュメントに関して何も不満ないのかな。</p>
+<p>Flash組み込みのビューワは使いにくすぎるし、livedocsは重いし、PDFは論外だし。</p>
+<p>海外だとchmファイル作ってたり多少話題見つかるんだけど、日本だと全然。</p>
+
+  </div>
+
+  <div class="meta">
+    by typester /
+    at <a href="/memo/2006/10/13/3/">2006-10-13T19:34:00</a> /
+    <a href="/memo/tag/flash/">flash</a>
+    / <a href="/memo/2006/10/13/3/#disqus_thread">Comment</a>
+  </div>
+</div>
+
+<div class="entry autopagerize_page_element">
+  <h2><a href="/memo/2005/10/12/9/">Flash8</a></h2>
+
+  <div class="body">
+    <p>のサイトってローディング長いのばっかでうんざりだ。もっとロード画面自体をインタラクティブにしてほしいな。</p>
+
+  </div>
+
+  <div class="meta">
+    by typester /
+    at <a href="/memo/2005/10/12/9/">2005-10-12T00:00:00</a> /
+    <a href="/memo/tag/flash/">flash</a>
+    / <a href="/memo/2005/10/12/9/#disqus_thread">Comment</a>
+  </div>
+</div>
+
+<div class="entry autopagerize_page_element">
+  <h2><a href="/memo/2005/10/11/9/">FlashフレームレートのMagic number</a></h2>
+
+  <div class="body">
+    <p>K谷君情報</p>
+<blockquote><p>FlashはWindowsとMacで再生速度が変わりますが、その差が少なくなる不思議な フレームレート（マジックナンバー）というものがあるらしいです。</p><p>そのフレームレートは</p><p>16、21(、24)、31、59</p><p>確かな（公式な）情報ではないですが頭の片隅に入れておくといいかもです。</p></blockquote>
+<p>後で調べる。</p>
+
+  </div>
+
+  <div class="meta">
+    by typester /
+    at <a href="/memo/2005/10/11/9/">2005-10-11T00:00:00</a> /
+    <a href="/memo/tag/flash/">flash</a>
+    / <a href="/memo/2005/10/11/9/#disqus_thread">Comment</a>
+  </div>
+</div>
+
+
+
+
+<div id="pager" class="autopagerize_insert_before">
+  <p class="pages">
+    <a class="prev" rel="previous" href="/memo/tag/flash/">&laquo; Prev</a>
+    <a href="/memo/tag/flash/">1</a>
+    <span class="current">2</span>
+    <span class="next">Next &raquo;</span>
+  </p>
+  <p class="info">(Page 2 of 2)</p>
+</div>
+
+
+</div>
+
+<p id="footer">
+  Copyright &copy; 2005-2013
+      by <a class="author" href="/about/#me">Daisuke Murase (typester)</a> /
+  Site generated by <a href="https://github.com/typester/nim">nim</a> /
+  Comments powered by <a href="http://disqus.com">DISQUS</a>.
+</p>
+
+</div>
+
+
+<script type="text/javascript">
+//<![CDATA[
+(function() {
+	var links = document.getElementsByTagName('a');
+	var query = '?';
+	for(var i = 0; i < links.length; i++) {
+	if(links[i].href.indexOf('#disqus_thread') >= 0) {
+		query += 'url' + i + '=' + encodeURIComponent(links[i].href) + '&';
+	}
+	}
+	document.write('<script charset="utf-8" type="text/javascript" src="http://disqus.com/forums/unknownplace/get_num_replies.js' + query + '"></' + 'script>');
+})();
+//]]>
+</script>
+
+
+<script type="text/javascript">
+var gaJsHost = (("https:" == document.location.protocol) ? "https://ssl." : "http://www.");
+document.write(unescape("%3Cscript src='" + gaJsHost + "google-analytics.com/ga.js' type='text/javascript'%3E%3C/script%3E"));
+</script>
+<script type="text/javascript">
+try {
+var pageTracker = _gat._getTracker("UA-53067-1");
+pageTracker._trackPageview();
+} catch(err) {}</script>
+
+<script>
+function googleTranslateElementInit() {
+  new google.translate.TranslateElement({
+    pageLanguage: 'ja',
+    gaTrack: true,
+    gaId: 'UA-53067',
+    floatPosition: google.translate.TranslateElement.FloatPosition.BOTTOM_RIGHT
+  });
+}
+</script><script src="//translate.google.com/translate_a/element.js?cb=googleTranslateElementInit"></script>
+
+</body>
+</html>

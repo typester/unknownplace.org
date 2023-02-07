@@ -1,0 +1,469 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="ja" xml:lang="ja">
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <title>memo - unknownplace.org</title>
+  <link rel="stylesheet" type="text/css" href="http://yui.yahooapis.com/3.0.0/build/cssreset/reset-min.css" />
+  <link rel="stylesheet" type="text/css" href="http://yui.yahooapis.com/3.0.0/build/cssfonts/fonts-min.css" />
+  <link rel="stylesheet" href="/css/style.css" type="text/css" />
+  <meta property="fb:admins" content="1093631929" />
+  <meta name="robots" content="noindex" />
+  <link rel="alternate" type="application/rss+xml" href="http://unknownplace.org/memo/index.rss" />
+</head>
+<body>
+
+<div id="container">
+<div id="header">
+    <h1><a href="/">unknownplace.org</a></h1> /
+<a href="/memo/">memo</a>
+</div>
+
+<div id="content">
+
+<div class="entry autopagerize_page_element">
+  <h2><a href="/memo/2008/01/17/2/">uri_forのパッチ</a></h2>
+
+  <div class="body">
+    <p>いまどきのperl使いな皆様におかれましては内部ではutf8フラグを立てたutf8 stringとして文字列を扱っていると思いますが、そういった場合は <code>uri_for</code> は正しく動作します。</p>
+<p>そうではなく、utf8 bytes を渡した場合、今の <code>uri_for</code> では壊れたURIが帰って来るというバグがあります。単純なミスなのだけど。</p>
+<p>かなり前からなんだけど誰も気がつかないのか必要ないのか一向に直らないので業を煮やしてメールでパッチ送ったところすぐに反映してくれた。ナイス。</p>
+<blockquote><p><a href="http://dev.catalyst.perl.org/svnweb/Catalyst/diff/Catalyst-Runtime/5.70/trunk/lib/Catalyst.pm?rev1=7391;rev2=7392">http://dev.catalyst.perl.org/svnweb/Catalyst/diff/Catalyst-Runtime/5.70/trunk/lib/Catalyst.pm?rev1=7391;rev2=7392</a></p></blockquote>
+<p>パッチはこんなん。</p>
+<p>canonical してないのは仕様らしい。(昔のはしてたよね？)</p>
+<p>mst によれば</p>
+<blockquote><p>For RSS/atom feeds etc.</p></blockquote>
+<p>とのこと。どゆこと？</p>
+
+  </div>
+
+  <div class="meta">
+    by typester /
+    at <a href="/memo/2008/01/17/2/">2008-01-17T03:19:00</a> /
+    <a href="/memo/tag/perl/">perl</a>
+    &middot; <a href="/memo/tag/catalyst/">catalyst</a>
+    / <a href="/memo/2008/01/17/2/#disqus_thread">Comment</a>
+  </div>
+</div>
+
+<div class="entry autopagerize_page_element">
+  <h2><a href="/memo/2007/12/20/3/"></a></h2>
+
+  <div class="body">
+    <p>舌足らずすぎた。</p>
+<pre><code>Model::DBIC:
+  connect_info:
+    - dbi:mysql:table
+    - root
+    - on_connect_do:
+        - SET NAMES utf8
+      cursor_class: DBIx::Class::Cursor::Cached
+  cache_file: __path_to(tmp/query_cache)__
+</code></pre>
+<p>さっきはこんなconfigで使った場合のコードです。</p>
+
+  </div>
+
+  <div class="meta">
+    by typester /
+    at <a href="/memo/2007/12/20/3/">2007-12-20T15:13:00</a> /
+    <a href="/memo/tag/catalyst/">catalyst</a>
+    &middot; <a href="/memo/tag/dbic/">dbic</a>
+    / <a href="/memo/2007/12/20/3/#disqus_thread">Comment</a>
+  </div>
+</div>
+
+<div class="entry autopagerize_page_element">
+  <h2><a href="/memo/2007/12/20/2/">DBIx::Class::Cursor::Cachedつかってみた</a></h2>
+
+  <div class="body">
+    <p>すばらしすぎる。もっと早く使えばよかったとおもった。</p>
+<p><code>Catalyst::Model::DBIC::Schema</code> で使う場合はこんな感じでOK。</p>
+<pre><code><span class="keyword">sub</span> <span class="function-name">new</span> {
+    <span class="keyword">my</span> <span class="variable-name">$self</span> = <span class="cperl-nonoverridable">shift</span>-&gt;NEXT::new(<span class="cperl-array">@_</span>);
+
+    <span class="keyword">my</span> <span class="variable-name">$cache</span> = Cache::FastMmap-&gt;new( <span class="string">share_file</span> =&gt; $self-&gt;{<span class="string">cache_file</span>} );
+
+    $self-&gt;schema-&gt;default_resultset_attributes({
+        <span class="string">cache_object</span> =&gt; $cache,
+    });
+
+    $self;
+}
+</code></pre>
+<p>そんで、あとはsearchのattrとして { cache_for =&gt; 300 } とかかいてやればそのクエリは300秒キャッシュされる。</p>
+<p>実際にはsearch時ではなくてallとかnextのときにそのクエリをキャッシュしてる。</p>
+<p>ちなみに<code>default_resultset_attributes</code>に<code>cache_for</code>を含めるとすべてのクエリがキャッシュされる。</p>
+
+  </div>
+
+  <div class="meta">
+    by typester /
+    at <a href="/memo/2007/12/20/2/">2007-12-20T13:33:00</a> /
+    <a href="/memo/tag/catalyst/">catalyst</a>
+    &middot; <a href="/memo/tag/dbic/">dbic</a>
+    / <a href="/memo/2007/12/20/2/#disqus_thread">Comment</a>
+  </div>
+</div>
+
+<div class="entry autopagerize_page_element">
+  <h2><a href="/memo/2007/09/13/1/">CatalystアプリのスタータースクリプトをCodeReposに</a></h2>
+
+  <div class="body">
+    <p>あげた。</p>
+<p>もともと使ってるのはpmsetupを改造したので雛形つくるだけだったんだけど、毎回DBとか使うわけでもないので、ついでにそこを選べるように改造した。</p>
+<p>ほぼ僕専用ルールにのっとった雛形を作成しますので他の方はまったく使えないと思いますが、参考にはなるかもしれません。</p>
+<p>他の方のも見てみたいのでぜひとも<a href="http://coderepos.org/share/">coderepos</a>で共有しましょう！</p>
+<p>あ、Catalyst自分規約カンファレンス、とかおもしろいかもしれない。</p>
+
+  </div>
+
+  <div class="meta">
+    by typester /
+    at <a href="/memo/2007/09/13/1/">2007-09-13T16:48:00</a> /
+    <a href="/memo/tag/perl/">perl</a>
+    &middot; <a href="/memo/tag/catalyst/">catalyst</a>
+    / <a href="/memo/2007/09/13/1/#disqus_thread">Comment</a>
+  </div>
+</div>
+
+<div class="entry autopagerize_page_element">
+  <h2><a href="/memo/2007/06/15/1/">IP認証とBasic認証を同時に使うCatalystコードサンプル</a></h2>
+
+  <div class="body">
+    <p>Catalystは <code>Authentication::Credential::*</code> プラグインを複数使うことにより、複数の認証方式に対応できる。</p>
+<p>IP認証などのような、Credプラグインが提供されていないものも即席でCredインタフェースにそったモジュールを作ることで簡単に認証方法を追加することができる。</p>
+<p>MyApp.pm はこんな感じ</p>
+<pre><code><span class="keyword">package</span> <span class="function-name">MyApp</span>;
+
+<span class="keyword">use</span> <span class="function-name">strict</span>;
+<span class="keyword">use</span> <span class="function-name">warnings</span>;
+
+<span class="keyword">use</span> <span class="function-name">Catalyst::Runtime</span> <span class="string">&apos;5.70&apos;</span>;
+<span class="keyword">use</span> <span class="function-name">Catalyst</span> <span class="cperl-nonoverridable">qw</span><span class="string">/
+    ConfigLoader
+
+    Authentication
+    Authentication::Credential::HTTP
+    +MyApp::Credential::IP
+    Authentication::Store::DBIC
+    /</span>;
+
+<span class="keyword">our</span> <span class="variable-name">$VERSION</span> = <span class="string">&apos;0.01&apos;</span>;
+
+<span class="type">__PACKAGE__</span>-&gt;setup;
+</code></pre>
+<p><code>Cred::HTTP</code> が Basic 認証用のモジュール。<code>+MyApp::Credential::IP</code> がIP認証用のオリジナルモジュール。</p>
+<p>この <code>MyApp::Credential::IP</code> のコードはこんな感じ。</p>
+<pre><code><span class="keyword">package</span> <span class="function-name">MyApp::Credential::IP</span>;
+<span class="keyword">use</span> <span class="function-name">strict</span>;
+<span class="keyword">use</span> <span class="function-name">warnings</span>;
+<span class="keyword">use</span> <span class="function-name">base</span> <span class="cperl-nonoverridable">qw</span><span class="string">/Catalyst::Plugin::Authentication::Credential::Password/</span>;
+
+<span class="keyword">sub</span> <span class="function-name">authenticate_from_address</span> {
+    <span class="keyword">my</span> <span class="variable-name">$c</span> = <span class="cperl-nonoverridable">shift</span>;
+
+    <span class="keyword">my</span> <span class="variable-name">$ip</span> = $c-&gt;model(<span class="string">&apos;DBIC::UserIp&apos;</span>)-&gt;find({ <span class="string">ip</span> =&gt; $c-&gt;req-&gt;address }, { <span class="string">prefetch</span> =&gt; <span class="string">&apos;user&apos;</span> })
+        <span class="type">or</span> <span class="keyword">return</span>;
+    <span class="keyword">my</span> <span class="variable-name">$user</span> = $c-&gt;get_user( $ip-&gt;user-&gt;username )
+        <span class="type">or</span> <span class="keyword">return</span>;
+
+    $c-&gt;set_authenticated($user);
+
+    1;
+}
+
+1;
+</code></pre>
+<p>こんな短いコードで認証増やせるの。なかなか便利。</p>
+<p>で、実際に利用するのは以下のように、Root Controller の auto アクションに</p>
+<pre><code><span class="keyword">sub</span> <span class="function-name">auto</span> <span class="constant">:Private</span> {
+    <span class="keyword">my</span> (<span class="variable-name">$self</span>, <span class="variable-name">$c</span>) = <span class="cperl-array">@_</span>;
+
+    <span class="comment-delimiter"># </span><span class="comment">basic auth
+</span>    $c-&gt;authenticate_http <span class="type">and</span> <span class="keyword">return</span> 1;
+
+    <span class="comment-delimiter"># </span><span class="comment">ip auth
+</span>    $c-&gt;authenticate_from_address <span class="type">and</span> <span class="keyword">return</span> 1;
+
+    <span class="comment-delimiter"># </span><span class="comment">return basic auth response when no auth success
+</span>    $c-&gt;authorization_required_response( <span class="string">realm</span> =&gt; <span class="string">&apos;Require Authentication&apos;</span> );
+    <span class="keyword">return</span>;
+}
+</code></pre>
+<p>などとする。</p>
+<p>全体に認証かけたいときはルートコントローラの auto に、コントローラ個別に指定したいときは、上記コードを埋め込んだ認証用の親コントローラクラスつくって認証必要なコントローラはそれを継承する。</p>
+<p>パスごとにやりたいときは <code>Authentication::ACL</code> ってのがあるけど僕は使っていない。</p>
+
+  </div>
+
+  <div class="meta">
+    by typester /
+    at <a href="/memo/2007/06/15/1/">2007-06-15T17:07:00</a> /
+    <a href="/memo/tag/perl/">perl</a>
+    &middot; <a href="/memo/tag/catalyst/">catalyst</a>
+    / <a href="/memo/2007/06/15/1/#disqus_thread">Comment</a>
+  </div>
+</div>
+
+<div class="entry autopagerize_page_element">
+  <h2><a href="/memo/2007/05/02/1/">X-Sendfile の逆がほしい</a></h2>
+
+  <div class="body">
+    <p>ファイルアップロードしたときに、サーバーが自動でどっかファイルに保存しつつ受信して、fastcgi にはファイルを渡さずファイル名を渡す。</p>
+<p>結構でかいファイルだと Webサーバー &lt;-&gt; FastCGI 間のファイルデータのやり取りに時間かかってすげー無駄だ。</p>
+<p>lighty が実装しねーかなぁ。</p>
+<p>perlbal でできたりするのかな。</p>
+
+  </div>
+
+  <div class="meta">
+    by typester /
+    at <a href="/memo/2007/05/02/1/">2007-05-02T23:41:00</a> /
+    <a href="/memo/tag/perl/">perl</a>
+    &middot; <a href="/memo/tag/catalyst/">catalyst</a>
+    / <a href="/memo/2007/05/02/1/#disqus_thread">Comment</a>
+  </div>
+</div>
+
+<div class="entry autopagerize_page_element">
+  <h2><a href="/memo/2007/04/14/1/">Catalyst で Log::Dispatch を使うの法</a></h2>
+
+  <div class="body">
+    <p>同僚から聞かれたので、僕のやり方を書いておく。</p>
+<p>すでにCPANに <code>Catalyst::Plugin::Log::Dispatch</code> というのがあるのだけど、なんかいけてないのでそれは使わず、以下のようにしている。</p>
+<p>まず <code>MyApp::Logger</code> とかいうのをかく</p>
+<pre><code><span class="keyword">package</span> <span class="function-name">MyApp::Logger</span>;
+<span class="keyword">use</span> <span class="function-name">strict</span>;
+<span class="keyword">use</span> <span class="function-name">warnings</span>;
+
+<span class="keyword">use</span> <span class="function-name">Log::Dispatch::Config</span>;
+<span class="keyword">use</span> <span class="function-name">Log::Dispatch::Configurator::YAML</span>;
+
+<span class="keyword">use</span> <span class="function-name">Catalyst::Utils</span>;
+<span class="keyword">use</span> <span class="function-name">NEXT</span>;
+
+{
+    <span class="keyword">package</span> <span class="function-name">MyApp::Logger::Backend</span>;
+    <span class="keyword">use</span> <span class="function-name">base</span> <span class="cperl-nonoverridable">qw</span><span class="string">/Log::Dispatch::Config/</span>;
+}
+
+<span class="keyword">sub</span> <span class="function-name">setup</span> {
+    <span class="keyword">my</span> <span class="variable-name">$c</span>      = <span class="cperl-nonoverridable">shift</span>;
+    <span class="keyword">my</span> <span class="variable-name">$class</span>  = <span class="type">ref</span> $c || $c;
+
+    $c-&gt;<span class="type">log</span>-&gt;_flush <span class="keyword">if</span> $c-&gt;<span class="type">log</span>-&gt;can(<span class="string">&apos;_flush&apos;</span>);
+
+    <span class="keyword">my</span> <span class="variable-name">$config</span> = $c-&gt;config-&gt;{<span class="string">log</span>}{<span class="string">config</span>}
+        || $c-&gt;path_to( Catalyst::Utils::appprefix($class) . <span class="string">&apos;_log.yml&apos;</span> );
+
+    MyApp::Logger::Backend-&gt;configure_and_watch(
+        Log::Dispatch::Configurator::YAML-&gt;new($config) );
+    $class-&gt;<span class="type">log</span>( MyApp::Logger::Backend-&gt;instance );
+
+    $c-&gt;NEXT::setup(<span class="cperl-array">@_</span>);
+}
+
+1;
+</code></pre>
+<p>んでこれをプラグインとしてロード。</p>
+<pre><code>use Catalyst qw/+MyApp::Logger/;
+</code></pre>
+<p>ログの設定ファイルを書く(デフォルトmyapp_log.yml)</p>
+<pre><code>---
+dispatchers:
+  - file
+  - screen
+
+file:
+  class: Log::Dispatch::File
+  min_level: debug
+  filename: /path/to/log
+  mode: append
+  format: &apos;[%d] [%p] %m at %F line %L%n&apos;
+
+screen:
+  class: Log::Dispatch::Screen
+  min_level: debug
+  stderr: 1
+  format: &apos;[%p] %m%n&apos;
+</code></pre>
+<p>以上。</p>
+<p><code>MyApp::Logger::Backend</code> とかしてるのは mod_perl 対策。まーつかわんのだけど。</p>
+<p>これ、さっきヘルパーにした。</p>
+<blockquote><p><a href="http://svn.unknownplace.org/public/library/perl/trunk/Catalyst-Helper-Log-Dispatch/">Catalyst-Helper-Log-Dispatch</a></p></blockquote>
+<p>これ使えば</p>
+<pre><code>./script/myapp_create.pl Log::Dispatch
+</code></pre>
+<p>すると Logger クラスとサンプルの yml ファイルを生成してくれる。</p>
+
+  </div>
+
+  <div class="meta">
+    by typester /
+    at <a href="/memo/2007/04/14/1/">2007-04-14T07:01:00</a> /
+    <a href="/memo/tag/perl/">perl</a>
+    &middot; <a href="/memo/tag/catalyst/">catalyst</a>
+    / <a href="/memo/2007/04/14/1/#disqus_thread">Comment</a>
+  </div>
+</div>
+
+<div class="entry autopagerize_page_element">
+  <h2><a href="/memo/2007/04/09/1/">Catalyst + 外部認証API</a></h2>
+
+  <div class="body">
+    <p>今作ってるサービス。</p>
+<pre><code>use Catalyst qw/
+    ...
+    Authentication
+    Authentication::Credential::Password
+    Authentication::Credential::OpenID
+    Authentication::Credential::TypeKey
+    Authentication::Credential::Hatena
+    Authentication::Credential::JugemKey
+    +MyApp::UserStore
+    ...
+    /;
+</code></pre>
+<p><code>MyApp::UserStore</code> は <code>A::Store::DBIC</code> のちょっとしたサブクラスで、<code>Cred::Password</code> のときは <code>auto_create_user</code> しないようにしただけのもの。</p>
+<p>最近の <code>Store::DBIC</code> の <code>auto_create_user</code> 機能つかうと外部認証使うサービス簡単に作れる。</p>
+<p><code>Cred::Password</code> 使わないなら (独自ユーザーを使わないなら) 、<code>Store::DBIC</code> そのまま使えばいける。</p>
+<p>すばらしいなー。</p>
+<p>リリースしたらちゃんとした記事を書きたい。</p>
+
+  </div>
+
+  <div class="meta">
+    by typester /
+    at <a href="/memo/2007/04/09/1/">2007-04-09T10:53:00</a> /
+    <a href="/memo/tag/perl/">perl</a>
+    &middot; <a href="/memo/tag/catalyst/">catalyst</a>
+    / <a href="/memo/2007/04/09/1/#disqus_thread">Comment</a>
+  </div>
+</div>
+
+<div class="entry autopagerize_page_element">
+  <h2><a href="/memo/2007/03/16/1/"></a></h2>
+
+  <div class="body">
+    <p>学生さんのcatアプリ見せてもらった。なんかすごいがんばってた。</p>
+<p>Chainedアクションがないころのなのか、<code>/wiki/{pagename}/edit</code> とかそれ系のコントローラを Regex コントローラでがんばってたりしてた。</p>
+<p><code>Plugin::Images</code> とかつかってた。しらんかった。なんかあれだなーと思ったら作者見て納得。nothingmuch のか。</p>
+<p><code>Plugin::Static::Simple</code> とかは使わないほうがいいよ。静的ファイルはサーバー直でやんないと無駄。ロードするだけですらッ！</p>
+<p>それで思い出したけど、lighttpdの設定、最近 <code>mod_alias</code> も <code>mod_setenv</code> も <code>mod_rewrite</code> もつかわない書式を思いついて使ってる。</p>
+<pre><code>$HTTP[<span class="string">"url"</span>] =~ <span class="string">"^/(?!favicon\.ico$|static/|js/|css/|images?/)"</span> {
+    fastcgi.server = (
+        <span class="string">""</span> =&gt; (
+            ( <span class="string">"socket"</span> =&gt; <span class="string">"/path/to/myapp.socket"</span>,
+              <span class="string">"check-local"</span> =&gt; <span class="string">"disable"</span>, ),
+        ),
+    )
+}
+</code></pre>
+<p>こんなの。</p>
+<p>とにかく、技術はどうあれ、作ってみる、形にするってことはやっぱり重要だなと思った。口だけなら何でもいえる。</p>
+
+  </div>
+
+  <div class="meta">
+    by typester /
+    at <a href="/memo/2007/03/16/1/">2007-03-16T15:34:00</a> /
+    <a href="/memo/tag/life/">life</a>
+    &middot; <a href="/memo/tag/catalyst/">catalyst</a>
+    &middot; <a href="/memo/tag/lighttpd/">lighttpd</a>
+    / <a href="/memo/2007/03/16/1/#disqus_thread">Comment</a>
+  </div>
+</div>
+
+<div class="entry autopagerize_page_element">
+  <h2><a href="/memo/2007/01/25/5/">Catalyst::Plugin::Firebug</a></h2>
+
+  <div class="body">
+    <p>とか言うのを書いた。</p>
+<p>ロードしておくとDebugモードのときに出力htmlに自動でFirebug liteのコードが埋め込まれるというやつ。</p>
+<p>でも激しくDISられたので、ActionClassにしてリリースしなおす予定。うう＞＜</p>
+
+  </div>
+
+  <div class="meta">
+    by typester /
+    at <a href="/memo/2007/01/25/5/">2007-01-25T23:58:00</a> /
+    <a href="/memo/tag/perl/">perl</a>
+    &middot; <a href="/memo/tag/catalyst/">catalyst</a>
+    / <a href="/memo/2007/01/25/5/#disqus_thread">Comment</a>
+  </div>
+</div>
+
+
+
+
+<div id="pager" class="autopagerize_insert_before">
+  <p class="pages">
+    <a class="prev" rel="previous" href="/memo/tag/catalyst/">&laquo; Prev</a>
+    <a href="/memo/tag/catalyst/">1</a>
+    <span class="current">2</span>
+    <a href="/memo/tag/catalyst/page/3/">3</a>
+    <a href="/memo/tag/catalyst/page/4/">4</a>
+    <a href="/memo/tag/catalyst/page/5/">5</a>
+    <a href="/memo/tag/catalyst/page/6/">6</a>
+    <a href="/memo/tag/catalyst/page/7/">7</a>
+    <a href="/memo/tag/catalyst/page/8/">8</a>
+    <a href="/memo/tag/catalyst/page/9/">9</a>
+    <a href="/memo/tag/catalyst/page/10/">10</a>
+    <a class="next" rel="next" href="/memo/tag/catalyst/page/3/">Next &raquo;</a>
+  </p>
+  <p class="info">(Page 2 of 11)</p>
+</div>
+
+
+</div>
+
+<p id="footer">
+  Copyright &copy; 2005-2013
+      by <a class="author" href="/about/#me">Daisuke Murase (typester)</a> /
+  Site generated by <a href="https://github.com/typester/nim">nim</a> /
+  Comments powered by <a href="http://disqus.com">DISQUS</a>.
+</p>
+
+</div>
+
+
+<script type="text/javascript">
+//<![CDATA[
+(function() {
+	var links = document.getElementsByTagName('a');
+	var query = '?';
+	for(var i = 0; i < links.length; i++) {
+	if(links[i].href.indexOf('#disqus_thread') >= 0) {
+		query += 'url' + i + '=' + encodeURIComponent(links[i].href) + '&';
+	}
+	}
+	document.write('<script charset="utf-8" type="text/javascript" src="http://disqus.com/forums/unknownplace/get_num_replies.js' + query + '"></' + 'script>');
+})();
+//]]>
+</script>
+
+
+<script type="text/javascript">
+var gaJsHost = (("https:" == document.location.protocol) ? "https://ssl." : "http://www.");
+document.write(unescape("%3Cscript src='" + gaJsHost + "google-analytics.com/ga.js' type='text/javascript'%3E%3C/script%3E"));
+</script>
+<script type="text/javascript">
+try {
+var pageTracker = _gat._getTracker("UA-53067-1");
+pageTracker._trackPageview();
+} catch(err) {}</script>
+
+<script>
+function googleTranslateElementInit() {
+  new google.translate.TranslateElement({
+    pageLanguage: 'ja',
+    gaTrack: true,
+    gaId: 'UA-53067',
+    floatPosition: google.translate.TranslateElement.FloatPosition.BOTTOM_RIGHT
+  });
+}
+</script><script src="//translate.google.com/translate_a/element.js?cb=googleTranslateElementInit"></script>
+
+</body>
+</html>

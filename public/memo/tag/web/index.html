@@ -1,0 +1,294 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="ja" xml:lang="ja">
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <title>memo - unknownplace.org</title>
+  <link rel="stylesheet" type="text/css" href="http://yui.yahooapis.com/3.0.0/build/cssreset/reset-min.css" />
+  <link rel="stylesheet" type="text/css" href="http://yui.yahooapis.com/3.0.0/build/cssfonts/fonts-min.css" />
+  <link rel="stylesheet" href="/css/style.css" type="text/css" />
+  <meta property="fb:admins" content="1093631929" />
+  <meta name="robots" content="noindex" />
+  <link rel="alternate" type="application/rss+xml" href="http://unknownplace.org/memo/index.rss" />
+</head>
+<body>
+
+<div id="container">
+<div id="header">
+    <h1><a href="/">unknownplace.org</a></h1> /
+<a href="/memo/">memo</a>
+</div>
+
+<div id="content">
+
+<div class="entry autopagerize_page_element">
+  <h2><a href="/memo/2009/11/26/1/">CookPad の iPhone 用 API</a></h2>
+
+  <div class="body">
+    <p>こんな感じかな。</p>
+<blockquote><p><a href="http://github.com/typester/cookpad-api-perl">typester&apos;s cookpad-api-perl at master - GitHub</a></p></blockquote>
+<p><code>api_key</code> ないと動かないからあれだけど。</p>
+
+  </div>
+
+  <div class="meta">
+    by typester /
+    at <a href="/memo/2009/11/26/1/">2009-11-26T23:40:00</a> /
+    <a href="/memo/tag/web/">web</a>
+    &middot; <a href="/memo/tag/cookpad/">cookpad</a>
+    &middot; <a href="/memo/tag/iphone/">iphone</a>
+    / <a href="/memo/2009/11/26/1/#disqus_thread">Comment</a>
+  </div>
+</div>
+
+<div class="entry autopagerize_page_element">
+  <h2><a href="/memo/2009/11/19/1/">リニューアル</a></h2>
+
+  <div class="body">
+    <p>clmemo を開始してから4年ほど、ずっと変えていなかったサイトをサーバーが死亡したのを機にリニューアル。</p>
+<p>今年初めに作った <a href="http://github.com/typester/nim">nim</a> をつかって全部静的ファイルな構成にしてみる。制限のきついレンタルサーバーならともかく、僕の環境ではまったく意味がない。最初は <code>typester.github.com</code> とかでやろうとおもったけど、その後移転したくなったときリダイレクトとかできないのはいやなのでやめた。</p>
+<p>でも自鯖はめんどくさいので <a href="http://prgmr.com/xen/">prgmr.com</a> 借りた。なかなか良い。</p>
+<p>nim なら clmemo 以外にもコンテンツを扱えるのでぼちぼち増やしていく予定。とりあえずブログかなぁ。</p>
+<p>しかしやっぱりサイトをいじるのは楽しい。最近はブログサービスなどが普及してきてこういうことをやる人が少なくなってしまったけどもったいないなーとおもう。</p>
+
+  </div>
+
+  <div class="meta">
+    by typester /
+    at <a href="/memo/2009/11/19/1/">2009-11-19T00:31:00</a> /
+    <a href="/memo/tag/web/">web</a>
+    &middot; <a href="/memo/tag/life/">life</a>
+    / <a href="/memo/2009/11/19/1/#disqus_thread">Comment</a>
+  </div>
+</div>
+
+<div class="entry autopagerize_page_element">
+  <h2><a href="/memo/2008/11/21/1/">irssiからOutputzに文字数を投げる</a></h2>
+
+  <div class="body">
+    <blockquote><p><a href="http://d.hatena.ne.jp/antipop/20081120/1227180641">EmacsからOutputzに文字数を投げる - antipop</a></p></blockquote>
+<p>を見て、早速インストールして使ってみたら激しくおもしろい！</p>
+<p>irssiでもやりたくなったので、irssiで発言した文字数をOutputzに投げるプラグインを書いた。</p>
+<blockquote><p><a href="http://github.com/typester/irssi-plugins/tree/master/outputz.pl">http://github.com/typester/irssi-plugins/tree/master/outputz.pl</a></p></blockquote>
+<p><code>~/.irssi/scripts</code> にファイルをおいて、irssi内で</p>
+<pre><code>/run outputz.pl
+</code></pre>
+<p>して</p>
+<pre><code>/set outputz_key あなたの復活の呪文
+/set outputz_uri 適当なURI
+</code></pre>
+<p>すると設定完了で、あとは自動で発言数が投稿されます。</p>
+<del>`outputz_uri` に `%s` をいれるとその部分はIRCのチャンネル名に置換されます。</del>
+<p><code>outputz_uri</code> は <code>URI::Template</code> 形式で指定できるようにしました。</p>
+<p>デフォルトは <code>irc://{server}:{port}/{channel}</code> です。</p>
+<p>つかえる変数は</p>
+<ul><li>server: サーバーアドレス</li><li>port: サーバーポート番号</li><li>channel: 発言したチャンネル名</li><li>server_tag: irssiでのサーバーのユニークタグ</li><li>nick: そのサーバーでのあなたのニックネーム</li></ul>
+<p>となっております。</p>
+<p>こないだ作った <code>PoCo::Client::HTTPDeferred</code> つかってるのでそのサンプルとしてもいいとおもいます。</p>
+<p>しかし、emacsよりirssiの方が文字数いってそうで集計を見るのが怖いです。。。</p>
+
+  </div>
+
+  <div class="meta">
+    by typester /
+    at <a href="/memo/2008/11/21/1/">2008-11-21T16:00:00</a> /
+    <a href="/memo/tag/web/">web</a>
+    &middot; <a href="/memo/tag/irssi/">irssi</a>
+    / <a href="/memo/2008/11/21/1/#disqus_thread">Comment</a>
+  </div>
+</div>
+
+<div class="entry autopagerize_page_element">
+  <h2><a href="/memo/2008/06/01/2/">oh</a></h2>
+
+  <div class="body">
+    <p>googleのfaviconかわっとる。</p>
+
+  </div>
+
+  <div class="meta">
+    by typester /
+    at <a href="/memo/2008/06/01/2/">2008-06-01T17:30:00</a> /
+    <a href="/memo/tag/web/">web</a>
+    / <a href="/memo/2008/06/01/2/#disqus_thread">Comment</a>
+  </div>
+</div>
+
+<div class="entry autopagerize_page_element">
+  <h2><a href="/memo/2007/04/16/1/">del.icio.us の RSS</a></h2>
+
+  <div class="body">
+    <p>実体参照になったりならなかったり。一時的なものかと思ってたけどずっと直らんな。</p>
+<p>del.icio.us がわるいのか Bloglines API がわるいのかわからんけど。そろそろなんかするか。</p>
+
+  </div>
+
+  <div class="meta">
+    by typester /
+    at <a href="/memo/2007/04/16/1/">2007-04-16T04:08:00</a> /
+    <a href="/memo/tag/web/">web</a>
+    / <a href="/memo/2007/04/16/1/#disqus_thread">Comment</a>
+  </div>
+</div>
+
+<div class="entry autopagerize_page_element">
+  <h2><a href="/memo/2007/04/10/3/"></a></h2>
+
+  <div class="body">
+    <p>putty tray のサイト、さり気におもしろい。</p>
+<p>アイコンドラッグでダウンロードとか。</p>
+
+  </div>
+
+  <div class="meta">
+    by typester /
+    at <a href="/memo/2007/04/10/3/">2007-04-10T18:44:00</a> /
+    <a href="/memo/tag/web/">web</a>
+    / <a href="/memo/2007/04/10/3/#disqus_thread">Comment</a>
+  </div>
+</div>
+
+<div class="entry autopagerize_page_element">
+  <h2><a href="/memo/2007/02/19/1/">Remember The Milk で IME を自動で ON/OFF する greasemonkey スクリプト</a></h2>
+
+  <div class="body">
+    <p><a href="http://www.rememberthemilk.com">Remember The Milk</a> はサービス開始当初少し触っただけでまったく使っていなかったのだけど、最近周りの人が結構使っているのでちょっと見てみたらすごい進化していて、これは便利そうってことで使ってみている。</p>
+<p>それで、キーボードショートカットだけでいろいろな操作ができるようになっていてすごく便利になっているのだけど、IMEがONの状態だと動かない。</p>
+<p>タスクは日本語で入力することが多いので、いちいちIMEの状態を気にしなくてはいけなくて面倒。</p>
+<p>ってことで、テキストフィールドにフォーカスがあるときは自動でIMEをONにし、フォーカスが外れるとOFFにするスクリプトを書いてみた。</p>
+<ul><li><a href="/gm/rememberthemilkime/rememberthemilkime.user.js">rememberthemilkime.user.js</a></li></ul>
+<p>スクリプトと同じ階層にある IME.swf というのも読み込むようになっていて、IMEのON/OFFはそれでやってる。無駄にAS3で書いたため、Flash Player9以上でないと使えないとかいう。</p>
+
+  </div>
+
+  <div class="meta">
+    by typester /
+    at <a href="/memo/2007/02/19/1/">2007-02-19T04:25:00</a> /
+    <a href="/memo/tag/web/">web</a>
+    &middot; <a href="/memo/tag/firefox/">firefox</a>
+    &middot; <a href="/memo/tag/greasemonkey/">greasemonkey</a>
+    &middot; <a href="/memo/tag/rememberthemilk/">rememberthemilk</a>
+    / <a href="/memo/2007/02/19/1/#disqus_thread">Comment</a>
+  </div>
+</div>
+
+<div class="entry autopagerize_page_element">
+  <h2><a href="/memo/2006/11/02/2/">flickrのファビコン</a></h2>
+
+  <div class="body">
+    <p>変った？よね？？</p>
+<p>田中さんに聞いたら前からそんなのだった気がするとか、エェ。</p>
+
+  </div>
+
+  <div class="meta">
+    by typester /
+    at <a href="/memo/2006/11/02/2/">2006-11-02T10:57:00</a> /
+    <a href="/memo/tag/web/">web</a>
+    / <a href="/memo/2006/11/02/2/#disqus_thread">Comment</a>
+  </div>
+</div>
+
+<div class="entry autopagerize_page_element">
+  <h2><a href="/memo/2006/10/21/6/">scrybe</a></h2>
+
+  <div class="body">
+    <p><a href="http://www.iscrybe.com/">http://www.iscrybe.com/</a></p>
+<p>どうなってるんだろ、これ。</p>
+
+  </div>
+
+  <div class="meta">
+    by typester /
+    at <a href="/memo/2006/10/21/6/">2006-10-21T23:11:00</a> /
+    <a href="/memo/tag/web/">web</a>
+    / <a href="/memo/2006/10/21/6/#disqus_thread">Comment</a>
+  </div>
+</div>
+
+<div class="entry autopagerize_page_element">
+  <h2><a href="/memo/2006/09/14/2/">pillows on googlevideo</a></h2>
+
+  <div class="body">
+    <blockquote><p><a href="http://video.google.com/videosearch?q=pillows+pv">pillows pv - Google Video</a></p></blockquote>
+<p>わぁ。</p>
+
+  </div>
+
+  <div class="meta">
+    by typester /
+    at <a href="/memo/2006/09/14/2/">2006-09-14T11:46:00</a> /
+    <a href="/memo/tag/web/">web</a>
+    / <a href="/memo/2006/09/14/2/#disqus_thread">Comment</a>
+  </div>
+</div>
+
+
+
+
+<div id="pager" class="autopagerize_insert_before">
+  <p class="pages">
+    <span class="prev">&laquo; Prev</span>
+    <span class="current">1</span>
+    <a href="/memo/tag/web/page/2/">2</a>
+    <a href="/memo/tag/web/page/3/">3</a>
+    <a href="/memo/tag/web/page/4/">4</a>
+    <a href="/memo/tag/web/page/5/">5</a>
+    <a href="/memo/tag/web/page/6/">6</a>
+    <a class="next" rel="next" href="/memo/tag/web/page/2/">Next &raquo;</a>
+  </p>
+  <p class="info">(Page 1 of 6)</p>
+</div>
+
+
+</div>
+
+<p id="footer">
+  Copyright &copy; 2005-2013
+      by <a class="author" href="/about/#me">Daisuke Murase (typester)</a> /
+  Site generated by <a href="https://github.com/typester/nim">nim</a> /
+  Comments powered by <a href="http://disqus.com">DISQUS</a>.
+</p>
+
+</div>
+
+
+<script type="text/javascript">
+//<![CDATA[
+(function() {
+	var links = document.getElementsByTagName('a');
+	var query = '?';
+	for(var i = 0; i < links.length; i++) {
+	if(links[i].href.indexOf('#disqus_thread') >= 0) {
+		query += 'url' + i + '=' + encodeURIComponent(links[i].href) + '&';
+	}
+	}
+	document.write('<script charset="utf-8" type="text/javascript" src="http://disqus.com/forums/unknownplace/get_num_replies.js' + query + '"></' + 'script>');
+})();
+//]]>
+</script>
+
+
+<script type="text/javascript">
+var gaJsHost = (("https:" == document.location.protocol) ? "https://ssl." : "http://www.");
+document.write(unescape("%3Cscript src='" + gaJsHost + "google-analytics.com/ga.js' type='text/javascript'%3E%3C/script%3E"));
+</script>
+<script type="text/javascript">
+try {
+var pageTracker = _gat._getTracker("UA-53067-1");
+pageTracker._trackPageview();
+} catch(err) {}</script>
+
+<script>
+function googleTranslateElementInit() {
+  new google.translate.TranslateElement({
+    pageLanguage: 'ja',
+    gaTrack: true,
+    gaId: 'UA-53067',
+    floatPosition: google.translate.TranslateElement.FloatPosition.BOTTOM_RIGHT
+  });
+}
+</script><script src="//translate.google.com/translate_a/element.js?cb=googleTranslateElementInit"></script>
+
+</body>
+</html>

@@ -1,0 +1,403 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="ja" xml:lang="ja">
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <title>memo - unknownplace.org</title>
+  <link rel="stylesheet" type="text/css" href="http://yui.yahooapis.com/3.0.0/build/cssreset/reset-min.css" />
+  <link rel="stylesheet" type="text/css" href="http://yui.yahooapis.com/3.0.0/build/cssfonts/fonts-min.css" />
+  <link rel="stylesheet" href="/css/style.css" type="text/css" />
+  <meta property="fb:admins" content="1093631929" />
+  <meta name="robots" content="noindex" />
+  <link rel="alternate" type="application/rss+xml" href="http://unknownplace.org/memo/index.rss" />
+</head>
+<body>
+
+<div id="container">
+<div id="header">
+    <h1><a href="/">unknownplace.org</a></h1> /
+<a href="/memo/">memo</a>
+</div>
+
+<div id="content">
+
+<div class="entry autopagerize_page_element">
+  <h2><a href="/memo/2006/05/11/1/">PlaggerLDR 改造</a></h2>
+
+  <div class="body">
+    <p>簡易認証追加と <code>server.pl -d</code> のときだけデバッグモードになるように</p>
+<pre><code>Index: lib/PlaggerLDR/Controller/API.pm
+===================================================================
+--- lib/PlaggerLDR/Controller/API.pm    (revision 1819)
++++ lib/PlaggerLDR/Controller/API.pm    (working copy)
+@@ -12,8 +12,9 @@
+ <span class="keyword">my</span> <span class="variable-name">$module</span> = first { $_-&gt;{<span class="string">module</span>} <span class="type">eq</span> <span class="string">&apos;Store::DBIC&apos;</span> } @{$config-&gt;{<span class="string">plugins</span>}};
+ <span class="keyword">my</span> <span class="variable-name">$schema</span> = Plagger::Schema::SQLite-&gt;<span class="type">connect</span>(@{$module-&gt;{<span class="string">config</span>}-&gt;{<span class="string">connect_info</span>}});
+
+-<span class="keyword">sub</span> <span class="function-name">default</span> <span class="constant">:</span> <span class="constant">Private</span> {
++<span class="keyword">sub</span> <span class="function-name">auto</span> <span class="constant">:</span> <span class="constant">Private</span> {
+     <span class="keyword">my</span>(<span class="variable-name">$self</span>, <span class="variable-name">$c</span>) = <span class="cperl-array">@_</span>;
++    $c-&gt;user;
+ }
+
+ <span class="keyword">sub</span> <span class="function-name">subs</span> <span class="constant">:</span> <span class="constant">Local</span> {
+Index: lib/PlaggerLDR.pm
+===================================================================
+--- lib/PlaggerLDR.pm   (revision 1819)
++++ lib/PlaggerLDR.pm   (working copy)
+@@ -3,21 +3,45 @@
+ <span class="keyword">use</span> <span class="function-name">strict</span>;
+ <span class="keyword">use</span> <span class="function-name">warnings</span>;
+
+-<span class="keyword">use</span> <span class="function-name">Catalyst</span> <span class="cperl-nonoverridable">qw</span><span class="string">/-Debug/</span>;
++<span class="keyword">use</span> <span class="function-name">Catalyst</span> <span class="cperl-nonoverridable">qw</span><span class="string">(
++    Authentication
++    Authentication::Credential::Password
++    Authentication::Store::Minimal
+
++    Session
++    Session::State::Cookie
++    Session::Store::FastMmap
++)</span>;
++
+ <span class="type">__PACKAGE__</span>-&gt;config(
+     <span class="string">name</span> =&gt; <span class="string">&apos;PlaggerLDR&apos;</span>,
+     <span class="string">&apos;View::JSON&apos;</span> =&gt; {
+         <span class="string">expose_stash</span> =&gt; <span class="string">&apos;json&apos;</span>,
+     },
++    <span class="string">authentication</span> =&gt; {
++        <span class="string">users</span> =&gt; {
++            <span class="string">your_username</span> =&gt; { <span class="string">password</span> =&gt; <span class="string">&apos;your_password&apos;</span>, },
++        },
++    },
+ );
+ <span class="type">__PACKAGE__</span>-&gt;setup;
+
+ <span class="keyword">sub</span> <span class="function-name">default</span> <span class="constant">:</span> <span class="constant">Private</span> {
+     <span class="keyword">my</span> ( <span class="variable-name">$self</span>, <span class="variable-name">$c</span> ) = <span class="cperl-array">@_</span>;
+
+-    <span class="comment-delimiter"># </span><span class="comment">Hello World
+</span>-    $c-&gt;response-&gt;body( $c-&gt;welcome_message );
++    $c-&gt;login(
++        $c-&gt;req-&gt;params-&gt;{<span class="string">u</span>},
++        $c-&gt;req-&gt;params-&gt;{<span class="string">p</span>},
++    );
++
++    $c-&gt;res-&gt;status(404);
+ }
+
+ 1;
+</code></pre>
+
+  </div>
+
+  <div class="meta">
+    by typester /
+    at <a href="/memo/2006/05/11/1/">2006-05-11T06:22:00</a> /
+    <a href="/memo/tag/plagger/">plagger</a>
+    &middot; <a href="/memo/tag/catalyst/">catalyst</a>
+    / <a href="/memo/2006/05/11/1/#disqus_thread">Comment</a>
+  </div>
+</div>
+
+<div class="entry autopagerize_page_element">
+  <h2><a href="/memo/2006/05/03/2/">Plugin::Flavour</a></h2>
+
+  <div class="body">
+    <p>mmm..</p>
+
+  </div>
+
+  <div class="meta">
+    by typester /
+    at <a href="/memo/2006/05/03/2/">2006-05-03T20:45:00</a> /
+    <a href="/memo/tag/life/">life</a>
+    &middot; <a href="/memo/tag/catalyst/">catalyst</a>
+    / <a href="/memo/2006/05/03/2/#disqus_thread">Comment</a>
+  </div>
+</div>
+
+<div class="entry autopagerize_page_element">
+  <h2><a href="/memo/2006/04/23/2/">Root コントローラ #2</a></h2>
+
+  <div class="body">
+    <p>今までのルートコントローラは MyApp.pm 自体だった。</p>
+<p>でもこれだと YAPC でちょろっと話したように Catalyst は自分自身も Plugin も MyApp の親としてロードされるようになっているため、ルートコントローラと Catalyst 自身やプラグインの名前空間が干渉する。</p>
+<p>いわゆる sub login 問題ですが、普通に prepare とかいうアクション定義すると Catalyst の prepare 呼ばれなくなってアボンとかいうことになってて、かなり微妙な感じだった。</p>
+<p>なので 5.66 から MyApp::Controller::Root に外付けできるようになった。一応まえと同じ書き方でも動くけど、Root.pm 推奨という流れ。</p>
+<p>とか書いておいてみる。</p>
+
+  </div>
+
+  <div class="meta">
+    by typester /
+    at <a href="/memo/2006/04/23/2/">2006-04-23T15:40:00</a> /
+    <a href="/memo/tag/perl/">perl</a>
+    &middot; <a href="/memo/tag/catalyst/">catalyst</a>
+    / <a href="/memo/2006/04/23/2/#disqus_thread">Comment</a>
+  </div>
+</div>
+
+<div class="entry autopagerize_page_element">
+  <h2><a href="/memo/2006/04/23/1/">Root コントローラ</a></h2>
+
+  <div class="body">
+    <p>いつの話題だよｗ</p>
+
+  </div>
+
+  <div class="meta">
+    by typester /
+    at <a href="/memo/2006/04/23/1/">2006-04-23T15:37:00</a> /
+    <a href="/memo/tag/perl/">perl</a>
+    &middot; <a href="/memo/tag/catalyst/">catalyst</a>
+    / <a href="/memo/2006/04/23/1/#disqus_thread">Comment</a>
+  </div>
+</div>
+
+<div class="entry autopagerize_page_element">
+  <h2><a href="/memo/2006/04/21/3/">API関係</a></h2>
+
+  <div class="body">
+    <p>現在 <code>Catalyst::Plugin::RPC</code> という RPC の統合プラグインを作成してます。</p>
+<p>以下のような感じ。</p>
+<pre><code>use Catalyst qw/
+    RPC
+    RPC::Serializer::URIQuery
+    RPC::Serializer::XML
+    RPC::Serializer::JSON
+    /;
+</code></pre>
+<p>などと RPC と一緒に使いたいプロトコルのシリアライザをロードしておくと</p>
+<pre><code><span class="comment-delimiter"># </span><span class="comment">endpoint
+</span><span class="keyword">sub</span> <span class="function-name">rpc</span> <span class="constant">:</span> <span class="constant">Global</span> {
+    <span class="keyword">my</span> ( <span class="variable-name">$self</span>, <span class="variable-name">$c</span> ) = <span class="cperl-array">@_</span>;
+    $c-&gt;rpc;
+}
+
+<span class="keyword">sub</span> <span class="function-name">echo</span> <span class="constant">:</span> <span class="constant">RPC</span><span class="string">(&apos;myapp.echo&apos;)</span> {
+    <span class="keyword">my</span> ( <span class="variable-name">$self</span>, <span class="variable-name">$c</span>, <span class="cperl-array">@args</span> ) = <span class="cperl-array">@_</span>;
+
+    <span class="cperl-array">@args</span>;
+}
+</code></pre>
+<p>というような RPC アクションが利用できるようになるというものです。</p>
+<p>deserializer はリクエストの Content-Type から自動的に判別されるため、同じアクションを複数のプロトコルで共有できます。(このあたりはmiyagawaさんインスパイア)</p>
+<p>serializer はデフォルトでは deserializer と同じになりますが、format=json などとクエリで渡し指定することも可能となっています。</p>
+<p>Plugin::Flavour と組み合わせて /rpc.js 等とアクセスすれば Serializer::JSON が使われるようにもできますかね。これはどうしようかな。</p>
+<p>とりあえず今はRPCプラグイン本体を大まかに実装して、sri のコードコピペして Serializer::XML 作って XMLRPC のみ動くようになった段階。</p>
+<p>なんか同じようなことしてる人がいるっぽいので情報共有もかねて書いてみるｗ</p>
+<p>フィードバックフィードバック！</p>
+
+  </div>
+
+  <div class="meta">
+    by typester /
+    at <a href="/memo/2006/04/21/3/">2006-04-21T16:03:00</a> /
+    <a href="/memo/tag/life/">life</a>
+    &middot; <a href="/memo/tag/catalyst/">catalyst</a>
+    / <a href="/memo/2006/04/21/3/#disqus_thread">Comment</a>
+  </div>
+</div>
+
+<div class="entry autopagerize_page_element">
+  <h2><a href="/memo/2006/04/18/3/">Catalyst::Plugin::DebugScreen</a></h2>
+
+  <div class="body">
+    <p>とか作った。自分用。</p>
+<p><a href="http://svn.unknownplace.org/public/library/perl/trunk/Catalyst-Plugin-DebugScreen/" title="Catalyst-Plugin-DebugScreen">repos</a></p>
+<p>$c-&gt;debug が偽のときでも DebugScreen を出したかったのだけど、今の cat の実装だと無理っぽかったので。</p>
+<p>Catalyst::Plugin::StackTrace と Catalyst::Engine からのコピペに、おまけで Template で自分で DebugScreen を定義できるようにしただけのやつ。</p>
+
+  </div>
+
+  <div class="meta">
+    by typester /
+    at <a href="/memo/2006/04/18/3/">2006-04-18T13:02:00</a> /
+    <a href="/memo/tag/perl/">perl</a>
+    &middot; <a href="/memo/tag/catalyst/">catalyst</a>
+    / <a href="/memo/2006/04/18/3/#disqus_thread">Comment</a>
+  </div>
+</div>
+
+<div class="entry autopagerize_page_element">
+  <h2><a href="/memo/2006/04/08/1/">Catalyst::Plugin::Flavour 0.03pre</a></h2>
+
+  <div class="body">
+    <p>あぷ。新機能のドキュメント、テスト書いてないので Developer release にしておいてみる（ぉ</p>
+<p>いままでは flavour とはいうものの Blosxom とは違い最初のパスを flavour としていたのを、Blosxom 互換な拡張子による方法に対応。</p>
+<p>設定で、flavour, flavours_except が定義されていない場合この互換モードになるようにしておいた。</p>
+<p>あと最初のパスを flavour にするモードの場合に、いままでは</p>
+<pre><code>flavours =&gt; [ &apos;html&apos;, &apos;rss&apos;, &apos;js&apos;, ]
+</code></pre>
+<p>などとして定義したものだけを flavour として扱うということをしていたけど、</p>
+<pre><code>flavours_except =&gt; [ &apos;about&apos;, &apos;login&apos;, ]
+</code></pre>
+<p>などと、特定のパス以外はすべて flavour として扱うオプションも追加。これではてなっぽいアプリが簡単に作れるかね。</p>
+<p>あと、date_flavour 機能もつけた。</p>
+<p>これは /2005/04/08 などのような日付っぽいURLにアクセスされた場合、<code>$c-&gt;flavour-&gt;(year|month|day)</code> に日付を格納し、その日付部分をパスから除く。</p>
+<p>この機能はデフォルトONで date_flavour =&gt; 0 とすればOFFにできる。</p>
+<p>一気に機能追加しすぎてドキュメント書くのがあれすぎる。</p>
+<p>しかも日本語の説明でも上記みたいに意味不明になっちゃうのに英語だとどうなっちゃうんだ、という。</p>
+
+  </div>
+
+  <div class="meta">
+    by typester /
+    at <a href="/memo/2006/04/08/1/">2006-04-08T18:19:00</a> /
+    <a href="/memo/tag/perl/">perl</a>
+    &middot; <a href="/memo/tag/catalyst/">catalyst</a>
+    / <a href="/memo/2006/04/08/1/#disqus_thread">Comment</a>
+  </div>
+</div>
+
+<div class="entry autopagerize_page_element">
+  <h2><a href="/memo/2006/03/17/5/">JavaScript や CSS の query に自動で最終更新時間をつける Catalyst Plugin</a></h2>
+
+  <div class="body">
+    <blockquote><p><a href="http://d.hatena.ne.jp/secondlife/20060316/1142512987">川o・-・）＜2nd life - JavaScript や CSS の query に自動で最終更新時間をつける Rails Plugin</a></p></blockquote>
+<p>インスパイア。</p>
+<pre><code><span class="keyword">package</span> <span class="function-name">Catalyst::Plugin::URI::MtimeQuery</span>;
+
+<span class="keyword">sub</span> <span class="function-name">uri_for</span> {
+    <span class="keyword">my</span> <span class="variable-name">$c</span>   = <span class="cperl-nonoverridable">shift</span>;
+    <span class="keyword">my</span> <span class="variable-name">$res</span> = $c-&gt;NEXT::uri_for(<span class="cperl-array">@_</span>);
+
+    <span class="keyword">if</span> ( $res =~ <span class="constant">/</span><span class="builtin">\</span><span class="string">.</span><span class="keyword">(</span><span class="string">css</span><span class="keyword">|</span><span class="string">js</span><span class="keyword">|</span><span class="string">swf</span><span class="keyword">)</span><span class="function-name">$</span><span class="constant">/</span> ) {
+        <span class="keyword">my</span> <span class="variable-name">$base</span> = $c-&gt;req-&gt;base;
+        <span class="keyword">my</span> (<span class="variable-name">$path</span>) = $res =~ <span class="cperl-nonoverridable">m</span><span class="constant">!</span><span class="function-name">^</span><span class="variable-name">$base</span><span class="string">/</span><span class="keyword">(</span><span class="function-name">.</span><span class="builtin">*</span><span class="keyword">)</span><span class="constant">!</span>;
+
+        <span class="keyword">my</span> <span class="variable-name">$file</span> = $c-&gt;path_to( <span class="string">&apos;root&apos;</span>, <span class="cperl-nonoverridable">split</span> <span class="string">&apos;/&apos;</span>, $path );
+        <span class="keyword">if</span> ( $file-&gt;<span class="type">stat</span> &amp;&amp; <span class="function-name">-f _</span> &amp;&amp; <span class="function-name">-r _</span> ) {
+            $res .= <span class="string">&apos;?&apos;</span> . $file-&gt;<span class="type">stat</span>-&gt;mtime;
+        }
+    }
+
+    $res;
+}
+
+1;
+</code></pre>
+<p>Catalyst では CSS や Javascript の読み込みは <code>[% c.uri_for(&apos;/js/prototype.js&apos;) %]</code> などのように記述することが多いのですが、上記プラグインをロードしておくと、css|js|swf の場合は自動で更新時間が付くようになります。試してないけど。</p>
+<p>上のは設定きめうちなんだけどその理由は config の設定キー名思いつかなかったからという。。</p>
+<p>あと、swf は普通にクエリを渡して使うことが多いのでこのままだとあまり使えない。</p>
+
+  </div>
+
+  <div class="meta">
+    by typester /
+    at <a href="/memo/2006/03/17/5/">2006-03-17T15:41:00</a> /
+    <a href="/memo/tag/perl/">perl</a>
+    &middot; <a href="/memo/tag/catalyst/">catalyst</a>
+    / <a href="/memo/2006/03/17/5/#disqus_thread">Comment</a>
+  </div>
+</div>
+
+<div class="entry autopagerize_page_element">
+  <h2><a href="/memo/2006/03/15/8/">Authentication::Store::HTTP #2</a></h2>
+
+  <div class="body">
+    <p>0.04 で変なことしないで実装した。ロードする順番もいつでもOK。</p>
+<p>trunk にあるコードは get_user にすべてのパラメータを渡してくれるようになっているのでそもそも昨日からの悩みは無用だったらしい。と、 nothingmuch が教えてくれた。</p>
+
+  </div>
+
+  <div class="meta">
+    by typester /
+    at <a href="/memo/2006/03/15/8/">2006-03-15T23:46:00</a> /
+    <a href="/memo/tag/perl/">perl</a>
+    &middot; <a href="/memo/tag/catalyst/">catalyst</a>
+    / <a href="/memo/2006/03/15/8/#disqus_thread">Comment</a>
+  </div>
+</div>
+
+<div class="entry autopagerize_page_element">
+  <h2><a href="/memo/2006/03/15/7/"></a></h2>
+
+  <div class="body">
+    <p>あー、login 上書きしなくても出来るや。</p>
+
+  </div>
+
+  <div class="meta">
+    by typester /
+    at <a href="/memo/2006/03/15/7/">2006-03-15T18:38:00</a> /
+    <a href="/memo/tag/perl/">perl</a>
+    &middot; <a href="/memo/tag/catalyst/">catalyst</a>
+    / <a href="/memo/2006/03/15/7/#disqus_thread">Comment</a>
+  </div>
+</div>
+
+
+
+
+<div id="pager" class="autopagerize_insert_before">
+  <p class="pages">
+    <a class="prev" rel="previous" href="/memo/tag/catalyst/page/5/">&laquo; Prev</a>
+    <a href="/memo/tag/catalyst/page/2/">2</a>
+    <a href="/memo/tag/catalyst/page/3/">3</a>
+    <a href="/memo/tag/catalyst/page/4/">4</a>
+    <a href="/memo/tag/catalyst/page/5/">5</a>
+    <span class="current">6</span>
+    <a href="/memo/tag/catalyst/page/7/">7</a>
+    <a href="/memo/tag/catalyst/page/8/">8</a>
+    <a href="/memo/tag/catalyst/page/9/">9</a>
+    <a href="/memo/tag/catalyst/page/10/">10</a>
+    <a href="/memo/tag/catalyst/page/11/">11</a>
+    <a class="next" rel="next" href="/memo/tag/catalyst/page/7/">Next &raquo;</a>
+  </p>
+  <p class="info">(Page 6 of 11)</p>
+</div>
+
+
+</div>
+
+<p id="footer">
+  Copyright &copy; 2005-2013
+      by <a class="author" href="/about/#me">Daisuke Murase (typester)</a> /
+  Site generated by <a href="https://github.com/typester/nim">nim</a> /
+  Comments powered by <a href="http://disqus.com">DISQUS</a>.
+</p>
+
+</div>
+
+
+<script type="text/javascript">
+//<![CDATA[
+(function() {
+	var links = document.getElementsByTagName('a');
+	var query = '?';
+	for(var i = 0; i < links.length; i++) {
+	if(links[i].href.indexOf('#disqus_thread') >= 0) {
+		query += 'url' + i + '=' + encodeURIComponent(links[i].href) + '&';
+	}
+	}
+	document.write('<script charset="utf-8" type="text/javascript" src="http://disqus.com/forums/unknownplace/get_num_replies.js' + query + '"></' + 'script>');
+})();
+//]]>
+</script>
+
+
+<script type="text/javascript">
+var gaJsHost = (("https:" == document.location.protocol) ? "https://ssl." : "http://www.");
+document.write(unescape("%3Cscript src='" + gaJsHost + "google-analytics.com/ga.js' type='text/javascript'%3E%3C/script%3E"));
+</script>
+<script type="text/javascript">
+try {
+var pageTracker = _gat._getTracker("UA-53067-1");
+pageTracker._trackPageview();
+} catch(err) {}</script>
+
+<script>
+function googleTranslateElementInit() {
+  new google.translate.TranslateElement({
+    pageLanguage: 'ja',
+    gaTrack: true,
+    gaId: 'UA-53067',
+    floatPosition: google.translate.TranslateElement.FloatPosition.BOTTOM_RIGHT
+  });
+}
+</script><script src="//translate.google.com/translate_a/element.js?cb=googleTranslateElementInit"></script>
+
+</body>
+</html>

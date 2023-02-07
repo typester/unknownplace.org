@@ -1,0 +1,179 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="ja" xml:lang="ja">
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <title>ustreamの録画flvデータのURLを得るスクリプト - unknownplace.org</title>
+  <link rel="stylesheet" type="text/css" href="http://yui.yahooapis.com/3.0.0/build/cssreset/reset-min.css" />
+  <link rel="stylesheet" type="text/css" href="http://yui.yahooapis.com/3.0.0/build/cssfonts/fonts-min.css" />
+  <link rel="stylesheet" href="/css/style.css" type="text/css" />
+  <meta property="fb:admins" content="1093631929" />
+  <link rel="alternate" type="application/rss+xml" href="http://unknownplace.org/memo/index.rss" />
+</head>
+<body>
+
+<div id="container">
+<div id="header">
+    <h1><a href="/">unknownplace.org</a></h1> /
+<a href="/memo/">memo</a>
+</div>
+
+<div id="content">
+<div class="entry autopagerize_page_element">
+  <h2><a href="/memo/2007/10/03/1/">ustreamの録画flvデータのURLを得るスクリプト</a></h2>
+
+  <div class="body">
+    <blockquote><p><a href="http://clouder.jp/yoshiki/mt/archives/000996.html">Clouder::Blogger: ustreamの録画した動画のflvをダウンロードする方法</a></p><p>これは想像ですが、swf内でhttp://gw.ustream.tv/gateway.phpをPOSTしているのはわかっているので、そこで取得しているのか、もしくはJavaScriptでAjaxをつかってどこかから取得しているのか、といったところだと思いますが、いずれにしてももう少し解析が必要です。</p></blockquote>
+<p>とあるのをみて、gateway.php を調べてみました。</p>
+<p>これはFlashのAMFのRPCサーバーで、録画されたものを再生するときには <code>client.watch_video</code> という関数を呼んでいるようです。</p>
+<p>as3で書くと</p>
+<pre><code>package {
+    <span class="type">import</span> <span class="variable-name">flash</span>.display.*;
+    <span class="type">import</span> <span class="variable-name">flash</span>.net.*;
+
+    public class gw <span class="type">extends</span> <span class="variable-name">Sprite</span> {
+        public <span class="type">function</span> <span class="variable-name">gw</span>() {
+            stage.align = StageAlign.TOP_LEFT;
+            stage.scaleMode = StageScaleMode.NO_SCALE;
+
+            var cid:String = stage.loaderInfo.parameters[<span class="string">"cid"</span>];
+            <span class="keyword">if</span> (cid) {
+                var nc:NetConnection = new NetConnection();
+                nc.objectEncoding = ObjectEncoding.AMF0;
+                nc.connect(<span class="string">"http://gw.ustream.tv/gateway.php"</span>);
+                nc.call(<span class="string">"client.watch_video"</span>, <span class="type">new</span> <span class="variable-name">Responder</span>(gatewayHandler), { <span class="constant">cid</span>: cid });
+            }
+        }
+
+        private <span class="type">function</span> <span class="variable-name">gatewayHandler</span>(res:Object):<span class="type">void</span> {
+            <span class="keyword">for</span> (var i:String in res) {
+                log(i+<span class="string">": "</span>+res[i]);
+            }
+        }
+    }
+}
+</code></pre>
+<p>こんな感じになります。cid は再生URL <code>http://ustream.tv/recorded/RLdKCmCouWOpkkEznZH4QA</code> とかの <code>RLdKCmCouWOpkkEznZH4QA</code> 部分です。</p>
+<p>これをperlで呼ぶにはどうしたらいいか！ ということでがんばってみました。</p>
+<p>CPANにこのAPIのサーバー側の実装 (AMF::Perl) があったのでそれを適当に読んだり、実際API呼んでるときのパケットと見比べたりしつつして以下のようにすればできました。</p>
+<pre><code><span class="comment-delimiter">#</span><span class="comment">!/usr/bin/env perl
+</span>
+<span class="keyword">use</span> <span class="function-name">strict</span>;
+<span class="keyword">use</span> <span class="function-name">warnings</span>;
+
+<span class="keyword">use</span> <span class="function-name">AMF::Perl</span>;
+<span class="keyword">use</span> <span class="function-name">LWP::UserAgent</span>;
+
+<span class="keyword">my</span> <span class="variable-name">$cid</span> = <span class="cperl-nonoverridable">shift</span> || <span class="string">&apos;5Fq8cQp9eHsEEknbQ22OOZniqS2xUiuz&apos;</span>;
+
+<span class="keyword">my</span> <span class="variable-name">$amf</span> = AMF::Perl::Util::Object-&gt;new;
+$amf-&gt;addBody(<span class="string">&apos;client.watch_video&apos;</span>, <span class="string">&apos;/1&apos;</span>, { <span class="string">cid</span> =&gt; $cid });
+
+<span class="keyword">my</span> <span class="variable-name">$outputstream</span> = AMF::Perl::IO::OutputStream-&gt;new;
+<span class="keyword">my</span> <span class="variable-name">$serializer</span> = AMF::Perl::IO::Serializer-&gt;new($outputstream, <span class="string">&apos;utf-8&apos;</span>);
+$serializer-&gt;serialize($amf);
+
+<span class="keyword">my</span> <span class="variable-name">$amfdata</span> = $outputstream-&gt;flush;
+
+$amfdata =~ <span class="cperl-nonoverridable">s</span><span class="constant">/</span><span class="builtin">\</span><span class="type">xff</span><span class="builtin">\</span><span class="type">xff</span><span class="builtin">\</span><span class="type">xff</span><span class="builtin">\</span><span class="type">xff</span><span class="constant">/</span><span class="string">\0\0\0\x31\x0a\0\0\0\x01</span><span class="constant">/</span>;
+
+<span class="keyword">my</span> <span class="variable-name">$ua</span> = LWP::UserAgent-&gt;new;
+
+<span class="keyword">my</span> <span class="variable-name">$req</span> = HTTP::Request-&gt;new( <span class="string">POST</span> =&gt; <span class="string">&apos;http://gw.ustream.tv/gateway.php&apos;</span> );
+$req-&gt;content( $output );
+$req-&gt;content_type(<span class="string">&apos;application/x-amf&apos;</span>);
+$req-&gt;content_length( <span class="type">length</span> $amfdata );
+
+<span class="keyword">my</span> <span class="variable-name">$res</span> = $ua-&gt;request($req);
+
+<span class="keyword">my</span> <span class="variable-name">$deserializer</span> = AMF::Perl::IO::Deserializer-&gt;new(AMF::Perl::IO::InputStream-&gt;new($res-&gt;content), <span class="string">&apos;utf-8&apos;</span>);
+
+<span class="keyword">use</span> <span class="function-name">YAML</span>;
+<span class="cperl-nonoverridable">print</span> Dump $deserializer-&gt;getObject-&gt;getBodyAt(0)-&gt;{<span class="string">value</span>};
+</code></pre>
+<p>これで</p>
+<pre><code>---
+err_desc: ok
+server_id: 9
+success: 1
+user_id: 32983
+video_length: 366.207
+video_name: broadcast/35957/1191239239348
+video_type: broadcast
+</code></pre>
+<p>とかいう出力がでます。これから</p>
+<pre><code>http://flash{server_id}.ustream.tv:18881/{video_name}.flv
+</code></pre>
+<p>というflvのURLが作れます。</p>
+<p>perlソースの途中の謎の置換 <code>s/\xff\xff\xff\xff/\0\0\0\x31\x0a\0\0\0\x01/;</code> してて、これはなにかよくわかってません。ただ実際のパケットと見比べて違う部分置換してみたらいけたという代物です。</p>
+<p>あとこれで得られるflvデータの音声部分が謎のcodecで変換できない！ だれかこれをmp3とかにする方法ご存知のかたいましたらぜひともお知らせください！</p>
+
+  </div>
+
+  <div class="meta">
+    by typester /
+    at <a href="/memo/2007/10/03/1/">2007-10-03T19:18:00</a> /
+    <a href="/memo/tag/perl/">perl</a>
+    &middot; <a href="/memo/tag/ustream/">ustream</a>
+    / <a href="/memo/2007/10/03/1/#disqus_thread">Comments(0)</a>
+  </div>
+</div>
+
+<div id="disqus_thread"></div>
+
+<script type="text/javascript">
+    var disqus_url = location.protocol + "//" + location.host + "/memo/2007/10/03/1/";
+</script>
+<script type="text/javascript" src="http://disqus.com/forums/unknownplace/embed.js"></script>
+
+</div>
+
+<p id="footer">
+  Copyright &copy; 2005-2013
+      by <a class="author" href="/about/#me">Daisuke Murase (typester)</a> /
+  Site generated by <a href="https://github.com/typester/nim">nim</a> /
+  Comments powered by <a href="http://disqus.com">DISQUS</a>.
+</p>
+
+</div>
+
+
+<script type="text/javascript">
+//<![CDATA[
+(function() {
+	var links = document.getElementsByTagName('a');
+	var query = '?';
+	for(var i = 0; i < links.length; i++) {
+	if(links[i].href.indexOf('#disqus_thread') >= 0) {
+		query += 'url' + i + '=' + encodeURIComponent(links[i].href) + '&';
+	}
+	}
+	document.write('<script charset="utf-8" type="text/javascript" src="http://disqus.com/forums/unknownplace/get_num_replies.js' + query + '"></' + 'script>');
+})();
+//]]>
+</script>
+
+
+<script type="text/javascript">
+var gaJsHost = (("https:" == document.location.protocol) ? "https://ssl." : "http://www.");
+document.write(unescape("%3Cscript src='" + gaJsHost + "google-analytics.com/ga.js' type='text/javascript'%3E%3C/script%3E"));
+</script>
+<script type="text/javascript">
+try {
+var pageTracker = _gat._getTracker("UA-53067-1");
+pageTracker._trackPageview();
+} catch(err) {}</script>
+
+<script>
+function googleTranslateElementInit() {
+  new google.translate.TranslateElement({
+    pageLanguage: 'ja',
+    gaTrack: true,
+    gaId: 'UA-53067',
+    floatPosition: google.translate.TranslateElement.FloatPosition.BOTTOM_RIGHT
+  });
+}
+</script><script src="//translate.google.com/translate_a/element.js?cb=googleTranslateElementInit"></script>
+
+</body>
+</html>

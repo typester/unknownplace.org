@@ -1,0 +1,153 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="ja" xml:lang="ja">
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <title>2011/12/01 - memo - unknownplace.org</title>
+  <link rel="stylesheet" type="text/css" href="http://yui.yahooapis.com/3.0.0/build/cssreset/reset-min.css" />
+  <link rel="stylesheet" type="text/css" href="http://yui.yahooapis.com/3.0.0/build/cssfonts/fonts-min.css" />
+  <link rel="stylesheet" href="/css/style.css" type="text/css" />
+  <meta property="fb:admins" content="1093631929" />
+  <meta name="robots" content="noindex" />
+  <link rel="alternate" type="application/rss+xml" href="http://unknownplace.org/memo/index.rss" />
+</head>
+<body>
+
+<div id="container">
+<div id="header">
+    <h1><a href="/">unknownplace.org</a></h1> /
+<a href="/memo/">memo</a>
+</div>
+
+<div id="content">
+
+<div class="entry autopagerize_page_element">
+  <h2 id="e001"><a href="/memo/2011/12/01/1/">libuv の Perl バインディング</a></h2>
+
+  <div class="body">
+    <p>気分転換プロジェクトとして、<a href="https://github.com/joyent/libuv">libuv</a>のPerlバインディングを書いている。</p>
+<blockquote><p><a href="https://github.com/typester/p5-UV">typester/p5-UV - GitHub</a></p></blockquote>
+<p>現状、timerとtcp周りを一通り実装したところ。</p>
+<p>実装は愚直にlibuvの関数とperlの関数を1:1に（<code>uv_tcp_init(...)</code>を<code>UV::tcp_init(...)</code>というような形で）マッピングしている。 この実装はlow level APIと位置づけ、その上に使いやすい高レベルなインタフェースをPerl上で用意したいつもり。</p>
+<p>このlow level APIをつかったTCP echo serverはこんな感じになる:</p>
+<pre><code><span class="keyword">use</span> <span class="function-name">strict</span>;
+<span class="keyword">use</span> <span class="function-name">warnings</span>;
+
+<span class="keyword">use</span> <span class="function-name">UV</span>;
+
+<span class="keyword">my</span> <span class="variable-name">$server</span> = UV::tcp_init();
+UV::tcp_bind($server, <span class="string">&apos;0.0.0.0&apos;</span>, 3000)
+    &amp;&amp; <span class="keyword">die</span> <span class="string">&apos;bind error: &apos;</span>, UV::strerror(UV::last_error());
+
+UV::<span class="type">listen</span>($server, 10, <span class="keyword">sub</span> {
+    <span class="keyword">my</span> <span class="variable-name">$client</span> = UV::tcp_init();
+    UV::<span class="type">accept</span>($server, $client) &amp;&amp; <span class="keyword">die</span> <span class="string">&apos;accept failed: &apos;</span>, UV::strerror(UV::last_error());
+
+    UV::read_start($client, <span class="keyword">sub</span> {
+        <span class="keyword">my</span> (<span class="variable-name">$nread</span>, <span class="variable-name">$buf</span>) = <span class="cperl-array">@_</span>;
+
+        <span class="keyword">if</span> ($nread &lt; 0) {
+            <span class="keyword">my</span> <span class="variable-name">$err</span> = UV::last_error();
+            <span class="keyword">if</span> ($err <span class="negation-char">!</span>= UV::EOF) {
+                <span class="type">warn</span> <span class="string">&apos;client read error: &apos;</span>, UV::strerror($err);
+            }
+            UV::<span class="type">close</span>($client);
+        }
+        <span class="keyword">elsif</span> ($nread == 0) {
+            <span class="comment-delimiter"># </span><span class="comment">nothing to read
+</span>        }
+        <span class="keyword">else</span> {
+            UV::<span class="type">write</span>($client, $buf, <span class="keyword">sub</span> {
+                <span class="keyword">my</span> (<span class="variable-name">$status</span>) = <span class="cperl-array">@_</span>;
+
+                <span class="keyword">if</span> ($status) {
+                    <span class="type">warn</span> <span class="string">&apos;client write error: &apos;</span>, UV::strerror(UV::last_error());
+                    UV::<span class="type">close</span>($client);
+                }
+            });
+        }
+    });
+
+}) &amp;&amp; <span class="keyword">die</span> <span class="string">&apos;listen error: &apos;</span>, UV::strerror(UV::last_error());
+
+UV::run();
+</code></pre>
+<p>見てわかるようにperlモジュールとしての使いかってはわるいが、libuvを使い慣れた人なら迷いなく使うことが出来るようになっている。 これは僕にとっては発見だった。</p>
+<p>また、このサンプルをみてもわかるように<code>listen</code>とか<code>accept</code>とかまでラップしている関係上、libuvをAnyEventのバックエンドとしてつかうのは現状は無理そう。</p>
+<p>libuv自体はWindowsでも動くはずだが、メインマシンをAirにして以来Windows環境を仮想環境でも持ち歩いていないため確認できていない。 Windows対応してくれる人募集！</p>
+<p>開発を始めるためのステップ：</p>
+<pre><code>$ cpanm Module::Install
+$ cpanm Module::Install::XSUtil
+
+$ git clone git://github.com/typester/p5-UV.git
+$ cd p5-UV
+$ git submodule update --init
+$ perl Makefile.PL
+$ make
+$ make test
+</code></pre>
+
+  </div>
+
+  <div class="meta">
+    by typester /
+    at <a href="/memo/2011/12/01/1/">2011-12-01T11:38:00</a> /
+    <a href="/memo/tag/perl/">perl</a>
+    &middot; <a href="/memo/tag/libuv/">libuv</a>
+    / <a href="/memo/2011/12/01/1/#disqus_thread">Comment</a>
+  </div>
+</div>
+
+
+
+</div>
+
+<p id="footer">
+  Copyright &copy; 2005-2013
+      by <a class="author" href="/about/#me">Daisuke Murase (typester)</a> /
+  Site generated by <a href="https://github.com/typester/nim">nim</a> /
+  Comments powered by <a href="http://disqus.com">DISQUS</a>.
+</p>
+
+</div>
+
+
+<script type="text/javascript">
+//<![CDATA[
+(function() {
+	var links = document.getElementsByTagName('a');
+	var query = '?';
+	for(var i = 0; i < links.length; i++) {
+	if(links[i].href.indexOf('#disqus_thread') >= 0) {
+		query += 'url' + i + '=' + encodeURIComponent(links[i].href) + '&';
+	}
+	}
+	document.write('<script charset="utf-8" type="text/javascript" src="http://disqus.com/forums/unknownplace/get_num_replies.js' + query + '"></' + 'script>');
+})();
+//]]>
+</script>
+
+
+<script type="text/javascript">
+var gaJsHost = (("https:" == document.location.protocol) ? "https://ssl." : "http://www.");
+document.write(unescape("%3Cscript src='" + gaJsHost + "google-analytics.com/ga.js' type='text/javascript'%3E%3C/script%3E"));
+</script>
+<script type="text/javascript">
+try {
+var pageTracker = _gat._getTracker("UA-53067-1");
+pageTracker._trackPageview();
+} catch(err) {}</script>
+
+<script>
+function googleTranslateElementInit() {
+  new google.translate.TranslateElement({
+    pageLanguage: 'ja',
+    gaTrack: true,
+    gaId: 'UA-53067',
+    floatPosition: google.translate.TranslateElement.FloatPosition.BOTTOM_RIGHT
+  });
+}
+</script><script src="//translate.google.com/translate_a/element.js?cb=googleTranslateElementInit"></script>
+
+</body>
+</html>

@@ -1,0 +1,360 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="ja" xml:lang="ja">
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <title>memo - unknownplace.org</title>
+  <link rel="stylesheet" type="text/css" href="http://yui.yahooapis.com/3.0.0/build/cssreset/reset-min.css" />
+  <link rel="stylesheet" type="text/css" href="http://yui.yahooapis.com/3.0.0/build/cssfonts/fonts-min.css" />
+  <link rel="stylesheet" href="/css/style.css" type="text/css" />
+  <meta property="fb:admins" content="1093631929" />
+  <meta name="robots" content="noindex" />
+  <link rel="alternate" type="application/rss+xml" href="http://unknownplace.org/memo/index.rss" />
+</head>
+<body>
+
+<div id="container">
+<div id="header">
+    <h1><a href="/">unknownplace.org</a></h1> /
+<a href="/memo/">memo</a>
+</div>
+
+<div id="content">
+
+<div class="entry autopagerize_page_element">
+  <h2><a href="/memo/2013/03/08/2/">clmemoを複数ファイルでやる</a></h2>
+
+  <div class="body">
+    <p>SKK導入してて思ったのは、新しい情報がまったくない、ということだ。</p>
+<p>まぁ2013年にもなってSKK導入しようなんて変なやつはいないってのもあるだろうけど、こういうの最近はみんなtwitterとかに流しておわっちゃうっていうパターンが多いからだと思う。 なのでやっぱりこのようにいろいろ作業したことを残すことは重要だなーと思いなおして、先日からやたらエントリが多いわけですw</p>
+<p>それでまぁもっと細目にclmemoつけていくかなーと思ったわけだけど、いま使ってる <code>clmemo.el</code> は、1つのメモファイルしかサポートしていない。 個人的に使うだけだったらそれで十分なんだけど、僕みたいにclmemoをこうして公開してしまっている場合、プライベートなメモもつけられると良い。</p>
+<p>ので、</p>
+<pre><code>(<span class="keyword">defun</span> <span class="function-name">clmemo-with-file</span> (memofile)
+  (interactive <span class="string">&quot;Fclmemo file: &quot;</span>)
+  (<span class="keyword">let</span> ((clmemo-file-name memofile))
+    (call-interactively &apos;clmemo)))
+</code></pre>
+<p>というような関数を書いた。これを <code>clmemo</code> の代わりに呼びだせば、<code>memofile</code> で指定したファイルが代わりに使われるのでウマー、というわけだ。</p>
+<p>まぁ、いまのところあんまりプライベートなメモってないんだけど、evernoteでやってたタスク管理なども、最近あまりevernoteが信用ならなくなってきたこともあり、Emacsでやろうかなと思ったので、ちょっとそういう感じでプライベートclmemoも運用してみようと思う。</p>
+
+  </div>
+
+  <div class="meta">
+    by typester /
+    at <a href="/memo/2013/03/08/2/">2013-03-08T10:07:00</a> /
+    <a href="/memo/tag/emacs/">emacs</a>
+    &middot; <a href="/memo/tag/clmemo/">clmemo</a>
+    / <a href="/memo/2013/03/08/2/#disqus_thread">Comment</a>
+  </div>
+</div>
+
+<div class="entry autopagerize_page_element">
+  <h2><a href="/memo/2013/03/08/1/">ddskkでも確定キーの挙動をAquaSKKライクに</a></h2>
+
+  <div class="body">
+    <p>カナモードからq押さないとひらがなモードに戻れないのは不便なので、AquaSKKと同じように <code>C-j</code> (僕は <code>C-o</code>) で カナ→かな になるようにしたい。</p>
+<p>調べてみると、 <code>skk-rom-kana-rule-list</code> というのに、かな・カナモード用のキーマップがあるので、それに対して自分で修正したバージョンのfuncを <code>skk-kakutei-key</code> に登録してあげれば良いみたいな雰囲気。</p>
+<p>そこで、</p>
+<pre><code>(<span class="keyword">defun</span> <span class="function-name">my:skk-kakutei-key</span> (arg)
+  (interactive <span class="string">&quot;P&quot;</span>)
+  (<span class="keyword">if</span> skk-henkan-mode
+      (skk-kakutei arg)
+    (skk-j-mode-on)))
+</code></pre>
+<p>というような、変換中だったら普通に確定キーとして動くけど、それ以外だったらかなに戻す、という動作をするカスタム関数を定義して、それを、</p>
+<pre><code>(add-to-list &apos;skk-rom-kana-rule-list
+     &apos;(skk-kakutei-key nil my:skk-kakutei-key))
+</code></pre>
+<p>してあげればOK。 <code>skk-rom-kana-rule-list</code> というのは <code>(require &apos;skk-setup)</code> しただけだとまだないので、 <code>(require &apos;skk-vars)</code> も必要だった。</p>
+<p>最終的な設定はこちら：</p>
+<blockquote><p><a href="https://github.com/typester/emacs-config/blob/master/conf/init/init-ddskk.el">https://github.com/typester/emacs-config/blob/master/conf/init/init-ddskk.el</a></p></blockquote>
+<p>はー、しかしこれで、AquaSKK/uim-skk/ddskk 全部で同じ感じで入力できる環境がようやくできた。 <a href="http://podcast.bulknews.net/post/44649386760/podcast-ep4-2013-03-06">miyagawaさんのpodcast</a>で、yak率という言葉がでてきたけど、SKK導入のyak率は相当なものだなぁ。</p>
+
+  </div>
+
+  <div class="meta">
+    by typester /
+    at <a href="/memo/2013/03/08/1/">2013-03-08T09:42:00</a> /
+    <a href="/memo/tag/skk/">skk</a>
+    &middot; <a href="/memo/tag/emacs/">emacs</a>
+    / <a href="/memo/2013/03/08/1/#disqus_thread">Comment</a>
+  </div>
+</div>
+
+<div class="entry autopagerize_page_element">
+  <h2><a href="/memo/2013/03/07/2/">ddskkをやっぱり使う</a></h2>
+
+  <div class="body">
+    <p>AquaSKKがEmacs上でも使えるから、ddskkとか使わないなぁと書きましたが、まちがいだった。</p>
+<p><code>C-c C-o</code> のような、キーでも、<code>C-o</code> をAquaSKKにとられてしまうのでだいぶつらい。 なので一度けしたddskkを再度インストール。</p>
+<p>設定はとりあえずこんなかんじで：</p>
+<pre><code>;; key
+(define-key global-map (kbd <span class="string">"C-x C-o"</span>) <span class="warning">'</span><span class="string">skk-mode)
+(setq skk-kakutei-key (kbd "C-o"))
+(setq mac-pass-control-to-system nil)
+
+;; skkserv
+(setq skk-server-host "127.0.0.1")
+(setq skk-server-portnum 1178)
+
+;; user dic
+(setq skk-jisyo-code '</span>utf-8)
+(<span class="type">setq</span> <span class="variable-name">skk</span>-jisyo (concat (getenv <span class="string">"HOME"</span>) <span class="string">"/Dropbox/skk/skk-jisyo.utf8"</span>))
+</code></pre>
+<p>共有辞書はskkserv経由でAquaSKKをつかう。 ユーザー辞書も文字コードをutf-8にすればAquaSKKと同じものが使える？っぽいのでAquaSKKと同じファイルを指定。 キーも他の環境に併せて <code>C-o</code> に。</p>
+<p>こっちは、uim-skkとちがってユーザー辞書もAquaSKKと同じものが使えるから、学習結果も無駄にならなくて良い感じである。</p>
+<p>唯一、カナモードのときに <code>C-o</code> を押してもひらがなモードに戻らないのが不便。 これはelispフックするかなんかすれば簡単に変更できそうだからそのうち知らべよう。</p>
+
+  </div>
+
+  <div class="meta">
+    by typester /
+    at <a href="/memo/2013/03/07/2/">2013-03-07T18:30:00</a> /
+    <a href="/memo/tag/skk/">skk</a>
+    &middot; <a href="/memo/tag/emacs/">emacs</a>
+    / <a href="/memo/2013/03/07/2/#disqus_thread">Comment</a>
+  </div>
+</div>
+
+<div class="entry autopagerize_page_element">
+  <h2><a href="/memo/2013/03/07/1/">SandS</a></h2>
+
+  <div class="body">
+    <p>SKK導入してShiftキー酷使してつらいなー、と言っていたら、<a href="http://blog.kentarok.org/">antipop</a>さんに、SandSをおすすめされたので、試してみている。</p>
+<p>MacでSandSするのはKeyRemap4MacBookを使うと簡単だ。</p>
+<blockquote><p><a href="http://pqrs.org/macosx/doc/keyboard/">Mac OS X で SandS (Space and Shift) を使う</a></p></blockquote>
+<p>しかしどうしても手が勝手に小指でshiftキーを押してしまうので、一時的に両サイドのshiftキーは無効になるようにした。</p>
+<p>このSandS、SKKでの日本語入力はまぁすぐに慣れるとおもうが、いままで手に染み込んだショートカットキーはだいぶ苦戦しそうだ。</p>
+<p>例えばEmacsでのundoは、<code>C-_</code> だが、押すキーは <code>C-S--</code> である。 これはなかなか、キーを手で覚えているから、これをスペースにおきかえるということがすぐに思いだせなくて非常に難しい。 こういうのはまぁ無理に矯正しないでもいい気もするが、どうしようかなぁ。</p>
+<p>あとEmacsを使っていると致命的につらいのが <code>M-&lt;</code> である。 MacでSandSで、っていう環境でこの場合押すキーは、<code>Cmd-Space-,</code> だ。おしにくい!</p>
+<p>これはIRCでぼやいていたら、<a href="http://handlena.me/">handlename</a>さんが、「<a href="http://d.hatena.ne.jp/rubikitch/20090219/sequential_command">sequential_command</a>つかってるからM-&lt;とか押さないですよ〜(ﾄﾞﾔｧ」みたいな雰囲気のことを言っていた。 たしかにこれは便利そうなので使ってみよう1</p>
+
+  </div>
+
+  <div class="meta">
+    by typester /
+    at <a href="/memo/2013/03/07/1/">2013-03-07T10:59:00</a> /
+    <a href="/memo/tag/skk/">skk</a>
+    &middot; <a href="/memo/tag/emacs/">emacs</a>
+    / <a href="/memo/2013/03/07/1/#disqus_thread">Comment</a>
+  </div>
+</div>
+
+<div class="entry autopagerize_page_element">
+  <h2><a href="/memo/2013/01/21/1/">Emacsの設定を見直し、 el-get の distributed セットアップに統一</a></h2>
+
+  <div class="body">
+    <p>いままで<a href="https://github.com/typester/emacs-config-old">秘伝のタレのような設定</a>を使い続けていたのだが、どうもしばらく使っているとEmacsがCPUを非常に食うようになってくる。 flymakeの設定かなー？とかほかにもいろいろ怪しげなところを削ってみたりしたがわからず、だましだまし使っていた。</p>
+<p>そういう理由もあってEmacs設定をリセットしたいと思っていたので、<a href="http://amzn.to/10wxFU8">Emacs実践入門</a>や Advent Calendar を読んでいたら <a href="https://github.com/dimitri/el-get">el-get</a> というパッケージマネージャがなかなかよさそうだと思った。</p>
+<p>これ、存在自体はまえから知っていたけど秘伝のタレベースな自分は使わないだろうなーとスルーしていた物だが、 ドキュメント(info)を読んでみると思った以上によさげだと言うことが分かった。 Mac 使ってる人にわかりやすくいうなら Emacs 用の homebrew という感じ。</p>
+<p>なかでも <code>6.3 Distributed Setup</code> で紹介されてる方法を使うと、他の環境に設定を持って行ったときも初回起動時にパッケージをよしなにインストールしてくれて自動的に同じ環境にしてくれる。これはなかなか便利。</p>
+<p>というわけで作り直した設定がこちら、まだ perl と clmemo 周りの最小限の設定しかないけれども。</p>
+<blockquote><p><a href="https://github.com/typester/emacs-config">https://github.com/typester/emacs-config</a></p></blockquote>
+<p><code>~/.emacs.d/</code> 以下に置かなくても動くようにつくってあるので、</p>
+<pre><code>$ git clone git://github.com/typester/emacs-config.git
+
+# no-window の場合
+$ emacs -q -l emacs-config/init.el
+
+# Cocoa の場合
+$ /Applications/Emacs.app/Contents/MacOS/Emacs -q -l emacs-config/init.el
+</code></pre>
+<p>とするともりもりパッケージのセットアップが始まって（時間はかかるけど）僕と同じ設定で Emacs を試せる状態になるはず。</p>
+<p>Emacs24 前提と、 el-get のために git コマンドが <code>exec-path</code> に必要。</p>
+<p>このように非常にカジュアルに人の設定を試せるのはかなり革命的。 （もちろん複数の環境で設定を同期するのにも革命的）</p>
+<p>なのでみんながこれ前提でセットアップしてくれたら最高だなーと思いますのでこれを読んでる Emacs ユーザーの方々におかれましては el-get ベースな設定を一考していただければ幸いでございます。</p>
+
+  </div>
+
+  <div class="meta">
+    by typester /
+    at <a href="/memo/2013/01/21/1/">2013-01-21T13:08:00</a> /
+    <a href="/memo/tag/emacs/">emacs</a>
+    / <a href="/memo/2013/01/21/1/#disqus_thread">Comment</a>
+  </div>
+</div>
+
+<div class="entry autopagerize_page_element">
+  <h2><a href="/memo/2012/04/25/1/">flymakeのタイムアウト設定</a></h2>
+
+  <div class="body">
+    <p>flymakeで読んでいるシンタックスチェックコマンドが無限ループに陥って困り、<a href="https://twitter.com/fujiwara">@fujiwara</a>に相談したところ。daemontoolsについてくる<a href="http://cr.yp.to/daemontools/softlimit.html">softlimit</a>コマンドでタイムアウトするようにするといいと教えてもらった fujiwara++</p>
+<pre><code>$ softlimit -t 1 perl -e &apos;while(1){}&apos;
+zsh: cpu limit exceeded  softlimit -t 1 perl -e &apos;while(1){}&apos;
+</code></pre>
+<p>便利ですね。とりあえずperlのflymake設定を</p>
+<pre><code>(<span class="keyword">defun</span> <span class="function-name">flymake-perl-init</span> ()
+  (<span class="keyword">let*</span> ((temp-file (flymake-init-create-temp-buffer-copy
+                     &apos;flymake-create-temp-inplace))
+         (local-file (file-relative-name
+                      temp-file
+                      (file-name-directory buffer-file-name))))
+    (list <span class="string">&quot;softlimit&quot;</span> (list <span class="string">&quot;-t&quot;</span> <span class="string">&quot;3&quot;</span> <span class="string">&quot;perl&quot;</span> <span class="string">&quot;-wc&quot;</span> local-file))))
+</code></pre>
+<p>みたいにしておいた。まぁ <code>perl -wc</code> で無限ループとか滅多にないと思いますが。</p>
+
+  </div>
+
+  <div class="meta">
+    by typester /
+    at <a href="/memo/2012/04/25/1/">2012-04-25T13:10:00</a> /
+    <a href="/memo/tag/emacs/">emacs</a>
+    / <a href="/memo/2012/04/25/1/#disqus_thread">Comment</a>
+  </div>
+</div>
+
+<div class="entry autopagerize_page_element">
+  <h2><a href="/memo/2012/03/03/1/">Emacsデビューはこの本で決まり！ - Emacs実践入門</a></h2>
+
+  <div class="body">
+    <p>Emacs界の松岡修造こと<a href="http://d.hatena.ne.jp/tomoya/">tomoya</a>さんが素敵なEmacs本を書かれたので紹介。</p>
+<blockquote><p><a href="http://amzn.to/xOOF6y">Emacs実践入門　～思考を直感的にコード化し、開発を加速する (WEB+DB PRESS plus)</a></p><p><a href="http://amzn.to/xOOF6y"><img border="0" src="http://ws.assoc-amazon.jp/widgets/q?_encoding=UTF8&amp;Format=_SL160_&amp;ASIN=4774150029&amp;MarketPlace=JP&amp;ID=AsinImage&amp;WS=1&amp;tag=unknownplace-22&amp;ServiceVersion=20070822" /></a><img alt="" border="0" height="1" src="http://www.assoc-amazon.jp/e/ir?t=unknownplace-22&amp;l=as2&amp;o=9&amp;a=4774150029" style="border:none !important; margin:0px !important;" width="1" /></p></blockquote>
+<p>Emacsとはなにか？ から始まり、インストール、基本的な使い方、カスタマイズ方法といったことが体系的にまとめられたとても良い本。</p>
+<p>すでにEmacsユーザーの方は一通り読むことで自分の中で足りない知識を補完することができるし、体系的にまとめられたものを読むことでEmacs脳がかなり整理されるのでぜひ一読することをおすすめする。</p>
+<p>そしてEmacsユーザーではないけれど興味があるという人にこそ、この本を薦めたい。そういう人に対してこの本は最適な入門書になっていると思う。 一通り読み終わったあとは自分のマイEmacsを育てる土台ができていることでしょう。</p>
+<p>Emacsデビューはこの本で！</p>
+
+  </div>
+
+  <div class="meta">
+    by typester /
+    at <a href="/memo/2012/03/03/1/">2012-03-03T11:10:00</a> /
+    <a href="/memo/tag/emacs/">emacs</a>
+    / <a href="/memo/2012/03/03/1/#disqus_thread">Comment</a>
+  </div>
+</div>
+
+<div class="entry autopagerize_page_element">
+  <h2><a href="/memo/2011/08/06/1/">Emacs を Lion のフルスクリーン表示に対応させてみた</a></h2>
+
+  <div class="body">
+    <p>git の emacs-23 ブランチに対するパッチ：</p>
+<blockquote><p><a href="https://github.com/downloads/typester/emacs/emacs-23-lion-fullscreen-test.patch">emacs-23-lion-fullscreen-test.patch</a></p></blockquote>
+<p>作ってみたものの、今までのフルスクリーンのほうがデスクトップの背景が Emacs な感じで便利。 っていうわけでお蔵入りかなぁ。</p>
+
+  </div>
+
+  <div class="meta">
+    by typester /
+    at <a href="/memo/2011/08/06/1/">2011-08-06T17:29:00</a> /
+    <a href="/memo/tag/emacs/">emacs</a>
+    &middot; <a href="/memo/tag/osx/">osx</a>
+    / <a href="/memo/2011/08/06/1/#disqus_thread">Comment</a>
+  </div>
+</div>
+
+<div class="entry autopagerize_page_element">
+  <h2><a href="/memo/2009/12/24/2/">CocoaEmacs おかしいところ</a></h2>
+
+  <div class="body">
+    <p>anything-config.el も無事なおり、Shiftのバグなおして日本語入力も快適になり、あとはまぁだいたいいい感じに使えるようになった(現状では) CocoaEmacs だけど一点だけおかしいところがある。</p>
+<p>僕は結構 Emacs の customize 機能をヘビーユーズしてて（コーディングしてて気に入らない色設定とか出てきたらその場ですぐ customize-face する）これで色設定はほぼ調整してるのだけど、customize するのをすべての Emacs で同じものを使うのは微妙なので、</p>
+<pre><code>(setq custom-file <span class="string">&quot;~/.emacs.d/conf/cocoa-emacs-99customize.el&quot;</span>)
+</code></pre>
+<p>のようにして、 customize の保存先を Emacs 毎に変えている。</p>
+<p>のだけどこれが、<code>init-loader</code> のフェーズで <code>(load custom-file)</code> しても設定が適用されないという現象に悩まされている。</p>
+<p>立ち上がったあとに手動で <code>(load custom-file)</code> するとロードされる。。なぞ。</p>
+<p>しょうがないので、</p>
+<pre><code>(<span class="keyword">defun</span> <span class="function-name">reload-custom-file</span> ()
+  (interactive)
+  (load custom-file))
+</code></pre>
+<p>こんなの作っておいて起動後手動で実行している。不毛だけどまぁ Emacs たちあげっぱだからいいかなぁ。。</p>
+
+  </div>
+
+  <div class="meta">
+    by typester /
+    at <a href="/memo/2009/12/24/2/">2009-12-24T17:58:00</a> /
+    <a href="/memo/tag/emacs/">emacs</a>
+    / <a href="/memo/2009/12/24/2/#disqus_thread">Comment</a>
+  </div>
+</div>
+
+<div class="entry autopagerize_page_element">
+  <h2><a href="/memo/2009/12/24/1/">elispエラーった時の追い方</a></h2>
+
+  <div class="body">
+    <p>(setq debug-on-error t)</p>
+<p>しておいて、<code>eval-bufer</code>。StackTrace 出るのでそれを見る。</p>
+<p>Emacs 23 にしたら anything-config.el が <code>Invalid depth in char-table</code> とかいって死ぬようになったけど原因わからなくてこまってたけどこれやったら <code>~/.emacs.d/anything-c-adaptive-history</code> のロードに失敗してるのがわかった。消したらなおりました。imakado++</p>
+
+  </div>
+
+  <div class="meta">
+    by typester /
+    at <a href="/memo/2009/12/24/1/">2009-12-24T17:48:00</a> /
+    <a href="/memo/tag/emacs/">emacs</a>
+    / <a href="/memo/2009/12/24/1/#disqus_thread">Comment</a>
+  </div>
+</div>
+
+
+
+
+<div id="pager" class="autopagerize_insert_before">
+  <p class="pages">
+    <span class="prev">&laquo; Prev</span>
+    <span class="current">1</span>
+    <a href="/memo/tag/emacs/page/2/">2</a>
+    <a href="/memo/tag/emacs/page/3/">3</a>
+    <a href="/memo/tag/emacs/page/4/">4</a>
+    <a href="/memo/tag/emacs/page/5/">5</a>
+    <a href="/memo/tag/emacs/page/6/">6</a>
+    <a class="next" rel="next" href="/memo/tag/emacs/page/2/">Next &raquo;</a>
+  </p>
+  <p class="info">(Page 1 of 6)</p>
+</div>
+
+
+</div>
+
+<p id="footer">
+  Copyright &copy; 2005-2013
+      by <a class="author" href="/about/#me">Daisuke Murase (typester)</a> /
+  Site generated by <a href="https://github.com/typester/nim">nim</a> /
+  Comments powered by <a href="http://disqus.com">DISQUS</a>.
+</p>
+
+</div>
+
+
+<script type="text/javascript">
+//<![CDATA[
+(function() {
+	var links = document.getElementsByTagName('a');
+	var query = '?';
+	for(var i = 0; i < links.length; i++) {
+	if(links[i].href.indexOf('#disqus_thread') >= 0) {
+		query += 'url' + i + '=' + encodeURIComponent(links[i].href) + '&';
+	}
+	}
+	document.write('<script charset="utf-8" type="text/javascript" src="http://disqus.com/forums/unknownplace/get_num_replies.js' + query + '"></' + 'script>');
+})();
+//]]>
+</script>
+
+
+<script type="text/javascript">
+var gaJsHost = (("https:" == document.location.protocol) ? "https://ssl." : "http://www.");
+document.write(unescape("%3Cscript src='" + gaJsHost + "google-analytics.com/ga.js' type='text/javascript'%3E%3C/script%3E"));
+</script>
+<script type="text/javascript">
+try {
+var pageTracker = _gat._getTracker("UA-53067-1");
+pageTracker._trackPageview();
+} catch(err) {}</script>
+
+<script>
+function googleTranslateElementInit() {
+  new google.translate.TranslateElement({
+    pageLanguage: 'ja',
+    gaTrack: true,
+    gaId: 'UA-53067',
+    floatPosition: google.translate.TranslateElement.FloatPosition.BOTTOM_RIGHT
+  });
+}
+</script><script src="//translate.google.com/translate_a/element.js?cb=googleTranslateElementInit"></script>
+
+</body>
+</html>

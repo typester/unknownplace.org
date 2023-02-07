@@ -1,0 +1,307 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="ja" xml:lang="ja">
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <title>memo - unknownplace.org</title>
+  <link rel="stylesheet" type="text/css" href="http://yui.yahooapis.com/3.0.0/build/cssreset/reset-min.css" />
+  <link rel="stylesheet" type="text/css" href="http://yui.yahooapis.com/3.0.0/build/cssfonts/fonts-min.css" />
+  <link rel="stylesheet" href="/css/style.css" type="text/css" />
+  <meta property="fb:admins" content="1093631929" />
+  <meta name="robots" content="noindex" />
+  <link rel="alternate" type="application/rss+xml" href="http://unknownplace.org/memo/index.rss" />
+</head>
+<body>
+
+<div id="container">
+<div id="header">
+    <h1><a href="/">unknownplace.org</a></h1> /
+<a href="/memo/">memo</a>
+</div>
+
+<div id="content">
+
+<div class="entry autopagerize_page_element">
+  <h2><a href="/memo/2005/12/11/3/">emacsclient で emacs のウィンドウをアクティブに</a></h2>
+
+  <div class="body">
+    <p>↓の zshrc の case で処理わけているところに</p>
+<pre><code>emacsclient)
+    screen -X eval <span class="string">"select 1"</span>
+    <span class="keyword">return</span>
+    ;;
+</code></pre>
+<p>とか追加してみる。僕は emacs は常に window 1 で開くので、select 1 でおｋ。</p>
+<p>んでこのあと <code>C-x #</code> したら元のウィンドウにもどってくれたらかっけーんだけど、elisp で <code>screen -X other</code> とかよべばいいかなとか思ったけど、emacs 画面いってからファイル閉じる間にウィンドウ切り替えしたらうまく動かんし。どーやるんだろう。</p>
+<p><code>alias ec=&apos;emacsclient -n&apos;</code> とかしててほとんどこっちしか使わないので戻んなくてもいいのだけど、svn(k) コミット時とかで便利そうだなぁ。</p>
+
+  </div>
+
+  <div class="meta">
+    by typester /
+    at <a href="/memo/2005/12/11/3/">2005-12-11T14:31:00</a> /
+    <a href="/memo/tag/emacs/">emacs</a>
+    &middot; <a href="/memo/tag/screen/">screen</a>
+    / <a href="/memo/2005/12/11/3/#disqus_thread">Comment</a>
+  </div>
+</div>
+
+<div class="entry autopagerize_page_element">
+  <h2><a href="/memo/2005/12/11/2/">zshで埋まって悲しいとき</a></h2>
+
+  <div class="body">
+    <p><a href="http://www.nijino.com/ari/diary/?20020614&amp;to=200206141S1#200206141S1">ステータスライン - ari&apos;s Diary</a> で紹介されているのをつかうと screen の window 名を自動的に最後に実行したコマンドに置き換えてくれる。すっばらしい。昨日ごろさんに教えてもらった。</p>
+
+  </div>
+
+  <div class="meta">
+    by typester /
+    at <a href="/memo/2005/12/11/2/">2005-12-11T14:27:00</a> /
+    <a href="/memo/tag/screen/">screen</a>
+    / <a href="/memo/2005/12/11/2/#disqus_thread">Comment</a>
+  </div>
+</div>
+
+<div class="entry autopagerize_page_element">
+  <h2><a href="/memo/2005/12/11/1/">perltidy-region</a></h2>
+
+  <div class="body">
+    <p><code>indent-region</code> じゃ vim の整形にかてなそうだったので、perltidy-region を導入した。</p>
+<pre><code>(<span class="keyword">defun</span> <span class="function-name">perltidy-region</span> ()
+  <span class="doc">&quot;Run perltidy on the current region.&quot;</span>
+  (interactive)
+  (<span class="keyword">save-excursion</span>
+    (shell-command-on-region (point) (mark) <span class="string">&quot;perltidy -q&quot;</span> nil t)))
+</code></pre>
+<p>これを <code>\C-ct</code> とかに割り振っておいた。ちょーーー便利なんだけど！</p>
+<p>perltidy の<del>パラメータ</del><ins>設定</ins>は Best Practices 参照。</p>
+
+  </div>
+
+  <div class="meta">
+    by typester /
+    at <a href="/memo/2005/12/11/1/">2005-12-11T00:45:00</a> /
+    <a href="/memo/tag/emacs/">emacs</a>
+    / <a href="/memo/2005/12/11/1/#disqus_thread">Comment</a>
+  </div>
+</div>
+
+<div class="entry autopagerize_page_element">
+  <h2><a href="/memo/2005/12/10/7/"></a></h2>
+
+  <div class="body">
+    <p>某大食いの人と幹事の人が弊社を訪れる。</p>
+<ul><li>gorou&apos;s vim すげぇ（オレ emacs レベルじゃほとんど対抗できなかった</li><li>鎌倉すげぇ（大仏初めて見た</li><li>鎌倉には武器屋があった</li><li>テスト駆動開発入門</li><li>五臓六腑</li></ul>
+
+  </div>
+
+  <div class="meta">
+    by typester /
+    at <a href="/memo/2005/12/10/7/">2005-12-10T22:05:00</a> /
+    <a href="/memo/tag/life/">life</a>
+    / <a href="/memo/2005/12/10/7/#disqus_thread">Comment</a>
+  </div>
+</div>
+
+<div class="entry autopagerize_page_element">
+  <h2><a href="/memo/2005/12/10/6/"></a></h2>
+
+  <div class="body">
+    <p>退社。</p>
+
+  </div>
+
+  <div class="meta">
+    by typester /
+    at <a href="/memo/2005/12/10/6/">2005-12-10T03:32:00</a> /
+    <a href="/memo/tag/life/">life</a>
+    / <a href="/memo/2005/12/10/6/#disqus_thread">Comment</a>
+  </div>
+</div>
+
+<div class="entry autopagerize_page_element">
+  <h2><a href="/memo/2005/12/10/5/"></a></h2>
+
+  <div class="body">
+    <p>下記はすでに Clouder の人が作成済みだった罠！</p>
+
+  </div>
+
+  <div class="meta">
+    by typester /
+    at <a href="/memo/2005/12/10/5/">2005-12-10T03:01:00</a> /
+    <a href="/memo/tag/life/">life</a>
+    / <a href="/memo/2005/12/10/5/#disqus_thread">Comment</a>
+  </div>
+</div>
+
+<div class="entry autopagerize_page_element">
+  <h2><a href="/memo/2005/12/10/4/">Catalyst::Plugin::XFramework</a></h2>
+
+  <div class="body">
+    <p>なんか流行ってるらしい！</p>
+<pre><code><span class="keyword">package</span> <span class="function-name">Catalyst::Plugin::XFramework</span>;
+
+<span class="keyword">sub</span> <span class="function-name">finalize</span> {
+    <span class="keyword">my</span> <span class="variable-name">$c</span> = <span class="cperl-nonoverridable">shift</span>;
+
+    $c-&gt;res-&gt;header(<span class="string">&apos;X-Framework&apos;</span> =&gt; <span class="string">&apos;Catalyst/&apos;</span>.$c-&gt;version);
+    $c-&gt;NEXT::finalize(<span class="cperl-array">@_</span>);
+}
+
+1;
+</code></pre>
+<p>こんな感じか。</p>
+<pre><code>$ HEAD http://localhost:3000/
+200 OK
+Connection: close
+Date: Fri, 09 Dec 2005 16:43:26 GMT
+Content-Length: 10981
+Content-Type: application/xhtml+xml; charset=utf-8
+Last-Modified: Fri, 09 Dec 2005 16:31:19 GMT
+Client-Date: Fri, 09 Dec 2005 16:43:26 GMT
+Client-Peer: 127.0.0.1:3000
+Client-Response-Num: 1
+Status: 200
+X-Catalyst: 5.62
+X-Framework: Catalyst/5.62
+</code></pre>
+
+  </div>
+
+  <div class="meta">
+    by typester /
+    at <a href="/memo/2005/12/10/4/">2005-12-10T01:35:00</a> /
+    <a href="/memo/tag/catalyst/">catalyst</a>
+    / <a href="/memo/2005/12/10/4/#disqus_thread">Comment</a>
+  </div>
+</div>
+
+<div class="entry autopagerize_page_element">
+  <h2><a href="/memo/2005/12/10/3/">PERL5LIB</a></h2>
+
+  <div class="body">
+    <p>一時的に trunk 使いたいときとか</p>
+<pre><code>export PERL5LIB=`echo ~/workdir/Catalyst/**/lib(/) | sed -e &apos;s/ /:/g&apos;`
+</code></pre>
+<p>とかしてんですが、もっと簡単に書ける？＞zsh</p>
+
+  </div>
+
+  <div class="meta">
+    by typester /
+    at <a href="/memo/2005/12/10/3/">2005-12-10T01:21:00</a> /
+    <a href="/memo/tag/perl/">perl</a>
+    &middot; <a href="/memo/tag/zsh/">zsh</a>
+    / <a href="/memo/2005/12/10/3/#disqus_thread">Comment</a>
+  </div>
+</div>
+
+<div class="entry autopagerize_page_element">
+  <h2><a href="/memo/2005/12/10/2/">週末TODO</a></h2>
+
+  <div class="body">
+    <ul><li>Catalyst::Plugin::Authentication::Credential::HTTP 関係あれこれ</li><li>Catalyst::Plugin::Authentication::Store::HTTP::Remote(?)</li><li>Catalyst::Plugin::Authentication::Credential::Flickr</li><li>Catalyst::Plugin::Authentication::Credential::WSSE</li></ul>
+<p>あと ACL もどうなってるか見たい。WSSE はスルーでいいかなぁ。</p>
+<p>ひぃい。gorou さんとか出迎えてるよゆうｎ（ｒｙ</p>
+
+  </div>
+
+  <div class="meta">
+    by typester /
+    at <a href="/memo/2005/12/10/2/">2005-12-10T00:23:00</a> /
+    <a href="/memo/tag/life/">life</a>
+    / <a href="/memo/2005/12/10/2/#disqus_thread">Comment</a>
+  </div>
+</div>
+
+<div class="entry autopagerize_page_element">
+  <h2><a href="/memo/2005/12/10/1/">英語ログ</a></h2>
+
+  <div class="body">
+    <p>始める。今から CLON に実装する。</p>
+<p>IRC で相手の言ってることはわかってるのに(わからないことも多いですが)こちらの言葉が出ないのは、普段から英語を書いてないからだと思ったので。</p>
+
+  </div>
+
+  <div class="meta">
+    by typester /
+    at <a href="/memo/2005/12/10/1/">2005-12-10T00:03:00</a> /
+    <a href="/memo/tag/clon/">clon</a>
+    / <a href="/memo/2005/12/10/1/#disqus_thread">Comment</a>
+  </div>
+</div>
+
+
+
+
+<div id="pager" class="autopagerize_insert_before">
+  <p class="pages">
+    <a class="prev" rel="previous" href="/memo/page/162/">&laquo; Prev</a>
+    <a href="/memo/page/159/">159</a>
+    <a href="/memo/page/160/">160</a>
+    <a href="/memo/page/161/">161</a>
+    <a href="/memo/page/162/">162</a>
+    <span class="current">163</span>
+    <a href="/memo/page/164/">164</a>
+    <a href="/memo/page/165/">165</a>
+    <a href="/memo/page/166/">166</a>
+    <a href="/memo/page/167/">167</a>
+    <a href="/memo/page/168/">168</a>
+    <a class="next" rel="next" href="/memo/page/164/">Next &raquo;</a>
+  </p>
+  <p class="info">(Page 163 of 203)</p>
+</div>
+
+
+</div>
+
+<p id="footer">
+  Copyright &copy; 2005-2013
+      by <a class="author" href="/about/#me">Daisuke Murase (typester)</a> /
+  Site generated by <a href="https://github.com/typester/nim">nim</a> /
+  Comments powered by <a href="http://disqus.com">DISQUS</a>.
+</p>
+
+</div>
+
+
+<script type="text/javascript">
+//<![CDATA[
+(function() {
+	var links = document.getElementsByTagName('a');
+	var query = '?';
+	for(var i = 0; i < links.length; i++) {
+	if(links[i].href.indexOf('#disqus_thread') >= 0) {
+		query += 'url' + i + '=' + encodeURIComponent(links[i].href) + '&';
+	}
+	}
+	document.write('<script charset="utf-8" type="text/javascript" src="http://disqus.com/forums/unknownplace/get_num_replies.js' + query + '"></' + 'script>');
+})();
+//]]>
+</script>
+
+
+<script type="text/javascript">
+var gaJsHost = (("https:" == document.location.protocol) ? "https://ssl." : "http://www.");
+document.write(unescape("%3Cscript src='" + gaJsHost + "google-analytics.com/ga.js' type='text/javascript'%3E%3C/script%3E"));
+</script>
+<script type="text/javascript">
+try {
+var pageTracker = _gat._getTracker("UA-53067-1");
+pageTracker._trackPageview();
+} catch(err) {}</script>
+
+<script>
+function googleTranslateElementInit() {
+  new google.translate.TranslateElement({
+    pageLanguage: 'ja',
+    gaTrack: true,
+    gaId: 'UA-53067',
+    floatPosition: google.translate.TranslateElement.FloatPosition.BOTTOM_RIGHT
+  });
+}
+</script><script src="//translate.google.com/translate_a/element.js?cb=googleTranslateElementInit"></script>
+
+</body>
+</html>

@@ -1,0 +1,391 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="ja" xml:lang="ja">
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <title>memo - unknownplace.org</title>
+  <link rel="stylesheet" type="text/css" href="http://yui.yahooapis.com/3.0.0/build/cssreset/reset-min.css" />
+  <link rel="stylesheet" type="text/css" href="http://yui.yahooapis.com/3.0.0/build/cssfonts/fonts-min.css" />
+  <link rel="stylesheet" href="/css/style.css" type="text/css" />
+  <meta property="fb:admins" content="1093631929" />
+  <meta name="robots" content="noindex" />
+  <link rel="alternate" type="application/rss+xml" href="http://unknownplace.org/memo/index.rss" />
+</head>
+<body>
+
+<div id="container">
+<div id="header">
+    <h1><a href="/">unknownplace.org</a></h1> /
+<a href="/memo/">memo</a>
+</div>
+
+<div id="content">
+
+<div class="entry autopagerize_page_element">
+  <h2><a href="/memo/2008/12/18/1/"></a></h2>
+
+  <div class="body">
+    <blockquote><p><a href="http://d.hatena.ne.jp/rubikitch/20081218/multiverse">multiverse.elで現在のファイルのスナップショットを取る - &apos;(rubikitch wanna be (a . lisper))</a></p><p>プログラミングしているとき、実験的修正をしたくなることがあるだろう。もし実験が失敗したときに元に戻す...なんてことは日常茶飯事だ。</p><p>RCS、CVS、Subversion、Gitなどのバージョン管理システムはまさしくそれをやっているのだが、未完成のままではコミットはできない。たとえば、複数の（細かな）実装が思い付いたとき、どっちかひとつをコミットしたいなんて場合とか。</p></blockquote>
+<p>そこにgitを一緒に入れるのはなぜなんだ？</p>
+<p>それをやるためにgitみたいなdistributedなバージョン管理システムがあると言っても過言でないくらいだと思うのだが。</p>
+
+  </div>
+
+  <div class="meta">
+    by typester /
+    at <a href="/memo/2008/12/18/1/">2008-12-18T11:00:00</a> /
+    <a href="/memo/tag/git/">git</a>
+    / <a href="/memo/2008/12/18/1/#disqus_thread">Comment</a>
+  </div>
+</div>
+
+<div class="entry autopagerize_page_element">
+  <h2><a href="/memo/2008/12/10/2/">xcode でも toolchain でもビルドできる iPhone アプリ構成を作る手順メモ</a></h2>
+
+  <div class="body">
+    <p>まず、xcode で新規プロジェクト作成。Window-Based Application が余計なもの作らないのでおすすめ。</p>
+<pre><code>.
+|____Classes
+| |____my_test_projectAppDelegate.h
+| |____my_test_projectAppDelegate.m
+|____Info.plist
+|____main.m
+|____MainWindow.xib
+|____my_test_project.xcodeproj
+| |____project.pbxproj
+| |____typester.mode1v3
+| |____typester.pbxuser
+|____my_test_project_Prefix.pch
+</code></pre>
+<p>こんなファイル構成ができあがる。</p>
+<p>まず、nib ファイルは toolchain 環境では扱えないので MainWindow.xib は削除。Info.plist からも</p>
+<pre><code>&lt;key&gt;NSMainNibFile&lt;/key&gt;
+&lt;string&gt;MainWindow&lt;/string&gt;
+</code></pre>
+<p>って部分を削除。nib ファイルを使わないということはすなわち xcode のインターフェースビルダーが使えないということだけどまぁしょうがない。</p>
+<p>つぎ、プリコンパイルヘッダ (<code>my_test_project_Prefix.pch</code>) も僕はいらないので削除。また、project.pbxprojに</p>
+<pre><code>GCC_PRECOMPILE_PREFIX_HEADER = YES;
+GCC_PREFIX_HEADER = my_test_project_Prefix.pch;
+</code></pre>
+<p>という部分がDebugとReleaseの二カ所あると思うのでそこを</p>
+<pre><code>GCC_PRECOMPILE_PREFIX_HEADER = NO;
+</code></pre>
+<p>に変更。</p>
+<p>Classes ってディレクトリ名が気に入らないので、src に変更。xcode側では読み込み直す。</p>
+<p>アイコンとかリソースファイル用には resources ってディレクトリを作っておく。</p>
+<p>最後に toolchain 用の Makefile をおく。</p>
+<p>この時点でファイル構成は</p>
+<pre><code>.
+|____Info.plist
+|____my_test_project.xcodeproj
+| |____project.pbxproj
+| |____typester.mode1v3
+| |____typester.pbxuser
+|____main.m
+|____Makefile
+|____resources
+|____src
+| |____my_test_projectAppDelegate.h
+| |____my_test_projectAppDelegate.m
+</code></pre>
+<p>こんな感じ。</p>
+<p>これでどっちでもビルドできるようなアプリを書くことが可能。</p>
+<p>めんどくさいので自動化したい。</p>
+<h4>追記＠2008-12-11</h4>
+<p><code>project.pbxproj</code> を直いじりすると、その後 xcode から実機デバッグしようとするとUUIDがちげーよとかいう警告がでるようになるっぽい。(実際にデバッグは出来るのけど)</p>
+<p>直いじりするかわりに xcode のプロジェクト設定で <code>GCC_PRECOMPILE_PREFIX_HEADE</code> とかを編集すれば大丈夫。</p>
+
+  </div>
+
+  <div class="meta">
+    by typester /
+    at <a href="/memo/2008/12/10/2/">2008-12-10T18:25:00</a> /
+    <a href="/memo/tag/iphone/">iphone</a>
+    / <a href="/memo/2008/12/10/2/#disqus_thread">Comment</a>
+  </div>
+</div>
+
+<div class="entry autopagerize_page_element">
+  <h2><a href="/memo/2008/12/10/1/">KillAppleをCydiaからインストールできるようにしてみた</a></h2>
+
+  <div class="body">
+    <p>この間作った <a href="http://unknownplace.org/memo/2008/10/08#e003">KillApple</a> という iPhone のメモリに残ったビルドインアプリケーションを殺すアプリケーションですが、いろんなところでデモするとなかなか好評で、使いたいとおっしゃってくださる方もいたので、Cydiaからインストールできるようにしてみました。</p>
+<p>Cydia のソースに</p>
+<pre><code>http://apt.unknownplace.org/iphone/
+</code></pre>
+<p>を追加すると、検索に KillApple が引っかかるようになると思いますのでそのままそれをインストールすればOKです。</p>
+<p>今後作ったほかのアプリもここで公開していこうかなと思っております。</p>
+
+  </div>
+
+  <div class="meta">
+    by typester /
+    at <a href="/memo/2008/12/10/1/">2008-12-10T14:43:00</a> /
+    <a href="/memo/tag/iphone/">iphone</a>
+    / <a href="/memo/2008/12/10/1/#disqus_thread">Comment</a>
+  </div>
+</div>
+
+<div class="entry autopagerize_page_element">
+  <h2><a href="/memo/2008/12/09/1/">URLベースでのACLをkamaitachiにもつけた</a></h2>
+
+  <div class="body">
+    <blockquote><p><a href="http://blog.katsuma.tv/2008/12/swf_verification_on_wowza.html">Wowza Media ServerでSWFVerification(っぽいこと)をする方法 - blog.katsuma.tv</a></p></blockquote>
+<p>それなら kamaitachi でもできるよ。ってことで使いやすいようにサービス化。</p>
+<p>AutoConnect の代わりに、AutoConnectACL というサービスを使うと URL ベースでのアクセスコントロールをつけることができるようにしてみた。</p>
+<p><a href="http://github.com/typester/kamaitachi/tree/master/example/lib/Service/Echo.pm">echo サンプル</a>の例なら、</p>
+<pre><code><span class="keyword">package</span> <span class="function-name">Service::Echo</span>;
+<span class="keyword">use</span> <span class="function-name">Moose</span>;
+
+extends <span class="string">&apos;Kamaitachi::Service&apos;</span>;
+
+with <span class="string">&apos;Kamaitachi::Service::AutoConnectACL&apos;</span>;
+
+<span class="keyword">sub</span> <span class="function-name">allow_pages</span> {
+    <span class="string">&apos;http://www.unknownplace.org/*&apos;</span>,
+    <span class="string">&apos;http://unknownplace.org/*&apos;</span>,
+}
+
+<span class="keyword">sub</span> <span class="function-name">allow_swfs</span> { <span class="string">&apos;http://unknownplace.org/*&apos;</span> }
+
+<span class="keyword">sub</span> <span class="function-name">on_invoke_echo</span> {
+    <span class="keyword">my</span> (<span class="variable-name">$self</span>, <span class="variable-name">$session</span>, <span class="variable-name">$req</span>) = <span class="cperl-array">@_</span>;
+    $req-&gt;response(@{ $req-&gt;args });
+}
+</code></pre>
+<p>のような感じで、<code>AutoConnectACL</code> を <code>with</code> して <code>allow_pages</code> と <code>allow_swfs</code> を定義すればそこに書かれたURLにマッチするアクセスだけを許可することが出来る。</p>
+<p>いちおう Flash の流儀にあわせてなんか glob マッチ方式にしてるんだけど、使いにくいので正規表現でもいけるようにしてある。</p>
+<pre><code>sub allow_pages { qr{^https?://(www\.)?unknownplace\.org} }
+</code></pre>
+<p>とか Regexp リファレンスつかえばおｋ。</p>
+<p><code>allow_pages</code> が swf の貼り付けてあるページの URL、<code>allow_swfs</code>が swf 自体の URL にマッチする感じ。</p>
+
+  </div>
+
+  <div class="meta">
+    by typester /
+    at <a href="/memo/2008/12/09/1/">2008-12-09T10:53:00</a> /
+    <a href="/memo/tag/perl/">perl</a>
+    &middot; <a href="/memo/tag/kamaitachi/">kamaitachi</a>
+    / <a href="/memo/2008/12/09/1/#disqus_thread">Comment</a>
+  </div>
+</div>
+
+<div class="entry autopagerize_page_element">
+  <h2><a href="/memo/2008/12/08/1/">kitasando.as #2 にいってきた</a></h2>
+
+  <div class="body">
+    <p>土曜に FMS 勉強会という名目で行われた kitasando.as で kamaitachi を紹介してきました。</p>
+<p>スライド：</p>
+<blockquote><p><a href="http://svn.coderepos.org/share/docs/typester/kitasandoas-2/start.html">http://svn.coderepos.org/share/docs/typester/kitasandoas-2/start.html</a></p></blockquote>
+<p>本家 FMS の話と、Wowza の話がおもしろかった。Wowza完成度高杉だろ。</p>
+<p>SWFVerification とか機能自体しらなかった。どうやるんだろうなぁ。connect時swfのURLは送られてくるけど、それだけじゃ無理だし。</p>
+
+  </div>
+
+  <div class="meta">
+    by typester /
+    at <a href="/memo/2008/12/08/1/">2008-12-08T12:16:00</a> /
+    <a href="/memo/tag/perl/">perl</a>
+    / <a href="/memo/2008/12/08/1/#disqus_thread">Comment</a>
+  </div>
+</div>
+
+<div class="entry autopagerize_page_element">
+  <h2><a href="/memo/2008/12/05/1/">adlがうごかなくてはまる</a></h2>
+
+  <div class="body">
+    <p>kamaitachi のサンプルアプリで Air アプリをつくろうとおもってつくろうとしたんだけど、<code>adl</code> がうまくうごかなくてはまった。</p>
+<p>環境は OSX 10.5.5 + Air1.5 + Flex SDK 3.2.0.3958。</p>
+<p>普通に実行すると</p>
+<pre><code>$ adl HelloWorld-app.xml
+unknown error
+Error: Error #2014: Feature is not available at this time.
+        at runtime::SecurityManager$/initAppDataDirRoot()
+        at runtime::SecurityManager$/GetPersistentStorageDirectoryName()
+        at runtime::AppRunner/run()
+        at global/runtime::ADLEntry()
+</code></pre>
+<p>こんなんなる。別にコードが悪い訳じゃなくて、adtでパッケージ作るとそれは起動できる。</p>
+<p>でなんかよく見るとディレクトリ関係のとこでこけてるからためしに sudo でうごかしてやったらうごいた。。なんやねん。</p>
+<p>どっかのパーミッションかえてやればいいんだろうけどそれがどこだかわからんなぁ。</p>
+
+  </div>
+
+  <div class="meta">
+    by typester /
+    at <a href="/memo/2008/12/05/1/">2008-12-05T16:35:00</a> /
+    <a href="/memo/tag/air/">air</a>
+    &middot; <a href="/memo/tag/as3/">as3</a>
+    / <a href="/memo/2008/12/05/1/#disqus_thread">Comment</a>
+  </div>
+</div>
+
+<div class="entry autopagerize_page_element">
+  <h2><a href="/memo/2008/12/02/1/">&quot;kamaitachi&quot; perl flash media server</a></h2>
+
+  <div class="body">
+    <p>IRCチャンネルできました。</p>
+<blockquote><p>#kamaitachi @ chat.freenode.net</p></blockquote>
+<p><a href="http://github.com/typester/kamaitachi">kamaitachi</a> に興味なくても RTMP のパケットが云々という話とか興味ある人は入るとおもしろいかも。</p>
+
+  </div>
+
+  <div class="meta">
+    by typester /
+    at <a href="/memo/2008/12/02/1/">2008-12-02T18:53:00</a> /
+    <a href="/memo/tag/perl/">perl</a>
+    / <a href="/memo/2008/12/02/1/#disqus_thread">Comment</a>
+  </div>
+</div>
+
+<div class="entry autopagerize_page_element">
+  <h2><a href="/memo/2008/12/01/1/">remedie &amp; HE hackathon にいってきた</a></h2>
+
+  <div class="body">
+    <p>土曜にはじめてチェックアウトして翌日ハッカソンに挑むという無謀さでしたが、いやいやなかなか、おもしろかったです。</p>
+<p>remedieはつかってみるとかなり面白いですね。対応しているURLを含んでいれば別にメディアRSSとかじゃなくても追加できるので、おもむろに自分の del.icio.us などのページを食わせてあげても、YouTubeやニコニコ動画などをブックマークしてたらそれがリストにでてくる。</p>
+<p>気になる人のブックマークとかは突っ込んでおくだけですぐにその人がブクマったものをremedieで見られるという訳ですね。</p>
+<p>で、ハッカソンでなにをしてたかっていうことがいいたいんですが、刺されたくないのでやめておきます。コミットログとかから察してください。</p>
+<p>作ったもの、あとでコミっときます。</p>
+
+  </div>
+
+  <div class="meta">
+    by typester /
+    at <a href="/memo/2008/12/01/1/">2008-12-01T09:12:00</a> /
+    <a href="/memo/tag/perl/">perl</a>
+    / <a href="/memo/2008/12/01/1/#disqus_thread">Comment</a>
+  </div>
+</div>
+
+<div class="entry autopagerize_page_element">
+  <h2><a href="/memo/2008/11/29/1/">Yokohama Perl Mongersテクニカルトーク#3にいってきた。</a></h2>
+
+  <div class="body">
+    <p>ライブコーディングをしてきました。シンプルなwikiです。</p>
+<p>ソースコードはこちら。</p>
+<blockquote><p><a href="http://github.com/typester/yiki">http://github.com/typester/yiki</a></p></blockquote>
+<p>会場で書いたものに.gitignoreファイルを追加(coしたときにディレクトリがそろってないとうまく動かないので)しただけなものとなっています。</p>
+<p>コード書くのに必死だったのであんまり解説ができなかったのですが、まず最初に Yiki.pm というところに wiki のページ編集の機能をモジュールとして作成し、それをあとから作った Yiki::Web という Catalyst アプリから使うというのがポイントでした。</p>
+<p>単体モジュールとして wiki の機能を実装することでテストが書きやすいので安心だとか、ほかのアプリからも使えるだとかいろいろな利点が生まれます。</p>
+<p>今回のコーディングの流れは</p>
+<ol><li><code>01_module.t</code> に SYNOPSIS を書いてみる。(自分がどんなふうにアプリを使いたいかデザインする)</li><li>その SYNOPSIS をもとにテストをおこす</li><li>Yiki.pmを実装</li><li>テストを走らせ正しく動作しているか確認</li><li>3,4を繰り返す</li><li>それを Yiki::Web から使用する</li></ol>
+<p>となっています。</p>
+
+  </div>
+
+  <div class="meta">
+    by typester /
+    at <a href="/memo/2008/11/29/1/">2008-11-29T10:49:00</a> /
+    <a href="/memo/tag/perl/">perl</a>
+    / <a href="/memo/2008/11/29/1/#disqus_thread">Comment</a>
+  </div>
+</div>
+
+<div class="entry autopagerize_page_element">
+  <h2><a href="/memo/2008/11/28/1/">Shibuya Perl Mongersテクニカルトーク#10にいってきた。</a></h2>
+
+  <div class="body">
+    <p><a href="http://github.com/typester/kamaitachi">kamaitachi</a> のデモをしてきました。</p>
+<p>スライド：</p>
+<blockquote><p><a href="http://svn.coderepos.org/share/docs/typester/shibuyapm-10/start.html">kamaitachi - perl flash media server</a></p></blockquote>
+<p>デモ使ったサーバーサイドとクライアントサイドのソースコードはこの辺にアップしました：</p>
+<blockquote><p><a href="http://github.com/typester/kamaitachi/tree/master/example/shibuya.pm">example/shibuya.pm</a></p></blockquote>
+<p>動かし方は</p>
+<pre><code>git clone git://github.com/typester/kamaitachi.git
+</code></pre>
+<p>してきて、<code>example/shibuya.pm</code> で <code>perl server.pl</code> するとサーバーが立ち上がります。</p>
+<p>そのあと、<code>example/client</code> 以下にある swf ファイルをブラウザで開けばローカルでデモが動かせます。</p>
+<p>asソースをみてもらえばわかりますが、接続先が localhost 決めうちになっているため、それ以外のところで動かす場合は swf を作り直す必要があります。</p>
+<p>フリーで公開されている flex sdk をつかえば一応誰でもコンパイルできます。</p>
+<pre><code>mxmlc chat.mxml
+</code></pre>
+<p>などとすればOK。</p>
+<p>というか本当は swf の URL から接続先のホスト名を自動的に設定したかったのだけど、mxml内でインクルードしてるasで、Stageオブジェクトを取得する方法がわからなかったのであきらめた。もしこの方法がわかったらコードをアップグレードします。</p>
+<p>というわけで、サーバー・クライアント両方のサンプルをやっと作れたので、これで一応誰でも試せるところまではきたかと。</p>
+<p>使ってみて、いろいろフィードバックいただけたら幸いです。</p>
+
+  </div>
+
+  <div class="meta">
+    by typester /
+    at <a href="/memo/2008/11/28/1/">2008-11-28T09:17:00</a> /
+    <a href="/memo/tag/perl/">perl</a>
+    / <a href="/memo/2008/11/28/1/#disqus_thread">Comment</a>
+  </div>
+</div>
+
+
+
+
+<div id="pager" class="autopagerize_insert_before">
+  <p class="pages">
+    <a class="prev" rel="previous" href="/memo/page/15/">&laquo; Prev</a>
+    <a href="/memo/page/12/">12</a>
+    <a href="/memo/page/13/">13</a>
+    <a href="/memo/page/14/">14</a>
+    <a href="/memo/page/15/">15</a>
+    <span class="current">16</span>
+    <a href="/memo/page/17/">17</a>
+    <a href="/memo/page/18/">18</a>
+    <a href="/memo/page/19/">19</a>
+    <a href="/memo/page/20/">20</a>
+    <a href="/memo/page/21/">21</a>
+    <a class="next" rel="next" href="/memo/page/17/">Next &raquo;</a>
+  </p>
+  <p class="info">(Page 16 of 203)</p>
+</div>
+
+
+</div>
+
+<p id="footer">
+  Copyright &copy; 2005-2013
+      by <a class="author" href="/about/#me">Daisuke Murase (typester)</a> /
+  Site generated by <a href="https://github.com/typester/nim">nim</a> /
+  Comments powered by <a href="http://disqus.com">DISQUS</a>.
+</p>
+
+</div>
+
+
+<script type="text/javascript">
+//<![CDATA[
+(function() {
+	var links = document.getElementsByTagName('a');
+	var query = '?';
+	for(var i = 0; i < links.length; i++) {
+	if(links[i].href.indexOf('#disqus_thread') >= 0) {
+		query += 'url' + i + '=' + encodeURIComponent(links[i].href) + '&';
+	}
+	}
+	document.write('<script charset="utf-8" type="text/javascript" src="http://disqus.com/forums/unknownplace/get_num_replies.js' + query + '"></' + 'script>');
+})();
+//]]>
+</script>
+
+
+<script type="text/javascript">
+var gaJsHost = (("https:" == document.location.protocol) ? "https://ssl." : "http://www.");
+document.write(unescape("%3Cscript src='" + gaJsHost + "google-analytics.com/ga.js' type='text/javascript'%3E%3C/script%3E"));
+</script>
+<script type="text/javascript">
+try {
+var pageTracker = _gat._getTracker("UA-53067-1");
+pageTracker._trackPageview();
+} catch(err) {}</script>
+
+<script>
+function googleTranslateElementInit() {
+  new google.translate.TranslateElement({
+    pageLanguage: 'ja',
+    gaTrack: true,
+    gaId: 'UA-53067',
+    floatPosition: google.translate.TranslateElement.FloatPosition.BOTTOM_RIGHT
+  });
+}
+</script><script src="//translate.google.com/translate_a/element.js?cb=googleTranslateElementInit"></script>
+
+</body>
+</html>

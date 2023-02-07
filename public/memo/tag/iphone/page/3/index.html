@@ -1,0 +1,205 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="ja" xml:lang="ja">
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <title>memo - unknownplace.org</title>
+  <link rel="stylesheet" type="text/css" href="http://yui.yahooapis.com/3.0.0/build/cssreset/reset-min.css" />
+  <link rel="stylesheet" type="text/css" href="http://yui.yahooapis.com/3.0.0/build/cssfonts/fonts-min.css" />
+  <link rel="stylesheet" href="/css/style.css" type="text/css" />
+  <meta property="fb:admins" content="1093631929" />
+  <meta name="robots" content="noindex" />
+  <link rel="alternate" type="application/rss+xml" href="http://unknownplace.org/memo/index.rss" />
+</head>
+<body>
+
+<div id="container">
+<div id="header">
+    <h1><a href="/">unknownplace.org</a></h1> /
+<a href="/memo/">memo</a>
+</div>
+
+<div id="content">
+
+<div class="entry autopagerize_page_element">
+  <h2><a href="/memo/2008/10/08/2/">iPhone勝手アプリ用 Module::Setup フレーバー</a></h2>
+
+  <div class="body">
+    <blockquote><p><a href="http://gist.github.com/15463">http://gist.github.com/15463</a></p></blockquote>
+<p>Yappo++</p>
+
+  </div>
+
+  <div class="meta">
+    by typester /
+    at <a href="/memo/2008/10/08/2/">2008-10-08T21:15:00</a> /
+    <a href="/memo/tag/iphone/">iphone</a>
+    / <a href="/memo/2008/10/08/2/#disqus_thread">Comment</a>
+  </div>
+</div>
+
+<div class="entry autopagerize_page_element">
+  <h2><a href="/memo/2008/10/08/1/">iPhoneアプリをLinuxで作成するの法</a></h2>
+
+  <div class="body">
+    <p>iPhone Developer Program の申請が全然通らないので、勝手アプリの作成環境を整えてみた。</p>
+<p>Cydia でおなじみの saurik 氏がクロスコンパイル環境の作り方を以下のページに書いてくれていて、基本これに従えばOK。</p>
+<blockquote><p><a href="http://www.saurik.com/id/4">Upgrading the iPhone Toolchain - Jay Freeman (saurik)</a></p></blockquote>
+<p>すごいなー。saurik++</p>
+<p>簡単に環境作れるようにスクリプトにまとめた。ヘッダのコピーのとことかちょっと追加してある。</p>
+<blockquote><p><a href="http://gist.github.com/15487">http://gist.github.com/15487</a></p></blockquote>
+<script src="http://gist.github.com/15487.js" type="text/javascript"></script>
+<p>簡単に説明。</p>
+<p>iPhone のファームウェアのファイルを、ごにょごにょ(ググればすぐわかる)して展開して <code>~/tmp/iphone/iPhone2.1</code> にコピー。</p>
+<p>iPhone SDKをダウンロードしてきて展開して <code>MacOSX10.5.pkg</code> と <code>iPhoneSDKHeadersAndLibs.pkg</code> を <code>~/tmp/iphone/Developer</code> に展開。</p>
+<p><a href="http://www.opensource.apple.com/darwinsource/Current/">http://www.opensource.apple.com/darwinsource/Current/</a> から</p>
+<ul><li>CF-*</li><li>DiskArbitration-*</li><li>IOCDStorageFamily-*</li><li>IODVDStorageFamily-*</li><li>IOGraphics-*</li><li>IOHIDFamily-*</li><li>IOKitUser-*</li><li>IOStorageFamily-*</li><li>Libc-*</li><li>WebCore-*</li><li>cctools-*</li><li>configd-*</li><li>launchd-*</li><li>libsecurity_authorization-*</li><li>libsecurity_cdsa_client-*</li><li>libsecurity_cdsa_utilities-*</li><li>libsecurity_cms-*</li><li>libsecurity_codesigning-*</li><li>libsecurity_cssm-*</li><li>libsecurity_keychain-*</li><li>libsecurity_mds-*</li><li>libsecurity_ssl-*</li><li>libsecurity_utilities-*</li><li>libsecurityd-*</li><li>xnu-*</li></ul>
+<p>をダウンロードして <code>~/tmp/iphone/apple</code> に展開。(<code>*</code>はバージョン番号)</p>
+<p>で、あとは上のスクリプト実行すれば <code>~/app/toolchain</code> にクロスコンパイル環境がインストールされる。YATTA!</p>
+<p>ちなみに僕の Debian 環境ではこの作業をするために</p>
+<pre><code>flex bison gcc-multilib gobjc
+</code></pre>
+<p>などのパッケージを追加でインストールする必要があった。</p>
+<p>これで iPhone 用のバイナリが作れるようになる。あとは ssh なり何なりで iPhone にファイルを転送すればOK。</p>
+<p>ただ iPhone は署名済みなアプリケーションしか実行できないのでそこもまた saurik 氏の記事</p>
+<blockquote><p><a href="http://www.saurik.com/id/8">Bypassing iPhone Code Signatures - Jay Freeman (saurik)</a></p></blockquote>
+<p>を参考にすれば回避できる。</p>
+
+  </div>
+
+  <div class="meta">
+    by typester /
+    at <a href="/memo/2008/10/08/1/">2008-10-08T17:33:00</a> /
+    <a href="/memo/tag/iphone/">iphone</a>
+    &middot; <a href="/memo/tag/linux/">linux</a>
+    / <a href="/memo/2008/10/08/1/#disqus_thread">Comment</a>
+  </div>
+</div>
+
+<div class="entry autopagerize_page_element">
+  <h2><a href="/memo/2008/10/02/1/">片手入力時のイライラ</a></h2>
+
+  <div class="body">
+    <p>片手で文字入力してると親指の付け根部分が画面に触れちゃう問題だけど、</p>
+<div class="amazlet-box" style="margin-bottom:0px;"><div class="amazlet-image" style="float:left;"><a href="http://www.amazon.co.jp/exec/obidos/ASIN/B001BXYBDC/unknownplace-22/ref=nosim/" name="amazletlink" target="_blank"><img alt="iPhone 3G用シリコンジャケット(レッド) RT-P1C3/R" src="http://ecx.images-amazon.com/images/I/41obLVSESXL._SL160_.jpg" style="border: none;" /></a></div><div class="amazlet-info" style="float:left;margin-left:15px;line-height:120%"><div class="amazlet-name" style="margin-bottom:10px;line-height:120%"><a href="http://www.amazon.co.jp/exec/obidos/ASIN/B001BXYBDC/unknownplace-22/ref=nosim/" name="amazletlink" target="_blank">iPhone 3G用シリコンジャケット(レッド) RT-P1C3/R</a><div class="amazlet-powered-date" style="font-size:7pt;margin-top:5px;font-family:verdana;line-height:120%">posted with <a href="http://www.amazlet.com/browse/ASIN/B001BXYBDC/unknownplace-22/ref=nosim/" target="_blank" title="iPhone 3G用シリコンジャケット(レッド) RT-P1C3/R">amazlet</a> at 08.10.02</div></div><div class="amazlet-detail">レイ・アウト (2008-07-11)<br />売り上げランキング: 12098<br /></div><div class="amazlet-link" style="margin-top: 5px"><a href="http://www.amazon.co.jp/exec/obidos/ASIN/B001BXYBDC/unknownplace-22/ref=nosim/" name="amazletlink" target="_blank">Amazon.co.jp で詳細を見る</a></div></div><div class="amazlet-footer" style="clear: left"></div><p></p></div>
+<p>これ買ったら、親指部分が少し浮くせいか、付け根部分が画面に触れなくなって快適になった！</p>
+<p>しかしこのカバー、摩擦係数が高いのでiPhoneをポケットに滑り込ませられなくなってちょっと不便。</p>
+
+  </div>
+
+  <div class="meta">
+    by typester /
+    at <a href="/memo/2008/10/02/1/">2008-10-02T10:09:00</a> /
+    <a href="/memo/tag/iphone/">iphone</a>
+    / <a href="/memo/2008/10/02/1/#disqus_thread">Comment</a>
+  </div>
+</div>
+
+<div class="entry autopagerize_page_element">
+  <h2><a href="/memo/2008/09/22/1/">iPhoneでも片手入力できる</a></h2>
+
+  <div class="body">
+    <p>とか言ってるやつは死ねばいいと思う。</p>
+<p>僕はかなりがんばらないと無理だなー＞＜</p>
+<p>テンキー入力でバックスペース押そうとして親指のばすと親指の付け根付近が画面左下のほうを押してしまい入力モードが切り替わってしまってイライラするし、メールだと送信ボタンが上のほうにありすぎてそもそも片手だと押せないし。</p>
+<p>手が小さいのかなぁーともおもうけど、女性だったら僕より手の小さい人はいっぱいいるだろうしなー。</p>
+
+  </div>
+
+  <div class="meta">
+    by typester /
+    at <a href="/memo/2008/09/22/1/">2008-09-22T09:40:00</a> /
+    <a href="/memo/tag/iphone/">iphone</a>
+    / <a href="/memo/2008/09/22/1/#disqus_thread">Comment</a>
+  </div>
+</div>
+
+<div class="entry autopagerize_page_element">
+  <h2><a href="/memo/2008/09/02/1/">メールのinboxを整理した</a></h2>
+
+  <div class="body">
+    <p>inboxに40万件くらいメールためていたらiPhoneでinboxのメールを見ることが不可能だったので古いメールを全部Archiveディレクトリに移動させることにした。</p>
+<p>ちょっとぐぐると<a href="http://www.ducea.com/2006/11/25/cleanup-maildir-folders-archive-delete-old-mails/">これ</a>とか<a href="http://www.sundru.net/bblog-stuff/?postid=8">これ</a>とかみつかったがどうもうまくうごかんので</p>
+<pre><code>find ~/Maildir/cur/ -mtime +90 -exec mv {} ~/Maildir/.Archive/cur/ \;
+</code></pre>
+<p>とかやっちゃった。</p>
+<p>そしたらiPhoneからメール見えるようになりました。まる。</p>
+<p>整理したとは言わんな。</p>
+
+  </div>
+
+  <div class="meta">
+    by typester /
+    at <a href="/memo/2008/09/02/1/">2008-09-02T18:07:00</a> /
+    <a href="/memo/tag/mail/">mail</a>
+    &middot; <a href="/memo/tag/iphone/">iphone</a>
+    / <a href="/memo/2008/09/02/1/#disqus_thread">Comment</a>
+  </div>
+</div>
+
+
+
+
+<div id="pager" class="autopagerize_insert_before">
+  <p class="pages">
+    <a class="prev" rel="previous" href="/memo/tag/iphone/page/2/">&laquo; Prev</a>
+    <a href="/memo/tag/iphone/">1</a>
+    <a href="/memo/tag/iphone/page/2/">2</a>
+    <span class="current">3</span>
+    <span class="next">Next &raquo;</span>
+  </p>
+  <p class="info">(Page 3 of 3)</p>
+</div>
+
+
+</div>
+
+<p id="footer">
+  Copyright &copy; 2005-2013
+      by <a class="author" href="/about/#me">Daisuke Murase (typester)</a> /
+  Site generated by <a href="https://github.com/typester/nim">nim</a> /
+  Comments powered by <a href="http://disqus.com">DISQUS</a>.
+</p>
+
+</div>
+
+
+<script type="text/javascript">
+//<![CDATA[
+(function() {
+	var links = document.getElementsByTagName('a');
+	var query = '?';
+	for(var i = 0; i < links.length; i++) {
+	if(links[i].href.indexOf('#disqus_thread') >= 0) {
+		query += 'url' + i + '=' + encodeURIComponent(links[i].href) + '&';
+	}
+	}
+	document.write('<script charset="utf-8" type="text/javascript" src="http://disqus.com/forums/unknownplace/get_num_replies.js' + query + '"></' + 'script>');
+})();
+//]]>
+</script>
+
+
+<script type="text/javascript">
+var gaJsHost = (("https:" == document.location.protocol) ? "https://ssl." : "http://www.");
+document.write(unescape("%3Cscript src='" + gaJsHost + "google-analytics.com/ga.js' type='text/javascript'%3E%3C/script%3E"));
+</script>
+<script type="text/javascript">
+try {
+var pageTracker = _gat._getTracker("UA-53067-1");
+pageTracker._trackPageview();
+} catch(err) {}</script>
+
+<script>
+function googleTranslateElementInit() {
+  new google.translate.TranslateElement({
+    pageLanguage: 'ja',
+    gaTrack: true,
+    gaId: 'UA-53067',
+    floatPosition: google.translate.TranslateElement.FloatPosition.BOTTOM_RIGHT
+  });
+}
+</script><script src="//translate.google.com/translate_a/element.js?cb=googleTranslateElementInit"></script>
+
+</body>
+</html>

@@ -1,0 +1,142 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="ja" xml:lang="ja">
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <title>GNU screen の裏にいる Window で完了したコマンドを Growl 通知したい - unknownplace.org</title>
+  <link rel="stylesheet" type="text/css" href="http://yui.yahooapis.com/3.0.0/build/cssreset/reset-min.css" />
+  <link rel="stylesheet" type="text/css" href="http://yui.yahooapis.com/3.0.0/build/cssfonts/fonts-min.css" />
+  <link rel="stylesheet" href="/css/style.css" type="text/css" />
+  <meta property="fb:admins" content="1093631929" />
+  <link rel="alternate" type="application/rss+xml" href="http://unknownplace.org/memo/index.rss" />
+</head>
+<body>
+
+<div id="container">
+<div id="header">
+    <h1><a href="/">unknownplace.org</a></h1> /
+<a href="/memo/">memo</a>
+</div>
+
+<div id="content">
+<div class="entry autopagerize_page_element">
+  <h2><a href="/memo/2010/03/23/1/">GNU screen の裏にいる Window で完了したコマンドを Growl 通知したい</a></h2>
+
+  <div class="body">
+    <p>というようなことをつぶやいていたら、</p>
+<blockquote><p><a href="http://twitter.com/hchbaw/status/9921025674">Twitter / hchbaw: @typester 最近になって screen -Q windows とできるようになってますね。</a></p></blockquote>
+<p>と教えていただいた。</p>
+<p><code>-Q</code> コマンドというのは <code>-X</code> と同じようなものだけど、コマンド結果を screen 内のステータス領域ではなく標準出力で得ることができる。また、<code>-X</code> はつねに実行時にそれ自体がアクティブな screen セッションになるのに対し <code>-Q</code> はアクティブなセッションにクエリを投げる感じで、セッションが切り替わらない。（この辺は理解が怪しいので突っ込み歓迎）</p>
+<p>それでそれを使うと</p>
+<pre><code>screen -Q windows
+</code></pre>
+<p>と実行することで <code>:windows</code> で echo されるのとおなじ文字列を標準出力で得ることができる。その出力をパースすれば、自分が screen の裏にいるかどうか判断することができるというわけ。</p>
+<p>zsh でコマンド完了時（正確にはプロンプトが表示される直前）に呼ばれるフックは <code>precmd</code> なので以下のように定義：</p>
+<pre><code>function precmd() {
+    $HOME/bin/precmd.pl `history -n -1 | head -1`
+}
+</code></pre>
+<p>シェルスクリプトかけないので Perl に逃げています。 で、precmd.pl は以下のような感じ：</p>
+<pre><code><span class="comment-delimiter">#</span><span class="comment">!/usr/bin/perl
+</span>
+<span class="keyword">use</span> <span class="function-name">strict</span>;
+<span class="keyword">use</span> <span class="function-name">warnings</span>;
+<span class="keyword">use</span> <span class="function-name">FileHandle</span>;
+
+<span class="keyword">my</span> <span class="variable-name">$lastcmd</span> = <span class="type">join</span> <span class="string">&apos; &apos;</span>, <span class="cperl-array">@ARGV</span>;
+
+<span class="keyword">my</span> <span class="variable-name">$window</span> = <span class="cperl-hash">$ENV</span>{<span class="string">WINDOW</span>};
+
+<span class="keyword">my</span> <span class="variable-name">$windows</span> = <span class="cperl-nonoverridable">qx</span><span class="string">{ screen -Q windows }</span> <span class="type">or</span> <span class="keyword">die</span> <span class="string">&quot;Your screen doesn&apos;t support -Q&quot;</span>;
+<span class="cperl-nonoverridable">qx</span><span class="string">{ screen -X redisplay }</span>;
+
+<span class="keyword">my</span> <span class="variable-name">$active</span>;
+<span class="keyword">for</span> <span class="keyword">my</span> <span class="variable-name">$win</span> (<span class="cperl-nonoverridable">split</span> <span class="string">&quot;\x20\x20&quot;</span>, $windows) {
+    <span class="keyword">my</span> (<span class="variable-name">$num</span>, <span class="variable-name">$flag</span>, <span class="variable-name">$title</span>) = $win =~ <span class="constant">/</span><span class="function-name">^</span><span class="keyword">(</span><span class="builtin">\</span><span class="type">d</span><span class="builtin">+</span><span class="keyword">)(</span><span class="function-name">.</span><span class="keyword">)</span><span class="builtin">?</span><span class="string"> </span><span class="keyword">(</span><span class="function-name">.</span><span class="builtin">+</span><span class="keyword">)</span><span class="constant">/</span>;
+
+    <span class="keyword">if</span> ($flag <span class="type">and</span> $flag <span class="type">eq</span> <span class="string">&apos;*&apos;</span>) {
+        $active = $num;
+        <span class="keyword">last</span>;
+    }
+}
+
+<span class="keyword">if</span> ($window <span class="negation-char">!</span>= $active) {
+    <span class="type">open</span> <span class="keyword">my</span> <span class="variable-name">$fh</span>, <span class="string">&quot;|/usr/local/bin/growlnotify -t &apos;GNU screen window $window&apos;&quot;</span> <span class="type">or</span> <span class="keyword">die</span> $!;
+    <span class="cperl-nonoverridable">print</span> $fh <span class="type">sprintf</span> <span class="string">&apos;command done: &quot;</span><span class="cperl-hash">%s</span><span class="string">&quot;&apos;</span>, $lastcmd;
+    <span class="cperl-nonoverridable">print</span> $fh <span class="string">&quot;\n&quot;</span>;
+    <span class="type">close</span> $fh;
+}
+</code></pre>
+<p>これで、コマンドが完了した場合にピコーンと通知が来るようになりました。</p>
+<p>長い make や wget の時に超絶便利ですね！</p>
+<p>書き忘れましたが、現在この機能をつかうためには開発版の screen を使用する必要があります。</p>
+
+  </div>
+
+  <div class="meta">
+    by typester /
+    at <a href="/memo/2010/03/23/1/">2010-03-23T11:22:00</a> /
+    <a href="/memo/tag/screen/">screen</a>
+    &middot; <a href="/memo/tag/zsh/">zsh</a>
+    / <a href="/memo/2010/03/23/1/#disqus_thread">Comments(0)</a>
+  </div>
+</div>
+
+<div id="disqus_thread"></div>
+
+<script type="text/javascript">
+    var disqus_url = location.protocol + "//" + location.host + "/memo/2010/03/23/1/";
+</script>
+<script type="text/javascript" src="http://disqus.com/forums/unknownplace/embed.js"></script>
+
+</div>
+
+<p id="footer">
+  Copyright &copy; 2005-2013
+      by <a class="author" href="/about/#me">Daisuke Murase (typester)</a> /
+  Site generated by <a href="https://github.com/typester/nim">nim</a> /
+  Comments powered by <a href="http://disqus.com">DISQUS</a>.
+</p>
+
+</div>
+
+
+<script type="text/javascript">
+//<![CDATA[
+(function() {
+	var links = document.getElementsByTagName('a');
+	var query = '?';
+	for(var i = 0; i < links.length; i++) {
+	if(links[i].href.indexOf('#disqus_thread') >= 0) {
+		query += 'url' + i + '=' + encodeURIComponent(links[i].href) + '&';
+	}
+	}
+	document.write('<script charset="utf-8" type="text/javascript" src="http://disqus.com/forums/unknownplace/get_num_replies.js' + query + '"></' + 'script>');
+})();
+//]]>
+</script>
+
+
+<script type="text/javascript">
+var gaJsHost = (("https:" == document.location.protocol) ? "https://ssl." : "http://www.");
+document.write(unescape("%3Cscript src='" + gaJsHost + "google-analytics.com/ga.js' type='text/javascript'%3E%3C/script%3E"));
+</script>
+<script type="text/javascript">
+try {
+var pageTracker = _gat._getTracker("UA-53067-1");
+pageTracker._trackPageview();
+} catch(err) {}</script>
+
+<script>
+function googleTranslateElementInit() {
+  new google.translate.TranslateElement({
+    pageLanguage: 'ja',
+    gaTrack: true,
+    gaId: 'UA-53067',
+    floatPosition: google.translate.TranslateElement.FloatPosition.BOTTOM_RIGHT
+  });
+}
+</script><script src="//translate.google.com/translate_a/element.js?cb=googleTranslateElementInit"></script>
+
+</body>
+</html>

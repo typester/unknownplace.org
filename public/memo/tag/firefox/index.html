@@ -1,0 +1,297 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="ja" xml:lang="ja">
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <title>memo - unknownplace.org</title>
+  <link rel="stylesheet" type="text/css" href="http://yui.yahooapis.com/3.0.0/build/cssreset/reset-min.css" />
+  <link rel="stylesheet" type="text/css" href="http://yui.yahooapis.com/3.0.0/build/cssfonts/fonts-min.css" />
+  <link rel="stylesheet" href="/css/style.css" type="text/css" />
+  <meta property="fb:admins" content="1093631929" />
+  <meta name="robots" content="noindex" />
+  <link rel="alternate" type="application/rss+xml" href="http://unknownplace.org/memo/index.rss" />
+</head>
+<body>
+
+<div id="container">
+<div id="header">
+    <h1><a href="/">unknownplace.org</a></h1> /
+<a href="/memo/">memo</a>
+</div>
+
+<div id="content">
+
+<div class="entry autopagerize_page_element">
+  <h2><a href="/memo/2009/01/13/1/">最後のタブ閉じたとき about:blank を開く設定</a></h2>
+
+  <div class="body">
+    <p>OSX にしてから Firefox で最後のタブを閉じたときにウィンドウが消えてしまうのが嫌だなーとおもっていたけど、いまふと about:config を close で検索してみたりしたら</p>
+<pre><code>browser.tabs.closeWindowWithLastTab
+</code></pre>
+<p>という項目が見つかったので、試しにそれをトグルしてあげたら希望通りの動作になった。</p>
+<p>これがしたかった。満足。</p>
+
+  </div>
+
+  <div class="meta">
+    by typester /
+    at <a href="/memo/2009/01/13/1/">2009-01-13T14:37:00</a> /
+    <a href="/memo/tag/firefox/">firefox</a>
+    / <a href="/memo/2009/01/13/1/#disqus_thread">Comment</a>
+  </div>
+</div>
+
+<div class="entry autopagerize_page_element">
+  <h2><a href="/memo/2008/09/16/1/">複数起動Firefox</a></h2>
+
+  <div class="body">
+    <p>昔、<a href="http://unknownplace.org/memo/2006/01/07#e004">wshでやるの</a>かいてたけど、今のは</p>
+<pre><code>firefox.exe -no-remote -p profile2
+</code></pre>
+<p>でいいらしい。せこんさんにおしえてもらった。</p>
+
+  </div>
+
+  <div class="meta">
+    by typester /
+    at <a href="/memo/2008/09/16/1/">2008-09-16T10:30:00</a> /
+    <a href="/memo/tag/firefox/">firefox</a>
+    / <a href="/memo/2008/09/16/1/#disqus_thread">Comment</a>
+  </div>
+</div>
+
+<div class="entry autopagerize_page_element">
+  <h2><a href="/memo/2008/07/22/2/">Firefoxタブ</a></h2>
+
+  <div class="body">
+    <p>Firefox3、なんかいつのまにかすべてのウィンドウがタブで開くようになってしまっていた。</p>
+<p>ポップアップとかでサイズ指定してあるのとかはポップアップしてほしいのだけど、やり方忘れていてググった。</p>
+<pre><code>user_pref(<span class="string">"browser.link.open_newwindow"</span>, 3);
+user_pref(<span class="string">"browser.link.open_newwindow.restriction"</span>, 3);
+</code></pre>
+<p>たぶんこれでおｋ</p>
+
+  </div>
+
+  <div class="meta">
+    by typester /
+    at <a href="/memo/2008/07/22/2/">2008-07-22T13:33:00</a> /
+    <a href="/memo/tag/firefox/">firefox</a>
+    / <a href="/memo/2008/07/22/2/#disqus_thread">Comment</a>
+  </div>
+</div>
+
+<div class="entry autopagerize_page_element">
+  <h2><a href="/memo/2007/12/19/1/">Firefox 3.0 b2</a></h2>
+
+  <div class="body">
+    <p>入れた。b1からCheck for updatesしてそのままアップデート。</p>
+<p>URLの履歴がタイトルも出るようになった。これはどうだろうなぁ。</p>
+<p>b1のときでも表示にタイトルは出てなかったけどアドレスバーにタイトル文字列いれても履歴にマッチしていたのでまぁでるほうがわかりやすいのかな？</p>
+<p>b1は割と普通に常用していたのだけど、快適。</p>
+<p>tomblooが動かないのと、delicious bookmarksで自分のブックマークとのsyncができないので自分のタグが補完されなくてうざいのくらいが困るところ。</p>
+<p>でもずっとつかってても2系みたいに重くなんないのでもう2には戻れない感じ。</p>
+
+  </div>
+
+  <div class="meta">
+    by typester /
+    at <a href="/memo/2007/12/19/1/">2007-12-19T14:12:00</a> /
+    <a href="/memo/tag/firefox/">firefox</a>
+    / <a href="/memo/2007/12/19/1/#disqus_thread">Comment</a>
+  </div>
+</div>
+
+<div class="entry autopagerize_page_element">
+  <h2><a href="/memo/2007/12/08/1/">Firefox3でPlaggerLDRを無理やり動かした</a></h2>
+
+  <div class="body">
+    <p>試してみたのだけど、<code>unsafeWindow.API.prototype</code> が undefined とかいわれて今までのスクリプトは使えなかった。</p>
+<p><code>unsafeWindow.API</code> 自体は見えているようだ。これはどういうことなんだろう？ 詳しい人教えてほしい＞＜</p>
+<p>よくわからないので、API オブジェクトを user.js 内にコピペして再定義してあげてちょっとごにょったら動いた。</p>
+<p>とりあえずcodereposにおいておいた。</p>
+<blockquote><p><a href="http://svn.coderepos.org/share/lang/javascript/userscripts/hackldrapi_fx3.user.js">http://svn.coderepos.org/share/lang/javascript/userscripts/hackldrapi_fx3.user.js</a></p></blockquote>
+<p>設定するところは面倒だったので引き継いでない。自分で about:config とかで設定する必要あり。</p>
+
+  </div>
+
+  <div class="meta">
+    by typester /
+    at <a href="/memo/2007/12/08/1/">2007-12-08T22:00:00</a> /
+    <a href="/memo/tag/firefox/">firefox</a>
+    / <a href="/memo/2007/12/08/1/#disqus_thread">Comment</a>
+  </div>
+</div>
+
+<div class="entry autopagerize_page_element">
+  <h2><a href="/memo/2007/09/13/2/"></a></h2>
+
+  <div class="body">
+    <p>@-moz-document url-prefix(&quot;http://coderepos.org/share/browser&quot;) { table.code th.lineno { width: 7em !important; } }</p>
+<p>100行目以降がはてなスターのおかげで行数あいてしまうのでちょいカラムひろげてみた。どするのがいいのか。</p>
+
+  </div>
+
+  <div class="meta">
+    by typester /
+    at <a href="/memo/2007/09/13/2/">2007-09-13T18:22:00</a> /
+    <a href="/memo/tag/firefox/">firefox</a>
+    / <a href="/memo/2007/09/13/2/#disqus_thread">Comment</a>
+  </div>
+</div>
+
+<div class="entry autopagerize_page_element">
+  <h2><a href="/memo/2007/06/15/2/">拡張で描画が遅くなる</a></h2>
+
+  <div class="body">
+    <blockquote><p><a href="http://d.hatena.ne.jp/independent007/20070612">300clp - Firefoxを遅くさせる最大原因はアドオン</a></p></blockquote>
+<p>これみて開発時しかつかわない拡張いろいろ無効にしてみたところすげー速くなった。うは。</p>
+<p>でも開発時は使いたいから、プリセット設定してON/OFF変えて再起動とかしてくれる拡張がほしい！！</p>
+<p>開発用にあたらしくFirefoxのプロフィール作ってわけてもいいけど、普段使ってなじんでいるFirefox設定で開発しないと効率悪いしUIチェックとか何とか微妙になる気がするし。</p>
+<p>あと、上記URLの最後にIPv6を無効にするの意味ないって書いてあるけどおなじURLを表示するテストとかDNS最初しかひかないでしょ。それじゃわからないくない？</p>
+
+  </div>
+
+  <div class="meta">
+    by typester /
+    at <a href="/memo/2007/06/15/2/">2007-06-15T19:18:00</a> /
+    <a href="/memo/tag/firefox/">firefox</a>
+    / <a href="/memo/2007/06/15/2/#disqus_thread">Comment</a>
+  </div>
+</div>
+
+<div class="entry autopagerize_page_element">
+  <h2><a href="/memo/2007/06/05/1/">TwitBin はなんちゃって Firefox 拡張</a></h2>
+
+  <div class="body">
+    <p>IM 全然うごかねーので、<a href="http://www.twitbin.com/" title="TwitBin - twitter your browser - twitbin.co">TwitBin</a> とかいれてみたけど、日本語変換中でもEnter押すと送信されてしまう。</p>
+<p>あこれ、ちょっと前の del.icio.us と同じだなと思って DOM インスペクタでみてみるとやっぱり onkeyup でポストしている。</p>
+<p>そこ変えればいいなと思ってソース見てみたら。。あれ？ コード全然ない。</p>
+<p>よく見たらサイドバー内は拡張として実装されているわけではなく、単に <a href="http://www.twitbin.com/beta/">http://www.twitbin.com/beta/</a> をそのまま表示させてるだけ！！</p>
+<p>ID, パスワード普通にとられちゃってるねぇ。</p>
+<p>twitter 周りはこんなのばっかだなぁ。</p>
+
+  </div>
+
+  <div class="meta">
+    by typester /
+    at <a href="/memo/2007/06/05/1/">2007-06-05T21:22:00</a> /
+    <a href="/memo/tag/twitter/">twitter</a>
+    &middot; <a href="/memo/tag/firefox/">firefox</a>
+    / <a href="/memo/2007/06/05/1/#disqus_thread">Comment</a>
+  </div>
+</div>
+
+<div class="entry autopagerize_page_element">
+  <h2><a href="/memo/2007/02/19/1/">Remember The Milk で IME を自動で ON/OFF する greasemonkey スクリプト</a></h2>
+
+  <div class="body">
+    <p><a href="http://www.rememberthemilk.com">Remember The Milk</a> はサービス開始当初少し触っただけでまったく使っていなかったのだけど、最近周りの人が結構使っているのでちょっと見てみたらすごい進化していて、これは便利そうってことで使ってみている。</p>
+<p>それで、キーボードショートカットだけでいろいろな操作ができるようになっていてすごく便利になっているのだけど、IMEがONの状態だと動かない。</p>
+<p>タスクは日本語で入力することが多いので、いちいちIMEの状態を気にしなくてはいけなくて面倒。</p>
+<p>ってことで、テキストフィールドにフォーカスがあるときは自動でIMEをONにし、フォーカスが外れるとOFFにするスクリプトを書いてみた。</p>
+<ul><li><a href="/gm/rememberthemilkime/rememberthemilkime.user.js">rememberthemilkime.user.js</a></li></ul>
+<p>スクリプトと同じ階層にある IME.swf というのも読み込むようになっていて、IMEのON/OFFはそれでやってる。無駄にAS3で書いたため、Flash Player9以上でないと使えないとかいう。</p>
+
+  </div>
+
+  <div class="meta">
+    by typester /
+    at <a href="/memo/2007/02/19/1/">2007-02-19T04:25:00</a> /
+    <a href="/memo/tag/web/">web</a>
+    &middot; <a href="/memo/tag/firefox/">firefox</a>
+    &middot; <a href="/memo/tag/greasemonkey/">greasemonkey</a>
+    &middot; <a href="/memo/tag/rememberthemilk/">rememberthemilk</a>
+    / <a href="/memo/2007/02/19/1/#disqus_thread">Comment</a>
+  </div>
+</div>
+
+<div class="entry autopagerize_page_element">
+  <h2><a href="/memo/2007/02/15/6/">メニューバーの表示をC-Mでトグルする拡張</a></h2>
+
+  <div class="body">
+    <p>1.5時代につくってから、そのままバージョン警告無視して使い続けていたけどいい加減あれなのでsvnつっこんでちゃんとやることにした。</p>
+<p>ついでに公開。</p>
+<blockquote><p><a href="http://svn.unknownplace.org/public/firefox/extensions/ToggleMenu/releases/">ToggleMenu</a></p></blockquote>
+<p><a href="http://www.flickr.com/photos/typester/390989598/" title="Photo Sharing"><img alt="b" height="80" src="http://farm1.static.flickr.com/78/390989598_dafb405ee6_o.png" width="180" /></a></p>
+<p>これが</p>
+<p><a href="http://www.flickr.com/photos/typester/390989601/" title="Photo Sharing"><img alt="a" height="80" src="http://farm1.static.flickr.com/153/390989601_ffa3605069_o.png" width="180" /></a></p>
+<p>こうなると。</p>
+<p>Ctrl-m でトグル。手抜きなのでキーは決め打ち。</p>
+
+  </div>
+
+  <div class="meta">
+    by typester /
+    at <a href="/memo/2007/02/15/6/">2007-02-15T18:56:00</a> /
+    <a href="/memo/tag/firefox/">firefox</a>
+    / <a href="/memo/2007/02/15/6/#disqus_thread">Comment</a>
+  </div>
+</div>
+
+
+
+
+<div id="pager" class="autopagerize_insert_before">
+  <p class="pages">
+    <span class="prev">&laquo; Prev</span>
+    <span class="current">1</span>
+    <a href="/memo/tag/firefox/page/2/">2</a>
+    <a href="/memo/tag/firefox/page/3/">3</a>
+    <a class="next" rel="next" href="/memo/tag/firefox/page/2/">Next &raquo;</a>
+  </p>
+  <p class="info">(Page 1 of 3)</p>
+</div>
+
+
+</div>
+
+<p id="footer">
+  Copyright &copy; 2005-2013
+      by <a class="author" href="/about/#me">Daisuke Murase (typester)</a> /
+  Site generated by <a href="https://github.com/typester/nim">nim</a> /
+  Comments powered by <a href="http://disqus.com">DISQUS</a>.
+</p>
+
+</div>
+
+
+<script type="text/javascript">
+//<![CDATA[
+(function() {
+	var links = document.getElementsByTagName('a');
+	var query = '?';
+	for(var i = 0; i < links.length; i++) {
+	if(links[i].href.indexOf('#disqus_thread') >= 0) {
+		query += 'url' + i + '=' + encodeURIComponent(links[i].href) + '&';
+	}
+	}
+	document.write('<script charset="utf-8" type="text/javascript" src="http://disqus.com/forums/unknownplace/get_num_replies.js' + query + '"></' + 'script>');
+})();
+//]]>
+</script>
+
+
+<script type="text/javascript">
+var gaJsHost = (("https:" == document.location.protocol) ? "https://ssl." : "http://www.");
+document.write(unescape("%3Cscript src='" + gaJsHost + "google-analytics.com/ga.js' type='text/javascript'%3E%3C/script%3E"));
+</script>
+<script type="text/javascript">
+try {
+var pageTracker = _gat._getTracker("UA-53067-1");
+pageTracker._trackPageview();
+} catch(err) {}</script>
+
+<script>
+function googleTranslateElementInit() {
+  new google.translate.TranslateElement({
+    pageLanguage: 'ja',
+    gaTrack: true,
+    gaId: 'UA-53067',
+    floatPosition: google.translate.TranslateElement.FloatPosition.BOTTOM_RIGHT
+  });
+}
+</script><script src="//translate.google.com/translate_a/element.js?cb=googleTranslateElementInit"></script>
+
+</body>
+</html>

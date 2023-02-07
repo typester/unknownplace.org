@@ -1,0 +1,434 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="ja" xml:lang="ja">
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <title>memo - unknownplace.org</title>
+  <link rel="stylesheet" type="text/css" href="http://yui.yahooapis.com/3.0.0/build/cssreset/reset-min.css" />
+  <link rel="stylesheet" type="text/css" href="http://yui.yahooapis.com/3.0.0/build/cssfonts/fonts-min.css" />
+  <link rel="stylesheet" href="/css/style.css" type="text/css" />
+  <meta property="fb:admins" content="1093631929" />
+  <meta name="robots" content="noindex" />
+  <link rel="alternate" type="application/rss+xml" href="http://unknownplace.org/memo/index.rss" />
+</head>
+<body>
+
+<div id="container">
+<div id="header">
+    <h1><a href="/">unknownplace.org</a></h1> /
+<a href="/memo/">memo</a>
+</div>
+
+<div id="content">
+
+<div class="entry autopagerize_page_element">
+  <h2><a href="/memo/2006/01/12/1/">テストスクリプトが綺麗にかけない</a></h2>
+
+  <div class="body">
+    <p>というかすごい汚くなる。うう。</p>
+<p>抜粋</p>
+<pre><code><span class="keyword">my</span> <span class="variable-name">$req</span>        = Test::MockObject-&gt;new;
+<span class="keyword">my</span> <span class="variable-name">$res</span>        = HTTP::Response-&gt;new;
+<span class="keyword">my</span> <span class="variable-name">$user_class</span> = Test::MockObject-&gt;new;
+<span class="keyword">my</span> <span class="variable-name">$params</span>     = {};
+$res-&gt;{<span class="string">success</span>} = 1;
+$req-&gt;fake_module(<span class="string">&apos;Catalyst::Request&apos;</span>);
+$req-&gt;mock( <span class="string">params</span> =&gt; <span class="keyword">sub</span> {$params} );
+$user_class-&gt;fake_module(<span class="string">&apos;Fake::User::Class&apos;</span>);
+$config-&gt;{<span class="string">user_class</span>} = <span class="string">&apos;Fake::User::Class&apos;</span>;
+$c-&gt;mock( <span class="string">req</span>                =&gt; <span class="keyword">sub</span> {$req} );
+$c-&gt;mock( <span class="string">default_auth_store</span> =&gt; <span class="keyword">sub</span> { } );
+$c-&gt;mock( <span class="string">set_authenticated</span>  =&gt; <span class="keyword">sub</span> { } );
+</code></pre>
+<p>きも。。</p>
+
+  </div>
+
+  <div class="meta">
+    by typester /
+    at <a href="/memo/2006/01/12/1/">2006-01-12T01:35:00</a> /
+    <a href="/memo/tag/perl/">perl</a>
+    / <a href="/memo/2006/01/12/1/#disqus_thread">Comment</a>
+  </div>
+</div>
+
+<div class="entry autopagerize_page_element">
+  <h2><a href="/memo/2006/01/06/5/"></a></h2>
+
+  <div class="body">
+    <p>--- /Library/Perl/5.8.6/HTML/FillInForm.pm 2005-10-14 05:49:09.000000000 +0900 +++ lib/HTML/FillInForm.pm 2006-01-06 15:45:37.000000000 +0900 @@ -83,6 +83,7 @@ if(my $file = $option{file}){ $self-&gt;parse_file($file); } elsif (my $scalarref = $option{scalarref}){ + $self-&gt;utf8_mode(1); $self-&gt;parse($$scalarref); } elsif (my $arrayref = $option{arrayref}){ for (@$arrayref){</p>
+<p>とかしちゃった。その場しのぎ。</p>
+
+  </div>
+
+  <div class="meta">
+    by typester /
+    at <a href="/memo/2006/01/06/5/">2006-01-06T15:47:00</a> /
+    <a href="/memo/tag/perl/">perl</a>
+    / <a href="/memo/2006/01/06/5/#disqus_thread">Comment</a>
+  </div>
+</div>
+
+<div class="entry autopagerize_page_element">
+  <h2><a href="/memo/2006/01/06/4/">HTML::Parser の warning</a></h2>
+
+  <div class="body">
+    <blockquote><p>Parsing of undecoded UTF-8 will give garbage when decoding entities at /Library/Perl/5.8.6/HTML/FillInForm.pm line 86.</p></blockquote>
+<p>とかってのが input エレメントの数だけ出てうぜええ。</p>
+
+  </div>
+
+  <div class="meta">
+    by typester /
+    at <a href="/memo/2006/01/06/4/">2006-01-06T15:40:00</a> /
+    <a href="/memo/tag/perl/">perl</a>
+    / <a href="/memo/2006/01/06/4/#disqus_thread">Comment</a>
+  </div>
+</div>
+
+<div class="entry autopagerize_page_element">
+  <h2><a href="/memo/2005/12/31/2/">helper</a></h2>
+
+  <div class="body">
+    <p><strong>PACKAGE</strong>-&gt;config( name =&gt; &apos;AdminPage&apos;,</p>
+<pre><code>    <span class="nxml-text">authentication =&gt; {
+        dbic =&gt; {
+            user_class         =&gt; &apos;AdminPage::Model::DBIC::Account&apos;,
+            user_field         =&gt; &apos;username&apos;,
+            password_field     =&gt; &apos;password&apos;,
+            password_type      =&gt; &apos;hashed&apos;,
+            password_hash_type =&gt; &apos;MD5&apos;,
+        },
+    },
+
+    authorization =&gt; {
+        dbic =&gt; {
+            role_class           =&gt; &apos;AdminPage::Model::DBIC::Role&apos;,
+            role_field           =&gt; &apos;role&apos;,
+            role_rel             =&gt; &apos;map_account_role&apos;,
+            user_role_user_field =&gt; &apos;account&apos;,
+        },
+    },
+
+    session =&gt; {
+        expires =&gt; 3600 * 14,
+        storage =&gt; __PACKAGE__-&gt;path_to( &apos;session&apos;, &apos;session&apos; )-&gt;stringify,
+        cookie_name =&gt; &apos;ap_sid&apos;,
+    },
+
+    validator =&gt; {
+        plugins        =&gt; [qw/DBIC::Unique/],
+        options        =&gt; { dbic_base_class =&gt; &apos;AdminPage::Model::DBIC&apos;, },
+        messages       =&gt; __PACKAGE__-&gt;path_to(&apos;validator.yml&apos;)-&gt;stringify,
+        message_format =&gt; qq{</span><span class="nxml-tag-delimiter">&lt;</span><span class="nxml-element-local-name">span</span> <span class="nxml-attribute-local-name">class</span>=<span class="nxml-attribute-value-delimiter">&quot;</span><span class="nxml-attribute-value">error</span><span class="nxml-attribute-value-delimiter">&quot;</span><span class="nxml-tag-delimiter">&gt;</span><span class="nxml-text">%s</span><span class="nxml-tag-delimiter">&lt;</span><span class="nxml-tag-slash">/</span><span class="nxml-element-local-name">span</span><span class="nxml-tag-delimiter">&gt;</span><span class="nxml-text">},
+    },
+
+    &apos;View::TT&apos; =&gt; {
+        CONTEXT     =&gt; undef,
+        PRE_PROCESS =&gt; &apos;inc/macro.tt&apos;,
+    },
+);
+</span></code></pre>
+<p>こんな config をちょくちょく書くんだけど、いまいちうまくヘルパーつくれなくてめんどいのよね。ううう。</p>
+<p>なんつか、もうちょいアプリかかないとどこが共通でどこが変わるかとかがうまくわからんよ。パターん</p>
+
+  </div>
+
+  <div class="meta">
+    by typester /
+    at <a href="/memo/2005/12/31/2/">2005-12-31T04:53:00</a> /
+    <a href="/memo/tag/life/">life</a>
+    &middot; <a href="/memo/tag/perl/">perl</a>
+    / <a href="/memo/2005/12/31/2/#disqus_thread">Comment</a>
+  </div>
+</div>
+
+<div class="entry autopagerize_page_element">
+  <h2><a href="/memo/2005/12/28/3/">CPAN Recent Changes</a></h2>
+
+  <div class="body">
+    <p>CPAN の Recent RSS は更新チェックにはつかえるけど、名前空間で絞りこみたかったり、何が変わったのか知りたいので、更新された部分の Changelog つきで RSS をはくツールを作ってみた。</p>
+<p><a href="http://unknownplace.org/cpanrecent/">CPAN Recent Changes</a></p>
+<p><a href="http://unknownplace.org/cpanrecent/Catalyst/Plugin/" title="CPAN Recent Changes - Catalyst::Plugin">/cpanrecent/Catalyst/Plugin</a></p>
+<p>などとすれば Catalyst::Plugin のみの更新もチェック可能。CPAN ウォーチャー必携！</p>
+<p>ソースはこちら： <a href="http://svn.unknownplace.org/public/CPANRecent/trunk/">http://svn.unknownplace.org/public/CPANRecent/trunk/</a></p>
+
+  </div>
+
+  <div class="meta">
+    by typester /
+    at <a href="/memo/2005/12/28/3/">2005-12-28T22:01:00</a> /
+    <a href="/memo/tag/life/">life</a>
+    &middot; <a href="/memo/tag/perl/">perl</a>
+    / <a href="/memo/2005/12/28/3/#disqus_thread">Comment</a>
+  </div>
+</div>
+
+<div class="entry autopagerize_page_element">
+  <h2><a href="/memo/2005/12/27/3/">日付フィルタ</a></h2>
+
+  <div class="body">
+    <p>ここみたいに Path が /2005/12/27 とかからはじまっていた場合、それを日付情報としてパースし、それ以降の Path とともに default コントローラを呼ぶには</p>
+<pre><code><span class="keyword">sub</span> <span class="function-name">day</span> <span class="constant">:</span> <span class="constant">Regex</span><span class="string">(&apos;^(\d{4})/([01]?\d)/([0-3]?\d)(?:/(.*))?&apos;)</span> {
+    <span class="keyword">my</span> ( <span class="variable-name">$self</span>, <span class="variable-name">$c</span> ) = <span class="cperl-array">@_</span>;
+
+    ( $c-&gt;stash-&gt;{<span class="string">yr</span>}, $c-&gt;stash-&gt;{<span class="string">mo</span>}, $c-&gt;stash-&gt;{<span class="string">da</span>} )
+        = @{ $c-&gt;req-&gt;snippets };
+    $c-&gt;forward( <span class="string">&apos;/default&apos;</span>, [ <span class="cperl-nonoverridable">split</span> <span class="string">&apos;/&apos;</span>, $c-&gt;req-&gt;snippets-&gt;[-1] ] );
+}
+
+<span class="keyword">sub</span> <span class="function-name">month</span> <span class="constant">:</span> <span class="constant">Regex</span><span class="string">(&apos;^(\d{4})/([01]?\d)(?:/(.*))?&apos;)</span> {
+    <span class="keyword">my</span> ( <span class="variable-name">$self</span>, <span class="variable-name">$c</span> ) = <span class="cperl-array">@_</span>;
+
+    ( $c-&gt;stash-&gt;{<span class="string">yr</span>}, $c-&gt;stash-&gt;{<span class="string">mo</span>} ) = @{ $c-&gt;req-&gt;snippets };
+    $c-&gt;forward( <span class="string">&apos;/default&apos;</span>, [ <span class="cperl-nonoverridable">split</span> <span class="string">&apos;/&apos;</span>, $c-&gt;req-&gt;snippets-&gt;[-1] ] );
+}
+
+<span class="keyword">sub</span> <span class="function-name">year</span> <span class="constant">:</span> <span class="constant">Regex</span><span class="string">(&apos;^(\d{4})(?:/(.*))?&apos;)</span> {
+    <span class="keyword">my</span> ( <span class="variable-name">$self</span>, <span class="variable-name">$c</span> ) = <span class="cperl-array">@_</span>;
+
+    ( $c-&gt;stash-&gt;{<span class="string">yr</span>} ) = @{ $c-&gt;req-&gt;snippets };
+    $c-&gt;forward( <span class="string">&apos;/default&apos;</span>, [ <span class="cperl-nonoverridable">split</span> <span class="string">&apos;/&apos;</span>, $c-&gt;req-&gt;snippets-&gt;[-1] ] );
+}
+</code></pre>
+<p>とかしなくちゃいけなくて(思い付かなくて) DRY すぎるのでなんとかしたい。</p>
+<p>がんばればまとめられそうだけど、ううむ。</p>
+<p>つか関係ないけど Regex コントローラはマッチした部分がコントローラの引数で飛んでくるって感じならいいのに。</p>
+
+  </div>
+
+  <div class="meta">
+    by typester /
+    at <a href="/memo/2005/12/27/3/">2005-12-27T12:06:00</a> /
+    <a href="/memo/tag/perl/">perl</a>
+    &middot; <a href="/memo/tag/catalyst/">catalyst</a>
+    / <a href="/memo/2005/12/27/3/#disqus_thread">Comment</a>
+  </div>
+</div>
+
+<div class="entry autopagerize_page_element">
+  <h2><a href="/memo/2005/12/25/2/">むむ</a></h2>
+
+  <div class="body">
+    <p>create table playlist ( id integer not null, song integer not null, timestamp integer not null, primary key (id) );</p>
+<pre><code>create table song (
+       id integer not null,
+       name text,
+       artist integer not null,
+       album integer not null,
+       parimary key (id)
+);
+
+create table album (
+       id integer not null,
+       name text,
+       artist integer not null,
+       primary key (id)
+);
+
+create table artist (
+       id integer not null,
+       name text,
+       primary key (id)
+);
+</code></pre>
+<p>とかって DB(SQLite) 構成で、</p>
+<pre><code><span class="keyword">package</span> <span class="function-name">DBIC::Playlist</span>;
+<span class="keyword">use</span> <span class="function-name">base</span> <span class="string">&apos;DBIx::Class::Core&apos;</span>;
+<span class="type">__PACKAGE__</span>-&gt;belongs_to( <span class="string">song</span> =&gt; <span class="string">&apos;DBIC::Song&apos;</span> );
+
+<span class="keyword">package</span> <span class="function-name">DBIC::Song</span>;
+<span class="keyword">use</span> <span class="function-name">base</span> <span class="string">&apos;DBIx::Class::Core&apos;</span>;
+<span class="type">__PACKAGE__</span>-&gt;has_many( <span class="string">playlists</span> =&gt; <span class="string">&apos;DBIC::Playlist&apos;</span> );
+<span class="type">__PACKAGE__</span>-&gt;belongs_to( <span class="string">artist</span> =&gt; <span class="string">&apos;DBIC::Artist&apos;</span> );
+<span class="type">__PACKAGE__</span>-&gt;belongs_to( <span class="string">album</span>  =&gt; <span class="string">&apos;DBIC::Album&apos;</span> );
+
+<span class="keyword">package</span> <span class="function-name">DBIC::Album</span>;
+<span class="keyword">use</span> <span class="function-name">base</span> <span class="string">&apos;DBIx::Class::Core&apos;</span>;
+<span class="type">__PACKAGE__</span>-&gt;has_many( <span class="string">songs</span> =&gt; <span class="string">&apos;DBIC::Song&apos;</span> );
+<span class="type">__PACKAGE__</span>-&gt;belongs_to( <span class="string">artist</span> =&gt; <span class="string">&apos;DBIC::Artist&apos;</span> );
+
+<span class="keyword">package</span> <span class="function-name">DBIC::Artist</span>;
+<span class="keyword">use</span> <span class="function-name">base</span> <span class="string">&apos;DBIx::Class::Core&apos;</span>;
+<span class="type">__PACKAGE__</span>-&gt;has_many( <span class="string">songs</span>  =&gt; <span class="string">&apos;DBIC::Song&apos;</span> );
+<span class="type">__PACKAGE__</span>-&gt;has_many( <span class="string">albums</span> =&gt; <span class="string">&apos;DBIC::Album&apos;</span> );
+</code></pre>
+<p>こうしたとして、ここで最新10件の playlist を取得したいとするとき、</p>
+<pre><code><span class="keyword">my</span> <span class="variable-name">$playlists</span> = DBIC::Playlist-&gt;search( {}, { <span class="string">order_by</span> =&gt; <span class="string">&apos;timestamp desc&apos;</span>, <span class="string">rows</span> =&gt; 10 } );
+</code></pre>
+<p>とかすると <code>$playlists-&gt;first-&gt;song</code> とか他のテーブルのもの読みにいくときにいちいち SQL が発行されるのであれよね。</p>
+<p>ここで</p>
+<pre><code><span class="keyword">my</span> <span class="variable-name">$playlists</span> = DBIC::Playlist-&gt;search( {}, { <span class="string">order_by</span> =&gt; <span class="string">&apos;timestamp desc&apos;</span>, <span class="string">rows</span> =&gt; 10, <span class="string">prefetch</span> =&gt; [<span class="cperl-nonoverridable">qw</span><span class="string">/song/</span>] } );
+</code></pre>
+<p>とかすれば song テーブルは最初の SQL で JOIN して一緒に持ってきてくれる。</p>
+<p>それはいいんだけど、その先の song.album とかもとってきてほしいんだけど、むりっすか！</p>
+<p>この状況でたとえばテンプレート内で</p>
+<pre><code>[% WHILE (playlist = playlists.next) %]
+  album: [% playlist.song.artist.name %]
+[% END %]
+</code></pre>
+<p>とかやると毎回 artist テーブルにクエリ投げる SQL がよばれるわけですよ。かっけぇ。。</p>
+<p>どーすんのがいいのだろう。</p>
+
+  </div>
+
+  <div class="meta">
+    by typester /
+    at <a href="/memo/2005/12/25/2/">2005-12-25T13:30:00</a> /
+    <a href="/memo/tag/perl/">perl</a>
+    / <a href="/memo/2005/12/25/2/#disqus_thread">Comment</a>
+  </div>
+</div>
+
+<div class="entry autopagerize_page_element">
+  <h2><a href="/memo/2005/12/21/1/">FormValidator::Simple</a></h2>
+
+  <div class="body">
+    <p>Validator 使う機会があったら試してみようと思っていた FormValidator::Simple。やっと試してみた。</p>
+<p>すげーいい！</p>
+<p>けど、とりあえず軽く使ってみて一つ不満が。エラーメッセージを全体の集合でしか取れないこと。<code>Data::FormValidator</code> みたいに個別かつフォーマットされた物もほしい。</p>
+<p>とりあえず現状使う上では(Catalystの場合)、</p>
+<pre><code><span class="nxml-text">MyApp-&gt;config(
+    &apos;View::TT&apos; =&gt; { PRE_PROCESS =&gt; &apos;inc/macro.tt&apos;, },
+    validator  =&gt; {
+        messages       =&gt; &apos;conf/messages.yml&apos;,
+        message_format =&gt; qq!</span><span class="nxml-tag-delimiter">&lt;</span><span class="nxml-element-local-name">span</span> <span class="nxml-attribute-local-name">class</span>=<span class="nxml-attribute-value-delimiter">&quot;</span><span class="nxml-attribute-value">error</span><span class="nxml-attribute-value-delimiter">&quot;</span><span class="nxml-tag-delimiter">&gt;</span><span class="nxml-text">%s</span><span class="nxml-tag-delimiter">&lt;</span><span class="nxml-tag-slash">/</span><span class="nxml-element-local-name">span</span><span class="nxml-tag-delimiter">&gt;</span><span class="nxml-text">\n!,
+    },
+);
+</span></code></pre>
+<p>などとし、macro.tt に</p>
+<pre><code>[%-
+
+MACRO ERROR(action, key) BLOCK;
+    c.form.message.get(action, key, c.form.error(key)) | format(c.config.validator.message_format);
+END;
+
+-%]
+</code></pre>
+<p>とかしておいた上で、フォームのテンプレートで</p>
+<pre><code>&lt;input type=<span class="string">"text"</span> name=<span class="string">"user"</span> id=<span class="string">"login_form_user"</span> value=<span class="string">""</span> /&gt;
+[%- ERROR(<span class="string">'login'</span>, <span class="string">'user'</span>) -%]
+</code></pre>
+<p>とかすげーめんどいことしてる。</p>
+<p>モジュールのほういじろうかとおもったけど、いまいちうまい方法が思いつかなかったので。。</p>
+<p>けどそれでも <code>Data::FormValidator</code> よりは断然良い。</p>
+
+  </div>
+
+  <div class="meta">
+    by typester /
+    at <a href="/memo/2005/12/21/1/">2005-12-21T02:45:00</a> /
+    <a href="/memo/tag/perl/">perl</a>
+    / <a href="/memo/2005/12/21/1/#disqus_thread">Comment</a>
+  </div>
+</div>
+
+<div class="entry autopagerize_page_element">
+  <h2><a href="/memo/2005/12/10/3/">PERL5LIB</a></h2>
+
+  <div class="body">
+    <p>一時的に trunk 使いたいときとか</p>
+<pre><code>export PERL5LIB=`echo ~/workdir/Catalyst/**/lib(/) | sed -e &apos;s/ /:/g&apos;`
+</code></pre>
+<p>とかしてんですが、もっと簡単に書ける？＞zsh</p>
+
+  </div>
+
+  <div class="meta">
+    by typester /
+    at <a href="/memo/2005/12/10/3/">2005-12-10T01:21:00</a> /
+    <a href="/memo/tag/perl/">perl</a>
+    &middot; <a href="/memo/tag/zsh/">zsh</a>
+    / <a href="/memo/2005/12/10/3/#disqus_thread">Comment</a>
+  </div>
+</div>
+
+<div class="entry autopagerize_page_element">
+  <h2><a href="/memo/2005/12/05/4/">$|</a></h2>
+
+  <div class="body">
+    <p><code>$| = 1</code> したらちゃんとうごいた。</p>
+
+  </div>
+
+  <div class="meta">
+    by typester /
+    at <a href="/memo/2005/12/05/4/">2005-12-05T04:45:00</a> /
+    <a href="/memo/tag/perl/">perl</a>
+    / <a href="/memo/2005/12/05/4/#disqus_thread">Comment</a>
+  </div>
+</div>
+
+
+
+
+<div id="pager" class="autopagerize_insert_before">
+  <p class="pages">
+    <a class="prev" rel="previous" href="/memo/tag/perl/page/26/">&laquo; Prev</a>
+    <a href="/memo/tag/perl/page/21/">21</a>
+    <a href="/memo/tag/perl/page/22/">22</a>
+    <a href="/memo/tag/perl/page/23/">23</a>
+    <a href="/memo/tag/perl/page/24/">24</a>
+    <a href="/memo/tag/perl/page/25/">25</a>
+    <a href="/memo/tag/perl/page/26/">26</a>
+    <span class="current">27</span>
+    <a href="/memo/tag/perl/page/28/">28</a>
+    <a href="/memo/tag/perl/page/29/">29</a>
+    <a href="/memo/tag/perl/page/30/">30</a>
+    <a class="next" rel="next" href="/memo/tag/perl/page/28/">Next &raquo;</a>
+  </p>
+  <p class="info">(Page 27 of 30)</p>
+</div>
+
+
+</div>
+
+<p id="footer">
+  Copyright &copy; 2005-2013
+      by <a class="author" href="/about/#me">Daisuke Murase (typester)</a> /
+  Site generated by <a href="https://github.com/typester/nim">nim</a> /
+  Comments powered by <a href="http://disqus.com">DISQUS</a>.
+</p>
+
+</div>
+
+
+<script type="text/javascript">
+//<![CDATA[
+(function() {
+	var links = document.getElementsByTagName('a');
+	var query = '?';
+	for(var i = 0; i < links.length; i++) {
+	if(links[i].href.indexOf('#disqus_thread') >= 0) {
+		query += 'url' + i + '=' + encodeURIComponent(links[i].href) + '&';
+	}
+	}
+	document.write('<script charset="utf-8" type="text/javascript" src="http://disqus.com/forums/unknownplace/get_num_replies.js' + query + '"></' + 'script>');
+})();
+//]]>
+</script>
+
+
+<script type="text/javascript">
+var gaJsHost = (("https:" == document.location.protocol) ? "https://ssl." : "http://www.");
+document.write(unescape("%3Cscript src='" + gaJsHost + "google-analytics.com/ga.js' type='text/javascript'%3E%3C/script%3E"));
+</script>
+<script type="text/javascript">
+try {
+var pageTracker = _gat._getTracker("UA-53067-1");
+pageTracker._trackPageview();
+} catch(err) {}</script>
+
+<script>
+function googleTranslateElementInit() {
+  new google.translate.TranslateElement({
+    pageLanguage: 'ja',
+    gaTrack: true,
+    gaId: 'UA-53067',
+    floatPosition: google.translate.TranslateElement.FloatPosition.BOTTOM_RIGHT
+  });
+}
+</script><script src="//translate.google.com/translate_a/element.js?cb=googleTranslateElementInit"></script>
+
+</body>
+</html>

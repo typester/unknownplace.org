@@ -1,0 +1,478 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="ja" xml:lang="ja">
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <title>memo - unknownplace.org</title>
+  <link rel="stylesheet" type="text/css" href="http://yui.yahooapis.com/3.0.0/build/cssreset/reset-min.css" />
+  <link rel="stylesheet" type="text/css" href="http://yui.yahooapis.com/3.0.0/build/cssfonts/fonts-min.css" />
+  <link rel="stylesheet" href="/css/style.css" type="text/css" />
+  <meta property="fb:admins" content="1093631929" />
+  <meta name="robots" content="noindex" />
+  <link rel="alternate" type="application/rss+xml" href="http://unknownplace.org/memo/index.rss" />
+</head>
+<body>
+
+<div id="container">
+<div id="header">
+    <h1><a href="/">unknownplace.org</a></h1> /
+<a href="/memo/">memo</a>
+</div>
+
+<div id="content">
+
+<div class="entry autopagerize_page_element">
+  <h2><a href="/memo/2013/01/16/1/">MacでのBluetoothホストコントロールデバイスの優先順位の変更</a></h2>
+
+  <div class="body">
+    <p>毎回ググるのでメモ。</p>
+<p>OSX は USBのドングルとかBluetoothホストコントローラとかをつけたときの挙動を、ファームウェアの NVRAM ってところに <code>bluetoothHostControllerSwitchBehavior</code> というキーで値を設定してあげることによって以下の3種類のうちから決めることができる。</p>
+<ul><li><code>never</code>: 外付けのホストコントローラにスイッチせず、つねにビルドインコントローラを使う</li><li><code>always</code>: ビルドインコントローラからdetachして外付けのホストコントローラにスイッチする</li><li><code>default</code>: 外付けホストコントローラがApple以外のときはビルドインからdetachして外付けデバイスを使う</li></ul>
+<p>デフォルトはもちろん <code>default</code>。</p>
+<p>で、 BT4LE に対応したドングルを持っていれば、BT4積んでない昔の MacBook なんかでも CoreBluetooth つかったり開発したりできる。</p>
+<p>さらに、あえてここで <code>never</code> を設定して外付けのホストコントローラを使わない設定にすると、 余っている外付けホストコントローラを iOS Simulator から利用することができる。</p>
+<p>この設定を変えるには <code>nvram</code> ってコマンドを使う:</p>
+<pre><code>$ sudo nvram bluetoothHostControllerSwitchBehavior=<span class="string">"never"</span>
+</code></pre>
+<p>とかでOK。</p>
+<p>詳しくは</p>
+<blockquote><p><a href="http://developer.apple.com/library/ios/#technotes/tn2295/_index.html">Technical Note TN2295: Testing Core Bluetooth Applications in the iOS Simulator</a></p></blockquote>
+<p>参照。</p>
+
+  </div>
+
+  <div class="meta">
+    by typester /
+    at <a href="/memo/2013/01/16/1/">2013-01-16T12:30:00</a> /
+    <a href="/memo/tag/osx/">osx</a>
+    / <a href="/memo/2013/01/16/1/#disqus_thread">Comment</a>
+  </div>
+</div>
+
+<div class="entry autopagerize_page_element">
+  <h2><a href="/memo/2012/10/31/1/">コマンドラインでネットワーク設定のネットワーク環境のところを変える</a></h2>
+
+  <div class="body">
+    <p>ネットワーク周りの設定は <code>networksetup</code> コマンドでいろいろできるみたいで、 man をみるとどうも環境設定でできることはほとんどここからもできる模様。</p>
+<p>んで、ネットワーク環境というのは</p>
+<pre><code>-listlocations
+        List all network locations.
+
+-getcurrentlocation
+        Display the name of the current set.
+
+-createlocation location [populate]
+        Create a set with the user-defined-name name and optionally populate it with the default services.
+
+-deletelocation location
+        Delete the set.
+
+-switchtolocation location
+        Make the specified set the current set.
+</code></pre>
+<p>この辺が該当するようだ、切り替えるだけなら</p>
+<pre><code>$ networksetup -switchtolocation Hoge
+</code></pre>
+<p>で OK。</p>
+
+  </div>
+
+  <div class="meta">
+    by typester /
+    at <a href="/memo/2012/10/31/1/">2012-10-31T10:35:00</a> /
+    <a href="/memo/tag/osx/">osx</a>
+    / <a href="/memo/2012/10/31/1/#disqus_thread">Comment</a>
+  </div>
+</div>
+
+<div class="entry autopagerize_page_element">
+  <h2><a href="/memo/2012/09/30/2/">バッテリーのこり60秒で通知の話</a></h2>
+
+  <div class="body">
+    <p>僕のトークでなんか気になった人がいるとのことなので僕の使っているスクリプトを置いておきますね。</p>
+<pre><code><span class="comment-delimiter">#</span><span class="comment">!/usr/bin/env perl
+</span>
+<span class="keyword">use</span> <span class="function-name">strict</span>;
+<span class="keyword">use</span> <span class="function-name">warnings</span>;
+<span class="keyword">use</span> <span class="function-name">utf8</span>;
+
+<span class="keyword">use</span> <span class="function-name">Cocoa::BatteryInfo</span>;
+<span class="keyword">use</span> <span class="function-name">Cocoa::EventLoop</span>;
+<span class="keyword">use</span> <span class="function-name">Cocoa::Growl</span> <span class="string">&apos;:all&apos;</span>;
+
+growl_register(
+    <span class="string">app</span>           =&gt; <span class="string">&apos;Battery Notifier&apos;</span>,
+    <span class="string">notifications</span> =&gt; [<span class="string">&apos;NotifyLastOneMinite&apos;</span>, <span class="string">&apos;NotifyTimeRemaining&apos;</span>],
+);
+
+Cocoa::BatteryInfo::time_remaining_handler {
+    <span class="keyword">my</span> <span class="variable-name">$sec</span> = Cocoa::BatteryInfo-&gt;time_remaining_estimate;
+
+    <span class="keyword">return</span> <span class="keyword">unless</span> $sec =~ <span class="constant">/</span><span class="builtin">\</span><span class="type">d</span><span class="constant">/</span>;
+
+    <span class="keyword">if</span> ($sec &lt;= 60) {
+        growl_notify(
+            <span class="string">name</span>        =&gt; <span class="string">&apos;NotifyLastOneMinite&apos;</span>,
+            <span class="string">title</span>       =&gt; <span class="string">&apos;バッテリー切れまで&apos;</span>,
+            <span class="string">description</span> =&gt; <span class="type">sprintf</span> <span class="string">&apos;残り </span><span class="cperl-hash">%d</span><span class="string"> 秒&apos;</span>, $sec,
+        );
+    }
+    <span class="keyword">else</span> {
+        <span class="keyword">my</span> <span class="variable-name">$time</span>;
+
+        <span class="keyword">if</span> ($sec &gt;= 60*60) {
+            $time = <span class="type">sprintf</span> <span class="string">&apos;</span><span class="cperl-hash">%d</span><span class="string"> 時間 </span><span class="cperl-hash">%d</span><span class="string"> 分 </span><span class="cperl-hash">%d</span><span class="string"> 秒&apos;</span>,
+                <span class="type">int</span>($sec / (60*60)), <span class="type">int</span>(($sec % (60*60)) / 60), $sec % 60;
+        }
+        <span class="keyword">elsif</span> ($sec &gt; 60) {
+            $time = <span class="type">sprintf</span> <span class="string">&apos;</span><span class="cperl-hash">%d</span><span class="string"> 分 </span><span class="cperl-hash">%d</span><span class="string"> 秒&apos;</span>,
+                <span class="type">int</span>($sec / 60), $sec % 60;
+        }
+        <span class="keyword">else</span> {
+            $time = <span class="type">sprintf</span> <span class="string">&apos;</span><span class="cperl-hash">%d</span><span class="string"> 秒&apos;</span>, $sec;
+        }
+
+        growl_notify(
+            <span class="string">name</span>        =&gt; <span class="string">&apos;NotifyTimeRemaining&apos;</span>,
+            <span class="string">title</span>       =&gt; <span class="string">&apos;バッテリー切れまで&apos;</span>,
+            <span class="string">description</span> =&gt; <span class="type">sprintf</span> <span class="string">&apos;残り </span><span class="cperl-hash">%s</span><span class="string">&apos;</span>, $time,
+        );
+    }
+};
+
+Cocoa::EventLoop-&gt;run;
+</code></pre>
+<p>これを LaunchAgent でログイン時に自動で立ち上がるようにしております。</p>
+<p>で、これをうごかしているとバッテリー残り時間が変化したタイミングで Growl 通知が来るのですが、 普通は <code>NotifyTimeRemaining</code> という通知が来ます。もしそのときに残りが60秒いないだったらその代わりに <code>NotifyLastOneMinite</code> という通知が来ます。</p>
+<p>毎回通知されるのはうざいので僕は <code>NotifyTimeRemaining</code> というほうは Growl の設定でオフにしています。</p>
+<p>で、だいたい使っている感覚としては60秒でまず通知が来て、 その後もういちど、残り0秒という通知がきて、その直後にハイバネートする、というような感じのようです。</p>
+
+  </div>
+
+  <div class="meta">
+    by typester /
+    at <a href="/memo/2012/09/30/2/">2012-09-30T13:14:00</a> /
+    <a href="/memo/tag/perl/">perl</a>
+    &middot; <a href="/memo/tag/osx/">osx</a>
+    / <a href="/memo/2012/09/30/2/#disqus_thread">Comment</a>
+  </div>
+</div>
+
+<div class="entry autopagerize_page_element">
+  <h2><a href="/memo/2012/09/04/1/">Cocoa::BatteryInfo has been released!</a></h2>
+
+  <div class="body">
+    <p>本日二回ほどバッテリー切れで黒い画面をみて、「システムのバッテリー残量警告でるのはやすぎなんだよなーもっとぎりぎりの残量通知が欲しいよなー」、とか思いつつバッテリー周りのAPIドキュメントを眺めていたら気がついたらCPANモジュールができていた…。</p>
+<blockquote><p><a href="https://metacpan.org/module/Cocoa::BatteryInfo">Cocoa::BatteryInfo - Getting battery informations on your Mac - metacpan.org</a></p></blockquote>
+<p>単純なバッテリー情報の取得の他にも、 <code>Cocoa::EventLoop</code> との合わせ技で OS からのバッテリー関連通知を受け取るという機能もあるので残量監視スクリプトなど作るのに最適です。</p>
+<p>というとネタモジュールな感じだけど、ノートブックのインターナルバッテリー以外にも OS X Server に接続している UPS の情報などもとれたりしますのでわりとそっち系では実用モジュールなのではないかと思われる。</p>
+
+  </div>
+
+  <div class="meta">
+    by typester /
+    at <a href="/memo/2012/09/04/1/">2012-09-04T18:29:00</a> /
+    <a href="/memo/tag/perl/">perl</a>
+    &middot; <a href="/memo/tag/osx/">osx</a>
+    / <a href="/memo/2012/09/04/1/#disqus_thread">Comment</a>
+  </div>
+</div>
+
+<div class="entry autopagerize_page_element">
+  <h2><a href="/memo/2012/07/21/1/">OSX のコマンドラインから、wi-fi の情報をつかって位置情報を得る</a></h2>
+
+  <div class="body">
+    <blockquote><p><a href="http://blog.64p.org/entry/2012/07/21/082209">linux のコマンドラインから、wi-fi の情報をつかって位置情報を得る - tokuhirom&apos;s blog.</a></p></blockquote>
+<p>を見て、面白そうだと思ったのでそのMac版。MacでコマンドラインからWiFiスポットをスキャンするのは、</p>
+<pre><code>/System/Library/PrivateFrameworks/Apple80211.framework/Versions/A/Resources/airport -s
+</code></pre>
+<p>でいけます。ってことで、</p>
+<pre><code><span class="keyword">use</span> <span class="function-name">strict</span>;
+<span class="keyword">use</span> <span class="function-name">warnings</span>;
+<span class="keyword">use</span> <span class="function-name">utf8</span>;
+<span class="keyword">use</span> 5.012;
+
+<span class="keyword">use</span> <span class="function-name">JSON</span>;
+<span class="keyword">use</span> <span class="function-name">LWP::UserAgent</span>;
+
+<span class="keyword">my</span> <span class="cperl-array">@addresses</span> = <span class="keyword">do</span> {
+    <span class="keyword">my</span> <span class="cperl-array">@lines</span> = <span class="cperl-nonoverridable">split</span> <span class="constant">/</span><span class="builtin">\</span><span class="type">n</span><span class="constant">/</span>, <span class="cperl-nonoverridable">qx</span><span class="string">{/System/Library/PrivateFrameworks/Apple80211.framework/Versions/A/Resources/airport -s}</span>;
+    <span class="cperl-nonoverridable">shift</span> <span class="cperl-array">@lines</span>;
+
+    <span class="keyword">my</span> <span class="cperl-array">@r</span>;
+    <span class="cperl-nonoverridable">push</span> <span class="cperl-array">@r</span>, (<span class="cperl-nonoverridable">split</span> <span class="constant">/</span><span class="builtin">\</span><span class="type">s</span><span class="builtin">+</span><span class="constant">/</span>, $_)[2] <span class="keyword">for</span> <span class="cperl-array">@lines</span>;
+
+    <span class="cperl-array">@r</span>;
+};
+
+<span class="keyword">my</span> <span class="variable-name">$query</span> = encode_json({
+    <span class="string">version</span>          =&gt; <span class="string">&apos;1.1.0&apos;</span>,
+    <span class="string">host</span>             =&gt; <span class="string">&apos;maps.google.com&apos;</span>,
+    <span class="string">request_address</span>  =&gt; JSON::true,
+    <span class="string">address_language</span> =&gt; <span class="string">&apos;ja_JP&apos;</span>,
+    <span class="string">wifi_towers</span>      =&gt; [
+        <span class="cperl-nonoverridable">map</span> +{
+            <span class="string">mac_address</span>     =&gt; $_,
+            <span class="string">signal_strength</span> =&gt; 8,
+            <span class="string">age</span>             =&gt; 0,
+        }, <span class="cperl-array">@addresses</span>,
+    ],
+});
+
+<span class="keyword">my</span> <span class="variable-name">$ua</span>  = LWP::UserAgent-&gt;new;
+<span class="keyword">my</span> <span class="variable-name">$res</span> = $ua-&gt;post(<span class="string">&apos;http://www.google.com/loc/json&apos;</span>, <span class="string">Content</span> =&gt; $query);
+$res-&gt;is_success <span class="type">or</span> <span class="keyword">die</span> $res-&gt;status_line;
+
+<span class="keyword">use</span> <span class="function-name">YAML</span>;
+<span class="type">warn</span> Dump decode_json($res-&gt;content);
+</code></pre>
+<p>ってな感じでOKです！</p>
+
+  </div>
+
+  <div class="meta">
+    by typester /
+    at <a href="/memo/2012/07/21/1/">2012-07-21T12:32:00</a> /
+    <a href="/memo/tag/perl/">perl</a>
+    &middot; <a href="/memo/tag/osx/">osx</a>
+    / <a href="/memo/2012/07/21/1/#disqus_thread">Comment</a>
+  </div>
+</div>
+
+<div class="entry autopagerize_page_element">
+  <h2><a href="/memo/2012/06/22/1/">Basic認証対応のMac用Gyazoクライアントを作った</a></h2>
+
+  <div class="body">
+    <p>今頃なにを言っているのかという感じだが、Basic認証ごしにGyazoクローンに画像アップロードしたいという要求があったので、ちょろっと書いてみた。</p>
+<blockquote><p><a href="https://github.com/typester/Gyazo-Mac/">https://github.com/typester/Gyazo-Mac</a></p></blockquote>
+<p><a href="https://github.com/typester/Gyazo-Mac/downloads">Downloads</a> からバイナリも落とせるようにしておいた。</p>
+<p>初回起動、もしくはOption押しながらの起動で設定画面が出るので、適当に情報を入力して閉じたら、あとは普通のGyazoクライアントと同じように使える。</p>
+<p>誰かいかしたアイコンつくってください。</p>
+
+  </div>
+
+  <div class="meta">
+    by typester /
+    at <a href="/memo/2012/06/22/1/">2012-06-22T15:13:00</a> /
+    <a href="/memo/tag/osx/">osx</a>
+    &middot; <a href="/memo/tag/gyazo/">gyazo</a>
+    / <a href="/memo/2012/06/22/1/#disqus_thread">Comment</a>
+  </div>
+</div>
+
+<div class="entry autopagerize_page_element">
+  <h2><a href="/memo/2012/05/17/1/">Time Machine で case-sensitive なバックアップを case-insensitive で復元する</a></h2>
+
+  <div class="body">
+    <p>都市伝説だと思われていた <a href="http://www.diablo3.com/">Diablo3</a> がなんと発売された。</p>
+<p>発売日が決まってからというもの同僚が執拗に誘ってくるので、しょうがないのでインストールすることにしたが、 どうも Diablo3 は case-sensitive (大文字小文字を区別) なファイルシステムにインストールできないらしい。</p>
+<p>ディスクイメージ内にインストールすることで回避できないか、とかいろいろやってみたがうまくいかないので Time Machine 復元を利用して無理矢理ファイルシステムを変更した。</p>
+<p>手順は以下を参考にした。</p>
+<blockquote><p><a href="http://jcs.org/notaweblog/2009/11/11/restoring_case-sensitive_hfs_volumes_with_time_machine/">joshua stein: restoring case-sensitive hfs+ volumes with time machine</a></p></blockquote>
+<p>OS X インストーラで起動して、希望のファイルシステムに初期化したあと、rsync で自前でバックアップをコピー、っていう手法。</p>
+<p>インストーラに rsync は含まれていないんだけど、バックアップデータが rsync をもっているからそこのを使う、ってのはなかなか面白い。</p>
+<p>この記事にもあるようにバックアップを rsync したあと、インストーラの <code>/dev</code> も別途 rsync しないとシステムは起動しないので注意が必要。</p>
+<p>あと大文字小文字違いのファイルを持っている場合、それらが失われる覚悟も必要。</p>
+<p>というわけで無事に遊べるようになった。</p>
+
+  </div>
+
+  <div class="meta">
+    by typester /
+    at <a href="/memo/2012/05/17/1/">2012-05-17T15:01:00</a> /
+    <a href="/memo/tag/game/">game</a>
+    &middot; <a href="/memo/tag/diablo3/">diablo3</a>
+    &middot; <a href="/memo/tag/osx/">osx</a>
+    / <a href="/memo/2012/05/17/1/#disqus_thread">Comment</a>
+  </div>
+</div>
+
+<div class="entry autopagerize_page_element">
+  <h2><a href="/memo/2012/04/02/1/">OS X 10.7.3 から LaunchAgents の WatchPaths の仕様が変わったようだ</a></h2>
+
+  <div class="body">
+    <p>前から <code>~/Library/LaunchAgents</code> にユーザー権限でおいた agent から root 所有のファイルを監視していたのだが、10.7.3 にアップデートしてからそれらが全く動かなくなってしまった。</p>
+<p>しょうがないので <code>/Library/LaunchAgents</code> に移動し、 root でうごかすようにしたら再び動き出した。</p>
+<p>監視してる root 所有のファイルはもちろん一般ユーザーでも読み込み可能な権限になっているのにこの制限は嫌だなぁ。</p>
+<h4>追記＠</h4>
+<p>隣の席の人は同じものが全く問題なく動いているとのこと…。僕の環境が悪いのか…。</p>
+
+  </div>
+
+  <div class="meta">
+    by typester /
+    at <a href="/memo/2012/04/02/1/">2012-04-02T11:36:00</a> /
+    <a href="/memo/tag/osx/">osx</a>
+    / <a href="/memo/2012/04/02/1/#disqus_thread">Comment</a>
+  </div>
+</div>
+
+<div class="entry autopagerize_page_element">
+  <h2><a href="/memo/2011/12/16/1/">skype-cli</a></h2>
+
+  <div class="body">
+    <p>昨日のコードを元に、<code>skype-cli</code> というコマンドラインツールを書いた。</p>
+<blockquote><p><a href="https://github.com/typester/skype-cli-osx">typester/skype-cli-osx - GitHub</a></p></blockquote>
+<p>Skype の <a href="http://developer.skype.com/public-api-reference-index">Desktop API</a> っていうのはマシン上で起動している Skype と通信することで、Skypeの機能にアクセスするAPIで、プラットフォーム毎に通信手段はことなるが、つながってしまったあとの通信内容はテキストベースのプロトコルとなっている。</p>
+<p>なので、このテキストプロトコルをtelnet感覚で標準入出力でアクセスできるツールを作ってみたという感じ。</p>
+<p>これを子プロセスで実行することで、nodeやEmacsなどからも簡単にSkype APIがたたける、はず。</p>
+<p>なんだけど、実際にnodeで以下のようなコードを書いてみてもうまく動かない。</p>
+<pre><code><span class="type">var</span> <span class="variable-name">child_process</span> = require(<span class="string">"child_process"</span>);
+
+<span class="type">var</span> <span class="variable-name">skype</span> = child_process.spawn(<span class="string">"./skype-cli"</span>);
+
+skype.stdout.setEncoding(<span class="string">"utf8"</span>);
+skype.stdout.on(<span class="string">"data"</span>, function (data) {
+    console.log(<span class="string">"stdout: %s"</span>, data);
+});
+
+skype.stderr.setEncoding(<span class="string">"utf8"</span>);
+skype.stderr.on(<span class="string">"data"</span>, function (data) {
+    console.log(<span class="string">"stderr: %s"</span>, data);
+});
+
+process.stdin.resume();
+process.stdin.setEncoding(<span class="string">"utf8"</span>);
+process.stdin.pipe(skype.stdin, { <span class="constant">end</span>: <span class="constant">false</span> });
+
+skype.on(<span class="string">"exit"</span>, function (code) { process.exit(code) });
+</code></pre>
+<p>なーんでか。</p>
+
+  </div>
+
+  <div class="meta">
+    by typester /
+    at <a href="/memo/2011/12/16/1/">2011-12-16T18:00:00</a> /
+    <a href="/memo/tag/osx/">osx</a>
+    &middot; <a href="/memo/tag/skype/">skype</a>
+    / <a href="/memo/2011/12/16/1/#disqus_thread">Comment</a>
+  </div>
+</div>
+
+<div class="entry autopagerize_page_element">
+  <h2><a href="/memo/2011/12/15/1/">Cocoa::Skype とか</a></h2>
+
+  <div class="body">
+    <p>Cocoa:: なんちゃらでほしいものを聞いていたときにも挙がっていた Cocoa::Skype だけど、その昔<a href="http://coderepos.org/share/wiki/Skype4IRC">Skype4COMを使った記憶</a>があって、SkypeAPI のバインディング書くのはめんどそうな印象だったのだが、 今日 Skype.framework のヘッダファイルみたら、</p>
+<pre><code>#import &lt;Cocoa/Cocoa.h&gt;
+
+@protocol SkypeAPIDelegate;
+
+@interface SkypeAPI : NSObject 
+{
+
+}
+
++ (BOOL)isSkypeRunning;             
++ (BOOL)isSkypeAvailable;       // You can only connect and send commands when this method returns YES.
+                                // For example, when Skype is running, but user is logged out, then it returns NO.
+
++ (void)setSkypeDelegate:(NSObject&lt;SkypeAPIDelegate&gt;*)aDelegate;
++ (NSObject&lt;SkypeAPIDelegate&gt;*)skypeDelegate;
++ (void)removeSkypeDelegate;
+
++ (void)connect;
++ (void)disconnect;
+
++ (void)sendSkypeCommand:(NSString*)aCommandString;
+@end
+
+
+// delegate protocol
+@protocol SkypeAPIDelegate
+- (NSString*)clientApplicationName;
+@end
+
+// delegate informal protocol
+@interface NSObject (SkypeAPIDelegateInformalProtocol)
+- (void)skypeNotificationReceived:(NSString*)aNotificationString;
+- (void)skypeAttachResponse:(unsigned)aAttachResponseCode;              // 0 - failed, 1 - success
+- (void)skypeBecameAvailable:(NSNotification*)aNotification;
+- (void)skypeBecameUnavailable:(NSNotification*)aNotification;
+@end
+</code></pre>
+<p>と想像以上に短く、これならすぐバインディング書けそうだなーということで気分転換もかねてPerlバインディングをつくってみた。</p>
+<blockquote><p><a href="https://github.com/typester/Cocoa-Skype">typester/Cocoa-Skype - GitHub</a></p></blockquote>
+<p>使い方は付属の example を参照のこと。 Skype.framework の機能は全部つけてある。 Perl サイドのメソッド名とかはまだ変更するかもしれない。暇なときにドキュメントつけてリリースしよう。</p>
+
+  </div>
+
+  <div class="meta">
+    by typester /
+    at <a href="/memo/2011/12/15/1/">2011-12-15T22:52:00</a> /
+    <a href="/memo/tag/perl/">perl</a>
+    &middot; <a href="/memo/tag/skype/">skype</a>
+    &middot; <a href="/memo/tag/osx/">osx</a>
+    / <a href="/memo/2011/12/15/1/#disqus_thread">Comment</a>
+  </div>
+</div>
+
+
+
+
+<div id="pager" class="autopagerize_insert_before">
+  <p class="pages">
+    <span class="prev">&laquo; Prev</span>
+    <span class="current">1</span>
+    <a href="/memo/tag/osx/page/2/">2</a>
+    <a href="/memo/tag/osx/page/3/">3</a>
+    <a href="/memo/tag/osx/page/4/">4</a>
+    <a href="/memo/tag/osx/page/5/">5</a>
+    <a class="next" rel="next" href="/memo/tag/osx/page/2/">Next &raquo;</a>
+  </p>
+  <p class="info">(Page 1 of 5)</p>
+</div>
+
+
+</div>
+
+<p id="footer">
+  Copyright &copy; 2005-2013
+      by <a class="author" href="/about/#me">Daisuke Murase (typester)</a> /
+  Site generated by <a href="https://github.com/typester/nim">nim</a> /
+  Comments powered by <a href="http://disqus.com">DISQUS</a>.
+</p>
+
+</div>
+
+
+<script type="text/javascript">
+//<![CDATA[
+(function() {
+	var links = document.getElementsByTagName('a');
+	var query = '?';
+	for(var i = 0; i < links.length; i++) {
+	if(links[i].href.indexOf('#disqus_thread') >= 0) {
+		query += 'url' + i + '=' + encodeURIComponent(links[i].href) + '&';
+	}
+	}
+	document.write('<script charset="utf-8" type="text/javascript" src="http://disqus.com/forums/unknownplace/get_num_replies.js' + query + '"></' + 'script>');
+})();
+//]]>
+</script>
+
+
+<script type="text/javascript">
+var gaJsHost = (("https:" == document.location.protocol) ? "https://ssl." : "http://www.");
+document.write(unescape("%3Cscript src='" + gaJsHost + "google-analytics.com/ga.js' type='text/javascript'%3E%3C/script%3E"));
+</script>
+<script type="text/javascript">
+try {
+var pageTracker = _gat._getTracker("UA-53067-1");
+pageTracker._trackPageview();
+} catch(err) {}</script>
+
+<script>
+function googleTranslateElementInit() {
+  new google.translate.TranslateElement({
+    pageLanguage: 'ja',
+    gaTrack: true,
+    gaId: 'UA-53067',
+    floatPosition: google.translate.TranslateElement.FloatPosition.BOTTOM_RIGHT
+  });
+}
+</script><script src="//translate.google.com/translate_a/element.js?cb=googleTranslateElementInit"></script>
+
+</body>
+</html>

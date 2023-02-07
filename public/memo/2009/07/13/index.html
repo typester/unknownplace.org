@@ -1,0 +1,134 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="ja" xml:lang="ja">
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <title>2009/07/13 - memo - unknownplace.org</title>
+  <link rel="stylesheet" type="text/css" href="http://yui.yahooapis.com/3.0.0/build/cssreset/reset-min.css" />
+  <link rel="stylesheet" type="text/css" href="http://yui.yahooapis.com/3.0.0/build/cssfonts/fonts-min.css" />
+  <link rel="stylesheet" href="/css/style.css" type="text/css" />
+  <meta property="fb:admins" content="1093631929" />
+  <meta name="robots" content="noindex" />
+  <link rel="alternate" type="application/rss+xml" href="http://unknownplace.org/memo/index.rss" />
+</head>
+<body>
+
+<div id="container">
+<div id="header">
+    <h1><a href="/">unknownplace.org</a></h1> /
+<a href="/memo/">memo</a>
+</div>
+
+<div id="content">
+
+<div class="entry autopagerize_page_element">
+  <h2 id="e001"><a href="/memo/2009/07/13/1/">AnyEventでirssiプラグインを書く</a></h2>
+
+  <div class="body">
+    <p>AnyEvent はその名の通りさまざまなイベントインタフェースに対応していて、その中に irssi が使用している Glib も含まれているため、irssiのプラグインの中で普通に AnyEvent を使用することができます。</p>
+<p>キーワード反応を <a href="http://im.kayac.com/">im.kayac.com</a> で自分の IM に通知する <a href="http://svn.coderepos.org/share/lang/perl/irssi/scripts/hilight2im.pl">higlith2im.pl</a> プラグインを AnyEvent を使用するように書き換えたのが以下です。</p>
+<pre><code><span class="keyword">use</span> <span class="function-name">strict</span>;
+<span class="keyword">use</span> <span class="function-name">warnings</span>;
+
+<span class="keyword">use</span> <span class="function-name">Glib</span>;
+
+<span class="keyword">use</span> <span class="function-name">Irssi</span>;
+<span class="keyword">use</span> <span class="function-name">AnyEvent::HTTP</span>;
+
+<span class="keyword">use</span> <span class="function-name">HTTP::Request::Common</span>;
+
+<span class="keyword">our</span> <span class="variable-name">$VERSION</span> = <span class="string">&apos;0.1&apos;</span>;
+
+<span class="keyword">our</span> <span class="cperl-hash">%IRSSI</span> = (
+    <span class="string">name</span>        =&gt; <span class="string">&apos;hilight2im&apos;</span>,
+    <span class="string">description</span> =&gt; <span class="string">&apos;notify hilight message to IM via im.kayac.com api&apos;</span>,
+    <span class="string">authors</span>     =&gt; <span class="string">&apos;Daisuke Murase&apos;</span>,
+);
+
+<span class="keyword">sub</span> <span class="function-name">sig_printtext</span> {
+    <span class="keyword">my</span> (<span class="variable-name">$dest</span>, <span class="variable-name">$text</span>, <span class="variable-name">$stripped</span>) = <span class="cperl-array">@_</span>;
+
+    <span class="keyword">if</span> ( $dest-&gt;{<span class="string">level</span>} &amp; MSGLEVEL_HILIGHT ) {
+        <span class="keyword">my</span> <span class="variable-name">$user</span> = Irssi::settings_get_str(<span class="string">&apos;im_kayac_com_username&apos;</span>) <span class="type">or</span> <span class="keyword">return</span>;
+        <span class="keyword">my</span> <span class="variable-name">$msg</span>  = <span class="type">sprintf</span>(<span class="string">&apos;[irssi] </span><span class="cperl-hash">%s</span><span class="string">&apos;</span>, $stripped);
+
+        <span class="keyword">my</span> <span class="variable-name">$req</span> = POST <span class="string">&quot;http://im.kayac.com/api/post/$user&quot;</span>, [ <span class="string">message</span> =&gt; $msg ];
+        <span class="keyword">my</span> <span class="cperl-hash">%headers</span> = <span class="cperl-nonoverridable">map</span> { $_ =&gt; $req-&gt;header($_), } $req-&gt;headers-&gt;header_field_names;
+
+        <span class="keyword">my</span> <span class="variable-name">$r</span>;
+        $r = http_post $req-&gt;uri, $req-&gt;content, <span class="string">headers</span> =&gt; \<span class="cperl-hash">%headers</span>, <span class="keyword">sub</span> { <span class="cperl-nonoverridable">undef</span> $r };
+    }
+}
+
+Irssi::signal_add(<span class="string">&apos;print text&apos;</span> =&gt; \&amp;sig_printtext);
+Irssi::settings_add_str(<span class="string">&apos;im_kayac_com&apos;</span>, <span class="string">&apos;im_kayac_com_username&apos;</span>, <span class="string">&apos;&apos;</span>);
+</code></pre>
+<p>fork する必要がなくなってシンプルですね！</p>
+<p>...とおもいきや現状の AnyEvent::HTTP はなんと HTTP::Request オブジェクトからのリクエスト送信に対応していないため、自分ですべてのリクエストを組み立てる必要があるようです。これは不便。。</p>
+<p>ですが、irssi の中で普通に AnyEvent を使うことができるのはなかなか便利です。お試しあれ！</p>
+<p>AnyEvent 版は <a href="http://github.com/typester/irssi-plugins/blob/master/hilight2im.pl">github</a> にあげた。</p>
+
+  </div>
+
+  <div class="meta">
+    by typester /
+    at <a href="/memo/2009/07/13/1/">2009-07-13T23:30:00</a> /
+    <a href="/memo/tag/perl/">perl</a>
+    &middot; <a href="/memo/tag/irssi/">irssi</a>
+    / <a href="/memo/2009/07/13/1/#disqus_thread">Comment</a>
+  </div>
+</div>
+
+
+
+</div>
+
+<p id="footer">
+  Copyright &copy; 2005-2013
+      by <a class="author" href="/about/#me">Daisuke Murase (typester)</a> /
+  Site generated by <a href="https://github.com/typester/nim">nim</a> /
+  Comments powered by <a href="http://disqus.com">DISQUS</a>.
+</p>
+
+</div>
+
+
+<script type="text/javascript">
+//<![CDATA[
+(function() {
+	var links = document.getElementsByTagName('a');
+	var query = '?';
+	for(var i = 0; i < links.length; i++) {
+	if(links[i].href.indexOf('#disqus_thread') >= 0) {
+		query += 'url' + i + '=' + encodeURIComponent(links[i].href) + '&';
+	}
+	}
+	document.write('<script charset="utf-8" type="text/javascript" src="http://disqus.com/forums/unknownplace/get_num_replies.js' + query + '"></' + 'script>');
+})();
+//]]>
+</script>
+
+
+<script type="text/javascript">
+var gaJsHost = (("https:" == document.location.protocol) ? "https://ssl." : "http://www.");
+document.write(unescape("%3Cscript src='" + gaJsHost + "google-analytics.com/ga.js' type='text/javascript'%3E%3C/script%3E"));
+</script>
+<script type="text/javascript">
+try {
+var pageTracker = _gat._getTracker("UA-53067-1");
+pageTracker._trackPageview();
+} catch(err) {}</script>
+
+<script>
+function googleTranslateElementInit() {
+  new google.translate.TranslateElement({
+    pageLanguage: 'ja',
+    gaTrack: true,
+    gaId: 'UA-53067',
+    floatPosition: google.translate.TranslateElement.FloatPosition.BOTTOM_RIGHT
+  });
+}
+</script><script src="//translate.google.com/translate_a/element.js?cb=googleTranslateElementInit"></script>
+
+</body>
+</html>

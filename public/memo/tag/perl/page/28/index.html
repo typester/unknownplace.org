@@ -1,0 +1,330 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="ja" xml:lang="ja">
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <title>memo - unknownplace.org</title>
+  <link rel="stylesheet" type="text/css" href="http://yui.yahooapis.com/3.0.0/build/cssreset/reset-min.css" />
+  <link rel="stylesheet" type="text/css" href="http://yui.yahooapis.com/3.0.0/build/cssfonts/fonts-min.css" />
+  <link rel="stylesheet" href="/css/style.css" type="text/css" />
+  <meta property="fb:admins" content="1093631929" />
+  <meta name="robots" content="noindex" />
+  <link rel="alternate" type="application/rss+xml" href="http://unknownplace.org/memo/index.rss" />
+</head>
+<body>
+
+<div id="container">
+<div id="header">
+    <h1><a href="/">unknownplace.org</a></h1> /
+<a href="/memo/">memo</a>
+</div>
+
+<div id="content">
+
+<div class="entry autopagerize_page_element">
+  <h2><a href="/memo/2005/12/03/1/">デリファレンスのオーバーロード</a></h2>
+
+  <div class="body">
+    <p>Catalyst のぷらぎんかいてて overload もデリファレンスとかでつかうならいいかなとか思った。</p>
+<p>普通の演算子のオーバーロードは C++ とかだとかっけーんだけど、Perl でやるとうまく使わない限りなんか微妙で好きじゃなかったんだけど。デリファレンスのそれは結構なかなかかも。</p>
+<pre><code><span class="comment-delimiter">#</span><span class="comment">!/usr/bin/perl
+</span>
+<span class="keyword">use</span> <span class="function-name">strict</span>;
+
+<span class="keyword">package</span> <span class="function-name">OverloadTest</span>;
+
+<span class="keyword">use</span> <span class="function-name">overload</span> (
+    <span class="cperl-nonoverridable">q</span><span class="string">{&quot;&quot;}</span> =&gt; <span class="keyword">sub</span> { <span class="cperl-nonoverridable">shift</span>-&gt;{<span class="string">text</span>} },
+    <span class="string">&apos;${}&apos;</span> =&gt; <span class="keyword">sub</span> { <span class="cperl-nonoverridable">shift</span>-&gt;{<span class="string">scalar</span>} },
+    <span class="string">&apos;@{}&apos;</span> =&gt; <span class="keyword">sub</span> { <span class="cperl-nonoverridable">shift</span>-&gt;{<span class="string">array</span>} },
+    <span class="string">&apos;&amp;{}&apos;</span> =&gt; <span class="keyword">sub</span> { <span class="cperl-nonoverridable">shift</span>-&gt;{<span class="string">function</span>} },
+);
+
+
+<span class="keyword">sub</span> <span class="function-name">new</span> {
+    <span class="keyword">my</span> <span class="variable-name">$self</span> = <span class="type">bless</span> {}, <span class="cperl-nonoverridable">shift</span>;
+
+    $self-&gt;{<span class="string">text</span>}     = <span class="string">&apos;fooooooooo&apos;</span>;
+    $self-&gt;{<span class="string">scalar</span>}   = \<span class="string">&apos;heh ;)&apos;</span>;
+    $self-&gt;{<span class="string">array</span>}    = [<span class="cperl-nonoverridable">qw</span><span class="string">/blah blah blahhh/</span>];
+    $self-&gt;{<span class="string">function</span>} = <span class="keyword">sub</span> { <span class="string">&quot;bar!!!!&quot;</span> };
+
+    $self;
+}
+
+
+<span class="keyword">package</span> <span class="function-name">main</span>;
+<span class="keyword">use</span> <span class="function-name">Data::Dumper</span>;
+
+<span class="keyword">my</span> <span class="variable-name">$ol</span> = OverloadTest-&gt;new;
+
+<span class="cperl-nonoverridable">print</span> Dumper <span class="string">&quot;$ol&quot;</span>;
+<span class="cperl-nonoverridable">print</span> Dumper $$ol;
+<span class="cperl-nonoverridable">print</span> Dumper &amp;$ol;
+<span class="cperl-nonoverridable">print</span> Dumper [ <span class="cperl-array">@</span><span class="variable-name">$ol</span> ];
+</code></pre>
+<p>こんなの。String参照とデリファレンスのオーバーロード。</p>
+<p>wantarray みたいな用途に使えそう。</p>
+<p>ちなみに上のの出力は</p>
+<pre><code>$VAR1 = &apos;fooooooooo&apos;;
+$VAR1 = &apos;heh ;)&apos;;
+$VAR1 = &apos;bar!!!!&apos;;
+$VAR1 = [
+          &apos;blah&apos;,
+          &apos;blah&apos;,
+          &apos;blahhh&apos;
+        ];
+</code></pre>
+<p>こうなる。</p>
+
+  </div>
+
+  <div class="meta">
+    by typester /
+    at <a href="/memo/2005/12/03/1/">2005-12-03T01:04:00</a> /
+    <a href="/memo/tag/perl/">perl</a>
+    / <a href="/memo/2005/12/03/1/#disqus_thread">Comment</a>
+  </div>
+</div>
+
+<div class="entry autopagerize_page_element">
+  <h2><a href="/memo/2005/12/01/4/">XML::Simpleのあれ</a></h2>
+
+  <div class="body">
+    <p>って常識だとおもってたんですけど！！</p>
+
+  </div>
+
+  <div class="meta">
+    by typester /
+    at <a href="/memo/2005/12/01/4/">2005-12-01T04:08:00</a> /
+    <a href="/memo/tag/perl/">perl</a>
+    / <a href="/memo/2005/12/01/4/#disqus_thread">Comment</a>
+  </div>
+</div>
+
+<div class="entry autopagerize_page_element">
+  <h2><a href="/memo/2005/11/24/1/">cpan-upload</a></h2>
+
+  <div class="body">
+    <p>めちゃ便利！</p>
+
+  </div>
+
+  <div class="meta">
+    by typester /
+    at <a href="/memo/2005/11/24/1/">2005-11-24T00:37:00</a> /
+    <a href="/memo/tag/perl/">perl</a>
+    / <a href="/memo/2005/11/24/1/#disqus_thread">Comment</a>
+  </div>
+</div>
+
+<div class="entry autopagerize_page_element">
+  <h2><a href="/memo/2005/11/23/4/">お</a></h2>
+
+  <div class="body">
+    
+  </div>
+
+  <div class="meta">
+    by typester /
+    at <a href="/memo/2005/11/23/4/">2005-11-23T14:37:00</a> /
+    <a href="/memo/tag/perl/">perl</a>
+    / <a href="/memo/2005/11/23/4/#disqus_thread">Comment</a>
+  </div>
+</div>
+
+<div class="entry autopagerize_page_element">
+  <h2><a href="/memo/2005/11/23/1/">File::Temp</a></h2>
+
+  <div class="body">
+    
+  </div>
+
+  <div class="meta">
+    by typester /
+    at <a href="/memo/2005/11/23/1/">2005-11-23T02:16:00</a> /
+    <a href="/memo/tag/perl/">perl</a>
+    / <a href="/memo/2005/11/23/1/#disqus_thread">Comment</a>
+  </div>
+</div>
+
+<div class="entry autopagerize_page_element">
+  <h2><a href="/memo/2005/11/19/4/">MIME::Lite::TT::HTML::Japanese</a></h2>
+
+  <div class="body">
+    <p>horiuchi さんの MIME::Lite::TT::Japanese を改造というか参考というかして、おんなじ様な感じで HTML メール作れるやつを作った。</p>
+
+  </div>
+
+  <div class="meta">
+    by typester /
+    at <a href="/memo/2005/11/19/4/">2005-11-19T19:26:00</a> /
+    <a href="/memo/tag/perl/">perl</a>
+    / <a href="/memo/2005/11/19/4/#disqus_thread">Comment</a>
+  </div>
+</div>
+
+<div class="entry autopagerize_page_element">
+  <h2><a href="/memo/2005/11/18/2/">遅レスにまじれす</a></h2>
+
+  <div class="body">
+    <p><a href="http://d.hatena.ne.jp/babie/20051117#p6">Rails びいきの Catalyst ファースト・インプレッション</a> にこっそりコメントしてみる。</p>
+<blockquote><p>開発スピードがめっちゃ速い</p></blockquote>
+<p>なんつっても開発者がにーｔ</p>
+<blockquote><p>非互換あるし。lib/appname/C/ -&gt; lib/appname/Controller/ とか。</p></blockquote>
+<p>C → Controller てのは Helper で生成されるデフォルトのものが変わっただけで、今も昔もどちらの名前でもちゃんと使える。</p>
+<p><code>-short</code> オプションつければ従来どおり。</p>
+<p>5.33 → 5.5 は Catalyst 本体内部をいじってるようなプログラム以外のアプリであれば問題なくそのまま動く。</p>
+<blockquote><p>人柱感</p></blockquote>
+<p>まだまだ開発者がすさまじくアクティブなので仕様がかわりまくるというのがありますね</p>
+<blockquote><p>なんでスクリプトに appname が全部ついているんだろう？　だるー。いらんだろ。</p></blockquote>
+<p>make install したとき用です。でも正直やるやついねーので微妙です。</p>
+<p>このへんはもう少し話し合うべき。Catalystアプリのインストールと配布方法について。(今のMakefileはひどすぎる)</p>
+<blockquote><p>root以下云々</p></blockquote>
+<p>ファイル名を省略するようなプラグインもあるし、暗黙の了解とかもないよ。好きなように使うよ。</p>
+<blockquote><p>URI とファイルパス・関数名が連動してない。</p></blockquote>
+<p>これも人それぞれですよね。連動さすこともできるし、全部1パッケージに収めることもできるし。</p>
+<p>そんな感じで。</p>
+<p>Rails びいきっていうわりにあんまりたたいてない！</p>
+
+  </div>
+
+  <div class="meta">
+    by typester /
+    at <a href="/memo/2005/11/18/2/">2005-11-18T01:20:00</a> /
+    <a href="/memo/tag/perl/">perl</a>
+    &middot; <a href="/memo/tag/catalyst/">catalyst</a>
+    / <a href="/memo/2005/11/18/2/#disqus_thread">Comment</a>
+  </div>
+</div>
+
+<div class="entry autopagerize_page_element">
+  <h2><a href="/memo/2005/11/16/5/">perldoc perllocal</a></h2>
+
+  <div class="body">
+    <p>モジュールのインストール履歴表示。</p>
+
+  </div>
+
+  <div class="meta">
+    by typester /
+    at <a href="/memo/2005/11/16/5/">2005-11-16T18:38:00</a> /
+    <a href="/memo/tag/perl/">perl</a>
+    / <a href="/memo/2005/11/16/5/#disqus_thread">Comment</a>
+  </div>
+</div>
+
+<div class="entry autopagerize_page_element">
+  <h2><a href="/memo/2005/11/08/3/">Module::Build</a></h2>
+
+  <div class="body">
+    <p>colinux (sid) では普通に使えてるが自鯖 (sarge) だと make distmeta が通らない。</p>
+<p>追おうかと思ったけど、Developer Release 使ったら動いたからいいや。</p>
+<p>つかもー5時かよ、やべー。</p>
+
+  </div>
+
+  <div class="meta">
+    by typester /
+    at <a href="/memo/2005/11/08/3/">2005-11-08T05:05:00</a> /
+    <a href="/memo/tag/perl/">perl</a>
+    / <a href="/memo/2005/11/08/3/#disqus_thread">Comment</a>
+  </div>
+</div>
+
+<div class="entry autopagerize_page_element">
+  <h2><a href="/memo/2005/11/05/1/">複数dc:subject</a></h2>
+
+  <div class="body">
+    <p>はてなブックマークみたいな dc:subject が複数ある RSS は XML::Feed とか XML::RSS じゃうまくパースできないので超ハックしてみた。</p>
+<pre><code>while ($rss =~ s!&lt;dc:subject&gt;(.*?)&lt;/dc:subject&gt;\s*&lt;dc:subject&gt;(.*?)&lt;/dc:subject&gt;!&lt;dc:subject&gt;$1, $2&lt;/dc:subject&gt;!gs) { }
+</code></pre>
+<p>とかしてから渡す（ぉ</p>
+<p>かっこよすぎ。もっとうまい書き方ないのかな。</p>
+<p>でもいまさら RSS パーサーとかかくのめんどいしね。XML::Simple ですらめんどい。</p>
+
+  </div>
+
+  <div class="meta">
+    by typester /
+    at <a href="/memo/2005/11/05/1/">2005-11-05T00:32:00</a> /
+    <a href="/memo/tag/perl/">perl</a>
+    &middot; <a href="/memo/tag/rss/">rss</a>
+    / <a href="/memo/2005/11/05/1/#disqus_thread">Comment</a>
+  </div>
+</div>
+
+
+
+
+<div id="pager" class="autopagerize_insert_before">
+  <p class="pages">
+    <a class="prev" rel="previous" href="/memo/tag/perl/page/27/">&laquo; Prev</a>
+    <a href="/memo/tag/perl/page/21/">21</a>
+    <a href="/memo/tag/perl/page/22/">22</a>
+    <a href="/memo/tag/perl/page/23/">23</a>
+    <a href="/memo/tag/perl/page/24/">24</a>
+    <a href="/memo/tag/perl/page/25/">25</a>
+    <a href="/memo/tag/perl/page/26/">26</a>
+    <a href="/memo/tag/perl/page/27/">27</a>
+    <span class="current">28</span>
+    <a href="/memo/tag/perl/page/29/">29</a>
+    <a href="/memo/tag/perl/page/30/">30</a>
+    <a class="next" rel="next" href="/memo/tag/perl/page/29/">Next &raquo;</a>
+  </p>
+  <p class="info">(Page 28 of 30)</p>
+</div>
+
+
+</div>
+
+<p id="footer">
+  Copyright &copy; 2005-2013
+      by <a class="author" href="/about/#me">Daisuke Murase (typester)</a> /
+  Site generated by <a href="https://github.com/typester/nim">nim</a> /
+  Comments powered by <a href="http://disqus.com">DISQUS</a>.
+</p>
+
+</div>
+
+
+<script type="text/javascript">
+//<![CDATA[
+(function() {
+	var links = document.getElementsByTagName('a');
+	var query = '?';
+	for(var i = 0; i < links.length; i++) {
+	if(links[i].href.indexOf('#disqus_thread') >= 0) {
+		query += 'url' + i + '=' + encodeURIComponent(links[i].href) + '&';
+	}
+	}
+	document.write('<script charset="utf-8" type="text/javascript" src="http://disqus.com/forums/unknownplace/get_num_replies.js' + query + '"></' + 'script>');
+})();
+//]]>
+</script>
+
+
+<script type="text/javascript">
+var gaJsHost = (("https:" == document.location.protocol) ? "https://ssl." : "http://www.");
+document.write(unescape("%3Cscript src='" + gaJsHost + "google-analytics.com/ga.js' type='text/javascript'%3E%3C/script%3E"));
+</script>
+<script type="text/javascript">
+try {
+var pageTracker = _gat._getTracker("UA-53067-1");
+pageTracker._trackPageview();
+} catch(err) {}</script>
+
+<script>
+function googleTranslateElementInit() {
+  new google.translate.TranslateElement({
+    pageLanguage: 'ja',
+    gaTrack: true,
+    gaId: 'UA-53067',
+    floatPosition: google.translate.TranslateElement.FloatPosition.BOTTOM_RIGHT
+  });
+}
+</script><script src="//translate.google.com/translate_a/element.js?cb=googleTranslateElementInit"></script>
+
+</body>
+</html>

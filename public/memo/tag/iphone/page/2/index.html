@@ -1,0 +1,392 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="ja" xml:lang="ja">
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <title>memo - unknownplace.org</title>
+  <link rel="stylesheet" type="text/css" href="http://yui.yahooapis.com/3.0.0/build/cssreset/reset-min.css" />
+  <link rel="stylesheet" type="text/css" href="http://yui.yahooapis.com/3.0.0/build/cssfonts/fonts-min.css" />
+  <link rel="stylesheet" href="/css/style.css" type="text/css" />
+  <meta property="fb:admins" content="1093631929" />
+  <meta name="robots" content="noindex" />
+  <link rel="alternate" type="application/rss+xml" href="http://unknownplace.org/memo/index.rss" />
+</head>
+<body>
+
+<div id="container">
+<div id="header">
+    <h1><a href="/">unknownplace.org</a></h1> /
+<a href="/memo/">memo</a>
+</div>
+
+<div id="content">
+
+<div class="entry autopagerize_page_element">
+  <h2><a href="/memo/2010/11/23/1/">xcode プロジェクト設定をアーキテクチャごとに変えるには？</a></h2>
+
+  <div class="body">
+    <p>cocos2d のテンプレートでプロジェクトつくると、</p>
+<p><a href="http://www.flickr.com/photos/typester/5199445501/" title="スクリーンショット（2010-11-23 8.58.53） by typester, on Flickr"><img alt="スクリーンショット（2010-11-23 8.58.53）" height="107" src="http://farm6.static.flickr.com/5245/5199445501_e1af706000_o.png" width="343" /></a></p>
+<p>こんな感じで、ARMv6 と ARMv7 で設定を変えててへーっておもったけど。これって GUI から設定できない気がするんだけど、どうやってやるんだろ？？</p>
+
+  </div>
+
+  <div class="meta">
+    by typester /
+    at <a href="/memo/2010/11/23/1/">2010-11-23T09:00:00</a> /
+    <a href="/memo/tag/cocos2d/">cocos2d</a>
+    &middot; <a href="/memo/tag/iphone/">iphone</a>
+    &middot; <a href="/memo/tag/xcode/">xcode</a>
+    / <a href="/memo/2010/11/23/1/#disqus_thread">Comment</a>
+  </div>
+</div>
+
+<div class="entry autopagerize_page_element">
+  <h2><a href="/memo/2010/11/19/1/">CCRepeatForever は CCSequence の中では使えない</a></h2>
+
+  <div class="body">
+    <p>やろうとしたら BAD_ACCESS になった。</p>
+<blockquote><p><a href="http://www.cocos2d-iphone.org/wiki/doku.php/prog_guide:actions_composition">prog_guide:actions_composition - cocos2d for iPhone</a></p><p><em>IMPORTANT</em>: CCRepeatForever is not a valid CCIntervalAction. You can&apos;t use a CCRepeatForever inside a CCSequence action.</p></blockquote>
+<p>らしい。</p>
+<p>導入アニメしたあと、ループさせたいような場合はよくあるからこれできないと不便なきもする。</p>
+<p>そう言うことがしたい場合は <code>CCCallFunc</code> でアニメーションの終了をもらいそこで <code>CCRepeatForever</code> する。<code>CCCallBlock</code> っていう Blocks インタフェースあるからそれ使えばメソッド増やさなくてもいいようだ。</p>
+
+  </div>
+
+  <div class="meta">
+    by typester /
+    at <a href="/memo/2010/11/19/1/">2010-11-19T23:23:00</a> /
+    <a href="/memo/tag/iphone/">iphone</a>
+    &middot; <a href="/memo/tag/cocos2d/">cocos2d</a>
+    / <a href="/memo/2010/11/19/1/#disqus_thread">Comment</a>
+  </div>
+</div>
+
+<div class="entry autopagerize_page_element">
+  <h2><a href="/memo/2010/11/18/1/">cocos2d の Spritesheet の Retina 対応</a></h2>
+
+  <div class="body">
+    <p><a href="http://www.cocos2d-iphone.org/">cocos2d</a> ではメモリ効率よく画像リソースをあつかうために以下のような CSS Sprite っぽい画像に複数リソースを格納して使うことができる。</p>
+<p><a href="http://www.flickr.com/photos/typester/5186617822/" title="time_num by typester, on Flickr"><img alt="time_num" height="32" src="http://farm5.static.flickr.com/4124/5186617822_8ef3f66c4f_o.png" width="64" /></a></p>
+<p>cocos2d 自体は 0.99.5 から Retina 対応するようで、通常の画像ファイルなら <code>-hd.png</code> のような suffix で画像を置いておけば自動的にそいつが使われるようになった。</p>
+<p>スプライトシートでの対応方法が見つけられなかったので、いろいろ試してみた。</p>
+<p>結論から書くと、</p>
+<ul><li>time_num.png</li><li>time_num-hd.png</li><li>time_num.plist</li><li>time_num-hd.plist</li></ul>
+<p>とそれぞれファイルを作成する。plist のなかのファイル名は <code>-hd</code> ありなしに関わらずどちらもおなじ物を指定する必要がある。</p>
+<p>そのうえで、</p>
+<pre><code>[[<span class="type">CCSpriteFrameCache</span> sharedSpriteFrameCache] addSpriteFramesWithFile:@<span class="string">&quot;time_num.plist&quot;</span>];
+<span class="type">CCSpriteBatchNode</span>* <span class="variable-name">time_num</span> = [<span class="type">CCSpriteBatchNode</span> batchNodeWithFile:@<span class="string">&quot;time_num.png&quot;</span>];
+[<span class="keyword">self</span> addChild:time_num];
+
+<span class="type">CCSprite</span>* <span class="variable-name">time</span> = [<span class="type">CCSprite</span> spriteWithSpriteFrameName:@<span class="string">&quot;time_num1.png&quot;</span>];
+time.position = ccp(160, 240);
+[<span class="keyword">self</span> addChild:time];
+</code></pre>
+<p>などとすればいいようだ。座標系をただ倍にすればいいような単純な高解像度画像のためにもわざわざ別途plistを用意してあげなければいけないのが若干めんどくさい。</p>
+<p>plist 作成が面倒な場合、</p>
+<pre><code><span class="type">CCTexture2D</span>* <span class="variable-name">texture</span> = [[CCTextureCache sharedTextureCache] addImage:@<span class="string">"time_num.png"</span>];
+<span class="type">CCSpriteFrame</span> *<span class="variable-name">frame</span> = [CCSpriteFrame frameWithTexture:texture rect:CGRectMake(0, 0, 10, 14)];
+</code></pre>
+<p>というような感じでテクスチャを自前で切り出して使うことも可能のようだが、こっちのほうがコードが煩雑になりそう。</p>
+<p>（0.99.5-rc1 でためしてます）</p>
+
+  </div>
+
+  <div class="meta">
+    by typester /
+    at <a href="/memo/2010/11/18/1/">2010-11-18T14:34:00</a> /
+    <a href="/memo/tag/iphone/">iphone</a>
+    &middot; <a href="/memo/tag/cocos2d/">cocos2d</a>
+    / <a href="/memo/2010/11/18/1/#disqus_thread">Comment</a>
+  </div>
+</div>
+
+<div class="entry autopagerize_page_element">
+  <h2><a href="/memo/2010/07/27/1/">ユニバーサルバイナリ作成用シェルスクリプト</a></h2>
+
+  <div class="body">
+    <p>iPhone用にビルドしたライブラリは実機用(armv6/armv7)とシミュレータ用(i386)のユニバーサルバイナリとして作成しておくと使い勝手が良いです。 その分ビルドは面倒になるのですが。。</p>
+<p>僕は通常以下のようにしてユニバーサルバイナリを作成してます。</p>
+<ol><li>まずprefixをそれぞれ <code>~/dev/iphone/lib/curl-7.20.1-armv6</code> <code>~/dev/iphone/lib/curl-7.20.1-armv7</code> <code>~/dev/iphone/lib/curl-7.20.1-i386</code> などとしてそれぞれのアーキテクチャ用にビルドをする</li><li>適当に書いた <a href="http://gist.github.com/491799">bundle.sh</a> でユニバーサルバイナリ化</li></ol>
+<p>この <code>bundle.sh</code> は上の例だと</p>
+<pre><code>./bundle.sh ~/dev/iphone/lib/curl-7.20.1
+</code></pre>
+<p>として実行すると <code>~/dev/iphone/lib/curl-7.20.1-armv6</code> <code>~/dev/iphone/lib/curl-7.20.1-armv7</code> <code>~/dev/iphone/lib/curl-7.20.1-i386</code> が全部がっちゃんこした <code>~/dev/iphone/lib/curl-7.20.1</code> ができるという寸法です。</p>
+<p>この方法だとまだ3つ分手動でビルドするのがめんどくさいので、そこも自動化したいところですね。</p>
+
+  </div>
+
+  <div class="meta">
+    by typester /
+    at <a href="/memo/2010/07/27/1/">2010-07-27T14:52:00</a> /
+    <a href="/memo/tag/osx/">osx</a>
+    &middot; <a href="/memo/tag/iphone/">iphone</a>
+    / <a href="/memo/2010/07/27/1/#disqus_thread">Comment</a>
+  </div>
+</div>
+
+<div class="entry autopagerize_page_element">
+  <h2><a href="/memo/2009/12/06/2/">PhotoShare にアップロードするだけのアプリ</a></h2>
+
+  <div class="body">
+    <p><a href="http://www.bcphotoshare.com/">PhotoShare</a> は写真共有を軸にした SNS のようなサイトで結構好きなのですが。写真をアップロードしたいだけという状況で写真をアップロードしようと公式アプリを立ち上げると自分宛のコメントが来てないかとか、友達の写真が更新されてないかとかチェックするのですぐにアップロード画面にいけずイライラしたりします。</p>
+<p>そんなわけでシンプルに PhotoShare にアップロードするだけなアプリを作りました。</p>
+<p><a href="http://click.linksynergy.com/fs-bin/stat?id=epIEMEmECfk&amp;offerid=94348&amp;type=3&amp;subid=0&amp;tmpid=2192&amp;RD_PARM1=http%253A%252F%252Fitunes.apple.com%252Fjp%252Fapp%252Fps-up-simple-fast-uploader-for-photoshare%252Fid342421711%253Fmt%253D8%2526uo%253D6%2526partnerId%253D30" target="itunes_store"><img alt="PS up: simple, fast uploader for PhotoShare" height="15" src="http://ax.phobos.apple.com.edgesuite.net/images/badgeitunes61x15dark.gif" width="61" /></a></p>
+<p>先日の<a href="http://d.hatena.ne.jp/tomyhero/20091120/1258718763">たこthon</a> で適当に書き上げたアプリなので本当にアップロードする以外の機能がありませんが、使いながら欲しい物を加えていこうと思ってます。使い方見つつインタフェースも。</p>
+
+  </div>
+
+  <div class="meta">
+    by typester /
+    at <a href="/memo/2009/12/06/2/">2009-12-06T14:10:00</a> /
+    <a href="/memo/tag/iphone/">iphone</a>
+    / <a href="/memo/2009/12/06/2/#disqus_thread">Comment</a>
+  </div>
+</div>
+
+<div class="entry autopagerize_page_element">
+  <h2><a href="/memo/2009/11/26/1/">CookPad の iPhone 用 API</a></h2>
+
+  <div class="body">
+    <p>こんな感じかな。</p>
+<blockquote><p><a href="http://github.com/typester/cookpad-api-perl">typester&apos;s cookpad-api-perl at master - GitHub</a></p></blockquote>
+<p><code>api_key</code> ないと動かないからあれだけど。</p>
+
+  </div>
+
+  <div class="meta">
+    by typester /
+    at <a href="/memo/2009/11/26/1/">2009-11-26T23:40:00</a> /
+    <a href="/memo/tag/web/">web</a>
+    &middot; <a href="/memo/tag/cookpad/">cookpad</a>
+    &middot; <a href="/memo/tag/iphone/">iphone</a>
+    / <a href="/memo/2009/11/26/1/#disqus_thread">Comment</a>
+  </div>
+</div>
+
+<div class="entry autopagerize_page_element">
+  <h2><a href="/memo/2009/02/03/1/">iPhone野良レポジトリの作り方</a></h2>
+
+  <div class="body">
+    <p><a href="http://coderepos.org/share/">coderepos</a> で野良レポジトリホストしたらいいんじゃね、っと思ったのでちょっとやり方をメモ。</p>
+<p>iPhone の野良レポジトリは Debian の apt ベースになってるので、開発者が作った .deb ファイルをホストする感じになるのかな。なのでとりあえずここでは .deb の作り方は省く。</p>
+<p>ホストの仕方は簡単で、.deb を同じディレクトリにつっこんでおいて、そのディレクトリ内で Debian の <code>dpkg-dev</code> パッケージをインストールすると入る <code>dpkg-scanpackages</code> コマンドを使って</p>
+<pre><code>dpkg-scanpackages -m . &gt; Packages
+</code></pre>
+<p>とやるとそのディレクトリの .deb をなめてパッケージ一覧を作ってくれる。これを bzip2 して Packages.bz2 にすれば最低限のレポジトリが完成する。簡単ですね！</p>
+<p>ただ、iPhone野良アプリの.debには独自のメタデータがあるので、 <code>dpkg-scanpackages</code> にそれを理解させるためにちょっと変更する必要はある。</p>
+<pre><code>--- <span class="constant">/</span><span class="string">usr</span><span class="constant">/</span><span class="cperl-nonoverridable">bin</span>/dpkg-scanpackages  2008-12-29 13:46:45.000000000 +0900
++++ dpkg-scanpackages   2008-12-10 14:12:55.000000000 +0900
+@@ -25,7 +25,9 @@
+
+ <span class="keyword">my</span> <span class="cperl-array">@fieldpri</span> = (<span class="cperl-nonoverridable">qw</span><span class="string">(Package Package-Type Source Version Kernel-Version
+                    Architecture Subarchitecture Essential Origin Bugs
+-                   Maintainer Installed-Size Installer-Menu-Item)</span>,
++                   Maintainer Installed-Size Installer-Menu-Item
++                  Name Author Homepage Icon
++               ),
+                 <span class="cperl-array">@pkg_dep_fields</span>, <span class="cperl-nonoverridable">qw</span><span class="string">(Filename Size MD5sum Section Priority
+                    Homepage Description Tag)</span>);
+</code></pre>
+<p>僕の環境(Debian Lenny)ではこんな感じ。</p>
+<p>この <code>dpkg-scanpackages</code> でつくった Packages.bz2 があるだけで一応レポジトリとしては機能するけど、どうせなのでレポジトリのメタデータなどを置きたいかと思います。</p>
+<p>それは同じところに <code>Release</code> というファイル名で</p>
+<pre><code>Origin: Saurik&apos;s Example for Cydia
+Label: Cydia Example
+Suite: stable
+Version: 0.9
+Codename: tangelo
+Architectures: iphoneos-arm
+Components: main
+Description: An Example Repository from HowTo Instructions
+</code></pre>
+<p>こういうのを置いておけばOKです。各項目の説明は <a href="http://www.saurik.com/id/7">saurik 先生のエントリ</a>の Step 4: Repository Metadata (Optional) というところを見るといいと思います。</p>
+<p>しかし coderepos は debian ベースではなかった気がするから、どういう場合はどうやるんでしょうね。。</p>
+
+  </div>
+
+  <div class="meta">
+    by typester /
+    at <a href="/memo/2009/02/03/1/">2009-02-03T13:38:00</a> /
+    <a href="/memo/tag/iphone/">iphone</a>
+    / <a href="/memo/2009/02/03/1/#disqus_thread">Comment</a>
+  </div>
+</div>
+
+<div class="entry autopagerize_page_element">
+  <h2><a href="/memo/2008/12/10/2/">xcode でも toolchain でもビルドできる iPhone アプリ構成を作る手順メモ</a></h2>
+
+  <div class="body">
+    <p>まず、xcode で新規プロジェクト作成。Window-Based Application が余計なもの作らないのでおすすめ。</p>
+<pre><code>.
+|____Classes
+| |____my_test_projectAppDelegate.h
+| |____my_test_projectAppDelegate.m
+|____Info.plist
+|____main.m
+|____MainWindow.xib
+|____my_test_project.xcodeproj
+| |____project.pbxproj
+| |____typester.mode1v3
+| |____typester.pbxuser
+|____my_test_project_Prefix.pch
+</code></pre>
+<p>こんなファイル構成ができあがる。</p>
+<p>まず、nib ファイルは toolchain 環境では扱えないので MainWindow.xib は削除。Info.plist からも</p>
+<pre><code>&lt;key&gt;NSMainNibFile&lt;/key&gt;
+&lt;string&gt;MainWindow&lt;/string&gt;
+</code></pre>
+<p>って部分を削除。nib ファイルを使わないということはすなわち xcode のインターフェースビルダーが使えないということだけどまぁしょうがない。</p>
+<p>つぎ、プリコンパイルヘッダ (<code>my_test_project_Prefix.pch</code>) も僕はいらないので削除。また、project.pbxprojに</p>
+<pre><code>GCC_PRECOMPILE_PREFIX_HEADER = YES;
+GCC_PREFIX_HEADER = my_test_project_Prefix.pch;
+</code></pre>
+<p>という部分がDebugとReleaseの二カ所あると思うのでそこを</p>
+<pre><code>GCC_PRECOMPILE_PREFIX_HEADER = NO;
+</code></pre>
+<p>に変更。</p>
+<p>Classes ってディレクトリ名が気に入らないので、src に変更。xcode側では読み込み直す。</p>
+<p>アイコンとかリソースファイル用には resources ってディレクトリを作っておく。</p>
+<p>最後に toolchain 用の Makefile をおく。</p>
+<p>この時点でファイル構成は</p>
+<pre><code>.
+|____Info.plist
+|____my_test_project.xcodeproj
+| |____project.pbxproj
+| |____typester.mode1v3
+| |____typester.pbxuser
+|____main.m
+|____Makefile
+|____resources
+|____src
+| |____my_test_projectAppDelegate.h
+| |____my_test_projectAppDelegate.m
+</code></pre>
+<p>こんな感じ。</p>
+<p>これでどっちでもビルドできるようなアプリを書くことが可能。</p>
+<p>めんどくさいので自動化したい。</p>
+<h4>追記＠2008-12-11</h4>
+<p><code>project.pbxproj</code> を直いじりすると、その後 xcode から実機デバッグしようとするとUUIDがちげーよとかいう警告がでるようになるっぽい。(実際にデバッグは出来るのけど)</p>
+<p>直いじりするかわりに xcode のプロジェクト設定で <code>GCC_PRECOMPILE_PREFIX_HEADE</code> とかを編集すれば大丈夫。</p>
+
+  </div>
+
+  <div class="meta">
+    by typester /
+    at <a href="/memo/2008/12/10/2/">2008-12-10T18:25:00</a> /
+    <a href="/memo/tag/iphone/">iphone</a>
+    / <a href="/memo/2008/12/10/2/#disqus_thread">Comment</a>
+  </div>
+</div>
+
+<div class="entry autopagerize_page_element">
+  <h2><a href="/memo/2008/12/10/1/">KillAppleをCydiaからインストールできるようにしてみた</a></h2>
+
+  <div class="body">
+    <p>この間作った <a href="http://unknownplace.org/memo/2008/10/08#e003">KillApple</a> という iPhone のメモリに残ったビルドインアプリケーションを殺すアプリケーションですが、いろんなところでデモするとなかなか好評で、使いたいとおっしゃってくださる方もいたので、Cydiaからインストールできるようにしてみました。</p>
+<p>Cydia のソースに</p>
+<pre><code>http://apt.unknownplace.org/iphone/
+</code></pre>
+<p>を追加すると、検索に KillApple が引っかかるようになると思いますのでそのままそれをインストールすればOKです。</p>
+<p>今後作ったほかのアプリもここで公開していこうかなと思っております。</p>
+
+  </div>
+
+  <div class="meta">
+    by typester /
+    at <a href="/memo/2008/12/10/1/">2008-12-10T14:43:00</a> /
+    <a href="/memo/tag/iphone/">iphone</a>
+    / <a href="/memo/2008/12/10/1/#disqus_thread">Comment</a>
+  </div>
+</div>
+
+<div class="entry autopagerize_page_element">
+  <h2><a href="/memo/2008/10/08/3/">build-inアプリケーションを殺すだけのアプリ</a></h2>
+
+  <div class="body">
+    <blockquote><p><a href="http://github.com/typester/killapple-iphone">http://github.com/typester/killapple-iphone</a></p></blockquote>
+<p>作ってみた。絶対ありそうだけど。</p>
+<p>起動すると</p>
+<pre><code>killall -KILL MobilePhone MobileSafari MobileMail MobileMusicPlayer
+</code></pre>
+<p>してすぐに終了するアプリです。</p>
+<p>これらの組み込みアプリケーションは終了したつもりでもメモリに残るので、起動したままにすると全体が重くなります。</p>
+<p>ホームボタン長押しすれば終了させられるのですがそれもめんどいので、いっぱつで皆殺しにできるものを作りました。</p>
+<p>SpringBoard を殺すアプリは KillSB というのがあるんだけど、SpringBoard は再起動に時間がかかるので最後の手段にしておきたい。ほとんどの場合そこまでしなくてもこっちで十分なはず。</p>
+
+  </div>
+
+  <div class="meta">
+    by typester /
+    at <a href="/memo/2008/10/08/3/">2008-10-08T22:06:00</a> /
+    <a href="/memo/tag/iphone/">iphone</a>
+    / <a href="/memo/2008/10/08/3/#disqus_thread">Comment</a>
+  </div>
+</div>
+
+
+
+
+<div id="pager" class="autopagerize_insert_before">
+  <p class="pages">
+    <a class="prev" rel="previous" href="/memo/tag/iphone/">&laquo; Prev</a>
+    <a href="/memo/tag/iphone/">1</a>
+    <span class="current">2</span>
+    <a href="/memo/tag/iphone/page/3/">3</a>
+    <a class="next" rel="next" href="/memo/tag/iphone/page/3/">Next &raquo;</a>
+  </p>
+  <p class="info">(Page 2 of 3)</p>
+</div>
+
+
+</div>
+
+<p id="footer">
+  Copyright &copy; 2005-2013
+      by <a class="author" href="/about/#me">Daisuke Murase (typester)</a> /
+  Site generated by <a href="https://github.com/typester/nim">nim</a> /
+  Comments powered by <a href="http://disqus.com">DISQUS</a>.
+</p>
+
+</div>
+
+
+<script type="text/javascript">
+//<![CDATA[
+(function() {
+	var links = document.getElementsByTagName('a');
+	var query = '?';
+	for(var i = 0; i < links.length; i++) {
+	if(links[i].href.indexOf('#disqus_thread') >= 0) {
+		query += 'url' + i + '=' + encodeURIComponent(links[i].href) + '&';
+	}
+	}
+	document.write('<script charset="utf-8" type="text/javascript" src="http://disqus.com/forums/unknownplace/get_num_replies.js' + query + '"></' + 'script>');
+})();
+//]]>
+</script>
+
+
+<script type="text/javascript">
+var gaJsHost = (("https:" == document.location.protocol) ? "https://ssl." : "http://www.");
+document.write(unescape("%3Cscript src='" + gaJsHost + "google-analytics.com/ga.js' type='text/javascript'%3E%3C/script%3E"));
+</script>
+<script type="text/javascript">
+try {
+var pageTracker = _gat._getTracker("UA-53067-1");
+pageTracker._trackPageview();
+} catch(err) {}</script>
+
+<script>
+function googleTranslateElementInit() {
+  new google.translate.TranslateElement({
+    pageLanguage: 'ja',
+    gaTrack: true,
+    gaId: 'UA-53067',
+    floatPosition: google.translate.TranslateElement.FloatPosition.BOTTOM_RIGHT
+  });
+}
+</script><script src="//translate.google.com/translate_a/element.js?cb=googleTranslateElementInit"></script>
+
+</body>
+</html>

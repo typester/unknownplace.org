@@ -1,0 +1,250 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="ja" xml:lang="ja">
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <title>memo - unknownplace.org</title>
+  <link rel="stylesheet" type="text/css" href="http://yui.yahooapis.com/3.0.0/build/cssreset/reset-min.css" />
+  <link rel="stylesheet" type="text/css" href="http://yui.yahooapis.com/3.0.0/build/cssfonts/fonts-min.css" />
+  <link rel="stylesheet" href="/css/style.css" type="text/css" />
+  <meta property="fb:admins" content="1093631929" />
+  <meta name="robots" content="noindex" />
+  <link rel="alternate" type="application/rss+xml" href="http://unknownplace.org/memo/index.rss" />
+</head>
+<body>
+
+<div id="container">
+<div id="header">
+    <h1><a href="/">unknownplace.org</a></h1> /
+<a href="/memo/">memo</a>
+</div>
+
+<div id="content">
+
+<div class="entry autopagerize_page_element">
+  <h2><a href="/memo/2006/12/21/1/">mutt の表示がおかしいの直った</a></h2>
+
+  <div class="body">
+    <p>前にmutt使っていたときに表示がずれるのよねーとかいってたとき、33rpmさんにslang使えば直るかもとかコメントもらったんだけど、slangにしてもおかしいから放置してたんだけど、どうやらscreenのせいだったっぽい。</p>
+<p>screenなしでmutt起動してみたら全然正常だった。。くっそう。</p>
+<p>で、そのscreenなんだけど、</p>
+<blockquote><p><a href="http://www.dekaino.net/screen/01install.html">screen install memo</a></p></blockquote>
+<p>ここで配布されているパッチ当てたらmuttまともになった。すばらしー。</p>
+<p>ついでにmuttを新しくしてみた。以下作業ログ</p>
+<p>mutt:</p>
+<pre><code>sudo aptitude install libslang1-utf8-dev
+wget http://www.emaillab.org/mutt/1.5.13/mutt-1.5.13.tar.gz
+wget http://www.emaillab.org/mutt/1.5.13/patch-1.5.13.mutt-j.ja.1.gz
+tar -zxvf mutt-1.5.13.tar.gz
+gzip -d patch-1.5.13.mutt-j.ja.1.gz
+cd mutt-1.5.13
+patch -p1 &lt; ../patch-1.5.13.mutt-j.ja.1
+./configure --prefix=/usr/local/mutt --without-wc-funcs --with-slang --enable-default-japanese --enable-hcache
+make
+sudo make install
+</code></pre>
+<p>screen:</p>
+<pre><code>wget ftp://ftp.uni-erlangen.de/pub/utilities/screen/screen-4.0.2.tar.gz
+wget ftp://www.dekaino.net/pub/screen/screen-4.0.2-deadlock-patch
+wget ftp://www.dekaino.net/pub/screen/screen-4.0.2-hankanacopy-patch
+wget ftp://www.dekaino.net/pub/screen/screen-4.0.2-patch-cjkwidth-cvs-2006052001
+tar -zxvf screen-4.0.2.tar.gz
+cd screen-4.0.2
+patch &lt; ../screen-4.0.2-deadlock-patch
+patch &lt; ../screen-4.0.2-hankanacopy-patch
+patch &lt; ../screen-4.0.2-patch-cjkwidth-cvs-2006052001
+./configure --prefix=/usr/local/screen --enable-colors256
+# エラーった
+sudo apt-get build-dep screen
+./configure --prefix=/usr/local/screen --enable-colors256
+# まだエラーったconfig.logみる
+sudo aptitude install libncurses5-dev
+./configure --prefix=/usr/local/screen --enable-colors256
+make
+sudo make install
+</code></pre>
+
+  </div>
+
+  <div class="meta">
+    by typester /
+    at <a href="/memo/2006/12/21/1/">2006-12-21T09:57:00</a> /
+    <a href="/memo/tag/mutt/">mutt</a>
+    &middot; <a href="/memo/tag/screen/">screen</a>
+    / <a href="/memo/2006/12/21/1/#disqus_thread">Comment</a>
+  </div>
+</div>
+
+<div class="entry autopagerize_page_element">
+  <h2><a href="/memo/2006/03/26/1/">mutt にも</a></h2>
+
+  <div class="body">
+    <p>だいぶ慣れてきた。</p>
+<p>唯一不便なのがメール書くときだなぁ。僕は <code>$EDITOR=emacsclient</code> なので mutt でメール書くと普通に emacs が開くのだけど、メール書き終わるまで mutt 側は Waiting for Emacs... で何にも操作できないので、他のメール参照しようと思っても出来なかったりとか。</p>
+<p>Mew のころは書きかけメールを buffer にためまくっていたので、かなり不便だ。(そのせいで書きかけでそのままなメールがいっぱいあるのだがｗ)</p>
+<p>mutt はエディタ起動するだけでそのまま投げっぱなしで、送信は emacs のほうでやるようにできればいいなぁ。</p>
+<p>どうやるんかわからんけｄ</p>
+
+  </div>
+
+  <div class="meta">
+    by typester /
+    at <a href="/memo/2006/03/26/1/">2006-03-26T03:50:00</a> /
+    <a href="/memo/tag/mutt/">mutt</a>
+    / <a href="/memo/2006/03/26/1/#disqus_thread">Comment</a>
+  </div>
+</div>
+
+<div class="entry autopagerize_page_element">
+  <h2><a href="/memo/2006/03/22/5/"></a></h2>
+
+  <div class="body">
+    <p>1 も解決</p>
+<pre><code>message-hook ~N &apos;exec sync-mailbox&apos;
+</code></pre>
+<p>cool!</p>
+
+  </div>
+
+  <div class="meta">
+    by typester /
+    at <a href="/memo/2006/03/22/5/">2006-03-22T18:30:00</a> /
+    <a href="/memo/tag/mutt/">mutt</a>
+    / <a href="/memo/2006/03/22/5/#disqus_thread">Comment</a>
+  </div>
+</div>
+
+<div class="entry autopagerize_page_element">
+  <h2><a href="/memo/2006/03/22/4/"></a></h2>
+
+  <div class="body">
+    <p>下記 2 は解決した。</p>
+<pre><code><span class="type">set</span> <span class="variable-name">mbox_type</span>=Maildir
+set spoolfile=<span class="string">"~/Maildir"</span>
+set folder=<span class="string">"~/Maildir"</span>
+</code></pre>
+<p>としかしてなかった。これに</p>
+<pre><code><span class="type">set</span> <span class="variable-name">mbox</span>=<span class="string">"~/Maildir"</span>
+</code></pre>
+<p>を追加したら出なくなった。</p>
+<ins>`set move=no` でよかったぽい。</ins>
+
+  </div>
+
+  <div class="meta">
+    by typester /
+    at <a href="/memo/2006/03/22/4/">2006-03-22T18:01:00</a> /
+    <a href="/memo/tag/mutt/">mutt</a>
+    / <a href="/memo/2006/03/22/4/#disqus_thread">Comment</a>
+  </div>
+</div>
+
+<div class="entry autopagerize_page_element">
+  <h2><a href="/memo/2006/03/22/3/">mutt 雑感</a></h2>
+
+  <div class="body">
+    <p>素晴らしいなぁ。メール書くときは mew のほうが優れてると思うけど。</p>
+<p>今わからないこと</p>
+<ol><li>未読を表示し、Maildir 更新 (new から cur にメールをうつすの) にいちいち $ 打つのがめんどくさい。 これは削除とかそういうのだけにしたい。というのも未読よんでも $ 押さなければ biff がうまく動かないから。</li><li>終了するとき <code>Move read messages to /home/typester/mbox? ([no]/yes):</code> とか聞かれるのがうざい。なにこれ。</li></ol>
+
+  </div>
+
+  <div class="meta">
+    by typester /
+    at <a href="/memo/2006/03/22/3/">2006-03-22T17:38:00</a> /
+    <a href="/memo/tag/mutt/">mutt</a>
+    / <a href="/memo/2006/03/22/3/#disqus_thread">Comment</a>
+  </div>
+</div>
+
+<div class="entry autopagerize_page_element">
+  <h2><a href="/memo/2006/03/22/1/">mew to mutt</a></h2>
+
+  <div class="body">
+    <p>Mew に特に不満はなかったのだけど、imapではローカルに全部ダウンロードしてきちゃうし、ローカルでMaildir使ってる場合でも別の場所にまんまコピーをつくるのでいまいちスマートじゃないなぁと思っていた。</p>
+<p>muttはなんか起動するたびにMaildir読み込むからすげーおそいし、とか言ったらナガヤマンがヘッダをキャッシュしておくパッチがあるらしいと教えてくれたので入れてみた。</p>
+<p>そのパッチ当てて入れてみたら、初回起動は変わらないが、2回目以降の起動はめっさ早くなった。</p>
+<p>inbox に今 53000 通くらいメールあって、初回起動は1分以上かかるけど、次からは1,2秒。すごい。キャッシュファイルは40MBちょいくらいだ。</p>
+<p>起動しっぱなしで使うだろうからそんなに関係ないとは思うけど、さすがにデフォルトの状態はありえない。</p>
+<p>メモ:</p>
+<pre><code>$ sudo apt-get build-dep mutt
+  (snip.. gdbm が入ってるかとかたしかめたりとか)
+$ wget http://prdownloads.sourceforge.jp/mutt-j/8177/mutt-1.5.6i.tar.gz
+$ wget http://prdownloads.sourceforge.jp/mutt-j/8179/mutt-1.5.6i-ja.1.tar.gz
+$ wget http://wwwcip.informatik.uni-erlangen.de/~sithglan/mutt/patch-1.5.6.tg.hcache.12
+$ tar -zxvf mutt-1.5.6i.tar.gz
+$ tar -zxvf mutt-1.5.6i-ja.1.tar.gz
+$ cd mutt-1.5.6
+$ patch -p1 &lt; ../patch-1.5.6.tg.hcache.12
+$ patch -p1 &lt; ../mutt-1.5.6i-ja.1/patch-1.5.6.tt.ja.1
+$ ./prepare --prefix=/usr/local/mutt --enable-hcache --enable-default-japanese
+$ make
+$ sudo make install
+</code></pre>
+<p>cacheパッチが1.5.6用は15まであるけど、13以降はうまくコンパイルできない模様。うちでも失敗したので何も考えず12を入れた。</p>
+<p>設定もぼちぼちやろう。</p>
+
+  </div>
+
+  <div class="meta">
+    by typester /
+    at <a href="/memo/2006/03/22/1/">2006-03-22T02:01:00</a> /
+    <a href="/memo/tag/life/">life</a>
+    &middot; <a href="/memo/tag/mutt/">mutt</a>
+    / <a href="/memo/2006/03/22/1/#disqus_thread">Comment</a>
+  </div>
+</div>
+
+
+
+</div>
+
+<p id="footer">
+  Copyright &copy; 2005-2013
+      by <a class="author" href="/about/#me">Daisuke Murase (typester)</a> /
+  Site generated by <a href="https://github.com/typester/nim">nim</a> /
+  Comments powered by <a href="http://disqus.com">DISQUS</a>.
+</p>
+
+</div>
+
+
+<script type="text/javascript">
+//<![CDATA[
+(function() {
+	var links = document.getElementsByTagName('a');
+	var query = '?';
+	for(var i = 0; i < links.length; i++) {
+	if(links[i].href.indexOf('#disqus_thread') >= 0) {
+		query += 'url' + i + '=' + encodeURIComponent(links[i].href) + '&';
+	}
+	}
+	document.write('<script charset="utf-8" type="text/javascript" src="http://disqus.com/forums/unknownplace/get_num_replies.js' + query + '"></' + 'script>');
+})();
+//]]>
+</script>
+
+
+<script type="text/javascript">
+var gaJsHost = (("https:" == document.location.protocol) ? "https://ssl." : "http://www.");
+document.write(unescape("%3Cscript src='" + gaJsHost + "google-analytics.com/ga.js' type='text/javascript'%3E%3C/script%3E"));
+</script>
+<script type="text/javascript">
+try {
+var pageTracker = _gat._getTracker("UA-53067-1");
+pageTracker._trackPageview();
+} catch(err) {}</script>
+
+<script>
+function googleTranslateElementInit() {
+  new google.translate.TranslateElement({
+    pageLanguage: 'ja',
+    gaTrack: true,
+    gaId: 'UA-53067',
+    floatPosition: google.translate.TranslateElement.FloatPosition.BOTTOM_RIGHT
+  });
+}
+</script><script src="//translate.google.com/translate_a/element.js?cb=googleTranslateElementInit"></script>
+
+</body>
+</html>

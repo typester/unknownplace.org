@@ -1,0 +1,152 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="ja" xml:lang="ja">
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <title>Chained - unknownplace.org</title>
+  <link rel="stylesheet" type="text/css" href="http://yui.yahooapis.com/3.0.0/build/cssreset/reset-min.css" />
+  <link rel="stylesheet" type="text/css" href="http://yui.yahooapis.com/3.0.0/build/cssfonts/fonts-min.css" />
+  <link rel="stylesheet" href="/css/style.css" type="text/css" />
+  <meta property="fb:admins" content="1093631929" />
+  <link rel="alternate" type="application/rss+xml" href="http://unknownplace.org/memo/index.rss" />
+</head>
+<body>
+
+<div id="container">
+<div id="header">
+    <h1><a href="/">unknownplace.org</a></h1> /
+<a href="/memo/">memo</a>
+</div>
+
+<div id="content">
+<div class="entry autopagerize_page_element">
+  <h2><a href="/memo/2006/09/02/8/">Chained</a></h2>
+
+  <div class="body">
+    <p>Chainedアクションを使って、<code>/ユーザー名/...</code> だとそのユーザーのエントリを表示。</p>
+<p><code>/...</code> だと全員のエントリを表示するアプリケーションの例。</p>
+<p>最後にはてなっぽく <code>/ユーザー名/profile</code> もつけてある。</p>
+<pre><code><span class="keyword">package</span> <span class="function-name">MyApp::Controller::UserView</span>;
+
+<span class="keyword">use</span> <span class="function-name">strict</span>;
+<span class="keyword">use</span> <span class="function-name">warnings</span>;
+<span class="keyword">use</span> <span class="function-name">base</span> <span class="string">&apos;Catalyst::Controller&apos;</span>;
+
+<span class="keyword">sub</span> <span class="function-name">user_detect</span> <span class="constant">:Chained</span><span class="string">(&apos;/&apos;)</span> <span class="constant">:PathPart</span><span class="string">(&apos;&apos;)</span> <span class="constant">:CaptureArgs</span><span class="string">(1)</span> {
+    <span class="keyword">my</span> (<span class="variable-name">$self</span>, <span class="variable-name">$c</span>, <span class="variable-name">$user</span>) = <span class="cperl-array">@_</span>;
+    $c-&gt;stash-&gt;{<span class="string">user</span>} = $c-&gt;model(<span class="string">&apos;DBIC::User&apos;</span>)-&gt;find({ <span class="string">username</span> =&gt; $user })
+        <span class="type">or</span> $c-&gt;detach(<span class="string">&apos;/default&apos;</span>);
+}
+
+<span class="keyword">sub</span> <span class="function-name">user_root</span> <span class="constant">:Chained</span><span class="string">(&apos;user_detect&apos;)</span> <span class="constant">:PathPart</span><span class="string">(&apos;&apos;)</span> <span class="constant">:Args</span><span class="string">(0)</span> {
+    <span class="keyword">my</span> (<span class="variable-name">$self</span>, <span class="variable-name">$c</span>) = <span class="cperl-array">@_</span>;
+    $c-&gt;forward(<span class="string">&apos;/view/index&apos;</span>);
+}
+
+<span class="keyword">sub</span> <span class="function-name">user_tag</span> <span class="constant">:Chained</span><span class="string">(&apos;user_detect&apos;)</span> <span class="constant">:PathPart</span><span class="string">(&apos;tag&apos;)</span> <span class="constant">:Args</span><span class="string">(1)</span> {
+    <span class="keyword">my</span> (<span class="variable-name">$self</span>, <span class="variable-name">$c</span>, <span class="variable-name">$tags</span>) = <span class="cperl-array">@_</span>;
+    $c-&gt;forward(<span class="string">&apos;/view/tag&apos;</span>);
+}
+
+<span class="keyword">sub</span> <span class="function-name">user_year</span> <span class="constant">:Chained</span><span class="string">(&apos;user_detect&apos;)</span> <span class="constant">:PathPart</span><span class="string">(&apos;&apos;)</span> <span class="constant">:Args</span><span class="string">(1)</span> {
+    <span class="keyword">my</span> (<span class="variable-name">$self</span>, <span class="variable-name">$c</span>, <span class="variable-name">$year</span>) = <span class="cperl-array">@_</span>;
+    $c-&gt;forward(<span class="string">&apos;/view/year&apos;</span>);
+}
+
+<span class="keyword">sub</span> <span class="function-name">user_month</span> <span class="constant">:Chained</span><span class="string">(&apos;user_detect&apos;)</span> <span class="constant">:PathPart</span><span class="string">(&apos;&apos;)</span> <span class="constant">:Args</span><span class="string">(2)</span> {
+    <span class="keyword">my</span> (<span class="variable-name">$self</span>, <span class="variable-name">$c</span>, <span class="variable-name">$year</span>, <span class="variable-name">$month</span>) = <span class="cperl-array">@_</span>;
+    $c-&gt;forward(<span class="string">&apos;/view/month&apos;</span>);
+}
+
+<span class="keyword">sub</span> <span class="function-name">user_day</span> <span class="constant">:Chained</span><span class="string">(&apos;user_detect&apos;)</span> <span class="constant">:PathPart</span><span class="string">(&apos;&apos;)</span> <span class="constant">:Args</span><span class="string">(3)</span> {
+    <span class="keyword">my</span> (<span class="variable-name">$self</span>, <span class="variable-name">$c</span>, <span class="variable-name">$year</span>, <span class="variable-name">$month</span>, <span class="variable-name">$day</span>) = <span class="cperl-array">@_</span>;
+    $c-&gt;forward(<span class="string">&apos;/view/day&apos;</span>);
+}
+
+<span class="keyword">sub</span> <span class="function-name">user_permalink</span> <span class="constant">:Chained</span><span class="string">(&apos;user_detect&apos;)</span> <span class="constant">:PathPart</span><span class="string">(&apos;&apos;)</span> <span class="constant">:Args</span><span class="string">(4)</span> {
+    <span class="keyword">my</span> (<span class="variable-name">$self</span>, <span class="variable-name">$c</span>, <span class="variable-name">$year</span>, <span class="variable-name">$month</span>, <span class="variable-name">$day</span>, <span class="variable-name">$id</span>) = <span class="cperl-array">@_</span>;
+    $c-&gt;forward(<span class="string">&apos;/view/permalink&apos;</span>);
+}
+
+<span class="keyword">sub</span> <span class="function-name">user_profile</span> <span class="constant">:Chained</span><span class="string">(&apos;user_detect&apos;)</span> <span class="constant">:PathPart</span><span class="string">(&apos;profile&apos;)</span> <span class="constant">:Args</span><span class="string">(0)</span> {
+    <span class="keyword">my</span> (<span class="variable-name">$self</span>, <span class="variable-name">$c</span>) = <span class="cperl-array">@_</span>;
+
+    $c-&gt;stash-&gt;{<span class="string">template</span>} = <span class="string">&apos;user/profile.tt&apos;</span>;
+}
+
+1;
+</code></pre>
+<p>うーん、微妙ｗ</p>
+<pre><code>:Chained(&apos;/&apos;) :PathPart(&apos;&apos;)
+</code></pre>
+<p>はあんまりやらないほうがよさげ。</p>
+
+  </div>
+
+  <div class="meta">
+    by typester /
+    at <a href="/memo/2006/09/02/8/">2006-09-02T22:13:00</a> /
+    <a href="/memo/tag/perl/">perl</a>
+    &middot; <a href="/memo/tag/catalyst/">catalyst</a>
+    / <a href="/memo/2006/09/02/8/#disqus_thread">Comments(0)</a>
+  </div>
+</div>
+
+<div id="disqus_thread"></div>
+
+<script type="text/javascript">
+    var disqus_url = location.protocol + "//" + location.host + "/memo/2006/09/02/8/";
+</script>
+<script type="text/javascript" src="http://disqus.com/forums/unknownplace/embed.js"></script>
+
+</div>
+
+<p id="footer">
+  Copyright &copy; 2005-2013
+      by <a class="author" href="/about/#me">Daisuke Murase (typester)</a> /
+  Site generated by <a href="https://github.com/typester/nim">nim</a> /
+  Comments powered by <a href="http://disqus.com">DISQUS</a>.
+</p>
+
+</div>
+
+
+<script type="text/javascript">
+//<![CDATA[
+(function() {
+	var links = document.getElementsByTagName('a');
+	var query = '?';
+	for(var i = 0; i < links.length; i++) {
+	if(links[i].href.indexOf('#disqus_thread') >= 0) {
+		query += 'url' + i + '=' + encodeURIComponent(links[i].href) + '&';
+	}
+	}
+	document.write('<script charset="utf-8" type="text/javascript" src="http://disqus.com/forums/unknownplace/get_num_replies.js' + query + '"></' + 'script>');
+})();
+//]]>
+</script>
+
+
+<script type="text/javascript">
+var gaJsHost = (("https:" == document.location.protocol) ? "https://ssl." : "http://www.");
+document.write(unescape("%3Cscript src='" + gaJsHost + "google-analytics.com/ga.js' type='text/javascript'%3E%3C/script%3E"));
+</script>
+<script type="text/javascript">
+try {
+var pageTracker = _gat._getTracker("UA-53067-1");
+pageTracker._trackPageview();
+} catch(err) {}</script>
+
+<script>
+function googleTranslateElementInit() {
+  new google.translate.TranslateElement({
+    pageLanguage: 'ja',
+    gaTrack: true,
+    gaId: 'UA-53067',
+    floatPosition: google.translate.TranslateElement.FloatPosition.BOTTOM_RIGHT
+  });
+}
+</script><script src="//translate.google.com/translate_a/element.js?cb=googleTranslateElementInit"></script>
+
+</body>
+</html>

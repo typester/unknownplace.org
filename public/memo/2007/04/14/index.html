@@ -1,0 +1,192 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="ja" xml:lang="ja">
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <title>2007/04/14 - memo - unknownplace.org</title>
+  <link rel="stylesheet" type="text/css" href="http://yui.yahooapis.com/3.0.0/build/cssreset/reset-min.css" />
+  <link rel="stylesheet" type="text/css" href="http://yui.yahooapis.com/3.0.0/build/cssfonts/fonts-min.css" />
+  <link rel="stylesheet" href="/css/style.css" type="text/css" />
+  <meta property="fb:admins" content="1093631929" />
+  <meta name="robots" content="noindex" />
+  <link rel="alternate" type="application/rss+xml" href="http://unknownplace.org/memo/index.rss" />
+</head>
+<body>
+
+<div id="container">
+<div id="header">
+    <h1><a href="/">unknownplace.org</a></h1> /
+<a href="/memo/">memo</a>
+</div>
+
+<div id="content">
+
+<div class="entry autopagerize_page_element">
+  <h2 id="e003"><a href="/memo/2007/04/14/3/"></a></h2>
+
+  <div class="body">
+    <p>おお、1.4.15。</p>
+
+  </div>
+
+  <div class="meta">
+    by typester /
+    at <a href="/memo/2007/04/14/3/">2007-04-14T07:37:00</a> /
+    <a href="/memo/tag/lighttpd/">lighttpd</a>
+    / <a href="/memo/2007/04/14/3/#disqus_thread">Comment</a>
+  </div>
+</div>
+
+<div class="entry autopagerize_page_element">
+  <h2 id="e002"><a href="/memo/2007/04/14/2/">Log::Dispatch::Config</a></h2>
+
+  <div class="body">
+    <p><code>Log::Dispatch</code> は大好きなモジュールのひとつなんだけど、これだけだとイマイチ微妙。</p>
+<p><code>Log::Dispatch::Config</code> を使うことですげーー便利になる。必須。</p>
+<p>miyagawa さんは 5 年以上も前にこれ作ったんだなぁ。</p>
+
+  </div>
+
+  <div class="meta">
+    by typester /
+    at <a href="/memo/2007/04/14/2/">2007-04-14T07:18:00</a> /
+    <a href="/memo/tag/perl/">perl</a>
+    / <a href="/memo/2007/04/14/2/#disqus_thread">Comment</a>
+  </div>
+</div>
+
+<div class="entry autopagerize_page_element">
+  <h2 id="e001"><a href="/memo/2007/04/14/1/">Catalyst で Log::Dispatch を使うの法</a></h2>
+
+  <div class="body">
+    <p>同僚から聞かれたので、僕のやり方を書いておく。</p>
+<p>すでにCPANに <code>Catalyst::Plugin::Log::Dispatch</code> というのがあるのだけど、なんかいけてないのでそれは使わず、以下のようにしている。</p>
+<p>まず <code>MyApp::Logger</code> とかいうのをかく</p>
+<pre><code><span class="keyword">package</span> <span class="function-name">MyApp::Logger</span>;
+<span class="keyword">use</span> <span class="function-name">strict</span>;
+<span class="keyword">use</span> <span class="function-name">warnings</span>;
+
+<span class="keyword">use</span> <span class="function-name">Log::Dispatch::Config</span>;
+<span class="keyword">use</span> <span class="function-name">Log::Dispatch::Configurator::YAML</span>;
+
+<span class="keyword">use</span> <span class="function-name">Catalyst::Utils</span>;
+<span class="keyword">use</span> <span class="function-name">NEXT</span>;
+
+{
+    <span class="keyword">package</span> <span class="function-name">MyApp::Logger::Backend</span>;
+    <span class="keyword">use</span> <span class="function-name">base</span> <span class="cperl-nonoverridable">qw</span><span class="string">/Log::Dispatch::Config/</span>;
+}
+
+<span class="keyword">sub</span> <span class="function-name">setup</span> {
+    <span class="keyword">my</span> <span class="variable-name">$c</span>      = <span class="cperl-nonoverridable">shift</span>;
+    <span class="keyword">my</span> <span class="variable-name">$class</span>  = <span class="type">ref</span> $c || $c;
+
+    $c-&gt;<span class="type">log</span>-&gt;_flush <span class="keyword">if</span> $c-&gt;<span class="type">log</span>-&gt;can(<span class="string">&apos;_flush&apos;</span>);
+
+    <span class="keyword">my</span> <span class="variable-name">$config</span> = $c-&gt;config-&gt;{<span class="string">log</span>}{<span class="string">config</span>}
+        || $c-&gt;path_to( Catalyst::Utils::appprefix($class) . <span class="string">&apos;_log.yml&apos;</span> );
+
+    MyApp::Logger::Backend-&gt;configure_and_watch(
+        Log::Dispatch::Configurator::YAML-&gt;new($config) );
+    $class-&gt;<span class="type">log</span>( MyApp::Logger::Backend-&gt;instance );
+
+    $c-&gt;NEXT::setup(<span class="cperl-array">@_</span>);
+}
+
+1;
+</code></pre>
+<p>んでこれをプラグインとしてロード。</p>
+<pre><code>use Catalyst qw/+MyApp::Logger/;
+</code></pre>
+<p>ログの設定ファイルを書く(デフォルトmyapp_log.yml)</p>
+<pre><code>---
+dispatchers:
+  - file
+  - screen
+
+file:
+  class: Log::Dispatch::File
+  min_level: debug
+  filename: /path/to/log
+  mode: append
+  format: &apos;[%d] [%p] %m at %F line %L%n&apos;
+
+screen:
+  class: Log::Dispatch::Screen
+  min_level: debug
+  stderr: 1
+  format: &apos;[%p] %m%n&apos;
+</code></pre>
+<p>以上。</p>
+<p><code>MyApp::Logger::Backend</code> とかしてるのは mod_perl 対策。まーつかわんのだけど。</p>
+<p>これ、さっきヘルパーにした。</p>
+<blockquote><p><a href="http://svn.unknownplace.org/public/library/perl/trunk/Catalyst-Helper-Log-Dispatch/">Catalyst-Helper-Log-Dispatch</a></p></blockquote>
+<p>これ使えば</p>
+<pre><code>./script/myapp_create.pl Log::Dispatch
+</code></pre>
+<p>すると Logger クラスとサンプルの yml ファイルを生成してくれる。</p>
+
+  </div>
+
+  <div class="meta">
+    by typester /
+    at <a href="/memo/2007/04/14/1/">2007-04-14T07:01:00</a> /
+    <a href="/memo/tag/perl/">perl</a>
+    &middot; <a href="/memo/tag/catalyst/">catalyst</a>
+    / <a href="/memo/2007/04/14/1/#disqus_thread">Comment</a>
+  </div>
+</div>
+
+
+
+</div>
+
+<p id="footer">
+  Copyright &copy; 2005-2013
+      by <a class="author" href="/about/#me">Daisuke Murase (typester)</a> /
+  Site generated by <a href="https://github.com/typester/nim">nim</a> /
+  Comments powered by <a href="http://disqus.com">DISQUS</a>.
+</p>
+
+</div>
+
+
+<script type="text/javascript">
+//<![CDATA[
+(function() {
+	var links = document.getElementsByTagName('a');
+	var query = '?';
+	for(var i = 0; i < links.length; i++) {
+	if(links[i].href.indexOf('#disqus_thread') >= 0) {
+		query += 'url' + i + '=' + encodeURIComponent(links[i].href) + '&';
+	}
+	}
+	document.write('<script charset="utf-8" type="text/javascript" src="http://disqus.com/forums/unknownplace/get_num_replies.js' + query + '"></' + 'script>');
+})();
+//]]>
+</script>
+
+
+<script type="text/javascript">
+var gaJsHost = (("https:" == document.location.protocol) ? "https://ssl." : "http://www.");
+document.write(unescape("%3Cscript src='" + gaJsHost + "google-analytics.com/ga.js' type='text/javascript'%3E%3C/script%3E"));
+</script>
+<script type="text/javascript">
+try {
+var pageTracker = _gat._getTracker("UA-53067-1");
+pageTracker._trackPageview();
+} catch(err) {}</script>
+
+<script>
+function googleTranslateElementInit() {
+  new google.translate.TranslateElement({
+    pageLanguage: 'ja',
+    gaTrack: true,
+    gaId: 'UA-53067',
+    floatPosition: google.translate.TranslateElement.FloatPosition.BOTTOM_RIGHT
+  });
+}
+</script><script src="//translate.google.com/translate_a/element.js?cb=googleTranslateElementInit"></script>
+
+</body>
+</html>

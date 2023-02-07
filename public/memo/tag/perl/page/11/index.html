@@ -1,0 +1,402 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="ja" xml:lang="ja">
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <title>memo - unknownplace.org</title>
+  <link rel="stylesheet" type="text/css" href="http://yui.yahooapis.com/3.0.0/build/cssreset/reset-min.css" />
+  <link rel="stylesheet" type="text/css" href="http://yui.yahooapis.com/3.0.0/build/cssfonts/fonts-min.css" />
+  <link rel="stylesheet" href="/css/style.css" type="text/css" />
+  <meta property="fb:admins" content="1093631929" />
+  <meta name="robots" content="noindex" />
+  <link rel="alternate" type="application/rss+xml" href="http://unknownplace.org/memo/index.rss" />
+</head>
+<body>
+
+<div id="container">
+<div id="header">
+    <h1><a href="/">unknownplace.org</a></h1> /
+<a href="/memo/">memo</a>
+</div>
+
+<div id="content">
+
+<div class="entry autopagerize_page_element">
+  <h2><a href="/memo/2007/04/14/2/">Log::Dispatch::Config</a></h2>
+
+  <div class="body">
+    <p><code>Log::Dispatch</code> は大好きなモジュールのひとつなんだけど、これだけだとイマイチ微妙。</p>
+<p><code>Log::Dispatch::Config</code> を使うことですげーー便利になる。必須。</p>
+<p>miyagawa さんは 5 年以上も前にこれ作ったんだなぁ。</p>
+
+  </div>
+
+  <div class="meta">
+    by typester /
+    at <a href="/memo/2007/04/14/2/">2007-04-14T07:18:00</a> /
+    <a href="/memo/tag/perl/">perl</a>
+    / <a href="/memo/2007/04/14/2/#disqus_thread">Comment</a>
+  </div>
+</div>
+
+<div class="entry autopagerize_page_element">
+  <h2><a href="/memo/2007/04/14/1/">Catalyst で Log::Dispatch を使うの法</a></h2>
+
+  <div class="body">
+    <p>同僚から聞かれたので、僕のやり方を書いておく。</p>
+<p>すでにCPANに <code>Catalyst::Plugin::Log::Dispatch</code> というのがあるのだけど、なんかいけてないのでそれは使わず、以下のようにしている。</p>
+<p>まず <code>MyApp::Logger</code> とかいうのをかく</p>
+<pre><code><span class="keyword">package</span> <span class="function-name">MyApp::Logger</span>;
+<span class="keyword">use</span> <span class="function-name">strict</span>;
+<span class="keyword">use</span> <span class="function-name">warnings</span>;
+
+<span class="keyword">use</span> <span class="function-name">Log::Dispatch::Config</span>;
+<span class="keyword">use</span> <span class="function-name">Log::Dispatch::Configurator::YAML</span>;
+
+<span class="keyword">use</span> <span class="function-name">Catalyst::Utils</span>;
+<span class="keyword">use</span> <span class="function-name">NEXT</span>;
+
+{
+    <span class="keyword">package</span> <span class="function-name">MyApp::Logger::Backend</span>;
+    <span class="keyword">use</span> <span class="function-name">base</span> <span class="cperl-nonoverridable">qw</span><span class="string">/Log::Dispatch::Config/</span>;
+}
+
+<span class="keyword">sub</span> <span class="function-name">setup</span> {
+    <span class="keyword">my</span> <span class="variable-name">$c</span>      = <span class="cperl-nonoverridable">shift</span>;
+    <span class="keyword">my</span> <span class="variable-name">$class</span>  = <span class="type">ref</span> $c || $c;
+
+    $c-&gt;<span class="type">log</span>-&gt;_flush <span class="keyword">if</span> $c-&gt;<span class="type">log</span>-&gt;can(<span class="string">&apos;_flush&apos;</span>);
+
+    <span class="keyword">my</span> <span class="variable-name">$config</span> = $c-&gt;config-&gt;{<span class="string">log</span>}{<span class="string">config</span>}
+        || $c-&gt;path_to( Catalyst::Utils::appprefix($class) . <span class="string">&apos;_log.yml&apos;</span> );
+
+    MyApp::Logger::Backend-&gt;configure_and_watch(
+        Log::Dispatch::Configurator::YAML-&gt;new($config) );
+    $class-&gt;<span class="type">log</span>( MyApp::Logger::Backend-&gt;instance );
+
+    $c-&gt;NEXT::setup(<span class="cperl-array">@_</span>);
+}
+
+1;
+</code></pre>
+<p>んでこれをプラグインとしてロード。</p>
+<pre><code>use Catalyst qw/+MyApp::Logger/;
+</code></pre>
+<p>ログの設定ファイルを書く(デフォルトmyapp_log.yml)</p>
+<pre><code>---
+dispatchers:
+  - file
+  - screen
+
+file:
+  class: Log::Dispatch::File
+  min_level: debug
+  filename: /path/to/log
+  mode: append
+  format: &apos;[%d] [%p] %m at %F line %L%n&apos;
+
+screen:
+  class: Log::Dispatch::Screen
+  min_level: debug
+  stderr: 1
+  format: &apos;[%p] %m%n&apos;
+</code></pre>
+<p>以上。</p>
+<p><code>MyApp::Logger::Backend</code> とかしてるのは mod_perl 対策。まーつかわんのだけど。</p>
+<p>これ、さっきヘルパーにした。</p>
+<blockquote><p><a href="http://svn.unknownplace.org/public/library/perl/trunk/Catalyst-Helper-Log-Dispatch/">Catalyst-Helper-Log-Dispatch</a></p></blockquote>
+<p>これ使えば</p>
+<pre><code>./script/myapp_create.pl Log::Dispatch
+</code></pre>
+<p>すると Logger クラスとサンプルの yml ファイルを生成してくれる。</p>
+
+  </div>
+
+  <div class="meta">
+    by typester /
+    at <a href="/memo/2007/04/14/1/">2007-04-14T07:01:00</a> /
+    <a href="/memo/tag/perl/">perl</a>
+    &middot; <a href="/memo/tag/catalyst/">catalyst</a>
+    / <a href="/memo/2007/04/14/1/#disqus_thread">Comment</a>
+  </div>
+</div>
+
+<div class="entry autopagerize_page_element">
+  <h2><a href="/memo/2007/04/09/1/">Catalyst + 外部認証API</a></h2>
+
+  <div class="body">
+    <p>今作ってるサービス。</p>
+<pre><code>use Catalyst qw/
+    ...
+    Authentication
+    Authentication::Credential::Password
+    Authentication::Credential::OpenID
+    Authentication::Credential::TypeKey
+    Authentication::Credential::Hatena
+    Authentication::Credential::JugemKey
+    +MyApp::UserStore
+    ...
+    /;
+</code></pre>
+<p><code>MyApp::UserStore</code> は <code>A::Store::DBIC</code> のちょっとしたサブクラスで、<code>Cred::Password</code> のときは <code>auto_create_user</code> しないようにしただけのもの。</p>
+<p>最近の <code>Store::DBIC</code> の <code>auto_create_user</code> 機能つかうと外部認証使うサービス簡単に作れる。</p>
+<p><code>Cred::Password</code> 使わないなら (独自ユーザーを使わないなら) 、<code>Store::DBIC</code> そのまま使えばいける。</p>
+<p>すばらしいなー。</p>
+<p>リリースしたらちゃんとした記事を書きたい。</p>
+
+  </div>
+
+  <div class="meta">
+    by typester /
+    at <a href="/memo/2007/04/09/1/">2007-04-09T10:53:00</a> /
+    <a href="/memo/tag/perl/">perl</a>
+    &middot; <a href="/memo/tag/catalyst/">catalyst</a>
+    / <a href="/memo/2007/04/09/1/#disqus_thread">Comment</a>
+  </div>
+</div>
+
+<div class="entry autopagerize_page_element">
+  <h2><a href="/memo/2007/04/04/1/">YAPC の IRC の機械翻訳を lingr に投げ続けるスクリプト</a></h2>
+
+  <div class="body">
+    <p>YAPC 今年もきましたね！ 楽しんでますか！</p>
+<p>IRCあるけど英語わからんとか、日本語チャンネルあるけど日本語わからんとかいうひと用にIRCの機械翻訳をリアルタイムにlingrに流すスクリプトを作りました！</p>
+<ul><li>e2j: <a href="http://www.lingr.com/room/sharp-yapc.asia">#yapc.asia (at Lingr)</a></li><li>j2e: <a href="http://www.lingr.com/room/sharp-yapc.asia-ja">#yapc.asia-ja (at Lingr)</a></li></ul>
+<p>ソースはこんな感じ</p>
+<blockquote><p><a href="http://svn.unknownplace.org/public/scratch/yapc_irc2lingr/irc2lingr.pl">http://svn.unknownplace.org/public/scratch/yapc_irc2lingr/irc2lingr.pl</a></p></blockquote>
+
+  </div>
+
+  <div class="meta">
+    by typester /
+    at <a href="/memo/2007/04/04/1/">2007-04-04T11:50:00</a> /
+    <a href="/memo/tag/perl/">perl</a>
+    &middot; <a href="/memo/tag/yapc/">yapc</a>
+    / <a href="/memo/2007/04/04/1/#disqus_thread">Comment</a>
+  </div>
+</div>
+
+<div class="entry autopagerize_page_element">
+  <h2><a href="/memo/2007/03/30/2/">Config::Any--</a></h2>
+
+  <div class="body">
+    <p>パースエラーっても何も出さねーの。</p>
+<pre><code><span class="keyword">my</span> <span class="variable-name">$config</span>;
+<span class="keyword">eval</span> {
+    $config = $loader-&gt;load( $filename );
+};
+<span class="keyword">next</span> <span class="keyword">if</span> $EVAL_ERROR;
+</code></pre>
+<p>ふぁっく。</p>
+<p>yamlパースエラーってるの気づかずにはまったわー。</p>
+<p>しかもなんかデバッグ用と思われる warn がいっぱいコメントアウトされていてきもいｗ</p>
+
+  </div>
+
+  <div class="meta">
+    by typester /
+    at <a href="/memo/2007/03/30/2/">2007-03-30T17:29:00</a> /
+    <a href="/memo/tag/perl/">perl</a>
+    / <a href="/memo/2007/03/30/2/#disqus_thread">Comment</a>
+  </div>
+</div>
+
+<div class="entry autopagerize_page_element">
+  <h2><a href="/memo/2007/03/22/3/">Encode.as</a></h2>
+
+  <div class="body">
+    <p>おきた。</p>
+<p>早く出社する人が増えてきて、9時ごろになるとうっさくて寝られなくなるなぁ。ねむい。</p>
+<pre><code>package {
+    import flash.utils.ByteArray;
+
+    public class Encode {
+        public static function encode(encoding:String, string:String):ByteArray {
+            var octets:ByteArray = new ByteArray();
+            octets.writeMultiByte(string, encoding);
+            return octets;
+        }
+
+        public static function decode(encoding:String, octets:ByteArray):String {
+            return octets.readMultiByte(octets.bytesAvailable, encoding);
+        }
+    }
+}
+</code></pre>
+<p>こんなんでどうか。</p>
+<p>このコードは、perlのunicodeフラグを分かってない人に対するEncode.pmの説明にも使えそうな気がする。</p>
+
+  </div>
+
+  <div class="meta">
+    by typester /
+    at <a href="/memo/2007/03/22/3/">2007-03-22T09:30:00</a> /
+    <a href="/memo/tag/as3/">as3</a>
+    &middot; <a href="/memo/tag/perl/">perl</a>
+    / <a href="/memo/2007/03/22/3/#disqus_thread">Comment</a>
+  </div>
+</div>
+
+<div class="entry autopagerize_page_element">
+  <h2><a href="/memo/2007/03/18/1/">perler気質</a></h2>
+
+  <div class="body">
+    <blockquote><p><a href="http://ck2-blogger.jp/pclife/oh-fey.htm">oh!fey - Ck2 Blogger</a></p><p>やっぱ、blosxomユーザー（だった）な人ってすごい人ばっかりだなとか、今更ながらしみじみ思ったりしました。</p></blockquote>
+<p>blogはまとまった文章書くのが苦手で休止してますが、blosxom魂はわすれてません！</p>
+<p>しかし、blosxomをいじるためにperlをはじめたんだけど、いまや職業になっちゃった。</p>
+<p>今だったらplaggerかな。かっこいいよねぇ。</p>
+<p>blosxomやplaggerをかっこいいと思う人はperler気質だと思う。うまくいえませんが。</p>
+
+  </div>
+
+  <div class="meta">
+    by typester /
+    at <a href="/memo/2007/03/18/1/">2007-03-18T20:25:00</a> /
+    <a href="/memo/tag/perl/">perl</a>
+    &middot; <a href="/memo/tag/blosxom/">blosxom</a>
+    &middot; <a href="/memo/tag/plagger/">plagger</a>
+    / <a href="/memo/2007/03/18/1/#disqus_thread">Comment</a>
+  </div>
+</div>
+
+<div class="entry autopagerize_page_element">
+  <h2><a href="/memo/2007/02/25/2/">XMLSocket - POE</a></h2>
+
+  <div class="body">
+    <p>AS3からSocketクラスができたけど、それでも依然としてテキストベースの通信ではXMLSocketのほうが楽なのでAS3ベースでもXMLSocket使ってる。</p>
+<p>でも通信の区切りがNULL文字だったりとか、癖があるんで、なんこかPoCoサーバー作ってみて、うまくラッピングするモジュール作るべきだなと考えてる。</p>
+<p>たとえば以下のような。</p>
+<h4>POE::Filter::XMLSocket</h4>
+<p>NULL文字で区切る入出力フィルタ。</p>
+<h4>POE::Component::Server::TCP::XMLSocket</h4>
+<p>AS3からサポートされているTCP通信でのcrossdomain.xmlの返答機能を組み込んだComponent::Server::TCPのサブクラス。</p>
+<p>などなど。</p>
+<p>今の仕事が終わったらちゃんと考えよう。</p>
+
+  </div>
+
+  <div class="meta">
+    by typester /
+    at <a href="/memo/2007/02/25/2/">2007-02-25T21:11:00</a> /
+    <a href="/memo/tag/perl/">perl</a>
+    &middot; <a href="/memo/tag/flash/">flash</a>
+    / <a href="/memo/2007/02/25/2/#disqus_thread">Comment</a>
+  </div>
+</div>
+
+<div class="entry autopagerize_page_element">
+  <h2><a href="/memo/2007/02/23/2/">Jemplate多言語化用ラッパ</a></h2>
+
+  <div class="body">
+    <p>つくった。</p>
+<blockquote><p><a href="http://svn.unknownplace.org/public/scripts/jemplate-maketext.pl">http://svn.unknownplace.org/public/scripts/jemplate-maketext.pl</a></p></blockquote>
+<p>Jemplate のテンプレート内に <code>{{Hello}}</code> とか <code>_(&quot;Hello&quot;)</code> とかかいておいて <code>jemplate -c</code> のかわりに</p>
+<pre><code>jemplate-maketext.pl --path lib/MyApp/I18N --locale ja templates/jemplates/*.tt &gt; jemplate_ja.js
+</code></pre>
+<p>みたいにすると <code>{{Hello}}</code> とかの部分がその言語になったファイルができるというやつ。jemplate -c の簡単なラッパ。</p>
+<p>--path には .po や .mo のあるディレクトリを指定する。</p>
+<p><code>&quot;Hello %1!&quot;</code> みたいなのには対応できないんだけど、まぁとりあえずこれで。</p>
+
+  </div>
+
+  <div class="meta">
+    by typester /
+    at <a href="/memo/2007/02/23/2/">2007-02-23T17:29:00</a> /
+    <a href="/memo/tag/perl/">perl</a>
+    &middot; <a href="/memo/tag/javascript/">javascript</a>
+    &middot; <a href="/memo/tag/jemplate/">jemplate</a>
+    / <a href="/memo/2007/02/23/2/#disqus_thread">Comment</a>
+  </div>
+</div>
+
+<div class="entry autopagerize_page_element">
+  <h2><a href="/memo/2007/02/22/2/"></a></h2>
+
+  <div class="body">
+    <p><code>Locale::Maketext::Lexcon::Gettext</code> の parse_metadata の前後見ると、<code>msgid &quot;&quot;</code> なものはメタデータとして扱うようになっているらしい。で、そこの Content-Type の charset みてる。</p>
+<p>常識くせー。基本的なことを知らないので無駄にはまるなぁ＞＜</p>
+
+  </div>
+
+  <div class="meta">
+    by typester /
+    at <a href="/memo/2007/02/22/2/">2007-02-22T02:54:00</a> /
+    <a href="/memo/tag/perl/">perl</a>
+    &middot; <a href="/memo/tag/i18n/">i18n</a>
+    / <a href="/memo/2007/02/22/2/#disqus_thread">Comment</a>
+  </div>
+</div>
+
+
+
+
+<div id="pager" class="autopagerize_insert_before">
+  <p class="pages">
+    <a class="prev" rel="previous" href="/memo/tag/perl/page/10/">&laquo; Prev</a>
+    <a href="/memo/tag/perl/page/7/">7</a>
+    <a href="/memo/tag/perl/page/8/">8</a>
+    <a href="/memo/tag/perl/page/9/">9</a>
+    <a href="/memo/tag/perl/page/10/">10</a>
+    <span class="current">11</span>
+    <a href="/memo/tag/perl/page/12/">12</a>
+    <a href="/memo/tag/perl/page/13/">13</a>
+    <a href="/memo/tag/perl/page/14/">14</a>
+    <a href="/memo/tag/perl/page/15/">15</a>
+    <a href="/memo/tag/perl/page/16/">16</a>
+    <a class="next" rel="next" href="/memo/tag/perl/page/12/">Next &raquo;</a>
+  </p>
+  <p class="info">(Page 11 of 30)</p>
+</div>
+
+
+</div>
+
+<p id="footer">
+  Copyright &copy; 2005-2013
+      by <a class="author" href="/about/#me">Daisuke Murase (typester)</a> /
+  Site generated by <a href="https://github.com/typester/nim">nim</a> /
+  Comments powered by <a href="http://disqus.com">DISQUS</a>.
+</p>
+
+</div>
+
+
+<script type="text/javascript">
+//<![CDATA[
+(function() {
+	var links = document.getElementsByTagName('a');
+	var query = '?';
+	for(var i = 0; i < links.length; i++) {
+	if(links[i].href.indexOf('#disqus_thread') >= 0) {
+		query += 'url' + i + '=' + encodeURIComponent(links[i].href) + '&';
+	}
+	}
+	document.write('<script charset="utf-8" type="text/javascript" src="http://disqus.com/forums/unknownplace/get_num_replies.js' + query + '"></' + 'script>');
+})();
+//]]>
+</script>
+
+
+<script type="text/javascript">
+var gaJsHost = (("https:" == document.location.protocol) ? "https://ssl." : "http://www.");
+document.write(unescape("%3Cscript src='" + gaJsHost + "google-analytics.com/ga.js' type='text/javascript'%3E%3C/script%3E"));
+</script>
+<script type="text/javascript">
+try {
+var pageTracker = _gat._getTracker("UA-53067-1");
+pageTracker._trackPageview();
+} catch(err) {}</script>
+
+<script>
+function googleTranslateElementInit() {
+  new google.translate.TranslateElement({
+    pageLanguage: 'ja',
+    gaTrack: true,
+    gaId: 'UA-53067',
+    floatPosition: google.translate.TranslateElement.FloatPosition.BOTTOM_RIGHT
+  });
+}
+</script><script src="//translate.google.com/translate_a/element.js?cb=googleTranslateElementInit"></script>
+
+</body>
+</html>

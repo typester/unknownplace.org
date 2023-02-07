@@ -1,0 +1,163 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="ja" xml:lang="ja">
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <title>2009/01/26 - memo - unknownplace.org</title>
+  <link rel="stylesheet" type="text/css" href="http://yui.yahooapis.com/3.0.0/build/cssreset/reset-min.css" />
+  <link rel="stylesheet" type="text/css" href="http://yui.yahooapis.com/3.0.0/build/cssfonts/fonts-min.css" />
+  <link rel="stylesheet" href="/css/style.css" type="text/css" />
+  <meta property="fb:admins" content="1093631929" />
+  <meta name="robots" content="noindex" />
+  <link rel="alternate" type="application/rss+xml" href="http://unknownplace.org/memo/index.rss" />
+</head>
+<body>
+
+<div id="container">
+<div id="header">
+    <h1><a href="/">unknownplace.org</a></h1> /
+<a href="/memo/">memo</a>
+</div>
+
+<div id="content">
+
+<div class="entry autopagerize_page_element">
+  <h2 id="e003"><a href="/memo/2009/01/26/3/"></a></h2>
+
+  <div class="body">
+    <p>EmacsWiki のコードが冗長なので短くしてみた。</p>
+<pre><code>(setq erc-prompt (<span class="keyword">lambda</span> ()
+                   (<span class="keyword">let*</span> ((buffer (buffer-name))
+                          (channel (<span class="keyword">when</span> (string-match <span class="string">&quot;</span><span class="string"><span class="regexp-grouping-backslash">\\</span></span><span class="string"><span class="regexp-grouping-construct">(</span></span><span class="string">#[</span><span class="string"><span class="negation-char">^</span></span><span class="string">@]+</span><span class="string"><span class="regexp-grouping-backslash">\\</span></span><span class="string"><span class="regexp-grouping-construct">)</span></span><span class="string">&quot;</span> buffer)
+                                       (match-string 1 buffer))))
+                     (erc-propertize
+                      (concat
+                       (or channel
+                           (<span class="keyword">if</span> (and (boundp &apos;erc-default-recipients) (erc-default-target))
+                               (erc-default-target)
+                             <span class="string">&quot;ERC&quot;</span>))
+                       <span class="string">&quot;&gt;&quot;</span>)
+                      &apos;read-only t &apos;rear-nonsticky t &apos;front-nonsticky t))))
+</code></pre>
+<p>elisp的にはこういうのどうかくのが良いのかわからんけどとりあえず短くはなった。</p>
+
+  </div>
+
+  <div class="meta">
+    by typester /
+    at <a href="/memo/2009/01/26/3/">2009-01-26T14:52:00</a> /
+    <a href="/memo/tag/emacs/">emacs</a>
+    / <a href="/memo/2009/01/26/3/#disqus_thread">Comment</a>
+  </div>
+</div>
+
+<div class="entry autopagerize_page_element">
+  <h2 id="e002"><a href="/memo/2009/01/26/2/"></a></h2>
+
+  <div class="body">
+    <p><a href="http://d.hatena.ne.jp/IMAKADO/">id:IMAKADO</a> さんにバッファ作らずに使わずに正規表現マッチする方法教えてもらったのでちょっと短くできた。</p>
+<pre><code>(setq erc-prompt (<span class="keyword">lambda</span> ()
+                   (<span class="keyword">let*</span> ((buffer (buffer-name))
+                          (channel (<span class="keyword">when</span> (string-match <span class="string">&quot;</span><span class="string"><span class="regexp-grouping-backslash">\\</span></span><span class="string"><span class="regexp-grouping-construct">(</span></span><span class="string">#[</span><span class="string"><span class="negation-char">^</span></span><span class="string">@]+</span><span class="string"><span class="regexp-grouping-backslash">\\</span></span><span class="string"><span class="regexp-grouping-construct">)</span></span><span class="string">&quot;</span> buffer)
+                                       (match-string 1 buffer))))
+                     (<span class="keyword">if</span> channel
+                         (erc-propertize (concat channel <span class="string">&quot;&gt;&quot;</span>) &apos;read-only t &apos;rear-nonsticky t &apos;front-nonsticky t)
+                       (<span class="keyword">if</span> (and (boundp &apos;erc-default-recipients) (erc-default-target))
+                           (erc-propertize (concat (erc-default-target) <span class="string">&quot;&gt;&quot;</span>) &apos;read-only t &apos;rear-nonsticky t &apos;front-nonsticky t)
+                         (erc-propertize (concat <span class="string">&quot;ERC&gt;&quot;</span>) &apos;read-only t &apos;rear-nonsticky t &apos;front-nonsticky t))))))
+</code></pre>
+
+  </div>
+
+  <div class="meta">
+    by typester /
+    at <a href="/memo/2009/01/26/2/">2009-01-26T14:41:00</a> /
+    <a href="/memo/tag/emacs/">emacs</a>
+    / <a href="/memo/2009/01/26/2/#disqus_thread">Comment</a>
+  </div>
+</div>
+
+<div class="entry autopagerize_page_element">
+  <h2 id="e001"><a href="/memo/2009/01/26/1/">ERCのプロンプトにチャンネル名表示</a></h2>
+
+  <div class="body">
+    <p>というネタは <a href="http://www.emacswiki.org/emacs/ErcConfiguration">EmacsWiki: Erc Configuration</a> の Channel-specific prompts に書いてあるんだけど、そこにも書いてあるとおり、初回表示時にはチャンネル名にならないのでこんな感じにハック。</p>
+<pre><code>(setq erc-prompt (<span class="keyword">lambda</span> ()
+                   (<span class="keyword">let*</span> ((buffer (buffer-name))
+                          (channel (<span class="keyword">with-temp-buffer</span>
+                                     (insert buffer)
+                                     (beginning-of-buffer)
+                                     (<span class="keyword">when</span> (re-search-forward <span class="string">&quot;</span><span class="string"><span class="regexp-grouping-backslash">\\</span></span><span class="string"><span class="regexp-grouping-construct">(</span></span><span class="string">#[</span><span class="string"><span class="negation-char">^</span></span><span class="string">@]+</span><span class="string"><span class="regexp-grouping-backslash">\\</span></span><span class="string"><span class="regexp-grouping-construct">)</span></span><span class="string">&quot;</span> nil t)
+                                       (match-string 1)))))
+                     (<span class="keyword">if</span> channel
+                         (erc-propertize (concat channel <span class="string">&quot;&gt;&quot;</span>) &apos;read-only t &apos;rear-nonsticky t &apos;front-nonsticky t)
+                       (<span class="keyword">if</span> (and (boundp &apos;erc-default-recipients) (erc-default-target))
+                           (erc-propertize (concat (erc-default-target) <span class="string">&quot;&gt;&quot;</span>) &apos;read-only t &apos;rear-nonsticky t &apos;front-nonsticky t)
+                         (erc-propertize (concat <span class="string">&quot;ERC&gt;&quot;</span>) &apos;read-only t &apos;rear-nonsticky t &apos;front-nonsticky t))))))
+</code></pre>
+<p>バッファ名からチャンネル名部分とるようにした感じ。</p>
+<p>1:1 トークとかどうなるかわからないのでとりあえず EmacsWiki のルーチンも書いておいた。</p>
+
+  </div>
+
+  <div class="meta">
+    by typester /
+    at <a href="/memo/2009/01/26/1/">2009-01-26T11:41:00</a> /
+    <a href="/memo/tag/emacs/">emacs</a>
+    / <a href="/memo/2009/01/26/1/#disqus_thread">Comment</a>
+  </div>
+</div>
+
+
+
+</div>
+
+<p id="footer">
+  Copyright &copy; 2005-2013
+      by <a class="author" href="/about/#me">Daisuke Murase (typester)</a> /
+  Site generated by <a href="https://github.com/typester/nim">nim</a> /
+  Comments powered by <a href="http://disqus.com">DISQUS</a>.
+</p>
+
+</div>
+
+
+<script type="text/javascript">
+//<![CDATA[
+(function() {
+	var links = document.getElementsByTagName('a');
+	var query = '?';
+	for(var i = 0; i < links.length; i++) {
+	if(links[i].href.indexOf('#disqus_thread') >= 0) {
+		query += 'url' + i + '=' + encodeURIComponent(links[i].href) + '&';
+	}
+	}
+	document.write('<script charset="utf-8" type="text/javascript" src="http://disqus.com/forums/unknownplace/get_num_replies.js' + query + '"></' + 'script>');
+})();
+//]]>
+</script>
+
+
+<script type="text/javascript">
+var gaJsHost = (("https:" == document.location.protocol) ? "https://ssl." : "http://www.");
+document.write(unescape("%3Cscript src='" + gaJsHost + "google-analytics.com/ga.js' type='text/javascript'%3E%3C/script%3E"));
+</script>
+<script type="text/javascript">
+try {
+var pageTracker = _gat._getTracker("UA-53067-1");
+pageTracker._trackPageview();
+} catch(err) {}</script>
+
+<script>
+function googleTranslateElementInit() {
+  new google.translate.TranslateElement({
+    pageLanguage: 'ja',
+    gaTrack: true,
+    gaId: 'UA-53067',
+    floatPosition: google.translate.TranslateElement.FloatPosition.BOTTOM_RIGHT
+  });
+}
+</script><script src="//translate.google.com/translate_a/element.js?cb=googleTranslateElementInit"></script>
+
+</body>
+</html>

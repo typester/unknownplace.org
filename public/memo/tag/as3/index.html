@@ -1,0 +1,361 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="ja" xml:lang="ja">
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <title>memo - unknownplace.org</title>
+  <link rel="stylesheet" type="text/css" href="http://yui.yahooapis.com/3.0.0/build/cssreset/reset-min.css" />
+  <link rel="stylesheet" type="text/css" href="http://yui.yahooapis.com/3.0.0/build/cssfonts/fonts-min.css" />
+  <link rel="stylesheet" href="/css/style.css" type="text/css" />
+  <meta property="fb:admins" content="1093631929" />
+  <meta name="robots" content="noindex" />
+  <link rel="alternate" type="application/rss+xml" href="http://unknownplace.org/memo/index.rss" />
+</head>
+<body>
+
+<div id="container">
+<div id="header">
+    <h1><a href="/">unknownplace.org</a></h1> /
+<a href="/memo/">memo</a>
+</div>
+
+<div id="content">
+
+<div class="entry autopagerize_page_element">
+  <h2><a href="/memo/2008/12/05/1/">adlがうごかなくてはまる</a></h2>
+
+  <div class="body">
+    <p>kamaitachi のサンプルアプリで Air アプリをつくろうとおもってつくろうとしたんだけど、<code>adl</code> がうまくうごかなくてはまった。</p>
+<p>環境は OSX 10.5.5 + Air1.5 + Flex SDK 3.2.0.3958。</p>
+<p>普通に実行すると</p>
+<pre><code>$ adl HelloWorld-app.xml
+unknown error
+Error: Error #2014: Feature is not available at this time.
+        at runtime::SecurityManager$/initAppDataDirRoot()
+        at runtime::SecurityManager$/GetPersistentStorageDirectoryName()
+        at runtime::AppRunner/run()
+        at global/runtime::ADLEntry()
+</code></pre>
+<p>こんなんなる。別にコードが悪い訳じゃなくて、adtでパッケージ作るとそれは起動できる。</p>
+<p>でなんかよく見るとディレクトリ関係のとこでこけてるからためしに sudo でうごかしてやったらうごいた。。なんやねん。</p>
+<p>どっかのパーミッションかえてやればいいんだろうけどそれがどこだかわからんなぁ。</p>
+
+  </div>
+
+  <div class="meta">
+    by typester /
+    at <a href="/memo/2008/12/05/1/">2008-12-05T16:35:00</a> /
+    <a href="/memo/tag/air/">air</a>
+    &middot; <a href="/memo/tag/as3/">as3</a>
+    / <a href="/memo/2008/12/05/1/#disqus_thread">Comment</a>
+  </div>
+</div>
+
+<div class="entry autopagerize_page_element">
+  <h2><a href="/memo/2008/01/17/1/">Colin Moock さんのイベント</a></h2>
+
+  <div class="body">
+    <blockquote><p><a href="http://www.trick7.com/blog/2008/01/11-181146.php">trick7.com blog: 1月16日イベント告知</a></p></blockquote>
+<p>いってきましたー。Flash系のイベントに参加したのははじめてだったのだけど、asよりということもあるかもしれないけど、とても面白かった。</p>
+<p>感想など。</p>
+<ul><li><p>Colinさんによる ECMAScript4 の話</p><ul><li>ECMAScriptの話はへーという感じである</li><li>日本語うまい</li><li>null の発音はヌルではなくてどっちかといえばナルに近くて最初訳してくれるまで何言ってるのかわからなかった。</li></ul></li><li><p>yossyさん</p><ul><li>javaっぽくリフレクションできるやつ。個人的には興味ないけどすごくよくできてる感がした。</li><li>AS3Unit いいねー</li><li>as2でもaddChildとかどーのこーの。as2の話はよくわからん。addChildをアドチルドといっていたのがきになりまくる。</li><li>swfassistすげーー。スイフ(スウィフ？)アシストって呼んでたのもびっくりした。swf == スイフ？ ってよむんだー。</li></ul></li><li><p>むらゴンさん</p><ul><li>タッチパネルThinkpadは思った以上によさげ。</li><li>最初Flash IDEの画面出ててこれはアウェイかなーと思いきや動画にエフェクト二種類かけてその解説など。おもしろかった。</li><li>プレゼン画面が黒板にチョークを模したもので実際にチョークで字かいたりできた。質感もよかった。おもれー。</li></ul></li><li><p>せこん</p><ul><li>多言語化の話。よかった。僕も使いたい。(機会があれば)</li><li>「gettextって便利なあぷりがあるんですよぅ」とか1から説明していたりとアウェイ感でてておもしろかった。</li></ul></li><li><p>むらけんさん + 寺井さん</p><ul><li>バカスｗ</li></ul></li><li><p>岩崎さん</p><ul><li>なんかフレームワークのイベントマネージャの話。よくわからなかった。</li></ul></li><li><p>yu-kobayashiさん</p><ul><li>HotRubyの話。こないだblog記事みたときもおどろいたけど、実際に3Dのピンボールうごいてるのみてぽかーんとした。</li></ul></li><li><p>飛び入りの人</p><ul><li>ダッシュ四駆郎。その発想はなかったなぁｗ</li></ul></li><li><p>質疑応答</p><ul><li>as3からByteArray+Socketで直接MySQL接続できるとはいってもそれを実際のサービスで使うのはねーよｗｗｗ FlashPlayerからつなげる == だれでもそのMySQLにつなげる。ですからね。</li></ul></li></ul>
+<p>本当にただの感想です。</p>
+<p>yossyさんと話すチャンスがなかったのでsparkprojectをDISれなかったのが残念である。</p>
+
+  </div>
+
+  <div class="meta">
+    by typester /
+    at <a href="/memo/2008/01/17/1/">2008-01-17T01:09:00</a> /
+    <a href="/memo/tag/life/">life</a>
+    &middot; <a href="/memo/tag/as3/">as3</a>
+    / <a href="/memo/2008/01/17/1/#disqus_thread">Comment</a>
+  </div>
+</div>
+
+<div class="entry autopagerize_page_element">
+  <h2><a href="/memo/2007/12/25/1/">Safari3でExternalInterfaceる際のBK</a></h2>
+
+  <div class="body">
+    <p>as側で</p>
+<pre><code>ExternalInterface.addCallback(<span class="string">"foo"</span>...)
+</code></pre>
+<p>した場合Safariからは</p>
+<pre><code>document[<span class="string">"swfid"</span>].foo
+</code></pre>
+<p>でその関数が取れるわけですが、どうもこのオブジェクトをSafariがキャッシュしやがるらしく、二回目以降のロードで</p>
+<pre><code>typeof(document[<span class="string">"swfid"</span>].foo) == <span class="string">"function"</span>
+</code></pre>
+<p>は<strong>swfがロードされる前</strong>でも真になります。</p>
+<p>上記コードでswfのロードチェックを行っていたためはまりました。。</p>
+<p>解決法として</p>
+<pre><code>ExternalInterface.addCallback(<span class="string">"ready"</span>, function():Boolean { <span class="keyword">return</span> <span class="constant">true</span> });
+</code></pre>
+<p>とかを作り、typeofチェックに加えて、この関数を実際によんでちゃんとtrueが返って来るまで待つようにしたらOKでした。やれやれ。</p>
+
+  </div>
+
+  <div class="meta">
+    by typester /
+    at <a href="/memo/2007/12/25/1/">2007-12-25T02:28:00</a> /
+    <a href="/memo/tag/life/">life</a>
+    &middot; <a href="/memo/tag/as3/">as3</a>
+    &middot; <a href="/memo/tag/bk/">bk</a>
+    / <a href="/memo/2007/12/25/1/#disqus_thread">Comment</a>
+  </div>
+</div>
+
+<div class="entry autopagerize_page_element">
+  <h2><a href="/memo/2007/07/22/2/">ustream hacks #3 publish movie from your own swf!</a></h2>
+
+  <div class="body">
+    <p>次、配信のほう。こいつはすこしやっかいだった。</p>
+<p>まず接続は</p>
+<pre><code>nc.connect(<span class="string">"rtmp://209.85.64.39/ustvVideo/{chid}"</span>, { <span class="constant">id</span>: <span class="string">"{userid}"</span>, sessionid: <span class="string">"{sessionid}"</span>, mode: <span class="string">"broadcast"</span>, channel: <span class="string">"{chid}"</span>, version: <span class="string">"v2.131b"</span> });
+</code></pre>
+<p>とかいう感じ。</p>
+<p>chid, sessionidはどちらも配信ページのswfソース部分にある。useridは配信ページを開いたときに <code>http://www.ustream.tv/service.php</code> とかにPOSTしててその結果に入ってる。</p>
+<p>そんで、</p>
+<pre><code>ns.publish(<span class="string">"live_channel_{chid}"</span>, <span class="string">"live"</span>);
+</code></pre>
+<p>すれば配信される。はずなのだけど、されない。FMSへの配信自体はうまくいっていて、#2でやった自前再生swfでは再生されるのだけど、ustreamのchannelページではoff airのままだ。</p>
+<p>FMSのほうに配信開始用の関数がある模様。それもパケット見てたら見つけることができた。</p>
+<p>publish後、</p>
+<pre><code>nc.call(<span class="string">"channelStatus"</span>, <span class="type">new</span> <span class="variable-name">Responder</span>(function ():<span class="type">void</span> { }), <span class="string">"{chid}"</span>, <span class="string">"live"</span>);
+</code></pre>
+<p>とかいれたら、channelページでも見えるようになった。これでいいのかしらないけど。</p>
+<p>ただこれだと、一定時間で接続が切られてしまう。まだなにかあるっぽい。</p>
+<p>どうもFMS側からcallBackという名前の関数をよんできていて、それをうけてpongというFMS関数をよぶようになっているようだ。これをしないときられちゃうわけだなきっと。</p>
+<p>ので、</p>
+<pre><code>nc.client = this;
+</code></pre>
+<p>とかして、thisのクラス内に</p>
+<pre><code>public <span class="type">function</span> <span class="function-name">callBack</span>():<span class="type">void</span> {
+    nc.call(<span class="string">"pong"</span>, <span class="type">new</span> <span class="variable-name">Responder</span>(function ():<span class="type">void</span> {}));
+}
+</code></pre>
+<p>とかしたら大丈夫になった。OKOK。</p>
+<p>これでとりあえず配信もできるようになった。</p>
+<p>あと他に <code>callBack()</code> とおなじように <code>viewersNum(num:Number)</code> とか定義しておくと、接続人数がかわるたびに呼んでくれるようだ。これで今何人とか取れると。</p>
+
+  </div>
+
+  <div class="meta">
+    by typester /
+    at <a href="/memo/2007/07/22/2/">2007-07-22T21:05:00</a> /
+    <a href="/memo/tag/as3/">as3</a>
+    / <a href="/memo/2007/07/22/2/#disqus_thread">Comment</a>
+  </div>
+</div>
+
+<div class="entry autopagerize_page_element">
+  <h2><a href="/memo/2007/07/22/1/">ustream hacks #2 play movie from your own swf!</a></h2>
+
+  <div class="body">
+    <p><a href="http://blog.livedoor.jp/nipotan/archives/50733767.html" title="Ustream Hacks - にぽたん研究所">にぽたん</a>に続き僕も解析してみました！</p>
+<p>ustreamのFMSを自前のswfから使う方法です。#2再生、#3配信、と続きます。</p>
+<p>再生は普通にFMSで動画再生するのとほとんど一緒です。URLとか引数とかに気をつけるだけ。その部分だけ書きます。</p>
+<pre><code>nc.connect(<span class="string">"rtmp://209.85.64.39/ustvVideo/{chid}"</span>, { <span class="constant">mode</span>: <span class="string">"channel"</span>, channel: <span class="string">"{chid}"</span>, sessionid: <span class="string">"{sessionid}"</span> });
+</code></pre>
+<p>して、</p>
+<pre><code>ns.play(<span class="string">"live_channel_{chid}"</span>);
+</code></pre>
+<p>以上！</p>
+<p><code>{sessionid}</code> はプレイヤーのSWFObject部分にありますが、chidは少し見つけにくい。<code>new videoRate(&apos;{chid}&apos;,&apos;XXXX&apos;,&apos;channel&apos;);</code> とかのやつ。</p>
+
+  </div>
+
+  <div class="meta">
+    by typester /
+    at <a href="/memo/2007/07/22/1/">2007-07-22T20:45:00</a> /
+    <a href="/memo/tag/as3/">as3</a>
+    / <a href="/memo/2007/07/22/1/#disqus_thread">Comment</a>
+  </div>
+</div>
+
+<div class="entry autopagerize_page_element">
+  <h2><a href="/memo/2007/03/27/1/">asdoc</a></h2>
+
+  <div class="body">
+    <blockquote><p><a href="http://www.adobe.com/jp/products/flex/productinfo/updater/">Adobe - Adobe Flex 2：インタラクティブなWebサイト、インターネットアプリケーション</a></p><p>ASDocが正式にサポートされ、SDKに付属するようになりました。</p></blockquote>
+<p>ってあるからためしてみたけど</p>
+<pre><code>Error: Could not create toplevel.xml: Unknown OS for ASDoc.  ASDoc will only run on Windows and Mac OS X.
+</code></pre>
+<p>などといわれてLinuxではうごかない。くそう。</p>
+<p>サポートする気ないのかなー。動かなくしてる理由もよくわからん。</p>
+<p>asdoc 自体のドキュメントも日本語のlivedocsにない模様。古いのね。</p>
+<ul><li><a href="http://livedocs.adobe.com/flex/201/html/wwhelp/wwhimpl/common/html/wwhelp.htm?context=LiveDocs_Book_Parts&amp;file=asdoc_127_4.html#189665">Using ASDoc -- Flex 2.01</a></li></ul>
+
+  </div>
+
+  <div class="meta">
+    by typester /
+    at <a href="/memo/2007/03/27/1/">2007-03-27T12:08:00</a> /
+    <a href="/memo/tag/as3/">as3</a>
+    / <a href="/memo/2007/03/27/1/#disqus_thread">Comment</a>
+  </div>
+</div>
+
+<div class="entry autopagerize_page_element">
+  <h2><a href="/memo/2007/03/22/4/">AS3 の 未定義 int</a></h2>
+
+  <div class="body">
+    <p>var i:int; trace(i); // =&gt; 0</p>
+<p>これいやすぎｒｒｒｒｒｒ</p>
+<p>未定義の状態をつくれない。</p>
+<p>これしたいときは Number つかって isNaN するしか方法ないのかなぁ。</p>
+<pre><code>var i:Number;
+trace(i); // =&gt; NaN
+</code></pre>
+
+  </div>
+
+  <div class="meta">
+    by typester /
+    at <a href="/memo/2007/03/22/4/">2007-03-22T12:12:00</a> /
+    <a href="/memo/tag/as3/">as3</a>
+    / <a href="/memo/2007/03/22/4/#disqus_thread">Comment</a>
+  </div>
+</div>
+
+<div class="entry autopagerize_page_element">
+  <h2><a href="/memo/2007/03/22/3/">Encode.as</a></h2>
+
+  <div class="body">
+    <p>おきた。</p>
+<p>早く出社する人が増えてきて、9時ごろになるとうっさくて寝られなくなるなぁ。ねむい。</p>
+<pre><code>package {
+    import flash.utils.ByteArray;
+
+    public class Encode {
+        public static function encode(encoding:String, string:String):ByteArray {
+            var octets:ByteArray = new ByteArray();
+            octets.writeMultiByte(string, encoding);
+            return octets;
+        }
+
+        public static function decode(encoding:String, octets:ByteArray):String {
+            return octets.readMultiByte(octets.bytesAvailable, encoding);
+        }
+    }
+}
+</code></pre>
+<p>こんなんでどうか。</p>
+<p>このコードは、perlのunicodeフラグを分かってない人に対するEncode.pmの説明にも使えそうな気がする。</p>
+
+  </div>
+
+  <div class="meta">
+    by typester /
+    at <a href="/memo/2007/03/22/3/">2007-03-22T09:30:00</a> /
+    <a href="/memo/tag/as3/">as3</a>
+    &middot; <a href="/memo/tag/perl/">perl</a>
+    / <a href="/memo/2007/03/22/3/#disqus_thread">Comment</a>
+  </div>
+</div>
+
+<div class="entry autopagerize_page_element">
+  <h2><a href="/memo/2007/03/22/2/">ByteArray文字コード変換</a></h2>
+
+  <div class="body">
+    <p><code>sjisbytes:ByteArray</code> を decode:</p>
+<pre><code>var utf8strings:String = sjisbytes.readMultiByte(sjisbytes.length, <span class="string">"shift_jis"</span>);
+</code></pre>
+<p>encode:</p>
+<pre><code>var sjisbytes:ByteArray = new ByteArray();
+sjisbytes.writeMultiByte(utf8strings, <span class="string">"shift_jis"</span>);
+</code></pre>
+<p>おー。</p>
+<blockquote><p><a href="http://livedocs.adobe.com/flex/2_jp/langref/charset-codes.html">サポートされている文字セット - Adobe Flex 2 リファレンスガイド</a></p></blockquote>
+
+  </div>
+
+  <div class="meta">
+    by typester /
+    at <a href="/memo/2007/03/22/2/">2007-03-22T04:54:00</a> /
+    <a href="/memo/tag/as3/">as3</a>
+    / <a href="/memo/2007/03/22/2/#disqus_thread">Comment</a>
+  </div>
+</div>
+
+<div class="entry autopagerize_page_element">
+  <h2><a href="/memo/2007/03/22/1/">ByteArrayのデフォルトエンディアン</a></h2>
+
+  <div class="body">
+    <p>いまどきビッグエンディアンがデフォルトとは！</p>
+
+  </div>
+
+  <div class="meta">
+    by typester /
+    at <a href="/memo/2007/03/22/1/">2007-03-22T02:05:00</a> /
+    <a href="/memo/tag/as3/">as3</a>
+    / <a href="/memo/2007/03/22/1/#disqus_thread">Comment</a>
+  </div>
+</div>
+
+
+
+
+<div id="pager" class="autopagerize_insert_before">
+  <p class="pages">
+    <span class="prev">&laquo; Prev</span>
+    <span class="current">1</span>
+    <a href="/memo/tag/as3/page/2/">2</a>
+    <a class="next" rel="next" href="/memo/tag/as3/page/2/">Next &raquo;</a>
+  </p>
+  <p class="info">(Page 1 of 2)</p>
+</div>
+
+
+</div>
+
+<p id="footer">
+  Copyright &copy; 2005-2013
+      by <a class="author" href="/about/#me">Daisuke Murase (typester)</a> /
+  Site generated by <a href="https://github.com/typester/nim">nim</a> /
+  Comments powered by <a href="http://disqus.com">DISQUS</a>.
+</p>
+
+</div>
+
+
+<script type="text/javascript">
+//<![CDATA[
+(function() {
+	var links = document.getElementsByTagName('a');
+	var query = '?';
+	for(var i = 0; i < links.length; i++) {
+	if(links[i].href.indexOf('#disqus_thread') >= 0) {
+		query += 'url' + i + '=' + encodeURIComponent(links[i].href) + '&';
+	}
+	}
+	document.write('<script charset="utf-8" type="text/javascript" src="http://disqus.com/forums/unknownplace/get_num_replies.js' + query + '"></' + 'script>');
+})();
+//]]>
+</script>
+
+
+<script type="text/javascript">
+var gaJsHost = (("https:" == document.location.protocol) ? "https://ssl." : "http://www.");
+document.write(unescape("%3Cscript src='" + gaJsHost + "google-analytics.com/ga.js' type='text/javascript'%3E%3C/script%3E"));
+</script>
+<script type="text/javascript">
+try {
+var pageTracker = _gat._getTracker("UA-53067-1");
+pageTracker._trackPageview();
+} catch(err) {}</script>
+
+<script>
+function googleTranslateElementInit() {
+  new google.translate.TranslateElement({
+    pageLanguage: 'ja',
+    gaTrack: true,
+    gaId: 'UA-53067',
+    floatPosition: google.translate.TranslateElement.FloatPosition.BOTTOM_RIGHT
+  });
+}
+</script><script src="//translate.google.com/translate_a/element.js?cb=googleTranslateElementInit"></script>
+
+</body>
+</html>

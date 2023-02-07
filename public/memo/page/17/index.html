@@ -1,0 +1,362 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="ja" xml:lang="ja">
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <title>memo - unknownplace.org</title>
+  <link rel="stylesheet" type="text/css" href="http://yui.yahooapis.com/3.0.0/build/cssreset/reset-min.css" />
+  <link rel="stylesheet" type="text/css" href="http://yui.yahooapis.com/3.0.0/build/cssfonts/fonts-min.css" />
+  <link rel="stylesheet" href="/css/style.css" type="text/css" />
+  <meta property="fb:admins" content="1093631929" />
+  <meta name="robots" content="noindex" />
+  <link rel="alternate" type="application/rss+xml" href="http://unknownplace.org/memo/index.rss" />
+</head>
+<body>
+
+<div id="container">
+<div id="header">
+    <h1><a href="/">unknownplace.org</a></h1> /
+<a href="/memo/">memo</a>
+</div>
+
+<div id="content">
+
+<div class="entry autopagerize_page_element">
+  <h2><a href="/memo/2008/11/26/2/">HECon1にいってきた</a></h2>
+
+  <div class="body">
+    <p>カヤックサイトの裏側ではじつは <code>HTTP::Engine</code> が使われてるよ、っていう話をしてきました。</p>
+<p>id:IMAKADO さんに会えた。今日は懇親会に参加しないのであんまりはなせなかったのが残念。</p>
+<p>実は anything とか perl-completion とかいれてみたものの、あんまり使い方がわからなくて、第三期vimに移ろうかな期だったりしてた状況だったので、もう少しまじめに使ってみようかなと思ったりした。</p>
+<p>anything はまぁつかってるけど、実際のところ設定よくわからんし、下手に設定するとめっちゃ重くなるし、よくわかっていない。</p>
+
+  </div>
+
+  <div class="meta">
+    by typester /
+    at <a href="/memo/2008/11/26/2/">2008-11-26T22:10:00</a> /
+    <a href="/memo/tag/perl/">perl</a>
+    / <a href="/memo/2008/11/26/2/#disqus_thread">Comment</a>
+  </div>
+</div>
+
+<div class="entry autopagerize_page_element">
+  <h2><a href="/memo/2008/11/26/1/">テスト</a></h2>
+
+  <div class="body">
+    <p>終了。</p>
+
+  </div>
+
+  <div class="meta">
+    by typester /
+    at <a href="/memo/2008/11/26/1/">2008-11-26T16:16:00</a> /
+    <a href="/memo/tag/life/">life</a>
+    / <a href="/memo/2008/11/26/1/#disqus_thread">Comment</a>
+  </div>
+</div>
+
+<div class="entry autopagerize_page_element">
+  <h2><a href="/memo/2008/11/21/1/">irssiからOutputzに文字数を投げる</a></h2>
+
+  <div class="body">
+    <blockquote><p><a href="http://d.hatena.ne.jp/antipop/20081120/1227180641">EmacsからOutputzに文字数を投げる - antipop</a></p></blockquote>
+<p>を見て、早速インストールして使ってみたら激しくおもしろい！</p>
+<p>irssiでもやりたくなったので、irssiで発言した文字数をOutputzに投げるプラグインを書いた。</p>
+<blockquote><p><a href="http://github.com/typester/irssi-plugins/tree/master/outputz.pl">http://github.com/typester/irssi-plugins/tree/master/outputz.pl</a></p></blockquote>
+<p><code>~/.irssi/scripts</code> にファイルをおいて、irssi内で</p>
+<pre><code>/run outputz.pl
+</code></pre>
+<p>して</p>
+<pre><code>/set outputz_key あなたの復活の呪文
+/set outputz_uri 適当なURI
+</code></pre>
+<p>すると設定完了で、あとは自動で発言数が投稿されます。</p>
+<del>`outputz_uri` に `%s` をいれるとその部分はIRCのチャンネル名に置換されます。</del>
+<p><code>outputz_uri</code> は <code>URI::Template</code> 形式で指定できるようにしました。</p>
+<p>デフォルトは <code>irc://{server}:{port}/{channel}</code> です。</p>
+<p>つかえる変数は</p>
+<ul><li>server: サーバーアドレス</li><li>port: サーバーポート番号</li><li>channel: 発言したチャンネル名</li><li>server_tag: irssiでのサーバーのユニークタグ</li><li>nick: そのサーバーでのあなたのニックネーム</li></ul>
+<p>となっております。</p>
+<p>こないだ作った <code>PoCo::Client::HTTPDeferred</code> つかってるのでそのサンプルとしてもいいとおもいます。</p>
+<p>しかし、emacsよりirssiの方が文字数いってそうで集計を見るのが怖いです。。。</p>
+
+  </div>
+
+  <div class="meta">
+    by typester /
+    at <a href="/memo/2008/11/21/1/">2008-11-21T16:00:00</a> /
+    <a href="/memo/tag/web/">web</a>
+    &middot; <a href="/memo/tag/irssi/">irssi</a>
+    / <a href="/memo/2008/11/21/1/#disqus_thread">Comment</a>
+  </div>
+</div>
+
+<div class="entry autopagerize_page_element">
+  <h2><a href="/memo/2008/11/14/1/">カヤック本、2冊目</a></h2>
+
+  <div class="body">
+    <p>2冊目が出たようです。興味がある人はぜひ。</p>
+<div class="amazlet-box" style="margin-bottom:0px;"><div class="amazlet-image" style="float:left;"><a href="http://www.amazon.co.jp/exec/obidos/ASIN/4833418932/unknownplace-22/ref=nosim/" name="amazletlink" target="_blank"><img alt="面白法人カヤック会社案内" src="http://ecx.images-amazon.com/images/I/51pqEE1-%2B0L._SL160_.jpg" style="border: none;" /></a></div><div class="amazlet-info" style="float:left;margin-left:15px;line-height:120%"><div class="amazlet-name" style="margin-bottom:10px;line-height:120%"><a href="http://www.amazon.co.jp/exec/obidos/ASIN/4833418932/unknownplace-22/ref=nosim/" name="amazletlink" target="_blank">面白法人カヤック会社案内</a><div class="amazlet-powered-date" style="font-size:7pt;margin-top:5px;font-family:verdana;line-height:120%">posted with <a href="http://www.amazlet.com/browse/ASIN/4833418932/unknownplace-22/ref=nosim/" target="_blank" title="面白法人カヤック会社案内">amazlet</a> at 08.11.14</div></div><div class="amazlet-detail">柳澤大輔 <br />プレジデント社 <br />売り上げランキング: 261<br /></div><div class="amazlet-link" style="margin-top: 5px"><a href="http://www.amazon.co.jp/exec/obidos/ASIN/4833418932/unknownplace-22/ref=nosim/" name="amazletlink" target="_blank">Amazon.co.jp で詳細を見る</a></div></div><div class="amazlet-footer" style="clear: left"></div><p></p></div>
+<p>ビジネス書ですよ。</p>
+<p>代表のコメントはこちら：</p>
+<blockquote><p><a href="http://pc.nikkeibp.co.jp/article/column/20081106/1009470/">121：「あなたは会社を愛していますか？」：柳澤大輔「面白法人カヤックのいきかた」</a></p></blockquote>
+<p>ついでに1冊目もおいておきますね。</p>
+<div class="amazlet-box" style="margin-bottom:0px;"><div class="amazlet-image" style="float:left;"><a href="http://www.amazon.co.jp/exec/obidos/ASIN/4396111177/unknownplace-22/ref=nosim/" name="amazletlink" target="_blank"><img alt="この「社則」、効果あり。 (祥伝社新書 117)" src="http://ecx.images-amazon.com/images/I/51TQ3HWntvL._SL160_.jpg" style="border: none;" /></a></div><div class="amazlet-info" style="float:left;margin-left:15px;line-height:120%"><div class="amazlet-name" style="margin-bottom:10px;line-height:120%"><a href="http://www.amazon.co.jp/exec/obidos/ASIN/4396111177/unknownplace-22/ref=nosim/" name="amazletlink" target="_blank">この「社則」、効果あり。 (祥伝社新書 117)</a><div class="amazlet-powered-date" style="font-size:7pt;margin-top:5px;font-family:verdana;line-height:120%">posted with <a href="http://www.amazlet.com/browse/ASIN/4396111177/unknownplace-22/ref=nosim/" target="_blank" title="この「社則」、効果あり。 (祥伝社新書 117)">amazlet</a> at 08.11.14</div></div><div class="amazlet-detail">柳澤 大輔 <br />祥伝社 <br />売り上げランキング: 1347<br /></div><div class="amazlet-link" style="margin-top: 5px"><a href="http://www.amazon.co.jp/exec/obidos/ASIN/4396111177/unknownplace-22/ref=nosim/" name="amazletlink" target="_blank">Amazon.co.jp で詳細を見る</a></div></div><div class="amazlet-footer" style="clear: left"></div><p></p></div>
+
+  </div>
+
+  <div class="meta">
+    by typester /
+    at <a href="/memo/2008/11/14/1/">2008-11-14T14:40:00</a> /
+    <a href="/memo/tag/kayac/">kayac</a>
+    &middot; <a href="/memo/tag/book/">book</a>
+    / <a href="/memo/2008/11/14/1/#disqus_thread">Comment</a>
+  </div>
+</div>
+
+<div class="entry autopagerize_page_element">
+  <h2><a href="/memo/2008/11/13/2/">MochiKit的にPoCo::Client::HTTPをつかえるラッパーを書いてみた。</a></h2>
+
+  <div class="body">
+    <p>POE は結構好きなんだけど、使ってるにつれていろいろ不満が出てくる。</p>
+<p>Client::HTTP もその一つで、レスポンスを受け取るコールバックに CodeRef を指定できないくていちいちステートを作らないといけないのが嫌なので、こんなのを作ってみました。</p>
+<blockquote><p><a href="http://github.com/typester/poco-client-httpdeferred-perl">POE::Component::Client::HTTPDeferred</a></p></blockquote>
+<p>MochiKit のインタフェースを参考にしてます。</p>
+<p>こんな感じで使う。</p>
+<pre><code><span class="keyword">use</span> <span class="function-name">POE</span> <span class="cperl-nonoverridable">qw</span><span class="string">/Component::Client::HTTPDeferred/</span>;
+<span class="keyword">use</span> <span class="function-name">HTTP::Request::Common</span>;
+
+POE::Session-&gt;create(
+    <span class="string">inline_states</span> =&gt; {
+        <span class="string">_start</span> =&gt; <span class="keyword">sub</span> {
+            <span class="keyword">my</span> <span class="variable-name">$ua</span> = POE::Component::Client::HTTPDeferred-&gt;new;
+            <span class="keyword">my</span> <span class="variable-name">$d</span>  = $ua-&gt;request( GET <span class="string">&apos;http://unknownplace.org/memo/&apos;</span> );
+
+            $d-&gt;addBoth(<span class="keyword">sub</span> {
+                <span class="keyword">my</span> <span class="variable-name">$res</span> = <span class="cperl-nonoverridable">shift</span>;
+
+                <span class="keyword">if</span> ($res-&gt;is_success) {
+                    <span class="cperl-nonoverridable">print</span> $res-&gt;as_string;
+                }
+                <span class="keyword">else</span> {
+                    <span class="type">warn</span> $res-&gt;status_line;
+                }
+
+                $ua-&gt;<span class="type">shutdown</span>;
+            });
+        },
+    },
+);
+POE::Kernel-&gt;run;
+</code></pre>
+<p>js やってる人にはちょっと見慣れた感じじゃない？</p>
+<p>これの Deferred 自体は全然機能足りてないけど、素で PoCo::C::HTTP つかうのと比べるとずいぶん楽になる。DeferredListもほしいな。</p>
+
+  </div>
+
+  <div class="meta">
+    by typester /
+    at <a href="/memo/2008/11/13/2/">2008-11-13T23:04:00</a> /
+    <a href="/memo/tag/perl/">perl</a>
+    &middot; <a href="/memo/tag/poe/">poe</a>
+    / <a href="/memo/2008/11/13/2/#disqus_thread">Comment</a>
+  </div>
+</div>
+
+<div class="entry autopagerize_page_element">
+  <h2><a href="/memo/2008/11/13/1/">ぼーっとしてるな</a></h2>
+
+  <div class="body">
+    <ul><li>いい天気だなーってゆっくり歩いてたら遅刻しそうになってダッシュ</li><li>キウイスムージー買いにいったらマンゴーとかナタデココとかのスムージーはあるのにキウイだけ自販機から消えている</li><li>しょうがないので梅こんぶ茶でも飲むかとおもってシンクに行くも手が勝手に珈琲フィルターとかをセットしてしまったので珈琲つくらざるをえなくなる</li><li>しょうがないので珈琲飲む (イマココ)</li></ul>
+
+  </div>
+
+  <div class="meta">
+    by typester /
+    at <a href="/memo/2008/11/13/1/">2008-11-13T10:40:00</a> /
+    <a href="/memo/tag/life/">life</a>
+    / <a href="/memo/2008/11/13/1/#disqus_thread">Comment</a>
+  </div>
+</div>
+
+<div class="entry autopagerize_page_element">
+  <h2><a href="/memo/2008/11/10/1/">貶し甲斐のある男</a></h2>
+
+  <div class="body">
+    <p>昼飯時に京極夏彦の狂骨の夢の続きを読んでいたんだけど、そこに</p>
+<blockquote><p>京極堂は実に冷たくそう云った。木場はどうも常日頃この古本屋やあの探偵の、そこの小説家に対する態度は冷たすぎると思っている。しかしそう思っている癖に口を開けば小説家を罵倒している自分にも善く気がつくのだ。どうやら関口とはそう云う男なのである。褒め甲斐はないが貶し甲斐はある。</p></blockquote>
+<p>という一節があった。</p>
+<p>なるほど、まさに xcezx のことである。</p>
+
+  </div>
+
+  <div class="meta">
+    by typester /
+    at <a href="/memo/2008/11/10/1/">2008-11-10T15:49:00</a> /
+    <a href="/memo/tag/life/">life</a>
+    / <a href="/memo/2008/11/10/1/#disqus_thread">Comment</a>
+  </div>
+</div>
+
+<div class="entry autopagerize_page_element">
+  <h2><a href="/memo/2008/11/06/1/">emacs23をつかってみた</a></h2>
+
+  <div class="body">
+    <p>昨日のエントリで CarbonEmacs を使えばいいのかもと思ってちょっとためしてみようと思ったのだけど、どうせなら MultiTTY 使いたいなーなどという気持ちが出てきてしまった。</p>
+<p>それで emacs23 ベースな CarbonEmacs 的なのがないかと探してみたら、いまの CVS の emacs は普通に Emacs.app を作ることができるみたい。</p>
+<pre><code>cvs -z3 -d:pserver:anonymous@cvs.savannah.gnu.org:/sources/emacs co emacs
+</code></pre>
+<p>とかで co してきて</p>
+<pre><code>./configure --with-ns
+make
+make install
+</code></pre>
+<p>で nextstep ディレクトリに Emacs.app ができている。</p>
+<p>CLI で起動したい場合は</p>
+<pre><code>Emacs.app/Contents/MacOS/Emacs -nw
+</code></pre>
+<p>でおｋ。emacsclient は</p>
+<pre><code>Emacs.app/Content/MacOS/bin/emacsclient
+</code></pre>
+<p>にある。etags とかもここにある。</p>
+<p>とりあえず multitty をためしてみるために Emacs.app と CLI (-nw) と両方立ち上げて</p>
+<pre><code>emacsclient -t /path/to/file
+</code></pre>
+<p>としてみたところ、ちゃんとどちらの emacs でも同じファイルを開き、編集内容も共有できた。</p>
+<p>これで徐々に GUI な emacs に移行できるかなー。</p>
+
+  </div>
+
+  <div class="meta">
+    by typester /
+    at <a href="/memo/2008/11/06/1/">2008-11-06T13:58:00</a> /
+    <a href="/memo/tag/osx/">osx</a>
+    &middot; <a href="/memo/tag/emacs/">emacs</a>
+    / <a href="/memo/2008/11/06/1/#disqus_thread">Comment</a>
+  </div>
+</div>
+
+<div class="entry autopagerize_page_element">
+  <h2><a href="/memo/2008/11/05/3/">iTermでもremap.app_term_commandL2optionL</a></h2>
+
+  <div class="body">
+    <p><a href="http://www.pqrs.org/tekezo/macosx/keyremap4macbook/index.html.ja">KeyRemap4MacBook</a> に <code>remap.app_term_commandL2optionL</code> という設定があって、これを使うと Terminal.app でのみ<del>左コマンドキーと左オプションキーを入れ替える</del><ins>左コマンドキーを左オプションキーにする</ins>ことができる。</p>
+<p>これを iTerm でも使いたかったので設定を追加しようと思ってソースを見てたら実はこのオプションは iTerm でも効くようにつくられているのだが、そのアプリケーション名の指定が間違っているだけだということがわかった。</p>
+<pre><code>diff --git a/src/core/server/server.cpp b/src/core/server/server.cpp
+index d4695fe..40d1715 100644
+--- a/src/core/server/server.cpp
++++ b/src/core/server/server.cpp
+@@ -206,7 +206,7 @@ KeyRemap4MacBook_server::Server::do_ActiveApplicationInfo(<span class="type">KeyRemap4MacBook_bridg</span>
+     <span class="variable-name">reply</span>-&gt;is_vi = <span class="constant">true</span>;
+   }
+   <span class="keyword">if</span> (strcmp(applicationName, <span class="string">"com.apple.Terminal"</span>) == 0 ||
+-      strcmp(applicationName, <span class="string">"iTerm"</span>) == 0) {
++      strcmp(applicationName, <span class="string">"net.sourceforge.iTerm"</span>) == 0) {
+     reply-&gt;is_terminal = <span class="constant">true</span>;
+   }
+   <span class="keyword">if</span> (strcmp(applicationName, <span class="string">"com.vmware.fusion"</span>) == 0 ||
+</code></pre>
+<p>としてやるだけで、iTerm でもつかえるようになった。めでたし。</p>
+
+  </div>
+
+  <div class="meta">
+    by typester /
+    at <a href="/memo/2008/11/05/3/">2008-11-05T14:54:00</a> /
+    <a href="/memo/tag/osx/">osx</a>
+    &middot; <a href="/memo/tag/iterm/">iterm</a>
+    / <a href="/memo/2008/11/05/3/#disqus_thread">Comment</a>
+  </div>
+</div>
+
+<div class="entry autopagerize_page_element">
+  <h2><a href="/memo/2008/11/05/2/">新卒者向け会社説明会</a></h2>
+
+  <div class="body">
+    <p>11/25 に弊社で新卒者向けの会社説明会をするようです。ここを読んでる人に対象者がいるかというとかなり微妙だと思いますが、興味がある方はぜひ申し込んでみてください。</p>
+<p><a href="http://job.mynavi.jp/10/pc/NSSearchSeminarInfo.do?optNum=aLKcWC&amp;corpId=83048">申し込みページ</a></p>
+
+  </div>
+
+  <div class="meta">
+    by typester /
+    at <a href="/memo/2008/11/05/2/">2008-11-05T11:01:00</a> /
+    <a href="/memo/tag/life/">life</a>
+    / <a href="/memo/2008/11/05/2/#disqus_thread">Comment</a>
+  </div>
+</div>
+
+
+
+
+<div id="pager" class="autopagerize_insert_before">
+  <p class="pages">
+    <a class="prev" rel="previous" href="/memo/page/16/">&laquo; Prev</a>
+    <a href="/memo/page/13/">13</a>
+    <a href="/memo/page/14/">14</a>
+    <a href="/memo/page/15/">15</a>
+    <a href="/memo/page/16/">16</a>
+    <span class="current">17</span>
+    <a href="/memo/page/18/">18</a>
+    <a href="/memo/page/19/">19</a>
+    <a href="/memo/page/20/">20</a>
+    <a href="/memo/page/21/">21</a>
+    <a href="/memo/page/22/">22</a>
+    <a class="next" rel="next" href="/memo/page/18/">Next &raquo;</a>
+  </p>
+  <p class="info">(Page 17 of 203)</p>
+</div>
+
+
+</div>
+
+<p id="footer">
+  Copyright &copy; 2005-2013
+      by <a class="author" href="/about/#me">Daisuke Murase (typester)</a> /
+  Site generated by <a href="https://github.com/typester/nim">nim</a> /
+  Comments powered by <a href="http://disqus.com">DISQUS</a>.
+</p>
+
+</div>
+
+
+<script type="text/javascript">
+//<![CDATA[
+(function() {
+	var links = document.getElementsByTagName('a');
+	var query = '?';
+	for(var i = 0; i < links.length; i++) {
+	if(links[i].href.indexOf('#disqus_thread') >= 0) {
+		query += 'url' + i + '=' + encodeURIComponent(links[i].href) + '&';
+	}
+	}
+	document.write('<script charset="utf-8" type="text/javascript" src="http://disqus.com/forums/unknownplace/get_num_replies.js' + query + '"></' + 'script>');
+})();
+//]]>
+</script>
+
+
+<script type="text/javascript">
+var gaJsHost = (("https:" == document.location.protocol) ? "https://ssl." : "http://www.");
+document.write(unescape("%3Cscript src='" + gaJsHost + "google-analytics.com/ga.js' type='text/javascript'%3E%3C/script%3E"));
+</script>
+<script type="text/javascript">
+try {
+var pageTracker = _gat._getTracker("UA-53067-1");
+pageTracker._trackPageview();
+} catch(err) {}</script>
+
+<script>
+function googleTranslateElementInit() {
+  new google.translate.TranslateElement({
+    pageLanguage: 'ja',
+    gaTrack: true,
+    gaId: 'UA-53067',
+    floatPosition: google.translate.TranslateElement.FloatPosition.BOTTOM_RIGHT
+  });
+}
+</script><script src="//translate.google.com/translate_a/element.js?cb=googleTranslateElementInit"></script>
+
+</body>
+</html>

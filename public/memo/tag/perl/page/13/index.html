@@ -1,0 +1,339 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="ja" xml:lang="ja">
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <title>memo - unknownplace.org</title>
+  <link rel="stylesheet" type="text/css" href="http://yui.yahooapis.com/3.0.0/build/cssreset/reset-min.css" />
+  <link rel="stylesheet" type="text/css" href="http://yui.yahooapis.com/3.0.0/build/cssfonts/fonts-min.css" />
+  <link rel="stylesheet" href="/css/style.css" type="text/css" />
+  <meta property="fb:admins" content="1093631929" />
+  <meta name="robots" content="noindex" />
+  <link rel="alternate" type="application/rss+xml" href="http://unknownplace.org/memo/index.rss" />
+</head>
+<body>
+
+<div id="container">
+<div id="header">
+    <h1><a href="/">unknownplace.org</a></h1> /
+<a href="/memo/">memo</a>
+</div>
+
+<div id="content">
+
+<div class="entry autopagerize_page_element">
+  <h2><a href="/memo/2006/11/24/3/">make_schema_at が external クラスも読むようになっている</a></h2>
+
+  <div class="body">
+    <p>既存のDBに接続してテーブル情報などを取得して、DBIx::Class::Schema のテーブルクラスを作成してくれる Schema::Loader の <code>make_schema_at</code> が自分で定義した外部クラスファイルも見てくれるようになっていた。</p>
+<pre><code>perl -Ilib -MDBIx::Class::Schema::Loader=make_schema_at,dump_to_dir:tmp -e <span class="string">'make_schema_at("MyApp::Schema", { components =&gt; [qw/ResultSetManager UTF8Columns/]}, ["dbi:mysql:myapp","root"])'</span>
+</code></pre>
+<p>などとすると、./tmp にスキーマクラスをダンプしてくれるのだけど、-Ilib している中にすでに MyApp::Schema::User とかがかいてあると、それも作成するクラスにくっつけてくれる。</p>
+<p>便利だ。</p>
+
+  </div>
+
+  <div class="meta">
+    by typester /
+    at <a href="/memo/2006/11/24/3/">2006-11-24T13:35:00</a> /
+    <a href="/memo/tag/perl/">perl</a>
+    &middot; <a href="/memo/tag/dbic/">dbic</a>
+    / <a href="/memo/2006/11/24/3/#disqus_thread">Comment</a>
+  </div>
+</div>
+
+<div class="entry autopagerize_page_element">
+  <h2><a href="/memo/2006/11/24/1/">HTML::Widget</a></h2>
+
+  <div class="body">
+    <p>試用中。</p>
+<p>perlコード内でフォーム生成するのは違和感ありすぎるし、気に入らない。うーむ。</p>
+
+  </div>
+
+  <div class="meta">
+    by typester /
+    at <a href="/memo/2006/11/24/1/">2006-11-24T01:25:00</a> /
+    <a href="/memo/tag/perl/">perl</a>
+    / <a href="/memo/2006/11/24/1/#disqus_thread">Comment</a>
+  </div>
+</div>
+
+<div class="entry autopagerize_page_element">
+  <h2><a href="/memo/2006/11/21/3/">DBIx::Class vs mysql vs UTF-8</a></h2>
+
+  <div class="body">
+    <blockquote><p><a href="http://d.hatena.ne.jp/lestrrat/20061120#1164020246">DBIx::Class vs mysql vs UTF-8</a></p></blockquote>
+<p>それ、0.7以降(多分)ならconnectionやconnect上書きしなくてもこうかけるよ。</p>
+<pre><code><span class="type">__PACKAGE__</span>-&gt;connection(
+    <span class="string">&apos;dbi:mysql:foo&apos;</span>,
+    <span class="string">&apos;root&apos;</span>,
+    {
+        <span class="string">on_connect_do</span> =&gt; [<span class="string">&apos;SET NAMES utf8&apos;</span>],
+    },
+);
+</code></pre>
+
+  </div>
+
+  <div class="meta">
+    by typester /
+    at <a href="/memo/2006/11/21/3/">2006-11-21T12:06:00</a> /
+    <a href="/memo/tag/perl/">perl</a>
+    &middot; <a href="/memo/tag/dbic/">dbic</a>
+    / <a href="/memo/2006/11/21/3/#disqus_thread">Comment</a>
+  </div>
+</div>
+
+<div class="entry autopagerize_page_element">
+  <h2><a href="/memo/2006/11/19/1/">HTML::TreeBuilderのエスケープ処理がよくなっている</a></h2>
+
+  <div class="body">
+    <blockquote><p><a href="http://unknownplace.org/memo/2006/10/08#e001">CLON - 2006/10/08 - HTML::TreeBuilderいいんだけど。。</a></p></blockquote>
+<p>のやつ、最近の更新で直ってるみたいだ。</p>
+<p>HTML::Widget を試してみようとインストールしようとしたら、エスケープ関係のテストでこけて、それを追ってみたら気づいた。</p>
+
+  </div>
+
+  <div class="meta">
+    by typester /
+    at <a href="/memo/2006/11/19/1/">2006-11-19T11:11:00</a> /
+    <a href="/memo/tag/perl/">perl</a>
+    / <a href="/memo/2006/11/19/1/#disqus_thread">Comment</a>
+  </div>
+</div>
+
+<div class="entry autopagerize_page_element">
+  <h2><a href="/memo/2006/10/25/3/">--- ONLY 消し忘れ</a></h2>
+
+  <div class="body">
+    <p>追加実装をしているときのテスト書くときは結構 <code>--- ONLY</code> とか消し忘れてそのままコミットしてしまうなぁ。</p>
+<p>デフォルトで出来るテストスクリプトにそれのチェックするのも入れるかな。</p>
+<p>他になんかあるかな。</p>
+
+  </div>
+
+  <div class="meta">
+    by typester /
+    at <a href="/memo/2006/10/25/3/">2006-10-25T12:10:00</a> /
+    <a href="/memo/tag/perl/">perl</a>
+    / <a href="/memo/2006/10/25/3/#disqus_thread">Comment</a>
+  </div>
+</div>
+
+<div class="entry autopagerize_page_element">
+  <h2><a href="/memo/2006/10/16/4/">prototype &amp;</a></h2>
+
+  <div class="body">
+    <pre><code>run {
+    <span class="keyword">my</span> <span class="variable-name">$block</span> = <span class="cperl-nonoverridable">shift</span>;
+    is(process($block-&gt;foo), $block-&gt;bar, $block-&gt;name);
+};
+</code></pre>
+<p>って引数に関数渡せる。</p>
+<p>これは perldoc perlsub の Prototypes の項目に載ってる</p>
+<blockquote><p>An &quot;&amp;&quot; requires an anonymous subroutine, which, if passed as the first argument, does not require the &quot;sub&quot; keyword or a subsequent comma.</p></blockquote>
+<p>プロトタイプで &amp; を第一引数に指定した場合その無名関数には sub つけなくても良い。</p>
+<p>これは割と使えそうだ。</p>
+<p>たとえば、STDERRとかになんか出力しちゃううざいモジュールを使ってtestを書いているときに</p>
+<pre><code><span class="keyword">sub</span> <span class="function-name">execute</span><span class="string">(&amp;)</span> {
+    <span class="keyword">my</span> (<span class="variable-name">$out</span>, <span class="variable-name">$err</span>);
+    tie_output( *STDOUT, $out );
+    tie_output( *STDERR, $err );
+
+    <span class="keyword">my</span> <span class="variable-name">$res</span> = <span class="cperl-nonoverridable">shift</span>-&gt;();
+
+    <span class="cperl-nonoverridable">untie</span> *STDOUT;
+    <span class="cperl-nonoverridable">untie</span> *STDERR;
+
+    $res;
+}
+</code></pre>
+<p>とか作っとくと</p>
+<pre><code><span class="keyword">my</span> <span class="variable-name">$res</span> = execute { $suck_module_output_stderr-&gt;method };
+</code></pre>
+<p>とかでSTDERRだすことなくそのモジュールのテストかける。いいのー。</p>
+<p>grep とかな実装しかあんまりみないから新鮮に見えるのかな。</p>
+
+  </div>
+
+  <div class="meta">
+    by typester /
+    at <a href="/memo/2006/10/16/4/">2006-10-16T22:21:00</a> /
+    <a href="/memo/tag/perl/">perl</a>
+    / <a href="/memo/2006/10/16/4/#disqus_thread">Comment</a>
+  </div>
+</div>
+
+<div class="entry autopagerize_page_element">
+  <h2><a href="/memo/2006/10/16/3/">OSXもうだめかもわからん</a></h2>
+
+  <div class="body">
+    <p>run_like が成功するときと失敗するときがあってこまった。</p>
+<pre><code>run_like input =&gt; &apos;results&apos;;
+</code></pre>
+<p>みたいなときなんかinputのフィルタがかからないときがあったりして失敗してるくさく、なんだと思ったら、うちのOSXの問題だったみたいだ。</p>
+<p><code>use_ok</code> を1個するだけのテストでも何回もやってるとこけたりする。ひどい。。</p>
+<p>こけるときも毎回違う出力。</p>
+<pre><code>$ prove -lv t/04simpleuse.t
+t/04simpleuse....dubious
+        Test returned status 0 (wstat 10, 0xa)
+FAILED--1 test script could be run, alas--no output ever seen
+</code></pre>
+<p>とかよくわからんのだったり、</p>
+<pre><code>$ prove -lv t/04simpleuse.t
+zsh: segmentation fault  prove -lv t/04simpleuse.t
+</code></pre>
+<p>セグフォってみたり。。</p>
+<pre><code>$ prove -lv t/04simpleuse.t
+Operator or semicolon missing before %opts at /System/Library/Perl/5.8.6/Pod/Usage.pm line 487.
+Ambiguous use of % resolved as operator % at /System/Library/Perl/5.8.6/Pod/Usage.pm line 487.
+Bareword <span class="string">"key3"</span> not allowed <span class="keyword">while</span> <span class="string">"strict subs"</span> in use at /System/Library/Perl/5.8.6/Pod/Usage.pm line 482.
+Bareword <span class="string">"opts"</span> not allowed <span class="keyword">while</span> <span class="string">"strict subs"</span> in use at /System/Library/Perl/5.8.6/Pod/Usage.pm line 482.
+Compilation failed in require at /usr/bin/prove line 12.
+BEGIN failed--compilation aborted at /usr/bin/prove line 12.
+</code></pre>
+<p>こんなすごいのもでたよ。</p>
+<p>再起動したらとりあえずなんか直ったくさいけど。もー、やばいわうちのmac。</p>
+<p>HDDぶっこわれてんかなーとおもってfsckってみたけど問題なさげだったし。なんだろうほんと。</p>
+
+  </div>
+
+  <div class="meta">
+    by typester /
+    at <a href="/memo/2006/10/16/3/">2006-10-16T20:18:00</a> /
+    <a href="/memo/tag/perl/">perl</a>
+    &middot; <a href="/memo/tag/osx/">osx</a>
+    / <a href="/memo/2006/10/16/3/#disqus_thread">Comment</a>
+  </div>
+</div>
+
+<div class="entry autopagerize_page_element">
+  <h2><a href="/memo/2006/10/12/2/">Test::Base</a></h2>
+
+  <div class="body">
+    <p>のpod一通り読んで、手持ちのアプリのテストを書いてみたりした。</p>
+<p>なるほど、なかなか良いわぁ。簡単なテストはフィルタちょろっと書くだけでOKってのはいいな。</p>
+<p>大抵のモジュールはSYNOPSIS見れば大体使い方がわかるものだけど(というかそういう風に書くよね)、Test::Baseはドキュメント読んでからじゃないとSYNOPSIS意味不明だったりするのもingyクオリティ。</p>
+<p>あと、ドキュメントにもちらほらtypoが。</p>
+
+  </div>
+
+  <div class="meta">
+    by typester /
+    at <a href="/memo/2006/10/12/2/">2006-10-12T02:40:00</a> /
+    <a href="/memo/tag/perl/">perl</a>
+    &middot; <a href="/memo/tag/test/">test</a>
+    / <a href="/memo/2006/10/12/2/#disqus_thread">Comment</a>
+  </div>
+</div>
+
+<div class="entry autopagerize_page_element">
+  <h2><a href="/memo/2006/10/09/1/"></a></h2>
+
+  <div class="body">
+    <blockquote><p><a href="http://b.hatena.ne.jp/entry/http://unknownplace.org/memo/2006/10/08%23e004">はてなブックマーク - CLON - 2006/10/08 - 手軽にモジュールのバージョンを得る perl -MDBIx::Class\ 999</a></p><p><a href="http://b.hatena.ne.jp/kdaiba/20061008#bookmark-2953179">kdaiba</a> Perl perldocのどこに書いてあるんだろう</p></blockquote>
+<ul><li>perldoc -f use</li><li>perldoc perlrun (の-Mのところ)</li></ul>
+<p>とかでしょうか。</p>
+
+  </div>
+
+  <div class="meta">
+    by typester /
+    at <a href="/memo/2006/10/09/1/">2006-10-09T20:33:00</a> /
+    <a href="/memo/tag/perl/">perl</a>
+    / <a href="/memo/2006/10/09/1/#disqus_thread">Comment</a>
+  </div>
+</div>
+
+<div class="entry autopagerize_page_element">
+  <h2><a href="/memo/2006/10/08/4/">手軽にモジュールのバージョンを得る perl -MDBIx::Class\ 999</a></h2>
+
+  <div class="body">
+    <p>$ perl -MDBIx::Class\ 999 DBIx::Class version 999 required--this is only version 0.07002. BEGIN failed--compilation aborted.</p>
+<p>なるほど、こうすれば手軽にモジュールのバージョンを得られるのか。(バージョン指定のuse)</p>
+<p>自分の使ってるマシンではaliasでモジュールのバージョンを求めるの設定してるのでいらないけど、そうじゃないところで使うのによさそう。</p>
+
+  </div>
+
+  <div class="meta">
+    by typester /
+    at <a href="/memo/2006/10/08/4/">2006-10-08T10:39:00</a> /
+    <a href="/memo/tag/perl/">perl</a>
+    / <a href="/memo/2006/10/08/4/#disqus_thread">Comment</a>
+  </div>
+</div>
+
+
+
+
+<div id="pager" class="autopagerize_insert_before">
+  <p class="pages">
+    <a class="prev" rel="previous" href="/memo/tag/perl/page/12/">&laquo; Prev</a>
+    <a href="/memo/tag/perl/page/9/">9</a>
+    <a href="/memo/tag/perl/page/10/">10</a>
+    <a href="/memo/tag/perl/page/11/">11</a>
+    <a href="/memo/tag/perl/page/12/">12</a>
+    <span class="current">13</span>
+    <a href="/memo/tag/perl/page/14/">14</a>
+    <a href="/memo/tag/perl/page/15/">15</a>
+    <a href="/memo/tag/perl/page/16/">16</a>
+    <a href="/memo/tag/perl/page/17/">17</a>
+    <a href="/memo/tag/perl/page/18/">18</a>
+    <a class="next" rel="next" href="/memo/tag/perl/page/14/">Next &raquo;</a>
+  </p>
+  <p class="info">(Page 13 of 30)</p>
+</div>
+
+
+</div>
+
+<p id="footer">
+  Copyright &copy; 2005-2013
+      by <a class="author" href="/about/#me">Daisuke Murase (typester)</a> /
+  Site generated by <a href="https://github.com/typester/nim">nim</a> /
+  Comments powered by <a href="http://disqus.com">DISQUS</a>.
+</p>
+
+</div>
+
+
+<script type="text/javascript">
+//<![CDATA[
+(function() {
+	var links = document.getElementsByTagName('a');
+	var query = '?';
+	for(var i = 0; i < links.length; i++) {
+	if(links[i].href.indexOf('#disqus_thread') >= 0) {
+		query += 'url' + i + '=' + encodeURIComponent(links[i].href) + '&';
+	}
+	}
+	document.write('<script charset="utf-8" type="text/javascript" src="http://disqus.com/forums/unknownplace/get_num_replies.js' + query + '"></' + 'script>');
+})();
+//]]>
+</script>
+
+
+<script type="text/javascript">
+var gaJsHost = (("https:" == document.location.protocol) ? "https://ssl." : "http://www.");
+document.write(unescape("%3Cscript src='" + gaJsHost + "google-analytics.com/ga.js' type='text/javascript'%3E%3C/script%3E"));
+</script>
+<script type="text/javascript">
+try {
+var pageTracker = _gat._getTracker("UA-53067-1");
+pageTracker._trackPageview();
+} catch(err) {}</script>
+
+<script>
+function googleTranslateElementInit() {
+  new google.translate.TranslateElement({
+    pageLanguage: 'ja',
+    gaTrack: true,
+    gaId: 'UA-53067',
+    floatPosition: google.translate.TranslateElement.FloatPosition.BOTTOM_RIGHT
+  });
+}
+</script><script src="//translate.google.com/translate_a/element.js?cb=googleTranslateElementInit"></script>
+
+</body>
+</html>

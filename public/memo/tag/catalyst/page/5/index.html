@@ -1,0 +1,394 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="ja" xml:lang="ja">
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <title>memo - unknownplace.org</title>
+  <link rel="stylesheet" type="text/css" href="http://yui.yahooapis.com/3.0.0/build/cssreset/reset-min.css" />
+  <link rel="stylesheet" type="text/css" href="http://yui.yahooapis.com/3.0.0/build/cssfonts/fonts-min.css" />
+  <link rel="stylesheet" href="/css/style.css" type="text/css" />
+  <meta property="fb:admins" content="1093631929" />
+  <meta name="robots" content="noindex" />
+  <link rel="alternate" type="application/rss+xml" href="http://unknownplace.org/memo/index.rss" />
+</head>
+<body>
+
+<div id="container">
+<div id="header">
+    <h1><a href="/">unknownplace.org</a></h1> /
+<a href="/memo/">memo</a>
+</div>
+
+<div id="content">
+
+<div class="entry autopagerize_page_element">
+  <h2><a href="/memo/2006/07/21/3/">Catalyst::Plugin::XSendFile</a></h2>
+
+  <div class="body">
+    <p>lightyのX-SendfileをCatalystから使うプラグインをつくった。</p>
+<pre><code>$c-&gt;res-&gt;sendfile(<span class="string">&quot;/path/to/file&quot;</span>);
+</code></pre>
+<p>って感じで使えます。同じインタフェースでCatalystテストサーバーの時でも動くようになってます。</p>
+<p>miyagawaさんの話だとperlbalでも同じようなことが出来るとのこと(もっと高機能)。でさらにそれにmogilefsを組み合わせるとかなりスケーラビリティが高そうな感じ。</p>
+<p>ちょっと見てみるべきかなぁ。</p>
+
+  </div>
+
+  <div class="meta">
+    by typester /
+    at <a href="/memo/2006/07/21/3/">2006-07-21T21:05:00</a> /
+    <a href="/memo/tag/perl/">perl</a>
+    &middot; <a href="/memo/tag/catalyst/">catalyst</a>
+    &middot; <a href="/memo/tag/lighttpd/">lighttpd</a>
+    / <a href="/memo/2006/07/21/3/#disqus_thread">Comment</a>
+  </div>
+</div>
+
+<div class="entry autopagerize_page_element">
+  <h2><a href="/memo/2006/06/27/3/">Action attribute</a></h2>
+
+  <div class="body">
+    <p>Catalyst 5.70 の dev リリースでサポートされた Action attribute 良いね。</p>
+<p><a href="http://search.cpan.org/~mramberg/Catalyst-Action-RenderView-0.01/lib/Catalyst/Action/RenderView.pm">http://search.cpan.org/~mramberg/Catalyst-Action-RenderView-0.01/lib/Catalyst/Action/RenderView.pm</a></p>
+<p>こんなんとか簡単に作れる。cool。</p>
+<pre><code>sub foo : Action(&apos;+Foo::Bar&apos;)
+</code></pre>
+<p>は</p>
+<pre><code>sub foo : MyAction(&apos;Foo::Bar&apos;)
+</code></pre>
+<p>と等価。</p>
+<ul><li><a href="http://search.cpan.org/~mramberg/Catalyst-Runtime-5.70_01/lib/Catalyst/Manual/Actions.pod">Catalyst::Manual::Actions</a></li></ul>
+
+  </div>
+
+  <div class="meta">
+    by typester /
+    at <a href="/memo/2006/06/27/3/">2006-06-27T13:09:00</a> /
+    <a href="/memo/tag/perl/">perl</a>
+    &middot; <a href="/memo/tag/catalyst/">catalyst</a>
+    / <a href="/memo/2006/06/27/3/#disqus_thread">Comment</a>
+  </div>
+</div>
+
+<div class="entry autopagerize_page_element">
+  <h2><a href="/memo/2006/06/23/1/"></a></h2>
+
+  <div class="body">
+    <p>マルチ language なアプリを作る練習もかねて、ちょっとしたサイトつくりはじめたんだけど、</p>
+<pre><code>msgid  <span class="string">"Logged in as %1"</span>
+msgstr <span class="string">"%1 &#12392;&#12375;&#12390;&#12525;&#12464;&#12452;&#12531;&#12375;&#12390;&#12356;&#12414;&#12377;"</span>
+</code></pre>
+<p>こういうのが化ける。<code>%1</code> とかはいってないのはいける。Unicodeフラグっぽい化けかたなので、MyApp.pm に</p>
+<pre><code><span class="keyword">sub</span> <span class="function-name">localize</span> {
+    <span class="keyword">my</span> <span class="variable-name">$c</span>    = <span class="cperl-nonoverridable">shift</span>;
+    <span class="keyword">my</span> <span class="variable-name">$text</span> = <span class="cperl-nonoverridable">shift</span>;
+
+    <span class="keyword">my</span> <span class="variable-name">$args</span> = <span class="type">ref</span> <span class="cperl-array">$_</span>[0] <span class="type">eq</span> <span class="string">&apos;ARRAY&apos;</span> ? <span class="cperl-array">$_</span>[0] : [<span class="cperl-array">@_</span>];
+
+    <span class="keyword">for</span> <span class="keyword">my</span> <span class="variable-name">$arg</span> (<span class="cperl-array">@</span><span class="variable-name">$args</span>) {
+        utf8::decode($arg);<span class="comment-delimiter"># </span><span class="comment">unless utf8::is_utf8($arg);
+</span>    }
+
+    $c-&gt;NEXT::localize( $text, $args );
+}
+</code></pre>
+<p>とか書いてみたら直ったよ。しかし、<code>is_utf8</code> のところコメント外すとうごかねーよ、なにこれ。</p>
+<p><code>$args</code> には <code>is_utf8</code> は真だけど、perl utf8 じゃないのがはいってる？何かが悪さをしておる。</p>
+<p>Unicode プラグインと併用してるのがまずいのかもしれん。</p>
+
+  </div>
+
+  <div class="meta">
+    by typester /
+    at <a href="/memo/2006/06/23/1/">2006-06-23T02:47:00</a> /
+    <a href="/memo/tag/perl/">perl</a>
+    &middot; <a href="/memo/tag/catalyst/">catalyst</a>
+    / <a href="/memo/2006/06/23/1/#disqus_thread">Comment</a>
+  </div>
+</div>
+
+<div class="entry autopagerize_page_element">
+  <h2><a href="/memo/2006/06/21/2/">Schema::Loader with Catalyst</a></h2>
+
+  <div class="body">
+    <p><a href="http://search.cpan.org/dist/Catalyst-Model-DBIC-Schema/">Catalyst::Model::DBIC::Schema</a> を使う。</p>
+<p>この Model は大きく3つの使いかたがある。</p>
+<ol><li>単純に既に存在する Schema クラスを使用する</li><li>Schema::Loader で既存の DB から Schema クラスを生成し、それを使用する</li><li>Schema::Loader で既存の DB から Schema::Loader クラスを生成し、それを利用する。</li></ol>
+<p>1 はまず Schema クラスをどこかに作ってあり(My::Schemaと仮定する)、それをそのまま Catalyst::Model として利用する。</p>
+<pre><code>./script/myapp_create.pl model DBIC DBIC::Schema My::Schema
+</code></pre>
+<p>で、MyApp::Model::DBIC が作成される。この My::Schema に connection なんかが定義されていてそれを使う場合はこのままでOK。</p>
+<p>別の接続先を使う場合なんかは MyApp::Model::DBIC の設定で connect_info を書いておけばそっちが使われる。ヘルパーの最後に</p>
+<pre><code>./script/myapp_create.pl model DBIC DBIC::Schema My::Schema dbi:SQLite:/path/to/foo.db
+</code></pre>
+<p>とかしてもOK。</p>
+<p>で、これでアプリ内から Schema クラスを使える。で、この場合で My::Schema::Table を使うには <code>$c-&gt;model(&apos;DBIC::Table&apos;)-&gt;search</code> とかとする。ここがわかりにくいのかもしれない。</p>
+<p>2 は 1 と同じだが、ヘルパーを叩くときに既存DBを元にSchemaクラスを生成する。</p>
+<pre><code>./script/myapp_create.pl model DBIC DBIC::Schema My::Schema create=static dbi:SQLite:myapp.db
+</code></pre>
+<p>こんな感じで、ヘルパーを叩いたときに、myapp.db のテーブル定義をもとに My::Schema(::*) クラスが自動生成される。後の使いかたは同じ。</p>
+<p>3 は Schema クラスではなく、Schema::Loader クラスを生成し、Catalystアプリが起動するたびにDBのテーブル定義を見て動的にSchemaクラスを生成する。Catalyst::Model::CDBI みたいな感じ。</p>
+<p>これを使うには</p>
+<pre><code>./script/myapp_create.pl model DBIC DBIC::Schema My::Schema create=dynamic dbi:SQLite:myapp.db
+</code></pre>
+<p>で、My::Schema という Schema::Loader クラスが生成され、それが使われる。</p>
+<p>Catalystアプリからの使いかたはすべて1と同じ。</p>
+<p>My::Schema::* をよぶのに、<code>$c-&gt;model(&apos;DBIC::*&apos;)</code> を呼ぶというのがわかりずらいのかも。</p>
+<p>あと、Schema::Loader を使う場合、テーブル定義以外の、リレーションの設定とかインフレーションとかの設定を書くために、My::Schema::Table を書くかもしれないが、CDBI::Loader と違いそれらはデフォルトでは読み込まれないから注意が必要。</p>
+<p>それらをロードするためには、My::Schema に <code>__PACKAGE__-&gt;load_classes;</code> を付け加える必要がある。</p>
+<p>たしかになんかわかりにくいかも。かなぁ。</p>
+<ul><li>Schema based な DBIC の使いかたの例: DBIx::Class::Manual::Example</li><li>C::M::Schema::Loader: Catalyst::Model::Schema::Loader</li><li>とそのヘルパー: Catalyst::Helper::Model::Schema::Loader</li></ul>
+<p>とかの pod を見るといいかも。</p>
+
+  </div>
+
+  <div class="meta">
+    by typester /
+    at <a href="/memo/2006/06/21/2/">2006-06-21T11:40:00</a> /
+    <a href="/memo/tag/perl/">perl</a>
+    &middot; <a href="/memo/tag/catalyst/">catalyst</a>
+    / <a href="/memo/2006/06/21/2/#disqus_thread">Comment</a>
+  </div>
+</div>
+
+<div class="entry autopagerize_page_element">
+  <h2><a href="/memo/2006/06/15/2/">Plugin::Flavour</a></h2>
+
+  <div class="body">
+    <p>URLの最初のパスをflavourに使うっていうやつを別モジュールにきりわけようかとおもうんだけど、だめかなぁ。</p>
+<p>誰か使ってたりすんのかなぁ。</p>
+
+  </div>
+
+  <div class="meta">
+    by typester /
+    at <a href="/memo/2006/06/15/2/">2006-06-15T02:58:00</a> /
+    <a href="/memo/tag/perl/">perl</a>
+    &middot; <a href="/memo/tag/catalyst/">catalyst</a>
+    / <a href="/memo/2006/06/15/2/#disqus_thread">Comment</a>
+  </div>
+</div>
+
+<div class="entry autopagerize_page_element">
+  <h2><a href="/memo/2006/06/14/5/">$c が必要な場合 prepare ハンドラは使うべきではない</a></h2>
+
+  <div class="body">
+    <p>代りに <code>prepare_*</code> を使え。</p>
+<p>そもそも NEXT のチェーンで</p>
+<pre><code><span class="keyword">sub</span> <span class="function-name">prepare</span> {
+    <span class="keyword">my</span> <span class="variable-name">$class</span> = <span class="cperl-nonoverridable">shift</span>;
+    <span class="keyword">my</span> <span class="variable-name">$c</span> = $class-&gt;NEXT::prepare(<span class="cperl-array">@_</span>);
+
+    ...
+}
+</code></pre>
+<p>とか、NEXT 呼んだ後に処理を書くべきじゃないと思う。こうすると実行される順番があべこべになってしまう。</p>
+<p>こうする必要があるのは prepare は <code>$c</code> ではなくクラス名を渡されるようになっているため。</p>
+<p><code>prepare_*</code> は $c がわたされる。</p>
+
+  </div>
+
+  <div class="meta">
+    by typester /
+    at <a href="/memo/2006/06/14/5/">2006-06-14T12:35:00</a> /
+    <a href="/memo/tag/perl/">perl</a>
+    &middot; <a href="/memo/tag/catalyst/">catalyst</a>
+    / <a href="/memo/2006/06/14/5/#disqus_thread">Comment</a>
+  </div>
+</div>
+
+<div class="entry autopagerize_page_element">
+  <h2><a href="/memo/2006/06/14/1/"></a></h2>
+
+  <div class="body">
+    <p>作った。</p>
+<p><a href="http://svn.unknownplace.org/public/library/perl/trunk/Catalyst-Plugin-FormValidator-Simple-Auto/">svn.unknownplace.org: Catalyst-Plugin-FormValidator-Simple-Auto</a></p>
+
+  </div>
+
+  <div class="meta">
+    by typester /
+    at <a href="/memo/2006/06/14/1/">2006-06-14T02:05:00</a> /
+    <a href="/memo/tag/perl/">perl</a>
+    &middot; <a href="/memo/tag/catalyst/">catalyst</a>
+    / <a href="/memo/2006/06/14/1/#disqus_thread">Comment</a>
+  </div>
+</div>
+
+<div class="entry autopagerize_page_element">
+  <h2><a href="/memo/2006/06/13/10/">SYNOPSIS of Plugin::FormValidator::Simple::Auto</a></h2>
+
+  <div class="body">
+    <p>use Catalyst qw/ FormValidator::Simple FormValidator::Simple::Auto /;</p>
+<pre><code><span class="type">__PACKAGE__</span>-&gt;config(
+    <span class="string">validator</span> =&gt; {
+        <span class="string">messages</span> =&gt; <span class="string">&apos;messages.yml&apos;</span>,
+        <span class="string">profiles</span> =&gt; <span class="string">&apos;profiles.yml&apos;</span>,
+        <span class="comment-delimiter"># </span><span class="comment">and other FormValidator::Simple config
+</span>    },
+);
+
+
+<span class="comment-delimiter"># </span><span class="comment">profiles.yml
+</span><span class="constant">action1:</span>
+  <span class="constant">param1:</span>
+    - NOT_BLANK
+    - ASCII
+    - [ <span class="string">&apos;LENGTH&apos;</span>, 4, 10 ]
+  <span class="constant">param2:</span>
+    - NOT_BLANK
+
+
+<span class="comment-delimiter"># </span><span class="comment">then your action
+</span><span class="keyword">sub</span> <span class="function-name">action1</span> <span class="constant">:</span> <span class="constant">Global</span> {
+    <span class="keyword">my</span> (<span class="variable-name">$self</span>, <span class="variable-name">$c</span>) = <span class="cperl-array">@_</span>;
+
+    <span class="comment-delimiter"># </span><span class="comment">$c-&gt;form($profile) already executed!
+</span>    <span class="keyword">unless</span> ($c-&gt;form-&gt;has_error) {
+        ...
+    }
+}
+</code></pre>
+<p>とか言うのを作ろうかと。</p>
+<p>牧さんのパクリ。</p>
+
+  </div>
+
+  <div class="meta">
+    by typester /
+    at <a href="/memo/2006/06/13/10/">2006-06-13T21:45:00</a> /
+    <a href="/memo/tag/perl/">perl</a>
+    &middot; <a href="/memo/tag/catalyst/">catalyst</a>
+    / <a href="/memo/2006/06/13/10/#disqus_thread">Comment</a>
+  </div>
+</div>
+
+<div class="entry autopagerize_page_element">
+  <h2><a href="/memo/2006/05/22/7/"></a></h2>
+
+  <div class="body">
+    <blockquote><p><a href="http://del.icio.us/url/f140e1ad9d58fa4f5b2ee0b55b9002db">del.icio.us/url/f140e1ad9d58fa4f5b2ee0b55b9002db</a></p><p>Catalyst::Authentication と NEXT.pm. NEXTでのMixinだとplugin内にメソッド定義しにくいため <code>Auth::Credential::*</code>, <code>A::Store::*</code> な名前空間がある。</p></blockquote>
+<p>これはちょっと違うので補足。</p>
+<p>それら二つの名前空間は単にいろいろな認証系に対応するためのもので、NEXTのために名前空間をわけているわけではないです。</p>
+<p>実装的にも <code>Credential::*</code> も <code>Store::*</code> も Authentication プラグインを利用してはいますが、それら自体は普通の Catalyst プラグインで、</p>
+<pre><code>use Catalyst qw(
+    Authentication
+    Authentication::Credential::Password
+    Authentication::Store::DBIC
+);
+</code></pre>
+<p>などのようにロードします。</p>
+<p>なのでそれぞれが、</p>
+<blockquote><p>NEXTでのMixinだとplugin内にメソッド定義しにくい</p></blockquote>
+<p>ということはいえます。</p>
+
+  </div>
+
+  <div class="meta">
+    by typester /
+    at <a href="/memo/2006/05/22/7/">2006-05-22T18:46:00</a> /
+    <a href="/memo/tag/perl/">perl</a>
+    &middot; <a href="/memo/tag/catalyst/">catalyst</a>
+    / <a href="/memo/2006/05/22/7/#disqus_thread">Comment</a>
+  </div>
+</div>
+
+<div class="entry autopagerize_page_element">
+  <h2><a href="/memo/2006/05/22/5/">Catalyst の認証系</a></h2>
+
+  <div class="body">
+    <blockquote><p><a href="http://blog.teachat.org/archives/50460153.html">Monologue:Catalystではてな認証APIを使うプラグイン</a></p></blockquote>
+<p>これはちょっとなぁ。コメントしようと思ったけど途中まで書いて長くなったのでここに書いておく。</p>
+<p>まず、<code>Authentication::Credential::*</code> と <code>Authentication::Store::*</code> はどちらも <code>Authentication</code> プラグインを利用する認証プラグインのための名前空間。</p>
+<p>なので、上記プラグインは Credential とつけるのはいくない。</p>
+<p>Authentication プラグインは Catalyst プラグインだけど、それ自体が認証プラグイン用のフレームワークみたいになっていて、ユーザー(プログラマ)はさまざまなバックエンドプラグインを共通のインタフェースで使用することができるようになっている。</p>
+<p>んで、上記プラグイン、名前をかえればいいんじゃね。とかおもったけどよくみたらこれ、<code>$c-&gt;login</code> とかよんでる。</p>
+<p>んでloginはプラグイン内になくて、トップレベルのアクションに <code>login : Local</code> とか書いてる。これ、MyApp.pm にlogin定義してないと動かないんじゃね。</p>
+<p>Authentication プラグインのコードが読みにくいということも問題かなぁ。NEXT を使うMixinのプラグイン機構はそのプラグイン内にメソッドを定義しまくれない(すべて<code>$c</code>の関数になってしまうから)ため、複雑な処理をしようとすると別名前空間を使う必要があるので実装がむずかしい。</p>
+<p>それプラス、作者が nothingmuch。この人のコードは基本読みにくいw</p>
+<p>でも、Authentication プラグインをつかったはてな認証プラグインは<a href="http://search.cpan.org/dist/Catalyst-Plugin-Authentication-Credential-Hatena/" title="Daisuke Murase / Catalyst-Plugin-Authentication-Credential-Hatena">すでにある</a>ので、今からつくるなら Authentication プラグインを使わないもののほうがいいのかな。</p>
+
+  </div>
+
+  <div class="meta">
+    by typester /
+    at <a href="/memo/2006/05/22/5/">2006-05-22T13:11:00</a> /
+    <a href="/memo/tag/perl/">perl</a>
+    &middot; <a href="/memo/tag/catalyst/">catalyst</a>
+    / <a href="/memo/2006/05/22/5/#disqus_thread">Comment</a>
+  </div>
+</div>
+
+
+
+
+<div id="pager" class="autopagerize_insert_before">
+  <p class="pages">
+    <a class="prev" rel="previous" href="/memo/tag/catalyst/page/4/">&laquo; Prev</a>
+    <a href="/memo/tag/catalyst/">1</a>
+    <a href="/memo/tag/catalyst/page/2/">2</a>
+    <a href="/memo/tag/catalyst/page/3/">3</a>
+    <a href="/memo/tag/catalyst/page/4/">4</a>
+    <span class="current">5</span>
+    <a href="/memo/tag/catalyst/page/6/">6</a>
+    <a href="/memo/tag/catalyst/page/7/">7</a>
+    <a href="/memo/tag/catalyst/page/8/">8</a>
+    <a href="/memo/tag/catalyst/page/9/">9</a>
+    <a href="/memo/tag/catalyst/page/10/">10</a>
+    <a class="next" rel="next" href="/memo/tag/catalyst/page/6/">Next &raquo;</a>
+  </p>
+  <p class="info">(Page 5 of 11)</p>
+</div>
+
+
+</div>
+
+<p id="footer">
+  Copyright &copy; 2005-2013
+      by <a class="author" href="/about/#me">Daisuke Murase (typester)</a> /
+  Site generated by <a href="https://github.com/typester/nim">nim</a> /
+  Comments powered by <a href="http://disqus.com">DISQUS</a>.
+</p>
+
+</div>
+
+
+<script type="text/javascript">
+//<![CDATA[
+(function() {
+	var links = document.getElementsByTagName('a');
+	var query = '?';
+	for(var i = 0; i < links.length; i++) {
+	if(links[i].href.indexOf('#disqus_thread') >= 0) {
+		query += 'url' + i + '=' + encodeURIComponent(links[i].href) + '&';
+	}
+	}
+	document.write('<script charset="utf-8" type="text/javascript" src="http://disqus.com/forums/unknownplace/get_num_replies.js' + query + '"></' + 'script>');
+})();
+//]]>
+</script>
+
+
+<script type="text/javascript">
+var gaJsHost = (("https:" == document.location.protocol) ? "https://ssl." : "http://www.");
+document.write(unescape("%3Cscript src='" + gaJsHost + "google-analytics.com/ga.js' type='text/javascript'%3E%3C/script%3E"));
+</script>
+<script type="text/javascript">
+try {
+var pageTracker = _gat._getTracker("UA-53067-1");
+pageTracker._trackPageview();
+} catch(err) {}</script>
+
+<script>
+function googleTranslateElementInit() {
+  new google.translate.TranslateElement({
+    pageLanguage: 'ja',
+    gaTrack: true,
+    gaId: 'UA-53067',
+    floatPosition: google.translate.TranslateElement.FloatPosition.BOTTOM_RIGHT
+  });
+}
+</script><script src="//translate.google.com/translate_a/element.js?cb=googleTranslateElementInit"></script>
+
+</body>
+</html>

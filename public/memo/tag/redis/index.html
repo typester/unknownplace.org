@@ -1,0 +1,154 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="ja" xml:lang="ja">
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <title>memo - unknownplace.org</title>
+  <link rel="stylesheet" type="text/css" href="http://yui.yahooapis.com/3.0.0/build/cssreset/reset-min.css" />
+  <link rel="stylesheet" type="text/css" href="http://yui.yahooapis.com/3.0.0/build/cssfonts/fonts-min.css" />
+  <link rel="stylesheet" href="/css/style.css" type="text/css" />
+  <meta property="fb:admins" content="1093631929" />
+  <meta name="robots" content="noindex" />
+  <link rel="alternate" type="application/rss+xml" href="http://unknownplace.org/memo/index.rss" />
+</head>
+<body>
+
+<div id="container">
+<div id="header">
+    <h1><a href="/">unknownplace.org</a></h1> /
+<a href="/memo/">memo</a>
+</div>
+
+<div id="content">
+
+<div class="entry autopagerize_page_element">
+  <h2><a href="/memo/2012/11/07/1/">Redis布教活動報告 ISUCON 編</a></h2>
+
+  <div class="body">
+    <p>最近 <code>Test::RedisServer</code> とかもろもろつくっててばれてるかもしれませんが、だいぶ Redis 期にありまして、最近の趣味は？っていう問いにはだいたいRedisのソースを読むことですってなくらいなのですが、 memcached とかシンプルな KVS と比べるとだいぶ機能が豊富なので使い方を迷ったりとかそういう事例もあり、周りにもう少し使える人を増やさなければ僕の書いたコードが属人化しててつらい感じになるなーっていうわけで、 布教活動をおこなっておりまして、その一環として ISUCON2 に参加してきましたのでその報告です。</p>
+<blockquote><p><a href="http://blog.livedoor.jp/techblog/archives/67726489.html">livedoor Techブログ : #isucon2 リアルタイムフォトレポート 更新終了</a></p></blockquote>
+<p>前回の優勝チームに混ぜてもらった感じでだいぶついてる感じもしますが、見事連覇を果たせ、懇親会でも redis redis と連呼してきたのでだいぶ興味持った方も多いのではないでしょうか！</p>
+<p>そんな布教活動視点から ISUCON を振り返ってみたいと思います。</p>
+<h4>Redis がつかえるかどうか</h4>
+<p>開始直後はチーム間でのコンフリクトをさけるために <code>git push</code> で rev サーバーに反映ってのだけは設定しましたが、そのあとはすぐボトルネックそうなところで Redis に置き換えられる物はないか探していました。</p>
+<p>すぐに購入トランザクションが見つかります。Redis には Set 型という集合を表す型があり、それを使うと集合のなかから排他的に一つランダムでとりだして消すというのをとても効率的に実装することができます。 ISUCON ではこのランダム条件が（チェッカーがバグでスルーしていたみたいですけど）なかなかきびしかったところだと思いますが、そこもするっと解決です。 なお、順番に購入という条件であれば双方向リストの List 型を使うのが正解でしょう。こちらも先頭or末尾からの取得＆削除を排他的に行うことができます。</p>
+<p>ついでに購入履歴も Redis にもたせておけばそこから、サイドバー(<code>recent_sold</code>)とCSV吐き出しもどちらも行えそうだなと思いました。</p>
+<p>ここまででとりあえずこの購入トランザクションだけでも Redis にうつしたら DB ロックする必要がないのでだいぶ良さそうだなと思い、redisブランチやりますとチームに宣言します。</p>
+<h4>書き換えの流れ</h4>
+<p>そしてもりもり書き換えました。</p>
+<ul><li><code>POST /admin</code> でMySQLにデータを流し込んだあとに stock のデータをすべて redis にコピーする。(<code>stock:{variation_id}</code> というキーのSet)</li><li><code>POST /buy</code> で対象の Set から一つ取り出し、<code>order_history</code> という List にアーティスト名などの付属情報込みな辞書情報をPush。</li><li>サイドバーは <code>order_history</code> から最新10件を取得するように変更</li><li>CSV書き出しは <code>order_history</code> をまるっと書き出す感じ</li><li>その他もろもろテンプレに渡してるデータをよしなに変更</li></ul>
+<p>といった感じですが、アプリのテストコードがないのでだいぶ変更が手探りな感じでつらかったです。とくにテンプレ周り。なおしてベンチ止まって、ベンチのエラー見て修正という…。 そんなつらいかんじや実際の作業内容は <a href="https://github.com/kayac/isucon2/commits/redis">redis ブランチのコミットログ</a>を参照いただくと分かるかなと思います。</p>
+<h4>他になんかあるか？</h4>
+<p>コード見てるだけだとわからなかったので fujiwara さんにボトルネック探してもらいつつ、自分はとくにやることもないので非同期の実装を模索しておりました。 この時点ではforkモデルの限界なんじゃなかろうかと思っていて非同期にしてベンチ取ってみるか、みたいな感じでしたが、Perlで非同期にすると書き直しになるし、nodeの実装いじっててもうまく動かなくてすぐにあきらめてしまったんですが、それは fujiwara さんがテンプレのレンダリングボトルネックを見つけてくれて、そちらを直したら今までのアプリでも十分スループット（reverse proxy &lt;-&gt; app 間）が出ており、非同期全然意味ありませんでした。</p>
+<p>まぁそうだよね、IOウェイトが問題になるような場合以外は非同期意味ないなーとそのとき思った次第です。</p>
+<h4>テンプレキャッシュ</h4>
+<p>組長が見つけてくれたチケットの座席表のレンダリングのボトルネック。これも Redis でキャッシュするようにしました。 Redis は単純なKVSとしてみても十分高速なのでこういう用途にも使えます。</p>
+<h4>データ永続化</h4>
+<p>これは本家ドキュメントよくまとまっております。</p>
+<blockquote><p><a href="http://redis.io/topics/persistence">http://redis.io/topics/persistence</a></p></blockquote>
+<p>スナップショット(dump)と追記ログ(appendlog - MySQLのbinlog的な)の二種類の永続化方法があり、dumpはバックアップ用、復元をappendlogから、ってのがオススメな方法。</p>
+<p>appendlog は基本的にはプロトコルログなんですが、大きくなるとバックグラウンドで最適化されて小さくなります。デフォルトでは fsync が1秒ごとに走るので最悪そこまでのデータは保全される。 書き込み毎に sync って言うのも設定でできますがパフォーマンス的につらいことになるでしょう。</p>
+<p>これがISUCONのレギュレーションを満たしているかは定かではありませんがとりあえず fujiwara 組では1秒fsyncなappendlogでデータ永続化をしました。</p>
+<p>また、メモリいっぱい使い切っているような大きなデータセットの場合に appendlog するは不安感ありますが、自分もまだ試したことがないので、近いうちに試したいと思っております。</p>
+<h4>まとめ</h4>
+<p>あんまりおすすめしまくっていると勘違いしちゃう人もいるかもしれないのでいちおう補足しておきますが、単純に MySQL を Redis に置き換えたら速くなる、っていうことはないです。 MySQLがいいところ、Redisがいいところ、（もちろんその他のツールも）どちらもあるので、 Pros and Cons やトレードオフを考えた上で選択するのが大事です。</p>
+<p>僕自身も Redis つかっているといっても運用上のノウハウなどまだまだうちも足りていないのでそこはこれから精進していきたいと思います。</p>
+<p>しかし、ISUCON楽しいですね。 #isucon のログによると</p>
+<pre><code>11:47 &lt; typester&gt; すでにだいぶたのしい
+</code></pre>
+<p>といっており、ここからずーーーっと終了までたのしかったですね。</p>
+<p>あと珈琲ありがとうございました！</p>
+<h4>番外: Xslate の速さを実感</h4>
+<p>家帰って他の言語の実装をうごかしてみると、明らかに座席表のレンダリングが遅いんです。ブラウザで見てボトルネックって分かるレベル。 でも、Perl の実装をブラウザで見た人はあのページの遅さはテンプレートエンジンじゃなくてブラウザがレンダリングするのに時間かかってる、くらいにしか感じない気がする。 今回の罠は Xslate の速さと言っても良いのではないでしょうか。</p>
+<p>これは gfx++ といわざるを得ませんね！</p>
+
+  </div>
+
+  <div class="meta">
+    by typester /
+    at <a href="/memo/2012/11/07/1/">2012-11-07T08:46:00</a> /
+    <a href="/memo/tag/isucon/">isucon</a>
+    &middot; <a href="/memo/tag/life/">life</a>
+    &middot; <a href="/memo/tag/redis/">redis</a>
+    / <a href="/memo/2012/11/07/1/#disqus_thread">Comment</a>
+  </div>
+</div>
+
+<div class="entry autopagerize_page_element">
+  <h2><a href="/memo/2012/07/31/1/">Test::RedisServer ってのを書いた</a></h2>
+
+  <div class="body">
+    <p>最近 Redis ずいてるわけですが、<code>redis-server</code> は</p>
+<pre><code>$ redis-server /path/to/redis.conf
+</code></pre>
+<p>or</p>
+<pre><code>$ cat redis.conf | redis-server -
+</code></pre>
+<p>みたいな形式でしか起動できず、これをがんばって <code>exec</code> してテスト用とかに使うコードを3回くらい書いたところで面倒になってモジュール化しました。</p>
+<blockquote><p><a href="http://search.cpan.org/dist/Test-RedisServer/">Daisuke Murase / Test-RedisServer - search.cpan.org</a></p></blockquote>
+<p>基本的に <code>Test::mysqld</code> のパクりなのでサクッとかけました。kazuho++</p>
+
+  </div>
+
+  <div class="meta">
+    by typester /
+    at <a href="/memo/2012/07/31/1/">2012-07-31T00:09:00</a> /
+    <a href="/memo/tag/perl/">perl</a>
+    &middot; <a href="/memo/tag/redis/">redis</a>
+    / <a href="/memo/2012/07/31/1/#disqus_thread">Comment</a>
+  </div>
+</div>
+
+
+
+</div>
+
+<p id="footer">
+  Copyright &copy; 2005-2013
+      by <a class="author" href="/about/#me">Daisuke Murase (typester)</a> /
+  Site generated by <a href="https://github.com/typester/nim">nim</a> /
+  Comments powered by <a href="http://disqus.com">DISQUS</a>.
+</p>
+
+</div>
+
+
+<script type="text/javascript">
+//<![CDATA[
+(function() {
+	var links = document.getElementsByTagName('a');
+	var query = '?';
+	for(var i = 0; i < links.length; i++) {
+	if(links[i].href.indexOf('#disqus_thread') >= 0) {
+		query += 'url' + i + '=' + encodeURIComponent(links[i].href) + '&';
+	}
+	}
+	document.write('<script charset="utf-8" type="text/javascript" src="http://disqus.com/forums/unknownplace/get_num_replies.js' + query + '"></' + 'script>');
+})();
+//]]>
+</script>
+
+
+<script type="text/javascript">
+var gaJsHost = (("https:" == document.location.protocol) ? "https://ssl." : "http://www.");
+document.write(unescape("%3Cscript src='" + gaJsHost + "google-analytics.com/ga.js' type='text/javascript'%3E%3C/script%3E"));
+</script>
+<script type="text/javascript">
+try {
+var pageTracker = _gat._getTracker("UA-53067-1");
+pageTracker._trackPageview();
+} catch(err) {}</script>
+
+<script>
+function googleTranslateElementInit() {
+  new google.translate.TranslateElement({
+    pageLanguage: 'ja',
+    gaTrack: true,
+    gaId: 'UA-53067',
+    floatPosition: google.translate.TranslateElement.FloatPosition.BOTTOM_RIGHT
+  });
+}
+</script><script src="//translate.google.com/translate_a/element.js?cb=googleTranslateElementInit"></script>
+
+</body>
+</html>

@@ -1,0 +1,293 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="ja" xml:lang="ja">
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <title>memo - unknownplace.org</title>
+  <link rel="stylesheet" type="text/css" href="http://yui.yahooapis.com/3.0.0/build/cssreset/reset-min.css" />
+  <link rel="stylesheet" type="text/css" href="http://yui.yahooapis.com/3.0.0/build/cssfonts/fonts-min.css" />
+  <link rel="stylesheet" href="/css/style.css" type="text/css" />
+  <meta property="fb:admins" content="1093631929" />
+  <meta name="robots" content="noindex" />
+  <link rel="alternate" type="application/rss+xml" href="http://unknownplace.org/memo/index.rss" />
+</head>
+<body>
+
+<div id="container">
+<div id="header">
+    <h1><a href="/">unknownplace.org</a></h1> /
+<a href="/memo/">memo</a>
+</div>
+
+<div id="content">
+
+<div class="entry autopagerize_page_element">
+  <h2><a href="/memo/2013/03/08/1/">ddskkでも確定キーの挙動をAquaSKKライクに</a></h2>
+
+  <div class="body">
+    <p>カナモードからq押さないとひらがなモードに戻れないのは不便なので、AquaSKKと同じように <code>C-j</code> (僕は <code>C-o</code>) で カナ→かな になるようにしたい。</p>
+<p>調べてみると、 <code>skk-rom-kana-rule-list</code> というのに、かな・カナモード用のキーマップがあるので、それに対して自分で修正したバージョンのfuncを <code>skk-kakutei-key</code> に登録してあげれば良いみたいな雰囲気。</p>
+<p>そこで、</p>
+<pre><code>(<span class="keyword">defun</span> <span class="function-name">my:skk-kakutei-key</span> (arg)
+  (interactive <span class="string">&quot;P&quot;</span>)
+  (<span class="keyword">if</span> skk-henkan-mode
+      (skk-kakutei arg)
+    (skk-j-mode-on)))
+</code></pre>
+<p>というような、変換中だったら普通に確定キーとして動くけど、それ以外だったらかなに戻す、という動作をするカスタム関数を定義して、それを、</p>
+<pre><code>(add-to-list &apos;skk-rom-kana-rule-list
+     &apos;(skk-kakutei-key nil my:skk-kakutei-key))
+</code></pre>
+<p>してあげればOK。 <code>skk-rom-kana-rule-list</code> というのは <code>(require &apos;skk-setup)</code> しただけだとまだないので、 <code>(require &apos;skk-vars)</code> も必要だった。</p>
+<p>最終的な設定はこちら：</p>
+<blockquote><p><a href="https://github.com/typester/emacs-config/blob/master/conf/init/init-ddskk.el">https://github.com/typester/emacs-config/blob/master/conf/init/init-ddskk.el</a></p></blockquote>
+<p>はー、しかしこれで、AquaSKK/uim-skk/ddskk 全部で同じ感じで入力できる環境がようやくできた。 <a href="http://podcast.bulknews.net/post/44649386760/podcast-ep4-2013-03-06">miyagawaさんのpodcast</a>で、yak率という言葉がでてきたけど、SKK導入のyak率は相当なものだなぁ。</p>
+
+  </div>
+
+  <div class="meta">
+    by typester /
+    at <a href="/memo/2013/03/08/1/">2013-03-08T09:42:00</a> /
+    <a href="/memo/tag/skk/">skk</a>
+    &middot; <a href="/memo/tag/emacs/">emacs</a>
+    / <a href="/memo/2013/03/08/1/#disqus_thread">Comment</a>
+  </div>
+</div>
+
+<div class="entry autopagerize_page_element">
+  <h2><a href="/memo/2013/03/07/2/">ddskkをやっぱり使う</a></h2>
+
+  <div class="body">
+    <p>AquaSKKがEmacs上でも使えるから、ddskkとか使わないなぁと書きましたが、まちがいだった。</p>
+<p><code>C-c C-o</code> のような、キーでも、<code>C-o</code> をAquaSKKにとられてしまうのでだいぶつらい。 なので一度けしたddskkを再度インストール。</p>
+<p>設定はとりあえずこんなかんじで：</p>
+<pre><code>;; key
+(define-key global-map (kbd <span class="string">"C-x C-o"</span>) <span class="warning">'</span><span class="string">skk-mode)
+(setq skk-kakutei-key (kbd "C-o"))
+(setq mac-pass-control-to-system nil)
+
+;; skkserv
+(setq skk-server-host "127.0.0.1")
+(setq skk-server-portnum 1178)
+
+;; user dic
+(setq skk-jisyo-code '</span>utf-8)
+(<span class="type">setq</span> <span class="variable-name">skk</span>-jisyo (concat (getenv <span class="string">"HOME"</span>) <span class="string">"/Dropbox/skk/skk-jisyo.utf8"</span>))
+</code></pre>
+<p>共有辞書はskkserv経由でAquaSKKをつかう。 ユーザー辞書も文字コードをutf-8にすればAquaSKKと同じものが使える？っぽいのでAquaSKKと同じファイルを指定。 キーも他の環境に併せて <code>C-o</code> に。</p>
+<p>こっちは、uim-skkとちがってユーザー辞書もAquaSKKと同じものが使えるから、学習結果も無駄にならなくて良い感じである。</p>
+<p>唯一、カナモードのときに <code>C-o</code> を押してもひらがなモードに戻らないのが不便。 これはelispフックするかなんかすれば簡単に変更できそうだからそのうち知らべよう。</p>
+
+  </div>
+
+  <div class="meta">
+    by typester /
+    at <a href="/memo/2013/03/07/2/">2013-03-07T18:30:00</a> /
+    <a href="/memo/tag/skk/">skk</a>
+    &middot; <a href="/memo/tag/emacs/">emacs</a>
+    / <a href="/memo/2013/03/07/2/#disqus_thread">Comment</a>
+  </div>
+</div>
+
+<div class="entry autopagerize_page_element">
+  <h2><a href="/memo/2013/03/07/1/">SandS</a></h2>
+
+  <div class="body">
+    <p>SKK導入してShiftキー酷使してつらいなー、と言っていたら、<a href="http://blog.kentarok.org/">antipop</a>さんに、SandSをおすすめされたので、試してみている。</p>
+<p>MacでSandSするのはKeyRemap4MacBookを使うと簡単だ。</p>
+<blockquote><p><a href="http://pqrs.org/macosx/doc/keyboard/">Mac OS X で SandS (Space and Shift) を使う</a></p></blockquote>
+<p>しかしどうしても手が勝手に小指でshiftキーを押してしまうので、一時的に両サイドのshiftキーは無効になるようにした。</p>
+<p>このSandS、SKKでの日本語入力はまぁすぐに慣れるとおもうが、いままで手に染み込んだショートカットキーはだいぶ苦戦しそうだ。</p>
+<p>例えばEmacsでのundoは、<code>C-_</code> だが、押すキーは <code>C-S--</code> である。 これはなかなか、キーを手で覚えているから、これをスペースにおきかえるということがすぐに思いだせなくて非常に難しい。 こういうのはまぁ無理に矯正しないでもいい気もするが、どうしようかなぁ。</p>
+<p>あとEmacsを使っていると致命的につらいのが <code>M-&lt;</code> である。 MacでSandSで、っていう環境でこの場合押すキーは、<code>Cmd-Space-,</code> だ。おしにくい!</p>
+<p>これはIRCでぼやいていたら、<a href="http://handlena.me/">handlename</a>さんが、「<a href="http://d.hatena.ne.jp/rubikitch/20090219/sequential_command">sequential_command</a>つかってるからM-&lt;とか押さないですよ〜(ﾄﾞﾔｧ」みたいな雰囲気のことを言っていた。 たしかにこれは便利そうなので使ってみよう1</p>
+
+  </div>
+
+  <div class="meta">
+    by typester /
+    at <a href="/memo/2013/03/07/1/">2013-03-07T10:59:00</a> /
+    <a href="/memo/tag/skk/">skk</a>
+    &middot; <a href="/memo/tag/emacs/">emacs</a>
+    / <a href="/memo/2013/03/07/1/#disqus_thread">Comment</a>
+  </div>
+</div>
+
+<div class="entry autopagerize_page_element">
+  <h2><a href="/memo/2013/03/06/3/">最近のMacでuim-fep</a></h2>
+
+  <div class="body">
+    <p>先ほどのエントリーで、Macだと <code>uim-fep</code> が SEGV してしまう、と書いたが、どうやらこれは gcc の最適化がよくない感じで動いてしまっているようだ。</p>
+<pre><code>$ export CFLAGS=&apos;-g -O0&apos;
+$ export CXXFLAGS=$CFLAGS
+</code></pre>
+<p>してビルドしたら普通に動くようになった。</p>
+<p>こんな感じで入れた：</p>
+<pre><code>cd /tmp
+wget https://uim.googlecode.com/files/uim-1.8.4.tar.gz
+cd uim-1.8.4
+
+export CFLAGS=&apos;-g -O0&apos;
+export CXXFLAGS=$CFLAGS
+./configure --prefix=$(brew --prefix)/Cellar/uim/1.8.4 --without-x
+make
+make install
+brew link uim
+</code></pre>
+<p>アドホックな対応だけど、これでまぁいちおう手元のターミナルでも日本語入力がOKになった。</p>
+<p>あとは学習辞書をAquaSKKと共有したいな〜。</p>
+
+  </div>
+
+  <div class="meta">
+    by typester /
+    at <a href="/memo/2013/03/06/3/">2013-03-06T22:11:00</a> /
+    <a href="/memo/tag/skk/">skk</a>
+    / <a href="/memo/2013/03/06/3/#disqus_thread">Comment</a>
+  </div>
+</div>
+
+<div class="entry autopagerize_page_element">
+  <h2><a href="/memo/2013/03/06/2/">uim-skkでC-jでもカナからひらがなへ戻れるようにカスタマイズ</a></h2>
+
+  <div class="body">
+    <p>AquaSKKとuim-skkを併用していて、<code>C-j</code> キー (僕は <code>C-o</code> に変更してるが) の扱いの違いが若干気になった。</p>
+<p>AquaSKKでは基本的に、<code>C-j</code>を押せば、常にひらがな入力モードになる。</p>
+<p>一方uim-skkは、<code>q</code> を押してカタカナモードになっている状態で <code>C-j</code> を押してもなにも反応しない。また、カタカナモードから英数モードに移行したあとで、再度 <code>C-j</code> を押すとカタカナモードに復帰してしまう。 ひらかなモードに戻るには再度 <code>q</code> でトグルさせてあげる必要があるみたい。</p>
+<p>好みの問題かもしれないが、僕は AquaSKK の挙動のほうが好きなので、uim-skkもそれにあわせることにする。</p>
+<p>しかし不幸なことに、uim-skkのドキュメントにそのように設定する項目が見当らなかったので、以下のようにアドホックにコードを変更した。</p>
+<pre><code>--- /usr/share/uim/skk.scm.orig 2013-03-06 19:12:01.994615339 +0900
++++ /usr/share/uim/skk.scm      2013-03-06 19:16:07.314888197 +0900
+@@ -937,6 +937,11 @@
+          (skk-return-key? key key-state))
+       (skk-commit-raw sc key key-state)
+       #f)
++     ((skk-on-key? key key-state)
++      (skk-context-set-state! sc &apos;skk-state-direct)
++      (skk-context-set-kana-mode! sc skk-type-hiragana)
++      (rk-flush rkc)
++      #f)
+      ((skk-wide-latin-key? key key-state)
+       (skk-context-set-state! sc &apos;skk-state-wide-latin)
+       (rk-flush rkc)
+</code></pre>
+<p>あってるかわからないが、とりあえずこれで希望通りの動作になっているっぽい。</p>
+
+  </div>
+
+  <div class="meta">
+    by typester /
+    at <a href="/memo/2013/03/06/2/">2013-03-06T19:17:00</a> /
+    <a href="/memo/tag/skk/">skk</a>
+    / <a href="/memo/2013/03/06/2/#disqus_thread">Comment</a>
+  </div>
+</div>
+
+<div class="entry autopagerize_page_element">
+  <h2><a href="/memo/2013/03/06/1/">ATOKをやめてSKKを使いはじめた</a></h2>
+
+  <div class="body">
+    <p>ATOKをMacを使いはじめてからずっと使っているので、そこそこ長い付き合いではあるけれど、 和英混在入力の使い勝手が悪く、いつも混在入力をするときに、ATOK自体のON/OFFをして対応してしまっていた。</p>
+<p>この使い方は注意しないと、変な文節を学習させてしまうことになる。</p>
+<p>例えば、</p>
+<blockquote><p>nodeよりperlが好き。</p></blockquote>
+<p>のような文章で、英語の部分ではATOKをOFFにするような入力をしていると、 「が好き」という文章をATOKに教えこませてしまう。このような意図しない学習結果が積みかさなると、普通の文章の変換も苦になるほどATOKの調子が悪くなってしまう。</p>
+<p>そのような状態になるたびに、辞書をクリアしたり、 そもそもこのようなことを避けるために、「が」で一旦確定させるクセをつけるなどして、対応してきたが、そんなことを考えながら文章かくのであれば、もっとシンプルな、SKKのような入力方法にしちゃえばいいのではないかなーということで、とりあえず試してみることにした。</p>
+<h4>SKK入門</h4>
+<p>最初のとっかかりは、<a href="http://d.hatena.ne.jp/tomoya/20101212/1292089972">Emacsのddskkというのについてくるチュートリアルが良い</a>、とのことなので、まずMacシステムの入力メソッドはそのままにEmacs内だけでSKKを試してみる。</p>
+<p>それを一通り終えて、SKKの使い方が分かったところで、Mac全体でもSKKが使えるように<a href="http://aquaskk.sourceforge.jp/">AquaSKK</a>をインストール。</p>
+<p>試してみたところEmacs内でもAquaSKKが使えるっぽいので、ddskkは別に使わなくてもいいかなーという感じで、チュートリアルそうそう、ddskkは使わなくなってしまった。 AquaSKKは、Enterで改行しない、というデフォルトで有効になっている余計なオプションを外してしまえば、あとは大体ddskkと同じような使い勝手のようだ。(SKKに詳しい人から見るといろいろ違うのかもしれないが)</p>
+<p>入力方法自体はいたってシンプルで、すぐに覚えられる。 「困った」みたいのの変換が、まだちょっと考えないと入力できないが、まぁすぐに慣れるだろう。</p>
+<p>しかしそれ以外にもいろいろ問題があった。</p>
+<h4>問題1. C-j がつらい</h4>
+<p>SKKは <code>C-j</code> を変換確定やら日本語モードへの移行やらに使用する、言ってしまえば、SKKのメインキーである。</p>
+<p>しかし僕はこれを改行とか、elispの評価とかに使用するのが手に染みついてしまっていて、このキーをSKKで使用するのは苦痛を伴なう。</p>
+<p>この際だし、矯正してしまってもいいかなーともおもってしばらくがんばったが、どうにもだめなので、SKKの該当キーを <code>C-o</code> に変更した。</p>
+<p>AquaSKKのキー設定を変更するには、<code>/Library/Input Methods/AquaSKK.app/Contents/Resources/keymap.conf</code> を <code>/Users/typester/Library/Application Support/AquaSKK/keymap.conf</code> にコピーして、その中の、<code>SKK_JMODE</code> というところを</p>
+<pre><code>SKK_JMODE       ctrl::o
+</code></pre>
+<p>みたいな感じに修正すれば良い。</p>
+<h4>問題2. ターミナルで入力できない</h4>
+<p>入力できない、というか <code>C-o</code> が効かない。ので日本語に復帰できない。(<code>C-j</code>に戻してもだめだった)</p>
+<p><code>uim-fep</code> いれろ、みたいのを見て、ウンザリしつつもインストールしたが、しばらく使っていると高確率でSEGVするのでまともに使えなかったためさらにウンザリ。</p>
+<p>これはMacだけの現象かなーと思ってLinuxで試してみると、Linuxではうまく動いた。</p>
+<p>ただ、日常的にターミナルで日本語入力をする場面を考えてみると、IRCをするirssiだけ。 しかも、irssiを動かしているサーバーはLinuxなので、そこにuim-fepをいれてしのぐことにした。</p>
+<p>uim-skk でも、以下のような設定で AquaSKK と同じように <code>C-j</code> を <code>C-o</code> に置きかえた。</p>
+<pre><code># ~/.uim
+(define-key skk-on-key? <span class="warning">'</span><span class="string">("&lt;Control&gt;o"))
+(define-key skk-commit-key? '</span>(<span class="string">"&lt;Control&gt;o"</span>))
+(define-key skk-state-direct-no-preedit-nop-key? <span class="warning">'</span><span class="string">("&lt;Control&gt;o"))
+</span></code></pre>
+<p>ユーザー辞書をDropboxかなにかで同期できたらいいなーとおもったが、 AquaSKKのユーザー辞書は utf-8、uim-skk のそれは euc-jp と、文字コードが違い、しかもそれを変更する方法がわからなかったので、とりあえず別々の学習になってしまってもいいか〜ってなってる。</p>
+<h4>問題3. ひらかなの小文字入力</h4>
+<p>いままでずっと「la」で「ぁ」というように <code>l</code> キーで小文字入力していたが、SKKではこのキーは英字入力への切り替えキーなので使うことができない。 これもキー設定をかえてもよかったが、ここは <code>x</code> を使うように矯正する方向でがんばる。</p>
+<h4>使用感</h4>
+<p>送り仮名を意識しないといけなかったり、その送り仮名が「っ」だったりするときの入力はまだまだ慣れなくて難しい。 慣れてもイメージとして、ATOKほど高速に日本語入力ができる感じはない。ATOKはやっぱり賢いのでガーーっと長文を一気に入力して一発変換という使い方をしても精度が高く、日本語だけを入力する分にはやはり最高の入力メソッドであると思う。</p>
+<p>SKKのいいところは仕組みがシンプルなことと、実装がいっぱいあってどこでも動くところかな。</p>
+<p>シンプルなので自分でコントロールできると思う。ATOKは学習がおかしくなってしまったらもう途方にくれるしかなかった。実装がいっぱいあるのも、AquaSKKがなくなってもEmacsがあれば大丈夫、みたいな安心感はある。</p>
+<p>入力速度に関しては、Shiftキーを非常に多用するので、親指Shiftとかを導入したらもう少し高速に入力できるようになるのだろうかなー。</p>
+
+  </div>
+
+  <div class="meta">
+    by typester /
+    at <a href="/memo/2013/03/06/1/">2013-03-06T16:32:00</a> /
+    <a href="/memo/tag/life/">life</a>
+    &middot; <a href="/memo/tag/skk/">skk</a>
+    / <a href="/memo/2013/03/06/1/#disqus_thread">Comment</a>
+  </div>
+</div>
+
+
+
+</div>
+
+<p id="footer">
+  Copyright &copy; 2005-2013
+      by <a class="author" href="/about/#me">Daisuke Murase (typester)</a> /
+  Site generated by <a href="https://github.com/typester/nim">nim</a> /
+  Comments powered by <a href="http://disqus.com">DISQUS</a>.
+</p>
+
+</div>
+
+
+<script type="text/javascript">
+//<![CDATA[
+(function() {
+	var links = document.getElementsByTagName('a');
+	var query = '?';
+	for(var i = 0; i < links.length; i++) {
+	if(links[i].href.indexOf('#disqus_thread') >= 0) {
+		query += 'url' + i + '=' + encodeURIComponent(links[i].href) + '&';
+	}
+	}
+	document.write('<script charset="utf-8" type="text/javascript" src="http://disqus.com/forums/unknownplace/get_num_replies.js' + query + '"></' + 'script>');
+})();
+//]]>
+</script>
+
+
+<script type="text/javascript">
+var gaJsHost = (("https:" == document.location.protocol) ? "https://ssl." : "http://www.");
+document.write(unescape("%3Cscript src='" + gaJsHost + "google-analytics.com/ga.js' type='text/javascript'%3E%3C/script%3E"));
+</script>
+<script type="text/javascript">
+try {
+var pageTracker = _gat._getTracker("UA-53067-1");
+pageTracker._trackPageview();
+} catch(err) {}</script>
+
+<script>
+function googleTranslateElementInit() {
+  new google.translate.TranslateElement({
+    pageLanguage: 'ja',
+    gaTrack: true,
+    gaId: 'UA-53067',
+    floatPosition: google.translate.TranslateElement.FloatPosition.BOTTOM_RIGHT
+  });
+}
+</script><script src="//translate.google.com/translate_a/element.js?cb=googleTranslateElementInit"></script>
+
+</body>
+</html>

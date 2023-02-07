@@ -1,0 +1,515 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="ja" xml:lang="ja">
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <title>memo - unknownplace.org</title>
+  <link rel="stylesheet" type="text/css" href="http://yui.yahooapis.com/3.0.0/build/cssreset/reset-min.css" />
+  <link rel="stylesheet" type="text/css" href="http://yui.yahooapis.com/3.0.0/build/cssfonts/fonts-min.css" />
+  <link rel="stylesheet" href="/css/style.css" type="text/css" />
+  <meta property="fb:admins" content="1093631929" />
+  <meta name="robots" content="noindex" />
+  <link rel="alternate" type="application/rss+xml" href="http://unknownplace.org/memo/index.rss" />
+</head>
+<body>
+
+<div id="container">
+<div id="header">
+    <h1><a href="/">unknownplace.org</a></h1> /
+<a href="/memo/">memo</a>
+</div>
+
+<div id="content">
+
+<div class="entry autopagerize_page_element">
+  <h2><a href="/memo/2013/01/24/1/">plenv の Perl バージョンを取得する zsh スクリプト</a></h2>
+
+  <div class="body">
+    <p><a href="http://blog.64p.org/entry/2013/01/21/134639">plenv</a> でつかわれる Perl をプロンプトに表示したりするのに使えるかと。検出ロジックは plenv とおなじつもり。</p>
+<pre><code><span class="function-name">plenv_perl_version</span>() {
+    <span class="type">local</span> <span class="variable-name">dir</span>=$PWD
+
+    [[ -n $PLENV_VERSION ]] &amp;&amp; { echo $PLENV_VERSION; <span class="keyword">return</span> }
+
+    <span class="keyword">while</span> [[ -n $dir &amp;&amp; $dir != <span class="string">"/"</span> &amp;&amp; $dir != <span class="string">"."</span> ]]; <span class="keyword">do</span>
+        <span class="keyword">if</span> [[ -f <span class="string">"$dir/.perl-version"</span> ]]; <span class="type">then</span>
+            <span class="variable-name">head</span> -n 1 <span class="string">"$dir/.perl-version"</span>
+            <span class="keyword">return</span>
+        fi
+        dir=$dir:h
+    done
+
+    local plenv_home=$PLENV_HOME
+    [[ -z $PLENV_HOME &amp;&amp; -n $HOME ]] &amp;&amp; plenv_home=<span class="string">"$HOME/.plenv"</span>
+
+    <span class="keyword">if</span> [[ -f <span class="string">"$plenv_home/version"</span> ]]; <span class="type">then</span>
+        <span class="variable-name">head</span> -n 1 <span class="string">"$plenv_home/version"</span>
+    fi
+}
+</code></pre>
+<p><code>dir=$dir:h</code> とかしてるので zsh でしか動かないと思う。</p>
+<p>しかし、書くのにだいぶ時間かかった。。</p>
+
+  </div>
+
+  <div class="meta">
+    by typester /
+    at <a href="/memo/2013/01/24/1/">2013-01-24T09:32:00</a> /
+    <a href="/memo/tag/zsh/">zsh</a>
+    / <a href="/memo/2013/01/24/1/#disqus_thread">Comment</a>
+  </div>
+</div>
+
+<div class="entry autopagerize_page_element">
+  <h2><a href="/memo/2012/03/27/1/">tmux で pbcopy</a></h2>
+
+  <div class="body">
+    <p>デフォルトだと動かないのでなんか変なラッパーを挟むのがスタンダードな方法みたいですが、たまにしか使わないのにそんな無駄なことしたくないと、</p>
+<pre><code><span class="preprocessor"># tmux</span>
+<span class="keyword">if</span> [[ <span class="string">"$TMUX"</span> != <span class="string">""</span> ]] then
+    alias pbcopy=<span class="string">"ssh 127.0.0.1 pbcopy"</span>
+    alias pbpaste=<span class="string">"ssh 127.0.0.1 pbpaste"</span>
+fi
+</code></pre>
+<p>としてしのいでいる。僕の使用頻度だとこれで十分ぽい。</p>
+
+  </div>
+
+  <div class="meta">
+    by typester /
+    at <a href="/memo/2012/03/27/1/">2012-03-27T11:39:00</a> /
+    <a href="/memo/tag/tmux/">tmux</a>
+    &middot; <a href="/memo/tag/zsh/">zsh</a>
+    / <a href="/memo/2012/03/27/1/#disqus_thread">Comment</a>
+  </div>
+</div>
+
+<div class="entry autopagerize_page_element">
+  <h2><a href="/memo/2010/03/23/1/">GNU screen の裏にいる Window で完了したコマンドを Growl 通知したい</a></h2>
+
+  <div class="body">
+    <p>というようなことをつぶやいていたら、</p>
+<blockquote><p><a href="http://twitter.com/hchbaw/status/9921025674">Twitter / hchbaw: @typester 最近になって screen -Q windows とできるようになってますね。</a></p></blockquote>
+<p>と教えていただいた。</p>
+<p><code>-Q</code> コマンドというのは <code>-X</code> と同じようなものだけど、コマンド結果を screen 内のステータス領域ではなく標準出力で得ることができる。また、<code>-X</code> はつねに実行時にそれ自体がアクティブな screen セッションになるのに対し <code>-Q</code> はアクティブなセッションにクエリを投げる感じで、セッションが切り替わらない。（この辺は理解が怪しいので突っ込み歓迎）</p>
+<p>それでそれを使うと</p>
+<pre><code>screen -Q windows
+</code></pre>
+<p>と実行することで <code>:windows</code> で echo されるのとおなじ文字列を標準出力で得ることができる。その出力をパースすれば、自分が screen の裏にいるかどうか判断することができるというわけ。</p>
+<p>zsh でコマンド完了時（正確にはプロンプトが表示される直前）に呼ばれるフックは <code>precmd</code> なので以下のように定義：</p>
+<pre><code>function precmd() {
+    $HOME/bin/precmd.pl `history -n -1 | head -1`
+}
+</code></pre>
+<p>シェルスクリプトかけないので Perl に逃げています。 で、precmd.pl は以下のような感じ：</p>
+<pre><code><span class="comment-delimiter">#</span><span class="comment">!/usr/bin/perl
+</span>
+<span class="keyword">use</span> <span class="function-name">strict</span>;
+<span class="keyword">use</span> <span class="function-name">warnings</span>;
+<span class="keyword">use</span> <span class="function-name">FileHandle</span>;
+
+<span class="keyword">my</span> <span class="variable-name">$lastcmd</span> = <span class="type">join</span> <span class="string">&apos; &apos;</span>, <span class="cperl-array">@ARGV</span>;
+
+<span class="keyword">my</span> <span class="variable-name">$window</span> = <span class="cperl-hash">$ENV</span>{<span class="string">WINDOW</span>};
+
+<span class="keyword">my</span> <span class="variable-name">$windows</span> = <span class="cperl-nonoverridable">qx</span><span class="string">{ screen -Q windows }</span> <span class="type">or</span> <span class="keyword">die</span> <span class="string">&quot;Your screen doesn&apos;t support -Q&quot;</span>;
+<span class="cperl-nonoverridable">qx</span><span class="string">{ screen -X redisplay }</span>;
+
+<span class="keyword">my</span> <span class="variable-name">$active</span>;
+<span class="keyword">for</span> <span class="keyword">my</span> <span class="variable-name">$win</span> (<span class="cperl-nonoverridable">split</span> <span class="string">&quot;\x20\x20&quot;</span>, $windows) {
+    <span class="keyword">my</span> (<span class="variable-name">$num</span>, <span class="variable-name">$flag</span>, <span class="variable-name">$title</span>) = $win =~ <span class="constant">/</span><span class="function-name">^</span><span class="keyword">(</span><span class="builtin">\</span><span class="type">d</span><span class="builtin">+</span><span class="keyword">)(</span><span class="function-name">.</span><span class="keyword">)</span><span class="builtin">?</span><span class="string"> </span><span class="keyword">(</span><span class="function-name">.</span><span class="builtin">+</span><span class="keyword">)</span><span class="constant">/</span>;
+
+    <span class="keyword">if</span> ($flag <span class="type">and</span> $flag <span class="type">eq</span> <span class="string">&apos;*&apos;</span>) {
+        $active = $num;
+        <span class="keyword">last</span>;
+    }
+}
+
+<span class="keyword">if</span> ($window <span class="negation-char">!</span>= $active) {
+    <span class="type">open</span> <span class="keyword">my</span> <span class="variable-name">$fh</span>, <span class="string">&quot;|/usr/local/bin/growlnotify -t &apos;GNU screen window $window&apos;&quot;</span> <span class="type">or</span> <span class="keyword">die</span> $!;
+    <span class="cperl-nonoverridable">print</span> $fh <span class="type">sprintf</span> <span class="string">&apos;command done: &quot;</span><span class="cperl-hash">%s</span><span class="string">&quot;&apos;</span>, $lastcmd;
+    <span class="cperl-nonoverridable">print</span> $fh <span class="string">&quot;\n&quot;</span>;
+    <span class="type">close</span> $fh;
+}
+</code></pre>
+<p>これで、コマンドが完了した場合にピコーンと通知が来るようになりました。</p>
+<p>長い make や wget の時に超絶便利ですね！</p>
+<p>書き忘れましたが、現在この機能をつかうためには開発版の screen を使用する必要があります。</p>
+
+  </div>
+
+  <div class="meta">
+    by typester /
+    at <a href="/memo/2010/03/23/1/">2010-03-23T11:22:00</a> /
+    <a href="/memo/tag/screen/">screen</a>
+    &middot; <a href="/memo/tag/zsh/">zsh</a>
+    / <a href="/memo/2010/03/23/1/#disqus_thread">Comment</a>
+  </div>
+</div>
+
+<div class="entry autopagerize_page_element">
+  <h2><a href="/memo/2010/03/01/1/">local::lib を切り替える</a></h2>
+
+  <div class="body">
+    <p>レガシーなアプリをメンテするのにレガシーな Perl モジュールが必要になることがあり、そのために古いアプリ用には専用の <code>local::lib</code> ディレクトリを切っているわけですが、普段から日常的に <code>local::lib</code> を使用しているため shell が上がったタイミングではデフォルトの <code>local::lib</code> 環境変数がセットされていて切り替えが非常に面倒だった。</p>
+<p>これまではそれほど頻繁に使用しなかったので放置していたのだが、ここのところ頻繁に必要になるためいい加減うざくなってきて簡単に <code>local::lib</code> を切り替えられるよう設定をしてみた。</p>
+<p>zsh に次のような関数をつくり、それで <code>local::lib</code> を切り替えるようにする。</p>
+<pre><code>function locallib () {
+    INSTALL_BASE=$1
+    if [ -d $INSTALL_BASE ]; then
+        eval $(~/bin/use-locallib $INSTALL_BASE)
+    fi
+}
+</code></pre>
+<p>これは</p>
+<pre><code>$ locallib ~/perl5
+</code></pre>
+<p>などのように <code>INSTALL_BASE</code> を指定して使う。指定されたパスが存在したら <code>use-locallib</code> というコマンドを使用して環境変数を切り替えるという内容。</p>
+<p>この <code>use-locallib</code> コマンドは以下のようなソースになっていて、古い <code>local::lib</code> の環境変数をクリアするとともに、新しい <code>local::lib</code> の環境変数を <code>print</code> するというものになっている。</p>
+<pre><code><span class="comment-delimiter">#</span><span class="comment">!/usr/bin/env perl
+</span>
+<span class="keyword">use</span> <span class="function-name">strict</span>;
+<span class="keyword">use</span> <span class="function-name">warnings</span>;
+<span class="keyword">use</span> <span class="function-name">Pod::Usage</span>;
+
+<span class="keyword">use</span> <span class="function-name">Config</span>;
+<span class="keyword">use</span> <span class="function-name">File::Spec</span>;
+
+<span class="keyword">my</span> <span class="variable-name">$install_base</span> = <span class="cperl-array">$ARGV</span>[0]
+    <span class="type">or</span> pod2usage(-1);
+
+$install_base = File::Spec-&gt;rel2abs($install_base);
+
+<span class="keyword">my</span> <span class="variable-name">$path</span>     = <span class="cperl-hash">$ENV</span>{<span class="string">PATH</span>};
+<span class="keyword">my</span> <span class="variable-name">$perl5lib</span> = <span class="cperl-hash">$ENV</span>{<span class="string">PERL5LIB</span>};
+
+<span class="cperl-nonoverridable">push</span> <span class="cperl-array">@INC</span>, File::Spec-&gt;catdir($install_base, <span class="string">&apos;lib&apos;</span>, <span class="string">&apos;perl5&apos;</span>);
+
+<span class="keyword">require</span> <span class="keyword">local</span>::lib;
+<span class="keyword">my</span> <span class="cperl-hash">%env</span> = <span class="keyword">local</span>::lib-&gt;build_environment_vars_for($install_base, 1);
+
+<span class="comment-delimiter"># </span><span class="comment">remove $PERL5LIB set by old local::lib if it exists.
+</span><span class="keyword">if</span> (<span class="keyword">my</span> <span class="variable-name">$old_base</span> = <span class="cperl-hash">$ENV</span>{<span class="string">PERL_MM_OPT</span>}) {
+    <span class="keyword">my</span> <span class="cperl-hash">%mmopt</span>;
+    <span class="keyword">for</span> <span class="keyword">my</span> <span class="variable-name">$opt</span> (<span class="cperl-nonoverridable">split</span> <span class="constant">/</span><span class="string">:</span><span class="builtin">+</span><span class="constant">/</span>, $old_base) {
+        <span class="keyword">my</span> (<span class="variable-name">$k</span>, <span class="variable-name">$v</span>) = <span class="cperl-nonoverridable">split</span> <span class="constant">/</span><span class="string">=</span><span class="constant">/</span>, $opt;
+        <span class="cperl-hash">$mmopt</span>{$k} = $v;
+    }
+
+    <span class="keyword">if</span> (<span class="keyword">my</span> <span class="variable-name">$old_installbase</span> = <span class="cperl-hash">$mmopt</span>{<span class="string">INSTALL_BASE</span>}) {
+        <span class="keyword">if</span> ($old_installbase <span class="type">eq</span> $install_base) {
+            <span class="comment-delimiter"># </span><span class="comment">do nothing if install_base is equal to old one
+</span>            <span class="keyword">exit</span>;
+        }
+
+        <span class="keyword">my</span> <span class="cperl-array">@old_perl5lib</span> = (
+            File::Spec-&gt;catdir($old_installbase, <span class="string">&apos;lib&apos;</span>, <span class="string">&apos;perl5&apos;</span>),
+            File::Spec-&gt;catdir($old_installbase, <span class="string">&apos;lib&apos;</span>, <span class="string">&apos;perl5&apos;</span>, <span class="cperl-hash">$Config</span>{<span class="string">archname</span>}),
+        );
+
+        <span class="cperl-hash">$env</span>{<span class="string">PERL5LIB</span>} = <span class="keyword">do</span> {
+            <span class="keyword">my</span> <span class="cperl-array">@env</span>;
+            <span class="constant">ENV:</span> <span class="keyword">for</span> <span class="keyword">my</span> <span class="variable-name">$e</span> (<span class="cperl-nonoverridable">grep</span> { $_ } <span class="cperl-nonoverridable">split</span> <span class="cperl-hash">$Config</span>{<span class="string">path_sep</span>}, <span class="cperl-hash">$env</span>{<span class="string">PERL5LIB</span>}) {
+                <span class="keyword">for</span> <span class="keyword">my</span> <span class="variable-name">$old</span> (<span class="cperl-array">@old_perl5lib</span>) {
+                    <span class="keyword">next</span> <span class="constant">ENV</span> <span class="keyword">if</span> $old <span class="type">eq</span> $e;
+                }
+                <span class="cperl-nonoverridable">push</span> <span class="cperl-array">@env</span>, $e;
+            }
+            <span class="type">join</span> <span class="cperl-hash">$Config</span>{<span class="string">path_sep</span>}, <span class="cperl-array">@env</span>;
+        };
+
+        <span class="keyword">my</span> <span class="variable-name">$old_path</span> = File::Spec-&gt;catdir($old_installbase, <span class="string">&apos;bin&apos;</span>);
+        <span class="cperl-hash">$env</span>{<span class="string">PATH</span>} = <span class="keyword">do</span> {
+            <span class="keyword">my</span> <span class="cperl-array">@p</span>;
+            <span class="keyword">for</span> <span class="keyword">my</span> <span class="variable-name">$p</span> (<span class="cperl-nonoverridable">grep</span> {$_} <span class="cperl-nonoverridable">split</span> <span class="cperl-hash">$Config</span>{<span class="string">path_sep</span>}, <span class="cperl-hash">$env</span>{<span class="string">PATH</span>}) {
+                <span class="keyword">next</span> <span class="keyword">if</span> $p <span class="type">eq</span> $old_path;
+                <span class="cperl-nonoverridable">push</span> <span class="cperl-array">@p</span>, $p;
+            }
+            <span class="type">join</span> <span class="cperl-hash">$Config</span>{<span class="string">path_sep</span>}, <span class="cperl-array">@p</span>;
+        };
+    }
+}
+
+<span class="keyword">while</span> (<span class="keyword">my</span> (<span class="variable-name">$k</span>, <span class="variable-name">$v</span>) = <span class="cperl-nonoverridable">each</span> <span class="cperl-hash">%env</span>) {
+    <span class="cperl-nonoverridable">print</span> <span class="cperl-nonoverridable">qq</span><span class="string">[export $k=&quot;$v&quot;\n]</span>;
+}
+<span class="comment">
+=head1 </span><span class="variable-name">NAME</span><span class="comment">
+
+use-locallib - set/switch local::lib environment
+
+=head1 </span><span class="variable-name">SYNOPSIS</span><span class="comment">
+
+use-locallib (MODULE INSTALL BASE)
+</span></code></pre>
+<p>これで <code>local::lib</code> を簡単に切り替えられるようになるけれど、複数の <code>local::lib</code> 環境を同時に使用しているとどのシェルがどの <code>local::lib</code> を使用しているかわからなくなってしまう。</p>
+<p>そのためシェルのプロンプトに <code>INSTALL_BASE</code> を表示されるようにしてしのいだ。</p>
+<p><a href="http://www.flickr.com/photos/typester/4397750144/" title="show INSTALL_BASE in terminal prompt by typester, on Flickr"><img alt="show INSTALL_BASE in terminal prompt" height="100" src="http://farm3.static.flickr.com/2758/4397750144_cd22b17a99_o.png" width="280" /></a></p>
+<p>これは単純に以下のような <code>PERL_MM_OPT</code> の <code>INSTALL_BASE</code> をプリントするスクリプトを PROMPT 設定から読んでいるだけである。</p>
+<pre><code><span class="comment-delimiter">#</span><span class="comment">!/usr/bin/env perl
+</span>
+<span class="keyword">use</span> <span class="function-name">strict</span>;
+<span class="keyword">use</span> <span class="function-name">warnings</span>;
+
+<span class="keyword">my</span> <span class="cperl-hash">%mm_opt</span>;
+<span class="keyword">for</span> <span class="keyword">my</span> <span class="variable-name">$opt</span> (<span class="cperl-nonoverridable">split</span> <span class="constant">/</span><span class="string">:</span><span class="builtin">+</span><span class="constant">/</span>, <span class="cperl-hash">$ENV</span>{<span class="string">PERL_MM_OPT</span>} || <span class="string">&apos;&apos;</span>) {
+    <span class="keyword">my</span> (<span class="variable-name">$k</span>, <span class="variable-name">$v</span>) = <span class="cperl-nonoverridable">split</span> <span class="constant">/</span><span class="string">=</span><span class="constant">/</span>, $opt;
+    <span class="cperl-hash">$mm_opt</span>{$k} = $v;
+}
+
+<span class="keyword">my</span> <span class="variable-name">$install_base</span> = <span class="cperl-hash">$mm_opt</span>{<span class="string">INSTALL_BASE</span>};
+<span class="keyword">if</span> (<span class="cperl-hash">$ENV</span>{<span class="string">HOME</span>}) {
+    $install_base =~ <span class="cperl-nonoverridable">s</span><span class="constant">/</span><span class="function-name">^</span><span class="cperl-hash">$ENV</span><span class="variable-name">{</span><span class="string">HOME</span><span class="variable-name">}</span><span class="constant">/</span><span class="string">~</span><span class="constant">/</span>;
+}
+
+<span class="cperl-nonoverridable">print</span> $install_base || <span class="string">&apos;none&apos;</span>;
+</code></pre>
+
+  </div>
+
+  <div class="meta">
+    by typester /
+    at <a href="/memo/2010/03/01/1/">2010-03-01T17:17:00</a> /
+    <a href="/memo/tag/perl/">perl</a>
+    &middot; <a href="/memo/tag/zsh/">zsh</a>
+    / <a href="/memo/2010/03/01/1/#disqus_thread">Comment</a>
+  </div>
+</div>
+
+<div class="entry autopagerize_page_element">
+  <h2><a href="/memo/2008/02/19/2/">zsh の prompt に git のブランチ情報を表示</a></h2>
+
+  <div class="body">
+    <p><a href="http://unknownplace.org/memo/2008/02/04">svk でやってたもの</a>の git 版。</p>
+<p><a href="http://www.flickr.com/photos/typester/2276187593/" title="git branch info in zsh prompt by typester, on Flickr"><img alt="git branch info in zsh prompt" height="169" src="http://farm3.static.flickr.com/2243/2276187593_458d4fe402_o.png" width="356" /></a></p>
+<p><code>ref: refs/heads/</code> という部分を消していいのか、ほかのものが入る場合があるのかよくわからなかったので全表示している。</p>
+<p>まぁぱっと見で git とわかるからいいかということでとりあえず。</p>
+<p>codereposにあげてあるよ。</p>
+<p>あぁ、なんか ref: とかすらでずに sha-1 ハッシュ値だけのときもある。もう少し調べないとだめだ。</p>
+
+  </div>
+
+  <div class="meta">
+    by typester /
+    at <a href="/memo/2008/02/19/2/">2008-02-19T18:09:00</a> /
+    <a href="/memo/tag/git/">git</a>
+    &middot; <a href="/memo/tag/zsh/">zsh</a>
+    / <a href="/memo/2008/02/19/2/#disqus_thread">Comment</a>
+  </div>
+</div>
+
+<div class="entry autopagerize_page_element">
+  <h2><a href="/memo/2008/02/04/4/">branchでもtrunkでもないときはdepotpathそのまま表示するようにしてみた</a></h2>
+
+  <div class="body">
+    <p><a href="http://www.flickr.com/photos/typester/2241200579/" title="show svk depot path in zsh prompt by typester, on Flickr"><img alt="show svk depot path in zsh prompt" height="220" src="http://farm3.static.flickr.com/2338/2241200579_1c4439762a_o.png" width="400" /></a></p>
+<p>これだけでもいいかもしんない。</p>
+
+  </div>
+
+  <div class="meta">
+    by typester /
+    at <a href="/memo/2008/02/04/4/">2008-02-04T22:26:00</a> /
+    <a href="/memo/tag/zsh/">zsh</a>
+    &middot; <a href="/memo/tag/svk/">svk</a>
+    / <a href="/memo/2008/02/04/4/#disqus_thread">Comment</a>
+  </div>
+</div>
+
+<div class="entry autopagerize_page_element">
+  <h2><a href="/memo/2008/02/04/3/"></a></h2>
+
+  <div class="body">
+    <p><code>.zshrc</code> といっしょにcodereposにあげた。</p>
+<blockquote><p><a href="http://coderepos.org/share/browser/dotfiles/zsh/typester">http://coderepos.org/share/browser/dotfiles/zsh/typester</a></p></blockquote>
+
+  </div>
+
+  <div class="meta">
+    by typester /
+    at <a href="/memo/2008/02/04/3/">2008-02-04T21:43:00</a> /
+    <a href="/memo/tag/zsh/">zsh</a>
+    &middot; <a href="/memo/tag/svk/">svk</a>
+    / <a href="/memo/2008/02/04/3/#disqus_thread">Comment</a>
+  </div>
+</div>
+
+<div class="entry autopagerize_page_element">
+  <h2><a href="/memo/2008/02/04/2/">さっきのsvkpath.plの修正版</a></h2>
+
+  <div class="body">
+    <p><code>File::HomeDir</code> と <code>Path::Class</code> を使わずに愚直にかいてみたがあまり体感変わらず、ためしに <code>YAML</code> を <code>YAML::Syck</code> にしてみたら激早くなった。</p>
+<pre><code><span class="comment-delimiter">#</span><span class="comment">!/usr/bin/env perl
+</span>
+<span class="keyword">use</span> <span class="function-name">strict</span>;
+<span class="keyword">use</span> <span class="function-name">warnings</span>;
+
+<span class="keyword">use</span> <span class="function-name">YAML::Syck</span>;
+
+<span class="keyword">my</span> <span class="variable-name">$path</span>   = <span class="cperl-array">$ARGV</span>[0] <span class="type">or</span> <span class="keyword">die</span>;
+<span class="keyword">my</span> <span class="variable-name">$config</span> = YAML::Syck::LoadFile( <span class="cperl-hash">$ENV</span>{<span class="string">HOME</span>} . <span class="string">&apos;/.svk/config&apos;</span> );
+
+<span class="keyword">my</span> <span class="variable-name">$hash</span> = $config-&gt;{<span class="string">checkout</span>}{<span class="string">hash</span>};
+<span class="keyword">my</span> <span class="cperl-array">@path</span> = <span class="cperl-nonoverridable">split</span> <span class="string">&apos;/&apos;</span>, $path;
+
+<span class="keyword">my</span> <span class="variable-name">$svkinfo</span>;
+<span class="keyword">do</span> {
+    $svkinfo = $hash-&gt;{ <span class="type">join</span> <span class="string">&apos;/&apos;</span>, <span class="cperl-array">@path</span> }
+} <span class="keyword">while</span> <span class="negation-char">!</span>$svkinfo <span class="type">and</span> <span class="cperl-nonoverridable">pop</span> <span class="cperl-array">@path</span>;
+
+<span class="keyword">exit</span> <span class="keyword">unless</span> $svkinfo;
+
+<span class="keyword">if</span> (<span class="keyword">my</span> (<span class="variable-name">$trunk</span>, <span class="variable-name">$branch</span>) = $svkinfo-&gt;{<span class="string">depotpath</span>} =~ <span class="cperl-nonoverridable">m</span><span class="constant">!</span><span class="builtin">(?:</span><span class="string">/</span><span class="keyword">(</span><span class="string">trunk</span><span class="keyword">)|</span><span class="string">/</span><span class="keyword">(</span><span class="string">branches/</span><span class="function-name">[</span><span class="function-name"><span class="negation-char">^</span></span><span class="string">/</span><span class="function-name">]</span><span class="builtin">+</span><span class="keyword">)</span><span class="builtin">)</span><span class="function-name">$</span><span class="constant">!</span>) {
+    <span class="cperl-nonoverridable">print</span> <span class="string">&apos;(&apos;</span> . ($trunk || $branch) . <span class="string">&apos;)&apos;</span>;
+}
+</code></pre>
+<p>こんな感じ。</p>
+<p>このくらいの体感速度なら割と普通に使えそう。</p>
+
+  </div>
+
+  <div class="meta">
+    by typester /
+    at <a href="/memo/2008/02/04/2/">2008-02-04T19:57:00</a> /
+    <a href="/memo/tag/zsh/">zsh</a>
+    &middot; <a href="/memo/tag/svk/">svk</a>
+    / <a href="/memo/2008/02/04/2/#disqus_thread">Comment</a>
+  </div>
+</div>
+
+<div class="entry autopagerize_page_element">
+  <h2><a href="/memo/2008/02/04/1/">zsh の PROMPT に svk の trunk|branches/... を表示してみるテスト</a></h2>
+
+  <div class="body">
+    <p>毎回svk infoしてどこにいるか確かめるのが面倒になったので、</p>
+<pre><code>PROMPT=&apos;%(?..exit %?)
+ %{[33m%}%~%{[m%} %{[91m%}`perl /home/typester/dev/scratch/svkpath.pl $(pwd)`%{[m%}
+%{[38m%}%(!.#.$)%{[m%}%{m%} &apos;
+</code></pre>
+<p>PROMPTをこんなにして</p>
+<pre><code><span class="comment-delimiter">#</span><span class="comment">!/usr/bin/env perl
+</span>
+<span class="keyword">use</span> <span class="function-name">strict</span>;
+<span class="keyword">use</span> <span class="function-name">warnings</span>;
+
+<span class="keyword">use</span> <span class="function-name">YAML</span>;
+<span class="keyword">use</span> <span class="function-name">File::HomeDir</span>;
+<span class="keyword">use</span> <span class="function-name">Path::Class</span> <span class="cperl-nonoverridable">qw</span><span class="string">/file dir/</span>;
+
+<span class="keyword">my</span> <span class="variable-name">$path</span>   = <span class="cperl-array">$ARGV</span>[0] <span class="type">or</span> <span class="keyword">die</span>;
+<span class="keyword">my</span> <span class="variable-name">$config</span> = YAML::LoadFile( file(File::HomeDir-&gt;my_home, <span class="string">&apos;.svk&apos;</span>, <span class="string">&apos;config&apos;</span>) );
+
+<span class="keyword">my</span> <span class="variable-name">$hash</span> = $config-&gt;{<span class="string">checkout</span>}{<span class="string">hash</span>};
+$path = dir($path);
+
+<span class="keyword">my</span> <span class="variable-name">$svkinfo</span>;
+<span class="keyword">do</span> {
+    $svkinfo = $hash-&gt;{<span class="string">&quot;$path&quot;</span>}
+} <span class="keyword">while</span> <span class="negation-char">!</span>$svkinfo <span class="type">and</span> $path <span class="type">ne</span> ($path = $path-&gt;parent);
+
+<span class="keyword">exit</span> <span class="keyword">unless</span> $svkinfo;
+
+<span class="keyword">if</span> (<span class="keyword">my</span> (<span class="variable-name">$trunk</span>, <span class="variable-name">$branch</span>) = $svkinfo-&gt;{<span class="string">depotpath</span>} =~ <span class="cperl-nonoverridable">m</span><span class="constant">!</span><span class="builtin">(?:</span><span class="string">/</span><span class="keyword">(</span><span class="string">trunk</span><span class="keyword">)|</span><span class="string">/</span><span class="keyword">(</span><span class="string">branches/</span><span class="function-name">[</span><span class="function-name"><span class="negation-char">^</span></span><span class="string">/</span><span class="function-name">]</span><span class="builtin">+</span><span class="keyword">)</span><span class="builtin">)</span><span class="function-name">$</span><span class="constant">!</span>) {
+    <span class="cperl-nonoverridable">print</span> <span class="string">&apos;(&apos;</span> . ($trunk || $branch) . <span class="string">&apos;)&apos;</span>;
+}
+</code></pre>
+<p>とかしてみた。</p>
+<p>これで</p>
+<p><a href="http://www.flickr.com/photos/typester/2241740400/" title="show svk info by typester, on Flickr"><img alt="show svk info" height="97" src="http://farm3.static.flickr.com/2038/2241740400_53ea62b31a_o.png" width="370" /></a></p>
+<p>こんな感じになるわけだけども、毎回perl呼んでるので重い。</p>
+<p>軽くできないかなー。</p>
+<p>perlでやるなら裏でデーモン化してそこ呼ぶようにするのがいいのか。でもそこまでがんばる必要があるのかどうか。</p>
+
+  </div>
+
+  <div class="meta">
+    by typester /
+    at <a href="/memo/2008/02/04/1/">2008-02-04T18:46:00</a> /
+    <a href="/memo/tag/zsh/">zsh</a>
+    &middot; <a href="/memo/tag/svk/">svk</a>
+    / <a href="/memo/2008/02/04/1/#disqus_thread">Comment</a>
+  </div>
+</div>
+
+<div class="entry autopagerize_page_element">
+  <h2><a href="/memo/2007/11/07/2/"></a></h2>
+
+  <div class="body">
+    <p>適当なレンタルサーバー、redhat es4 でたぶんredhatデフォと思われるzshでやってもできるのを確認した。色分けはされなかった。</p>
+
+  </div>
+
+  <div class="meta">
+    by typester /
+    at <a href="/memo/2007/11/07/2/">2007-11-07T18:38:00</a> /
+    <a href="/memo/tag/zsh/">zsh</a>
+    / <a href="/memo/2007/11/07/2/#disqus_thread">Comment</a>
+  </div>
+</div>
+
+
+
+
+<div id="pager" class="autopagerize_insert_before">
+  <p class="pages">
+    <span class="prev">&laquo; Prev</span>
+    <span class="current">1</span>
+    <a href="/memo/tag/zsh/page/2/">2</a>
+    <a href="/memo/tag/zsh/page/3/">3</a>
+    <a class="next" rel="next" href="/memo/tag/zsh/page/2/">Next &raquo;</a>
+  </p>
+  <p class="info">(Page 1 of 3)</p>
+</div>
+
+
+</div>
+
+<p id="footer">
+  Copyright &copy; 2005-2013
+      by <a class="author" href="/about/#me">Daisuke Murase (typester)</a> /
+  Site generated by <a href="https://github.com/typester/nim">nim</a> /
+  Comments powered by <a href="http://disqus.com">DISQUS</a>.
+</p>
+
+</div>
+
+
+<script type="text/javascript">
+//<![CDATA[
+(function() {
+	var links = document.getElementsByTagName('a');
+	var query = '?';
+	for(var i = 0; i < links.length; i++) {
+	if(links[i].href.indexOf('#disqus_thread') >= 0) {
+		query += 'url' + i + '=' + encodeURIComponent(links[i].href) + '&';
+	}
+	}
+	document.write('<script charset="utf-8" type="text/javascript" src="http://disqus.com/forums/unknownplace/get_num_replies.js' + query + '"></' + 'script>');
+})();
+//]]>
+</script>
+
+
+<script type="text/javascript">
+var gaJsHost = (("https:" == document.location.protocol) ? "https://ssl." : "http://www.");
+document.write(unescape("%3Cscript src='" + gaJsHost + "google-analytics.com/ga.js' type='text/javascript'%3E%3C/script%3E"));
+</script>
+<script type="text/javascript">
+try {
+var pageTracker = _gat._getTracker("UA-53067-1");
+pageTracker._trackPageview();
+} catch(err) {}</script>
+
+<script>
+function googleTranslateElementInit() {
+  new google.translate.TranslateElement({
+    pageLanguage: 'ja',
+    gaTrack: true,
+    gaId: 'UA-53067',
+    floatPosition: google.translate.TranslateElement.FloatPosition.BOTTOM_RIGHT
+  });
+}
+</script><script src="//translate.google.com/translate_a/element.js?cb=googleTranslateElementInit"></script>
+
+</body>
+</html>

@@ -1,0 +1,470 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="ja" xml:lang="ja">
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <title>memo - unknownplace.org</title>
+  <link rel="stylesheet" type="text/css" href="http://yui.yahooapis.com/3.0.0/build/cssreset/reset-min.css" />
+  <link rel="stylesheet" type="text/css" href="http://yui.yahooapis.com/3.0.0/build/cssfonts/fonts-min.css" />
+  <link rel="stylesheet" href="/css/style.css" type="text/css" />
+  <meta property="fb:admins" content="1093631929" />
+  <meta name="robots" content="noindex" />
+  <link rel="alternate" type="application/rss+xml" href="http://unknownplace.org/memo/index.rss" />
+</head>
+<body>
+
+<div id="container">
+<div id="header">
+    <h1><a href="/">unknownplace.org</a></h1> /
+<a href="/memo/">memo</a>
+</div>
+
+<div id="content">
+
+<div class="entry autopagerize_page_element">
+  <h2><a href="/memo/2011/12/05/1/">Objective-C で AUTOLOAD （あるいは method_missing ）</a></h2>
+
+  <div class="body">
+    <p><code>forwardInvocation</code> とかを使えば出来るみたい。</p>
+<pre><code><span class="preprocessor">#import</span> &lt;Foundation/Foundation.h&gt;
+
+@interface Foo : NSObject;
+-(<span class="type">void</span>)call:(<span class="type">NSString</span>*)sel;
+@end
+
+@implementation Foo
+
+-(<span class="type">void</span>)call:(<span class="type">NSString</span>*)sel {
+    NSLog(@<span class="string">"call: %@"</span>, sel);
+}
+
+-(<span class="type">void</span>)forwardInvocation:(<span class="type">NSInvocation</span> *)invocation {
+    [self call:NSStringFromSelector([invocation selector])];
+}
+
+-(<span class="type">NSMethodSignature</span>*)methodSignatureForSelector:(<span class="type">SEL</span>)sel {
+    <span class="type">NSMethodSignature</span>* <span class="variable-name">sig</span> = [super methodSignatureForSelector:sel];
+    <span class="keyword">if</span> (sig) <span class="keyword">return</span> sig;
+
+    <span class="keyword">return</span> [[self class] instanceMethodSignatureForSelector:@selector(call:)];
+}
+
+@end
+
+<span class="type">int</span> main() {
+    <span class="type">NSAutoreleasePool</span>* <span class="variable-name">pool</span> = [[NSAutoreleasePool alloc] init];
+
+    <span class="type">Foo</span>* <span class="variable-name">foo</span> = [[Foo alloc] init];
+
+    [foo bar];
+    [foo buzz];
+
+    [foo release];
+
+    [pool drain];
+    <span class="keyword">return</span> 0;
+}
+
+<span class="comment-delimiter">// </span><span class="comment">gcc -framework Foundation foo.m
+</span></code></pre>
+<p>詳細は Objective-C Runtime Programming Guide にある。</p>
+
+  </div>
+
+  <div class="meta">
+    by typester /
+    at <a href="/memo/2011/12/05/1/">2011-12-05T20:32:00</a> /
+    <a href="/memo/tag/iphone/">iphone</a>
+    &middot; <a href="/memo/tag/objc/">objc</a>
+    / <a href="/memo/2011/12/05/1/#disqus_thread">Comment</a>
+  </div>
+</div>
+
+<div class="entry autopagerize_page_element">
+  <h2><a href="/memo/2011/11/10/2/">libuv を iOS 対応した件</a></h2>
+
+  <div class="body">
+    <p>だいぶ前から iPhone アプリ作成でネットワーク系の機能を作るときには <a href="http://software.schmorp.de/pkg/libev.html">libev</a> を愛用してるのだが、今日 node をいじっていたら <a href="https://github.com/joyent/libuv">libuv</a> がなかなかよさそうに感じた。</p>
+<p>libuv は libev が Windows で動かないからっていう理由で始まったプロジェクトだとおもうけど、Linux などの環境においても libev をラップしつつ、より便利な機能が追加されていていわば C でネットワークプログラミングするためのフレームワークといえるくらいになってる、みたい。（まだ詳しく見たわけじゃないけど）</p>
+<p>libev は基本的に io 監視と timer のみで、socket の生成などは基本的に自分で syscall 呼んでつくる必要があるけど、libuv は <code>uv_tcp_*</code> とか <code>uv_udp_*</code> といったAPI郡をもってて便利そう。 あと、非同期 DNS ルックアップがサポートされてるのはうれしい。これ、 libev になくて不便だった。</p>
+<p>そういうとこまでラップしないと同じコードを Windows でも動かすってのは無理だからそうなったんだとおもうけど、結果として大変便利なライブラリになっているのではないか。</p>
+<p>あと、テストケースが充実しているので、（たぶん）すべての機能のサンプルコードがテストを見ればOKっていうのもうれしい。</p>
+<p>っていうわけで iOS 対応のパッチを書きました。</p>
+<blockquote><p><a href="https://github.com/joyent/libuv/pull/243">#243: Added experimental iOS support by typester for joyent/libuv - Pull Request - GitHub</a></p></blockquote>
+<p>iOS で動かない理由はハードウェア時間をnano秒で取得してる関数が iOS にはない CoreServices.framework に依存しちゃってるからってことだけなので、それを使わないように修正をした。</p>
+<p>現状のパッチは iOS 用にビルドするときのみ CoreServices 非依存のコードを使うようにしているけど、これに依存してることで uv.a を組み込むだけじゃなくて、 CoreServices.framework に別途リンクする必要があってめんどいからパフォーマンスや精度が問題なければ非依存のコードの方に統一してしまった方がいいと思う。っていうようなことは pull req に返信が来たら伝えようとは思っている。</p>
+<p>とりあえず、これで使えるようになったから。さっそく今作ってるアプリに組み込んでにようと思う。</p>
+
+  </div>
+
+  <div class="meta">
+    by typester /
+    at <a href="/memo/2011/11/10/2/">2011-11-10T20:51:00</a> /
+    <a href="/memo/tag/libuv/">libuv</a>
+    &middot; <a href="/memo/tag/iphone/">iphone</a>
+    / <a href="/memo/2011/11/10/2/#disqus_thread">Comment</a>
+  </div>
+</div>
+
+<div class="entry autopagerize_page_element">
+  <h2><a href="/memo/2011/11/10/1/">node.js を iPhone アプリから動かす</a></h2>
+
+  <div class="body">
+    <p>結論から言うと、 jailbreak してないと動きません。詳細はこの辺：</p>
+<blockquote><p><a href="http://code.google.com/p/v8/issues/detail?id=1312">Issue 1312 - v8 - It&apos;s time to get iOS supported! - V8 JavaScript Engine - Google Project Hosting</a></p></blockquote>
+<p>というわけでターゲットがデベロッパー用に絞られてしまいますがやってみましょう！</p>
+<h4>Node ダウンロード</h4>
+<p>今回はリリースされたばかりの 0.6.0 を使いました。</p>
+<blockquote><p><a href="http://nodejs.org/#download">http://nodejs.org/#download</a></p></blockquote>
+<p>からダウンロードして展開しましょう</p>
+<h4>libuv にパッチを当てる</h4>
+<p>libev はなにもしないでもそのまま iOS で動きますが、 libuv はそうではないようです。</p>
+<pre><code>$ cd deps/uv
+$ wget --no-check-certificate https://raw.github.com/gist/1354552/cfb4e9a544185bdbda1a8374aaf1cd5cc812c070/libuv-ios.patch
+$ patch -p1 &lt; libuv-ios.patch
+</code></pre>
+<p>なお、このパッチは本家に pull req 送っておきました。取り込まれると良いですね。</p>
+<h4>V8 にパッチを当てる</h4>
+<p>V8 自体は ARM に対応しているようですが、iOS SDK でクロスコンパイルしようとすると </p>
+<blockquote><p>ARM EABI support is required.</p></blockquote>
+<p>とか言われてしまいます。iPhone の ARM が EABI をサポートしてないためでしょうか。</p>
+<p>ただ、最初にリンクした Goole Code の issue 内で iOS 対応のパッチを投稿している人がいて、そのパッチを当てることでビルド可能になる模様。</p>
+<pre><code>$ cd deps/v8/src
+$ patch -p0 &lt; ~/Downloads/v8-ios.patch
+</code></pre>
+<h4>Node にパッチを当てる</h4>
+<p>プロセスリストにでるプロセス名を設定する機能が Carbon をつかっているので関数殺しちゃいます。iOS でプロセス名かえられても誰得ですよね。具体的には</p>
+<pre><code>process.title = <span class="string">"hoge"</span>;
+</code></pre>
+<p>が動かなくなります。</p>
+<pre><code>$ wget --no-check-certificate https://raw.github.com/gist/1354570/0c28584c07f0410c5e5608d4e2e9ea68e6d5dbc4/node-ios.patch
+$ patch -p1 &lt; node-ios.patch
+</code></pre>
+<h4>ビルド</h4>
+<p>まずもろもろ環境変数をセットし:</p>
+<pre><code><span class="type">export</span> <span class="variable-name">CC</span>=/Developer/Platforms/iPhoneOS.platform/Developer/usr/bin/gcc
+export CFLAGS=<span class="string">"-arch armv7 -isysroot /Developer/Platforms/iPhoneOS.platform/Developer/SDKs/iPhoneOS5.0.sdk -I$HOME/dev/iphone/lib/openssl/include"</span>
+export CXX=/Developer/Platforms/iPhoneOS.platform/Developer/usr/bin/g++
+export CXXFLAGS=$CFLAGS
+export CPP=/Developer/Platforms/iPhoneOS.platform/Developer/usr/bin/cpp
+export AR=/Developer/Platforms/iPhoneOS.platform/Developer/usr/bin/ar
+export LINKFLAGS=<span class="string">"-arch armv7 -isysroot /Developer/Platforms/iPhoneOS.platform/Developer/SDKs/iPhoneOS5.0.sdk -L$HOME/dev/iphone/lib/openssl/lib"</span>
+</code></pre>
+<p>ビルド:</p>
+<pre><code>./tools/waf-light configure build --product-type=cstaticlib --dest-cpu=arm --without-snapshot
+</code></pre>
+<p>ひっそり、前もってビルド済みの openssl を参照していますが、ない場合は <code>--without-ssl</code> を追加すればいけるはずです。</p>
+<p>成功すると</p>
+<pre><code>./out/Release/deps/uv/uv.a
+./out/Release/libnode.a
+./out/Release/libv8.a
+./out/Release/libv8preparser.a
+</code></pre>
+<p>といった静的ライブラリが出来てると思うんで、これらをアプリに埋め込んであげればいいわけですね。</p>
+<p>armv6, armv7, i386 用それぞれビルドし、<code>lipo</code> でユニバーサルバイナリに仕上げるのが iOS 用静的ライブラリ作成のセオリーですが、ここではめんどいので省略します。</p>
+<h3>アプリ</h3>
+<p>だいぶ適当ですが、サンプル作ってみました。</p>
+<blockquote><p><a href="https://github.com/typester/ios-node-test">https://github.com/typester/ios-node-test</a></p></blockquote>
+<p>lib ディレクトリにさっきビルドした .a ファイルを突っ込んであげる必要があります。 また <code>node.h</code> の参照元を nave でインストールした node のパスを設定してあるので、違う環境の人は Header Search Path を環境に合わせて書き換える必要もあります。</p>
+<p><a href="http://www.flickr.com/photos/typester/6331671816/" title="20111110195319 by typester, on Flickr"><img alt="20111110195319" height="500" src="http://farm7.static.flickr.com/6228/6331671816_f2b04eb55f.jpg" width="333" /></a></p>
+<p>こんな感じの画面が出るんで、適当にコード書いて Run おせば動かすことが出来ます。</p>
+<h3>注意</h3>
+<p>コードみてもらえばわかりますがだいぶ適当につくっておりまして、node の標準出力などをうけとっておりません。また、二回目実行しようとするとアプリが落ちますw</p>
+<p>直していただける方お待ちしております！</p>
+
+  </div>
+
+  <div class="meta">
+    by typester /
+    at <a href="/memo/2011/11/10/1/">2011-11-10T19:12:00</a> /
+    <a href="/memo/tag/node/">node</a>
+    &middot; <a href="/memo/tag/iphone/">iphone</a>
+    / <a href="/memo/2011/11/10/1/#disqus_thread">Comment</a>
+  </div>
+</div>
+
+<div class="entry autopagerize_page_element">
+  <h2><a href="/memo/2011/10/27/1/">iPhone4S とか iOS5 とか Xcode 4.2 とか</a></h2>
+
+  <div class="body">
+    <p>iPhone4S は予約しようと思ってたけど、予約開始日がちょうど F1 日本 GP とかぶっていたので初日予約はあきらめ、暇なときに予約しに行こうと思っていて今に至る…。</p>
+<p>iOS5 は開発者用のものを前から使っていたけど、通知で邪魔されないようになったのがすごい大きい。 いままではカーナビとして使っている最中に Push 通知が来てしまうと通知を消すまでカーナビとしての役割をはたさないようになってしまっていたからね。</p>
+<p>で、こういうApple製品リリースの中で一番ライフチェインジングだったのが Xcode 4.2！ ARC (Automatic Reference Counting) と Storyboard が便利すぎて iOS アプリの開発速度いままでの何倍にもなります。ただ Storyboard つかっちゃうと iOS5 以降限定になっちゃうってのが…。</p>
+<p>ARC も zeroing weak 変数(破棄されたらnilになってるって保証されてるweak変数)使おうとすると iOS5 限定になっちゃうみたいだし。 zeroing ってなんて訳せば良いんだろ。</p>
+<p>そんなこんなで、次のアプリから iOS5 のみで良いかなとか考えてる最中。</p>
+
+  </div>
+
+  <div class="meta">
+    by typester /
+    at <a href="/memo/2011/10/27/1/">2011-10-27T18:03:00</a> /
+    <a href="/memo/tag/iphone/">iphone</a>
+    / <a href="/memo/2011/10/27/1/#disqus_thread">Comment</a>
+  </div>
+</div>
+
+<div class="entry autopagerize_page_element">
+  <h2><a href="/memo/2011/06/16/1/">最近の活動その１ Reengo</a></h2>
+
+  <div class="body">
+    <p>気づいたら3ヶ月も更新途絶えてましたが、その間ずっとiPhoneアプリを開発してました。</p>
+<p>今年一番時間をかけ、いま現在もつきっきりで開発しているのが Reengo というアプリ。</p>
+<p><iframe allowfullscreen="allowfullscreen" frameborder="0" height="349" src="http://www.youtube.com/embed/YAOlkYLcMlU" width="560"></iframe></p>
+<p><a href="http://click.linksynergy.com/fs-bin/stat?id=epIEMEmECfk&amp;offerid=94348&amp;type=3&amp;subid=0&amp;tmpid=2192&amp;RD_PARM1=http%253A%252F%252Fitunes.apple.com%252Fjp%252Fapp%252Fid430589998%253Fmt%253D8%2526uo%253D4%2526partnerId%253D30" target="itunes_store"><img alt="Reengo - 番号なしで電話できるアプリ - KAYAC Inc." src="http://ax.phobos.apple.com.edgesuite.net/images/web/linkmaker/badge_appstore-lrg.gif" style="border: 0;" /></a></p>
+<p>いわゆる VoIP アプリケーションですが、Facebookアカウント連動で友達がアプリさえインストールしていればすぐに通話できるというのが特徴です。</p>
+<p><a href="http://unknownplace.org/memo/2011/01/28/1/">この辺</a>の投稿なんかはこれの伏線だったわけです。</p>
+<p>クライアント実装は通信周りのロジックは C で書いていて、この部分は近日リリース予定の Android 版と共有して使いまわしてます。 サーバー実装は Perl と Node を適材適所使い分けております。Node の使用用途としてはいままで Perl の AnyEvent を使ってやっていた部分を Node に置き換えたというイメージで、個人的にはこれはなかなかいい選択肢なんじゃないかなーとおもってます。 技術的なところの詳細はまたどこかで別途書きたいと思ってます。</p>
+<p>まだまだ課題があってそれを徐々につぶしているという状態ですが、ぜひ使ってみてください！</p>
+
+  </div>
+
+  <div class="meta">
+    by typester /
+    at <a href="/memo/2011/06/16/1/">2011-06-16T11:30:00</a> /
+    <a href="/memo/tag/life/">life</a>
+    &middot; <a href="/memo/tag/iphone/">iphone</a>
+    / <a href="/memo/2011/06/16/1/#disqus_thread">Comment</a>
+  </div>
+</div>
+
+<div class="entry autopagerize_page_element">
+  <h2><a href="/memo/2011/03/08/1/">iOS の socket(2) は 0 を返すことがある</a></h2>
+
+  <div class="body">
+    <p>iOS 4.2.1。</p>
+<p>-1 チェックしかしていなくて、まさかここだとは思わずごちゃごちゃ迷走してしまった。。 あり得ないと思うことは表明(assert)しとくっていう基本をちゃんとしたい。</p>
+<p>0 のときは無視して単純にもう一度 socket(2) を呼んであげるとちゃんと返ってくると言う謎。 その実装で fd も増えていかないのでとりあえずしのぐ。</p>
+
+  </div>
+
+  <div class="meta">
+    by typester /
+    at <a href="/memo/2011/03/08/1/">2011-03-08T07:35:00</a> /
+    <a href="/memo/tag/iphone/">iphone</a>
+    / <a href="/memo/2011/03/08/1/#disqus_thread">Comment</a>
+  </div>
+</div>
+
+<div class="entry autopagerize_page_element">
+  <h2><a href="/memo/2011/03/04/1/">iPhoneアプリケーション多言語化をpoファイルを使ってやる方法</a></h2>
+
+  <div class="body">
+    <p>iPhoneアプリケーションを他言語対応したいとしたら、Apple側がすでに用意してくれている方法を使うのが自然かと思う。 僕も最初はその方法を試した。ドキュメント的には以下がエントリポイントだろうか：</p>
+<blockquote><p><a href="http://developer.apple.com/library/ios/#documentation/MacOSX/Conceptual/BPInternational/BPInternational.html">iOS Reference Library - Internationalization Programming Topics</a></p></blockquote>
+<p>しかしこの方法にはいろいろな問題があり、大きなアプリケーションを作ろうとするとストレスがかかってくるので現在は使用していない。（小さなプロジェクトでは使うこともある）</p>
+<p>その問題とは以下のようなものだ：</p>
+<ul><li>言語ファイル(Localizable.strings)が独自形式なため、既存の翻訳ツールを使うことが出来ない</li><li>一つ目と少しかぶるが翻訳抜けや言語一覧などをチェックする機能がない</li><li>ibtool のマイグレーション機能がくそで、バージョンアップのたびにリソースファイル内の文字列を頑張って置換する作業が必要になる</li></ul>
+<p>など。これらを解決するために現在は以下のような手法でアプリの多言語化を行っている：</p>
+<ul><li>言語ファイルには一般的なファイルである GNU gettext のカタログファイル形式(.po)を使う</li><li>ソースファイルから <code>NSLocalizedString</code> 系の呼び出しを抽出して .po ファイルの雛型を作成してくれるスクリプト(xgettext.pl)を作成</li><li>.po ファイルを Localizable.string に変換するスクリプト(po2string.pl)を作成</li><li>.nib ファイル内の多言語化が必要な文字情報はすべてインタフェースビルダーでは設定せず <code>.m</code> <code>.mm</code> ファイルからセット（上のツール群をそのまま使うため）</li></ul>
+<p>と言う感じでやっている。その二つのスクリプトはこんな感じ。</p>
+<blockquote><p><a href="https://gist.github.com/854276">https://gist.github.com/854276</a></p></blockquote>
+<p><code>Locale::Maketext::Extract</code> に依存している。</p>
+<pre><code>$ ./xgettext.pl -o resources/ja.po src/*.m
+</code></pre>
+<p>みたいな感じでまず言語カタログを作成。このファイルは Emacs の po-mode や <a href="http://www.poedit.net/">Poedit</a> などのツールで編集することができる。 個人的には Emacs を使い編集しているが、翻訳者のために良いツールを探しているのでおすすめがある方は教えていただきたい。</p>
+<p>このスクリプトのポイントは何回実行しても.poファイル内の<strong>すでに翻訳済みのエントリは変更しない</strong>という点だ。 アプリケーションを更新したらスクリプトを実行し、.poファイル内の未翻訳のところのみ訳す、というサイクルを繰り返すことができる。.poファイルエディタは未翻訳エントリだけを簡単に編集できるというところも便利ポイントかな。</p>
+<p>.po ファイルが翻訳されたら</p>
+<pre><code>$ ./po2strings.pl --po=resources/ja.po --strings=resources/Japanese.lproj/Localizable.strings src/*.m
+</code></pre>
+<p>などのようにしてiPhoneアプリから使える言語ファイルに書き出してやって完了。 ソースファイルを渡す必要があるのはスクリプトソースを見てもらえばわかるがただの手抜きである。</p>
+<p>あ、ちなみにわざわざ <code>NSLocalizedString(...)</code> とか書くのは面倒なので、</p>
+<pre><code>#define L(s) NSLocalizedString(s, nil)
+</code></pre>
+<p>とかを定義しておいて <code>L(@&quot;Hello&quot;)</code> とかでいけるようにしている。（もちろんxgettext.plはその書式にも対応している）</p>
+
+  </div>
+
+  <div class="meta">
+    by typester /
+    at <a href="/memo/2011/03/04/1/">2011-03-04T15:45:00</a> /
+    <a href="/memo/tag/iphone/">iphone</a>
+    / <a href="/memo/2011/03/04/1/#disqus_thread">Comment</a>
+  </div>
+</div>
+
+<div class="entry autopagerize_page_element">
+  <h2><a href="/memo/2011/03/02/1/">bREADER の PDF リフロー表示機能が素晴らしい件</a></h2>
+
+  <div class="body">
+    <p><a href="http://itunes.apple.com/jp/app/bb2c/id298820042?mt=8">BB2C</a> というiPhone用の2chビューワアプリがあるのですが、このアプリは2chビューワとしての評価が高いだけではなく、その凄まじく軽快な動作からiPhoneアプリ開発者で知らない人はモグリだと言われるくらいの良アプリなのです。 最近その<a href="http://vtns.wordpress.com/">作者のブログ</a> に電子書籍の話題が出ていて気になっていたのですが、どうやら次は電子書籍リーダーアプリを開発していたらしい。それが <a href="http://itunes.apple.com/jp/app/id411884081?mt=8">bREADER</a>。</p>
+<p>iPad を買って以来書籍はPDFにして読むのがメインになっていて、大体はi文庫HDで、検索が必要なときはiBooksかMac上で読んでます。</p>
+<p>この環境におおむね満足しているのだけど、電車の中で座れなかったときに本を読もうと思っても iPad を出すのはきびしいし、かといって iPhone だと PDF を等倍表示ではきびしいものがある。(Retinaならよめないことはないけど…) 拡大したら拡大したで、1ページを読むのにページ内をぐるぐるスクロールしつつ読まなくてはいけなくなり大変苦痛である。 文字を拡大したぶんだけページがずれていってくれるePubや青空文庫みたいな形式でなければiPhoneではきびしいなーと思っていました。bREADERをしるまでは！</p>
+<p>この問題はがんばって紙の書籍をスキャンしてPDF化している現状が問題であって、出版社がePubみたいなので最初から電子出版してくれれば解決なんだからそれまで待とう…。 と普通の人は考えます。bREADERの作者はそういう発想はないらしく、力技でこの問題を解決しようとしているようです。</p>
+<p>詳しくは先ほどリンクしたブログを参照していただくとして、手持ちのPDFで試してみた結果を紹介します。</p>
+<p>まずこれがPDFをそのまま表示した時。（iPhoneの画面だとわかりにくいのでわざとコントロールを表示した画面にしています）</p>
+<p><a href="http://www.flickr.com/photos/typester/5491579292/" title="bREADER 通常表示 by typester, on Flickr"><img alt="bREADER 通常表示" height="500" src="http://farm6.static.flickr.com/5211/5491579292_5c9fd02c6c.jpg" width="333" /></a></p>
+<p>iPhoneの普通のPDFリーダーはみんなこんな感じに表示されてしまいます。Retinaディスプレイを搭載したiPhone4でやっとよめるというくらいですが、それでも小さくてつらいです。 つぎに bREADER がうまいことやってくれたあとの画面を見てみましょう</p>
+<p><a href="http://www.flickr.com/photos/typester/5490984773/" title="bREADER リフロー表示 by typester, on Flickr"><img alt="bREADER リフロー表示" height="500" src="http://farm6.static.flickr.com/5011/5490984773_1b3e07f7ef.jpg" width="333" /></a></p>
+<p>このようにまるでePubかと思うような拡大処理をしてくれてものすごく読みやすくなります。 そしてこのアプリの動作自体も BB2C を彷彿とさせる軽快さで、サクサク読み進められます。これはPDF化をがんばってる人でiPhoneのような小さいデバイスで本を読みたいと思っていた人には夢のようなアプリですね！</p>
+<p>ただし現状ではPDFがそのまま自動で上のようなリフロー表示（というらしい）になってくれるわけではありません。ちょっとごにょっと作業をして上げる必要があります。</p>
+<h4>bREADER で PDF をリフロー表示に対応させる手順</h4>
+<p>リフロー表示を行うにはあらかじめMacかPCで書籍の文字情報を解析してメタ情報ファイルを作ってあげる必要があります。 作者がサイト上でそのための<a href="http://vtns.wordpress.com/brc-1/">brc</a>というツールを配布してくださっています。 が、そのツールはPDFに対応していませんのでまずはPDFをPNGとかなんか画像ファイルに変換してあげるという作業が必要になります。</p>
+<ol><li>PDFを連番のPNG画像に変換</li><li>brcでメタ情報ファイルを作成</li><li>zipでかためてbREADERに転送</li></ol>
+<p>ってなかんじになります。</p>
+<h4>PDFを連番のPNG画像に変換</h4>
+<p>これをどうやろうかとおもいまして、最初に Preview.app を試してみたのですがどうも1ページずつしかPNGに保存できないっぽくあきらめ、OSX の機能をつかった pdf2png を適当にでっちあげた。</p>
+<blockquote><p><a href="https://gist.github.com/850786">https://gist.github.com/850786</a></p></blockquote>
+<p>こいつを</p>
+<pre><code>$ gcc -framework Cocoa pdf2png.m -o pdf2png
+</code></pre>
+<p>とかでビルドしてあげて、</p>
+<pre><code>$ ./pdf2png foobar.pdf ./foobar
+</code></pre>
+<p>みたいにすると foobar.pdf を 0001.png みたいな連番の画像にして foobar ディレクトリに保存してくれると言う感じ。出力先のディレクトリはあらかじめ存在している必要があります。 PDFのスケーリングがよくわからなかったので適当に設定してあり、そこは誰か良い感じに書き直してくれればと…！ あと <code>CGBitmapContextCreate</code> の第一引数にNULLをわたしていてそこが OS X 10.6 依存です。それ以前のでうごかしたいときは <code>malloc(w*h*4)</code> したの食わせとけばいいです。</p>
+<h4>brcでメタ情報ファイルを作成</h4>
+<p>先ほど生成した連番PNGが入っているディレクトリを brc コマンドに食わせる</p>
+<pre><code>$ brc ./foobar
+</code></pre>
+<p>これでそのディレクトリに d.brd というファイルが生成されていれば成功。</p>
+<h4>zipでかためてbREADERに転送</h4>
+<pre><code>$ zip -0 foobar.zip *.png d.brd
+</code></pre>
+<p>みたいにして png と d.brd がふくまれた zip ファイルを作り、あとはそれを iTunes で bREADER のデーターフォルダに転送してあげればOK。簡単ですね。</p>
+<h4>まとめ</h4>
+<p>と、ここまで絶賛してきましたが現状では、ページ上部に常に出ている章の名前とか欄外に脚注なんかがあったりすると表示がおかしくなったりします。 とはいえそれでもiPhone上ではこの表示モードを使おうと言うくらいのレベルに既になっていると思います。これはほんとにすごい。</p>
+<p>今後、bREADERもbrcも便利になっていくだろうし、brcはいらなくなる可能性もあるし、非常に楽しみですね！</p>
+<p>bREADER 現バージョンの不満点をあげるとすればアプリ内に時計表示がどこにもなくアプリを落とさない限り時間がわからない、ということくらいでしょうか。 自炊派も、業者派も、iPhoneでPDF（書籍）を読む人すべてにおすすめなアプリです！</p>
+
+  </div>
+
+  <div class="meta">
+    by typester /
+    at <a href="/memo/2011/03/02/1/">2011-03-02T19:17:00</a> /
+    <a href="/memo/tag/iphone/">iphone</a>
+    / <a href="/memo/2011/03/02/1/#disqus_thread">Comment</a>
+  </div>
+</div>
+
+<div class="entry autopagerize_page_element">
+  <h2><a href="/memo/2011/01/28/1/">iPhoneバックグラウンドでのソケット監視のサンプル</a></h2>
+
+  <div class="body">
+    <p>iOS4 からアプリケーションのバックグラウンド動作がサポートされているが、それらはだいぶ制限されたものとなっていて、通常のアプリケーションはバックグラウンドでは最大10分程度しか生存することが出来ない。</p>
+<p>それを回避するために <code>Info.plist</code> に特殊なフラグをたてることで例外的に制限を解除することができるようになっている。そのフラグの種類は</p>
+<ul><li>audio</li><li>location</li><li>voip</li></ul>
+<p>であり、それぞれバックグラウンド音声再生、バックグラウンド位置情報取得、バックグラウンドでのソケット監視（voipの着信監視用）に対応している。 そのうち voip だけ今まで扱ったことがなかったので挙動確認のためやってみた、というのが今回のお話。</p>
+<p>まず書いてみたコード:</p>
+<blockquote><p><a href="https://github.com/typester/voip-socket-test">https://github.com/typester/voip-socket-test</a></p></blockquote>
+<p>ソケットのハンドリングに libev を使っているので、ビルドを通すには <code>$(HOME)/dev/iphone/lib/libev</code> に libev がインストールされている必要がある。 また、AppDelegate.m の <code>#define HOST inet_addr(&quot;127.0.0.1&quot;)</code> という部分を自分のサーバーのIPになおしてあげるというのも必要。</p>
+<p>んで、付属の server.pl が適当に作ったサーバーで、STDIN を読み込んで、入力があったらつながっているiPhoneにその内容を送信するというものになっている。 iPhoneアプリ側はバックグラウンド時にそのパケットを受け取ると受け取った内容をLocalNotificationで表示っていう感じ。</p>
+<p>NSInputStream にたいして</p>
+<pre><code>[stream setProperty:NSStreamNetworkServiceTypeVoIP
+             forKey:NSStreamNetworkServiceType];
+</code></pre>
+<p>とかしてあげとくだけで、アプリがサスペンドしたときには OS 側がソケットの監視を代理でやってくれる。 で、そのソケットにたいして何かイベントが起こるとアプリを起こして処理を戻す。アプリ側は通常のソケット操作だけ実装しておけばいい。</p>
+<p>このアプリのようにネットワーク周りはCで処理している場合、ファイルディスクリプタを NSStream にアップグレードする必要があってそこは若干めんどう。 Cocoa::EventLoop でもおなじことをしているのでその XS 部分からコピペしてきた。</p>
+<p>Skype のバッテリー消費が半端ないのでこの機能にたいしてあまり良い印象はなかったのだが、実際にやってみるとバッテリー消費は思ったより気にならない（いまのところ。あまり検証はしていない）。 おそらく Skype は頻繁にパケットを送受信しているから、アプリが頻繁に起こされ、結果ものすごい勢いでバッテリーが減る、ということなのだろうか。</p>
+<p>とにかく、なかなかおもしろい機能。VoIP アプリ以外でもつかえればなー。</p>
+
+  </div>
+
+  <div class="meta">
+    by typester /
+    at <a href="/memo/2011/01/28/1/">2011-01-28T14:35:00</a> /
+    <a href="/memo/tag/iphone/">iphone</a>
+    / <a href="/memo/2011/01/28/1/#disqus_thread">Comment</a>
+  </div>
+</div>
+
+<div class="entry autopagerize_page_element">
+  <h2><a href="/memo/2010/11/23/2/">kAudioSessionCategory_PlayAndRecord のときの AudioRoute 文字列メモ</a></h2>
+
+  <div class="body">
+    <p>ドキュメントに載ってなくて、実際うごかしてみて文字列を知るという状況。 なので持ってない機種とかデバイスでどうなるのかわからないという問題があり不安。</p>
+<h4>ReceiverAndMicrophone</h4>
+<p>PlayAndRecord 時は iPhone ではデフォルトでこれになる模様。 通常のスピーカーではなく電話の受話口から音が出る。</p>
+<h4>HeadphonesAndMicrophone</h4>
+<p>ヘッドフォンさしたとき。</p>
+<h4>SpeakerAndMicrophone</h4>
+<p>iPad とか（たぶん最新以外のiPod Touchも）のように受話口がない端末ではこれがデフォルトっぽい。</p>
+<h4>デフォルト以外のルートに設定する</h4>
+<p>スピーカーに強制的に変更するには <code>AudioSessionSetProperty</code> でできる。</p>
+<pre><code>UInt32 audioRouteOverride = kAudioSessionOverrideAudioRoute_Speaker;
+AudioSessionSetProperty(
+    kAudioSessionProperty_OverrideAudioRoute,
+    sizeof (audioRouteOverride),
+    &amp;audioRouteOverride
+);
+</code></pre>
+<p>他のルートに変更する方法は undocumented。</p>
+<p>ただこのうわがきはすでに SpeakerAndMicrophone なところで実行するとおかしくなっちゃう。 <code>AudioSessionSetProperty</code> するまえに <code>AudioSessionGetProperty</code> で現在の値を確認するようにすること。</p>
+<p>あと、AudioRoute の変更は <code>AudioSessionAddPropertyListener</code> で <code>kAudioSessionProperty_AudioRouteChange</code> を登録しておけば監視できる。</p>
+
+  </div>
+
+  <div class="meta">
+    by typester /
+    at <a href="/memo/2010/11/23/2/">2010-11-23T09:16:00</a> /
+    <a href="/memo/tag/iphone/">iphone</a>
+    &middot; <a href="/memo/tag/audio/">audio</a>
+    &middot; <a href="/memo/tag/AudioSession/">AudioSession</a>
+    / <a href="/memo/2010/11/23/2/#disqus_thread">Comment</a>
+  </div>
+</div>
+
+
+
+
+<div id="pager" class="autopagerize_insert_before">
+  <p class="pages">
+    <span class="prev">&laquo; Prev</span>
+    <span class="current">1</span>
+    <a href="/memo/tag/iphone/page/2/">2</a>
+    <a href="/memo/tag/iphone/page/3/">3</a>
+    <a class="next" rel="next" href="/memo/tag/iphone/page/2/">Next &raquo;</a>
+  </p>
+  <p class="info">(Page 1 of 3)</p>
+</div>
+
+
+</div>
+
+<p id="footer">
+  Copyright &copy; 2005-2013
+      by <a class="author" href="/about/#me">Daisuke Murase (typester)</a> /
+  Site generated by <a href="https://github.com/typester/nim">nim</a> /
+  Comments powered by <a href="http://disqus.com">DISQUS</a>.
+</p>
+
+</div>
+
+
+<script type="text/javascript">
+//<![CDATA[
+(function() {
+	var links = document.getElementsByTagName('a');
+	var query = '?';
+	for(var i = 0; i < links.length; i++) {
+	if(links[i].href.indexOf('#disqus_thread') >= 0) {
+		query += 'url' + i + '=' + encodeURIComponent(links[i].href) + '&';
+	}
+	}
+	document.write('<script charset="utf-8" type="text/javascript" src="http://disqus.com/forums/unknownplace/get_num_replies.js' + query + '"></' + 'script>');
+})();
+//]]>
+</script>
+
+
+<script type="text/javascript">
+var gaJsHost = (("https:" == document.location.protocol) ? "https://ssl." : "http://www.");
+document.write(unescape("%3Cscript src='" + gaJsHost + "google-analytics.com/ga.js' type='text/javascript'%3E%3C/script%3E"));
+</script>
+<script type="text/javascript">
+try {
+var pageTracker = _gat._getTracker("UA-53067-1");
+pageTracker._trackPageview();
+} catch(err) {}</script>
+
+<script>
+function googleTranslateElementInit() {
+  new google.translate.TranslateElement({
+    pageLanguage: 'ja',
+    gaTrack: true,
+    gaId: 'UA-53067',
+    floatPosition: google.translate.TranslateElement.FloatPosition.BOTTOM_RIGHT
+  });
+}
+</script><script src="//translate.google.com/translate_a/element.js?cb=googleTranslateElementInit"></script>
+
+</body>
+</html>

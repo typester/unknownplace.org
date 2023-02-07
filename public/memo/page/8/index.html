@@ -1,0 +1,444 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="ja" xml:lang="ja">
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <title>memo - unknownplace.org</title>
+  <link rel="stylesheet" type="text/css" href="http://yui.yahooapis.com/3.0.0/build/cssreset/reset-min.css" />
+  <link rel="stylesheet" type="text/css" href="http://yui.yahooapis.com/3.0.0/build/cssfonts/fonts-min.css" />
+  <link rel="stylesheet" href="/css/style.css" type="text/css" />
+  <meta property="fb:admins" content="1093631929" />
+  <meta name="robots" content="noindex" />
+  <link rel="alternate" type="application/rss+xml" href="http://unknownplace.org/memo/index.rss" />
+</head>
+<body>
+
+<div id="container">
+<div id="header">
+    <h1><a href="/">unknownplace.org</a></h1> /
+<a href="/memo/">memo</a>
+</div>
+
+<div id="content">
+
+<div class="entry autopagerize_page_element">
+  <h2><a href="/memo/2011/01/04/2/">Cocoa::EventLoop</a></h2>
+
+  <div class="body">
+    <p>そういえば <a href="http://search.cpan.org/dist/Cocoa-EventLoop/">Cocoa::EventLoop</a> と言うモジュールを書いたんでした。</p>
+<p>これはもともと AnyEvent::Impl::NSRunLoop として書いていたイベントループ処理部分だけを単体モジュールとして切り出した物で、 AnyEvent を使わなくても Cocoa のイベントループを Perl から使用できるというものです。</p>
+<p>くわしくはドキュメントを参照してもらうとして、Cocoa::Growl を使ったサンプルを載せてみます：</p>
+<pre><code><span class="keyword">use</span> <span class="function-name">Cocoa::EventLoop</span>;
+<span class="keyword">use</span> <span class="function-name">Cocoa::Growl</span>;
+
+<span class="keyword">my</span> <span class="variable-name">$done</span> = 0;
+growl_notify(
+    <span class="string">name</span>        =&gt; <span class="string">&apos;Notification Name&apos;</span>,
+    <span class="string">title</span>       =&gt; <span class="string">&apos;Hello&apos;</span>,
+    <span class="string">description</span> =&gt; <span class="string">&apos;Cocoa World!&apos;</span>,
+    <span class="string">on_click</span>    =&gt; <span class="keyword">sub</span> {
+        $done++;
+    },
+    <span class="string">on_timeout</span> =&gt; <span class="keyword">sub</span> {
+        $done++;
+    },
+);
+
+Cocoa::EventLoop-&gt;run_while(0.1) <span class="keyword">while</span> <span class="negation-char">!</span>$done;
+</code></pre>
+<p>これを AnyEvent で書くと：</p>
+<pre><code><span class="keyword">use</span> <span class="function-name">AnyEvent</span> 5.30;
+<span class="keyword">use</span> <span class="function-name">Cocoa::EventLoop</span>;
+<span class="keyword">use</span> <span class="function-name">Cocoa::Growl</span>;
+
+<span class="keyword">my</span> <span class="variable-name">$cv</span> = AnyEvent-&gt;condvar;
+growl_notify(
+    <span class="string">name</span>        =&gt; <span class="string">&apos;Notification Name&apos;</span>,
+    <span class="string">title</span>       =&gt; <span class="string">&apos;Hello&apos;</span>,
+    <span class="string">description</span> =&gt; <span class="string">&apos;Cocoa World!&apos;</span>,
+    <span class="string">on_click</span>    =&gt; <span class="keyword">sub</span> {
+        $cv-&gt;<span class="type">send</span>;
+    },
+    <span class="string">on_timeout</span> =&gt; <span class="keyword">sub</span> {
+        $cv-&gt;<span class="type">send</span>;
+    },
+);
+
+$cv-&gt;<span class="type">recv</span>;
+</code></pre>
+<p>ほぼ一緒ですね。 また、この例ではわからないですがtimerやioのインタフェースもAnyEventに合わせてあるのでほとんど同じ感じで使うことができます。</p>
+<p>ただまぁ、AnyEventには豊富なライブラリがあるため、上記のGrowlのサンプル以上に複雑なことをする場合は素直にAnyEventを使うのがいいかと思います。</p>
+
+  </div>
+
+  <div class="meta">
+    by typester /
+    at <a href="/memo/2011/01/04/2/">2011-01-04T10:30:00</a> /
+    <a href="/memo/tag/perl/">perl</a>
+    &middot; <a href="/memo/tag/osx/">osx</a>
+    / <a href="/memo/2011/01/04/2/#disqus_thread">Comment</a>
+  </div>
+</div>
+
+<div class="entry autopagerize_page_element">
+  <h2><a href="/memo/2011/01/04/1/">AnyEvent 5.3 Released</a></h2>
+
+  <div class="body">
+    <p>出てました。気がつきませんでした。</p>
+<p>このバージョンから AnyEvent::Impl::Cocoa が入りました。これは <a href="http://search.cpan.org/dist/Cocoa-EventLoop/">Cocoa::EventLoop</a> を AnyEvent から使うアダプターで、</p>
+<pre><code><span class="keyword">use</span> <span class="function-name">Cocoa::EventLoop</span>;
+</code></pre>
+<p>していると自動的に使われます。したがって、</p>
+<pre><code><span class="keyword">use</span> <span class="function-name">AnyEvent</span>;
+<span class="keyword">use</span> <span class="function-name">Cocoa::EventLoop</span>;
+
+<span class="comment-delimiter"># </span><span class="comment">AnyEventを使用したコード...
+</span></code></pre>
+<p>と言うように書くと自動的に Cocoa のイベントループで AnyEvent が動作するというわけです。 こうしておけば Cocoa::Growl など、Cocoa::EventLoop を必要とするモジュールをシームレスに AnyEvent 内で使うことが出来て便利です。</p>
+<p>なお、<a href="http://unknownplace.org/memo/2010/12/17/1/">AnyEvent::Impl::NSRunLoop</a> は DEPRECATED ってことでとりあえずドキュメントに注意書きを加え、さらに数週間後にはCPANから削除するつもりです。</p>
+
+  </div>
+
+  <div class="meta">
+    by typester /
+    at <a href="/memo/2011/01/04/1/">2011-01-04T10:25:00</a> /
+    <a href="/memo/tag/perl/">perl</a>
+    &middot; <a href="/memo/tag/anyevent/">anyevent</a>
+    &middot; <a href="/memo/tag/osx/">osx</a>
+    / <a href="/memo/2011/01/04/1/#disqus_thread">Comment</a>
+  </div>
+</div>
+
+<div class="entry autopagerize_page_element">
+  <h2><a href="/memo/2010/12/31/1/">PerlのXSでObjective-Cを使うときに気をつけること</a></h2>
+
+  <div class="body">
+    <p>QuickDraw API で定義されている <code>Move</code> マクロが、perl の handy.h の中で定義されているものとコンフリクトするため、</p>
+<pre><code><span class="preprocessor">#include</span> <span class="string">"EXTERN.h"</span>
+<span class="preprocessor">#include</span> <span class="string">"perl.h"</span>
+<span class="preprocessor">#include</span> <span class="string">"XSUB.h"</span>
+<span class="preprocessor">#include</span> <span class="string">"ppport.h"</span>
+
+<span class="comment-delimiter">// </span><span class="comment">undefine Move macro, this is conflict to Mac OS X QuickDraw API.
+</span><span class="preprocessor">#undef</span> Move
+
+<span class="preprocessor">#import</span> &lt;Foundation/Foundation.h&gt;
+</code></pre>
+<p>こんなようにしてperl関係のヘッダーをincludeしたあと<code>#undef</code>してあげたうえでCocoaのヘッダーをimportするようにすると良い。</p>
+<p>なお、 Foundation 以外にリンクするときはまた別の問題があるかもしれない。</p>
+<p>基本XS使うときは、まず単体でうごくCやObjective-Cのコードを書いて、XSはそれをつなぐだけという感じで使っているので、ガチでXS内でごりごり処理を実装することはなく、perlのMoveマクロは使ったことないから、それを使いたいときにどうすればいいかは知らない。</p>
+<p>memmoveのラッパーみたいだけど、NewxやSafefreeなどのようにこれ使ったほうが良いとかたぶんあるんだろうけど。</p>
+
+  </div>
+
+  <div class="meta">
+    by typester /
+    at <a href="/memo/2010/12/31/1/">2010-12-31T01:46:00</a> /
+    <a href="/memo/tag/perl/">perl</a>
+    &middot; <a href="/memo/tag/xs/">xs</a>
+    &middot; <a href="/memo/tag/objc/">objc</a>
+    / <a href="/memo/2010/12/31/1/#disqus_thread">Comment</a>
+  </div>
+</div>
+
+<div class="entry autopagerize_page_element">
+  <h2><a href="/memo/2010/12/17/1/">AnyEvent::Impl::NSRunLoop</a></h2>
+
+  <div class="body">
+    <p>っていう頭おかしいモジュールを作ってるんですが、これについていくつか schmorp (AnyEvent作者)とはなして以下のようにしていくことにした。</p>
+<ul><li>NSRunLoop の実装は Cocoa::RunLoop と言うモジュールに外だし</li><li>AE::Impl の方はそれをただ使うだけ</li><li>Cocoa::RunLoop は AnyEvent に依存しなくても使える</li><li>AnyEvent は Cocoa::RunLoop がロードされている環境ではバックエンドに Impl::NSRunLoop をつかう</li></ul>
+<p>と言うわけで将来的には、Cocoa::Growl とかそれ系のモジュールはシームレスに AnyEvent 内で使えるようになる感じです。</p>
+
+  </div>
+
+  <div class="meta">
+    by typester /
+    at <a href="/memo/2010/12/17/1/">2010-12-17T10:54:00</a> /
+    <a href="/memo/tag/perl/">perl</a>
+    &middot; <a href="/memo/tag/anyevent/">anyevent</a>
+    / <a href="/memo/2010/12/17/1/#disqus_thread">Comment</a>
+  </div>
+</div>
+
+<div class="entry autopagerize_page_element">
+  <h2><a href="/memo/2010/11/23/2/">kAudioSessionCategory_PlayAndRecord のときの AudioRoute 文字列メモ</a></h2>
+
+  <div class="body">
+    <p>ドキュメントに載ってなくて、実際うごかしてみて文字列を知るという状況。 なので持ってない機種とかデバイスでどうなるのかわからないという問題があり不安。</p>
+<h4>ReceiverAndMicrophone</h4>
+<p>PlayAndRecord 時は iPhone ではデフォルトでこれになる模様。 通常のスピーカーではなく電話の受話口から音が出る。</p>
+<h4>HeadphonesAndMicrophone</h4>
+<p>ヘッドフォンさしたとき。</p>
+<h4>SpeakerAndMicrophone</h4>
+<p>iPad とか（たぶん最新以外のiPod Touchも）のように受話口がない端末ではこれがデフォルトっぽい。</p>
+<h4>デフォルト以外のルートに設定する</h4>
+<p>スピーカーに強制的に変更するには <code>AudioSessionSetProperty</code> でできる。</p>
+<pre><code>UInt32 audioRouteOverride = kAudioSessionOverrideAudioRoute_Speaker;
+AudioSessionSetProperty(
+    kAudioSessionProperty_OverrideAudioRoute,
+    sizeof (audioRouteOverride),
+    &amp;audioRouteOverride
+);
+</code></pre>
+<p>他のルートに変更する方法は undocumented。</p>
+<p>ただこのうわがきはすでに SpeakerAndMicrophone なところで実行するとおかしくなっちゃう。 <code>AudioSessionSetProperty</code> するまえに <code>AudioSessionGetProperty</code> で現在の値を確認するようにすること。</p>
+<p>あと、AudioRoute の変更は <code>AudioSessionAddPropertyListener</code> で <code>kAudioSessionProperty_AudioRouteChange</code> を登録しておけば監視できる。</p>
+
+  </div>
+
+  <div class="meta">
+    by typester /
+    at <a href="/memo/2010/11/23/2/">2010-11-23T09:16:00</a> /
+    <a href="/memo/tag/iphone/">iphone</a>
+    &middot; <a href="/memo/tag/audio/">audio</a>
+    &middot; <a href="/memo/tag/AudioSession/">AudioSession</a>
+    / <a href="/memo/2010/11/23/2/#disqus_thread">Comment</a>
+  </div>
+</div>
+
+<div class="entry autopagerize_page_element">
+  <h2><a href="/memo/2010/11/23/1/">xcode プロジェクト設定をアーキテクチャごとに変えるには？</a></h2>
+
+  <div class="body">
+    <p>cocos2d のテンプレートでプロジェクトつくると、</p>
+<p><a href="http://www.flickr.com/photos/typester/5199445501/" title="スクリーンショット（2010-11-23 8.58.53） by typester, on Flickr"><img alt="スクリーンショット（2010-11-23 8.58.53）" height="107" src="http://farm6.static.flickr.com/5245/5199445501_e1af706000_o.png" width="343" /></a></p>
+<p>こんな感じで、ARMv6 と ARMv7 で設定を変えててへーっておもったけど。これって GUI から設定できない気がするんだけど、どうやってやるんだろ？？</p>
+
+  </div>
+
+  <div class="meta">
+    by typester /
+    at <a href="/memo/2010/11/23/1/">2010-11-23T09:00:00</a> /
+    <a href="/memo/tag/cocos2d/">cocos2d</a>
+    &middot; <a href="/memo/tag/iphone/">iphone</a>
+    &middot; <a href="/memo/tag/xcode/">xcode</a>
+    / <a href="/memo/2010/11/23/1/#disqus_thread">Comment</a>
+  </div>
+</div>
+
+<div class="entry autopagerize_page_element">
+  <h2><a href="/memo/2010/11/19/1/">CCRepeatForever は CCSequence の中では使えない</a></h2>
+
+  <div class="body">
+    <p>やろうとしたら BAD_ACCESS になった。</p>
+<blockquote><p><a href="http://www.cocos2d-iphone.org/wiki/doku.php/prog_guide:actions_composition">prog_guide:actions_composition - cocos2d for iPhone</a></p><p><em>IMPORTANT</em>: CCRepeatForever is not a valid CCIntervalAction. You can&apos;t use a CCRepeatForever inside a CCSequence action.</p></blockquote>
+<p>らしい。</p>
+<p>導入アニメしたあと、ループさせたいような場合はよくあるからこれできないと不便なきもする。</p>
+<p>そう言うことがしたい場合は <code>CCCallFunc</code> でアニメーションの終了をもらいそこで <code>CCRepeatForever</code> する。<code>CCCallBlock</code> っていう Blocks インタフェースあるからそれ使えばメソッド増やさなくてもいいようだ。</p>
+
+  </div>
+
+  <div class="meta">
+    by typester /
+    at <a href="/memo/2010/11/19/1/">2010-11-19T23:23:00</a> /
+    <a href="/memo/tag/iphone/">iphone</a>
+    &middot; <a href="/memo/tag/cocos2d/">cocos2d</a>
+    / <a href="/memo/2010/11/19/1/#disqus_thread">Comment</a>
+  </div>
+</div>
+
+<div class="entry autopagerize_page_element">
+  <h2><a href="/memo/2010/11/18/2/">ブログ</a></h2>
+
+  <div class="body">
+    <p>clmemo になんか記事っぽくメモを書くのに疲れてきたので、ブログを復活させようそうしよう。</p>
+<p>昔のエントリ見るとちゃんとメモっぽいのだけどなんでだろうなーw</p>
+
+  </div>
+
+  <div class="meta">
+    by typester /
+    at <a href="/memo/2010/11/18/2/">2010-11-18T15:11:00</a> /
+    <a href="/memo/tag/life/">life</a>
+    / <a href="/memo/2010/11/18/2/#disqus_thread">Comment</a>
+  </div>
+</div>
+
+<div class="entry autopagerize_page_element">
+  <h2><a href="/memo/2010/11/18/1/">cocos2d の Spritesheet の Retina 対応</a></h2>
+
+  <div class="body">
+    <p><a href="http://www.cocos2d-iphone.org/">cocos2d</a> ではメモリ効率よく画像リソースをあつかうために以下のような CSS Sprite っぽい画像に複数リソースを格納して使うことができる。</p>
+<p><a href="http://www.flickr.com/photos/typester/5186617822/" title="time_num by typester, on Flickr"><img alt="time_num" height="32" src="http://farm5.static.flickr.com/4124/5186617822_8ef3f66c4f_o.png" width="64" /></a></p>
+<p>cocos2d 自体は 0.99.5 から Retina 対応するようで、通常の画像ファイルなら <code>-hd.png</code> のような suffix で画像を置いておけば自動的にそいつが使われるようになった。</p>
+<p>スプライトシートでの対応方法が見つけられなかったので、いろいろ試してみた。</p>
+<p>結論から書くと、</p>
+<ul><li>time_num.png</li><li>time_num-hd.png</li><li>time_num.plist</li><li>time_num-hd.plist</li></ul>
+<p>とそれぞれファイルを作成する。plist のなかのファイル名は <code>-hd</code> ありなしに関わらずどちらもおなじ物を指定する必要がある。</p>
+<p>そのうえで、</p>
+<pre><code>[[<span class="type">CCSpriteFrameCache</span> sharedSpriteFrameCache] addSpriteFramesWithFile:@<span class="string">&quot;time_num.plist&quot;</span>];
+<span class="type">CCSpriteBatchNode</span>* <span class="variable-name">time_num</span> = [<span class="type">CCSpriteBatchNode</span> batchNodeWithFile:@<span class="string">&quot;time_num.png&quot;</span>];
+[<span class="keyword">self</span> addChild:time_num];
+
+<span class="type">CCSprite</span>* <span class="variable-name">time</span> = [<span class="type">CCSprite</span> spriteWithSpriteFrameName:@<span class="string">&quot;time_num1.png&quot;</span>];
+time.position = ccp(160, 240);
+[<span class="keyword">self</span> addChild:time];
+</code></pre>
+<p>などとすればいいようだ。座標系をただ倍にすればいいような単純な高解像度画像のためにもわざわざ別途plistを用意してあげなければいけないのが若干めんどくさい。</p>
+<p>plist 作成が面倒な場合、</p>
+<pre><code><span class="type">CCTexture2D</span>* <span class="variable-name">texture</span> = [[CCTextureCache sharedTextureCache] addImage:@<span class="string">"time_num.png"</span>];
+<span class="type">CCSpriteFrame</span> *<span class="variable-name">frame</span> = [CCSpriteFrame frameWithTexture:texture rect:CGRectMake(0, 0, 10, 14)];
+</code></pre>
+<p>というような感じでテクスチャを自前で切り出して使うことも可能のようだが、こっちのほうがコードが煩雑になりそう。</p>
+<p>（0.99.5-rc1 でためしてます）</p>
+
+  </div>
+
+  <div class="meta">
+    by typester /
+    at <a href="/memo/2010/11/18/1/">2010-11-18T14:34:00</a> /
+    <a href="/memo/tag/iphone/">iphone</a>
+    &middot; <a href="/memo/tag/cocos2d/">cocos2d</a>
+    / <a href="/memo/2010/11/18/1/#disqus_thread">Comment</a>
+  </div>
+</div>
+
+<div class="entry autopagerize_page_element">
+  <h2><a href="/memo/2010/11/07/1/">VAIO P に ubuntu 10.4 入れたときのメモ</a></h2>
+
+  <div class="body">
+    <p><a href="http://www.flickr.com/photos/typester/5153154329/" title="VAIO P + ubuntu 10.4 NetBook edition by typester, on Flickr"><img alt="VAIO P + ubuntu 10.4 NetBook edition" height="333" src="http://farm5.static.flickr.com/4038/5153154329_b6b380762b.jpg" width="500" /></a></p>
+<p>だいぶん前の話になりますが、重たい Macbook を常に持ち歩くのに嫌気がさし、外出用PCとして VAIO P を購入しました。 ただ Windows をつかうつもりは全くなかったので、とどいてすぐ ubuntu をインストールしました。</p>
+<h4>リカバリディスクの作成</h4>
+<p>最近の PC はリカバリディスクがないかわりに、HDD 内にリカバリ領域をもつ。 この領域もフルで使いたかったのでまずリカバリディスクを作成しリカバリ領域が消えても問題ないようにする。</p>
+<p>手順はマニュアルを参照してやるとすぐできた。 なんとこれにDVD-Rが二枚必要だった。</p>
+<h4>ubuntu インストール</h4>
+<p>10.4 の NetBook エディションを選択。（当時は 10.10 がまだ出ていなかった）</p>
+<p>インストールはイメージを DVD に焼いて DVD ブートし、通常インストール。</p>
+<p>まず DVD ブートの方法がわからず苦労する。 起動時に適当にボタンを押しまくって F2 で BIOS 画面が出せることがわかった。そこで起動順序を変更すれば OK。(なんかこれマニュアルに見つけられなかった)</p>
+<p>あとスティックが効かないのでGUIインストールは苦労。 これはあとで以下の起動オプションを渡せばいいことがわかった。</p>
+<pre><code>i8042.reset i8042.nomux i8042.nopnp i8042.noloop
+</code></pre>
+<p>あとは手順通りにインストール。HDD パーティションは 10GB くらいを <code>/</code> に、残りを全部 <code>/home</code> に割り当てた。swap 領域はなしとした。</p>
+<h4>スティックポインタが動くよう修正</h4>
+<p>インストール完了したらまずスティックポインタを動くように修正する。<code>/etc/default/grub</code> の <code>GRUB_CMDLINE_LINUX_DEFAULT</code> にさっきの</p>
+<pre><code>i8042.reset i8042.nomux i8042.nopnp i8042.noloop
+</code></pre>
+<p>を追加。これで再起動すればスティックが動くようになる。</p>
+<h4>SSD 対策</h4>
+<p>意味あるかわからないけど fstab をいじって、<code>/</code>、<code>/home</code> ともに noatime でマウントするように、<code>/tmp</code> は tmpfs に設定しておく。</p>
+<h4>ディスプレイドライバ</h4>
+<p>デフォルトだと描画が重たいので GMA500 用のドライバを入れる</p>
+<pre><code>sudo add-apt-repository ppa:gma500/ppa
+sudo apt-get update
+sudo apt-get install poulsbo-driver-2d poulsbo-driver-3d poulsbo-config
+</code></pre>
+<p>また、<code>/etc/default/grub</code> の <code>GRUB_CMDLINE_LINUX_DEFAULT</code> にさらに</p>
+<pre><code>mem=1920mb nohz=off
+</code></pre>
+<p>を追加しておく。</p>
+<p>この辺の情報は ubuntu の wiki の <a href="https://wiki.ubuntu.com/HardwareSupportComponentsVideoCardsPoulsbo/">HardwareSupportComponentsVideoCardsPoulsbo</a> にまとまってる。</p>
+<p>で、これはしばらくつかった最近はまったのだが、このドライバはカーネルアップグレードしても自動的にビルドされないみたいでうっかりアップデートがきてカーネルのバージョンをアップしちゃうと起動不可能になってしまう。カーネルアップしたら再起動するまえにこのドライバの再インストールを忘れないようにする必要があるようだ。</p>
+<h4>サスペンドできるように</h4>
+<p>ここの方法を今は使っている <a href="http://ubuntuforums.org/showthread.php?t=1531976">http://ubuntuforums.org/showthread.php?t=1531976</a></p>
+<pre><code>sudo apt-get uninstall vbetool
+sudo apt-get install uswsusp
+</code></pre>
+<p>して、<code>/usr/sbin/pm-suspend</code> を以下で上書き</p>
+<pre><code>#!/bin/sh
+#remove wlan modules
+for m in `lsmod | grep ath9k | awk &apos;{print $1}&apos;` ;
+do
+rmmod $m
+done
+
+s2ram --force
+
+modprobe ath9k
+</code></pre>
+<h4>日本語入力できるように</h4>
+<ul><li>ibus-anthyとかいれる</li><li>System -&gt; iBus Preferences で anthy を Input Method リストに入れる</li><li>System -&gt; Language Support で Keyboard input method system を ibus にセットして再起動</li></ul>
+<p>でOK。</p>
+<p>日本語入力のトグルキーは iBus Preferences から変更できる。デフォルトでは Ctrl-space もトグルキーとして設定されているが、これは emacs とコンフリクトするからはずしておく。</p>
+<h4>残ってる問題</h4>
+<p>スピーカーから音が出ない。ヘッドホン端子につなげばそこから音は出る。 解決方法知っている人いたら教えてください。</p>
+<h4>使用感</h4>
+<p>ターミナルとブラウザ、あとたまにSkypeつかうっていう程度なので ubuntu でも全然問題ない、というか非常に快適。</p>
+<p>キーボードはこの大きさでも普通にタッチタイプでき、ローカルに入った Emacs でその気になればコーディングも可能。</p>
+<p>またいまや Google Chrome のおかげでほかの OS と遜色ないブラウザ環境があるのも大きい。Flash Player も Chrome 自身に内蔵されているので何も考えなくていい。 Flash 内で日本語がインライン入力できるあたりは OS X より快適とも言える。</p>
+<p>外出時にWiFiつないだりといったネットワーク設定なんかも当たり前のようにタスクトレイからできてLinuxも楽ちんになったものだなー。</p>
+
+  </div>
+
+  <div class="meta">
+    by typester /
+    at <a href="/memo/2010/11/07/1/">2010-11-07T17:07:00</a> /
+    <a href="/memo/tag/ubuntu/">ubuntu</a>
+    &middot; <a href="/memo/tag/vaiop/">vaiop</a>
+    / <a href="/memo/2010/11/07/1/#disqus_thread">Comment</a>
+  </div>
+</div>
+
+
+
+
+<div id="pager" class="autopagerize_insert_before">
+  <p class="pages">
+    <a class="prev" rel="previous" href="/memo/page/7/">&laquo; Prev</a>
+    <a href="/memo/page/4/">4</a>
+    <a href="/memo/page/5/">5</a>
+    <a href="/memo/page/6/">6</a>
+    <a href="/memo/page/7/">7</a>
+    <span class="current">8</span>
+    <a href="/memo/page/9/">9</a>
+    <a href="/memo/page/10/">10</a>
+    <a href="/memo/page/11/">11</a>
+    <a href="/memo/page/12/">12</a>
+    <a href="/memo/page/13/">13</a>
+    <a class="next" rel="next" href="/memo/page/9/">Next &raquo;</a>
+  </p>
+  <p class="info">(Page 8 of 203)</p>
+</div>
+
+
+</div>
+
+<p id="footer">
+  Copyright &copy; 2005-2013
+      by <a class="author" href="/about/#me">Daisuke Murase (typester)</a> /
+  Site generated by <a href="https://github.com/typester/nim">nim</a> /
+  Comments powered by <a href="http://disqus.com">DISQUS</a>.
+</p>
+
+</div>
+
+
+<script type="text/javascript">
+//<![CDATA[
+(function() {
+	var links = document.getElementsByTagName('a');
+	var query = '?';
+	for(var i = 0; i < links.length; i++) {
+	if(links[i].href.indexOf('#disqus_thread') >= 0) {
+		query += 'url' + i + '=' + encodeURIComponent(links[i].href) + '&';
+	}
+	}
+	document.write('<script charset="utf-8" type="text/javascript" src="http://disqus.com/forums/unknownplace/get_num_replies.js' + query + '"></' + 'script>');
+})();
+//]]>
+</script>
+
+
+<script type="text/javascript">
+var gaJsHost = (("https:" == document.location.protocol) ? "https://ssl." : "http://www.");
+document.write(unescape("%3Cscript src='" + gaJsHost + "google-analytics.com/ga.js' type='text/javascript'%3E%3C/script%3E"));
+</script>
+<script type="text/javascript">
+try {
+var pageTracker = _gat._getTracker("UA-53067-1");
+pageTracker._trackPageview();
+} catch(err) {}</script>
+
+<script>
+function googleTranslateElementInit() {
+  new google.translate.TranslateElement({
+    pageLanguage: 'ja',
+    gaTrack: true,
+    gaId: 'UA-53067',
+    floatPosition: google.translate.TranslateElement.FloatPosition.BOTTOM_RIGHT
+  });
+}
+</script><script src="//translate.google.com/translate_a/element.js?cb=googleTranslateElementInit"></script>
+
+</body>
+</html>

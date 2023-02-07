@@ -1,0 +1,276 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="ja" xml:lang="ja">
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <title>2006/02/06 - memo - unknownplace.org</title>
+  <link rel="stylesheet" type="text/css" href="http://yui.yahooapis.com/3.0.0/build/cssreset/reset-min.css" />
+  <link rel="stylesheet" type="text/css" href="http://yui.yahooapis.com/3.0.0/build/cssfonts/fonts-min.css" />
+  <link rel="stylesheet" href="/css/style.css" type="text/css" />
+  <meta property="fb:admins" content="1093631929" />
+  <meta name="robots" content="noindex" />
+  <link rel="alternate" type="application/rss+xml" href="http://unknownplace.org/memo/index.rss" />
+</head>
+<body>
+
+<div id="container">
+<div id="header">
+    <h1><a href="/">unknownplace.org</a></h1> /
+<a href="/memo/">memo</a>
+</div>
+
+<div id="content">
+
+<div class="entry autopagerize_page_element">
+  <h2 id="e010"><a href="/memo/2006/02/06/10/">cpanrecent_crawler を Schema::Loader にスイッチ</a></h2>
+
+  <div class="body">
+    <p>今朝かいた <a href="http://unknownplace.org/memo/2006/02/06#e003">Catalyst の Model を Schema::Loader でロード</a>ってやつを、CPAN Recent Changes のクローラでやってみた。</p>
+<p>今までは <code>use MyApp;</code> 方式でロードしていて、それからの変更は以下のような感じ。</p>
+<blockquote><p><a href="http://dev.unknownplace.org/public/changeset/223">[223] (changeset) - Public Projects - Trac</a></p></blockquote>
+<p>こんな感じで割りとすぐ移行可能。<code>Class::C3</code> の warning が消えたのがかなりうれしいなぁ。</p>
+
+  </div>
+
+  <div class="meta">
+    by typester /
+    at <a href="/memo/2006/02/06/10/">2006-02-06T22:53:00</a> /
+    <a href="/memo/tag/perl/">perl</a>
+    &middot; <a href="/memo/tag/dbic/">dbic</a>
+    / <a href="/memo/2006/02/06/10/#disqus_thread">Comment</a>
+  </div>
+</div>
+
+<div class="entry autopagerize_page_element">
+  <h2 id="e009"><a href="/memo/2006/02/06/9/">カフェベロナ 100g</a></h2>
+
+  <div class="body">
+    <p>そのままで、といったのに挽かれてしまった。</p>
+
+  </div>
+
+  <div class="meta">
+    by typester /
+    at <a href="/memo/2006/02/06/9/">2006-02-06T14:04:00</a> /
+    <a href="/memo/tag/life/">life</a>
+    &middot; <a href="/memo/tag/starbucks/">starbucks</a>
+    / <a href="/memo/2006/02/06/9/#disqus_thread">Comment</a>
+  </div>
+</div>
+
+<div class="entry autopagerize_page_element">
+  <h2 id="e008"><a href="/memo/2006/02/06/8/"></a></h2>
+
+  <div class="body">
+    <p><a href="http://www.kayac.com/recruit/"><img alt="人材大募集中！" height="63" src="http://www.kayac.com/img1/banner0623.gif" width="402" /></a></p>
+<p>We&apos;re Hiring!</p>
+
+  </div>
+
+  <div class="meta">
+    by typester /
+    at <a href="/memo/2006/02/06/8/">2006-02-06T13:52:00</a> /
+    <a href="/memo/tag/life/">life</a>
+    &middot; <a href="/memo/tag/kayac/">kayac</a>
+    / <a href="/memo/2006/02/06/8/#disqus_thread">Comment</a>
+  </div>
+</div>
+
+<div class="entry autopagerize_page_element">
+  <h2 id="e007"><a href="/memo/2006/02/06/7/"></a></h2>
+
+  <div class="body">
+    <p>見たけど問題なさげ。</p>
+<p>yml では <code>$c-&gt;config-&gt;{session}</code> と <code>$c-&gt;config-&gt;{authentication}-&gt;{flickr}</code> を上書きしてるんだけど、後者だけしか上書きされてなかったという謎現象。</p>
+<p>とりあえず yml ファイルのパスを自動指定ではなくて、明示的に <code>$c-&gt;config-&gt;{file}</code> に書いたら直った。</p>
+
+  </div>
+
+  <div class="meta">
+    by typester /
+    at <a href="/memo/2006/02/06/7/">2006-02-06T11:11:00</a> /
+    <a href="/memo/tag/catalyst/">catalyst</a>
+    / <a href="/memo/2006/02/06/7/#disqus_thread">Comment</a>
+  </div>
+</div>
+
+<div class="entry autopagerize_page_element">
+  <h2 id="e006"><a href="/memo/2006/02/06/6/"></a></h2>
+
+  <div class="body">
+    <p><code>$c-&gt;config-&gt;{session}</code> に clon.yml の内容が反映されてない。</p>
+<p>というか反映されているけど、Session プラグインはそれ読んでないみたいだ。つか気づくのおせー。会社着て <code>verify_address =&gt; 0</code> がうごいてなくて気づいた。</p>
+<p>んー？ あとで Session プラグインを読む。</p>
+
+  </div>
+
+  <div class="meta">
+    by typester /
+    at <a href="/memo/2006/02/06/6/">2006-02-06T11:03:00</a> /
+    <a href="/memo/tag/catalyst/">catalyst</a>
+    / <a href="/memo/2006/02/06/6/#disqus_thread">Comment</a>
+  </div>
+</div>
+
+<div class="entry autopagerize_page_element">
+  <h2 id="e005"><a href="/memo/2006/02/06/5/"></a></h2>
+
+  <div class="body">
+    <p>出社。</p>
+
+  </div>
+
+  <div class="meta">
+    by typester /
+    at <a href="/memo/2006/02/06/5/">2006-02-06T10:38:00</a> /
+    <a href="/memo/tag/life/">life</a>
+    / <a href="/memo/2006/02/06/5/#disqus_thread">Comment</a>
+  </div>
+</div>
+
+<div class="entry autopagerize_page_element">
+  <h2 id="e004"><a href="/memo/2006/02/06/4/">IE7 起動スクリプト</a></h2>
+
+  <div class="body">
+    <p>前に書いたレジストリファイルを ie7fix2.reg という名前でIE7と同じところに保存しさらに同じところに</p>
+<pre><code>// ie7.js
+var WshShell = WScript.CreateObject(&apos;WScript.Shell&apos;);
+
+WshShell.Run(&apos;.\\iexplore.exe&apos;, 1, 1);
+WshShell.Run(&apos;regedit /S ie7fix2.reg&apos;);
+</code></pre>
+<p>とかいう感じで ie7.js を作る。</p>
+<p>これで ie7.js ダブルクリックで IE7 が起動し、終了後自動でレジストリを削除してくれる。</p>
+<p>クイック起動ツールバーとかにそれのショートカットを</p>
+<p><img alt="taskbar" height="28" src="http://static.flickr.com/32/95926473_e4cbacc607_o.png" width="211" /></p>
+<p>こんな感じにアイコン指定して置いとくと隣の席の人に自慢できるかもしらん。</p>
+
+  </div>
+
+  <div class="meta">
+    by typester /
+    at <a href="/memo/2006/02/06/4/">2006-02-06T05:34:00</a> /
+    <a href="/memo/tag/life/">life</a>
+    / <a href="/memo/2006/02/06/4/#disqus_thread">Comment</a>
+  </div>
+</div>
+
+<div class="entry autopagerize_page_element">
+  <h2 id="e003"><a href="/memo/2006/02/06/3/"></a></h2>
+
+  <div class="body">
+    <p><a href="http://unknownplace.org/memo/2006/01/24">こないだ書いた</a> Catalyst の DBIC モデルを外部スクリプトから利用するっていうやつ、DBIx::Class::Schema::Loader つかえばいいね。</p>
+<pre><code><span class="keyword">use</span> <span class="function-name">FindBin</span>;
+<span class="keyword">use</span> <span class="function-name">lib</span> <span class="string">&quot;$FindBin::Bin/../lib&quot;</span>;
+
+{
+    <span class="keyword">package</span> <span class="function-name">MyApp::Model::DBIC</span>;
+    <span class="keyword">use</span> <span class="function-name">base</span> <span class="cperl-nonoverridable">qw</span><span class="string">/DBIx::Class::Schema::Loader/</span>;
+
+    <span class="type">__PACKAGE__</span>-&gt;load_from_connection(
+        <span class="string">dsn</span> =&gt; <span class="string">&apos;dbi:...&apos;</span>,
+    );
+    <span class="type">__PACKAGE__</span>-&gt;load_classes;
+}
+</code></pre>
+<p>こんな感じにすれば、<code>MyApp::Model::DBIC::*</code> をロードしてくれる。</p>
+<p>全部ロードしてもいいなら <code>use MyApp;</code> で終わりなんだけど多分ほとんどの場合外部スクリプトから必要なのはモデル部分だけだと思われる。</p>
+<ins>22:55: `load_classes` 書いてなかったので追記。ロードされてねーよ。</ins>
+
+  </div>
+
+  <div class="meta">
+    by typester /
+    at <a href="/memo/2006/02/06/3/">2006-02-06T04:41:00</a> /
+    <a href="/memo/tag/perl/">perl</a>
+    &middot; <a href="/memo/tag/dbic/">dbic</a>
+    / <a href="/memo/2006/02/06/3/#disqus_thread">Comment</a>
+  </div>
+</div>
+
+<div class="entry autopagerize_page_element">
+  <h2 id="e002"><a href="/memo/2006/02/06/2/"></a></h2>
+
+  <div class="body">
+    <p>RW完全初期化してからやったらいけた。</p>
+<p>smpカーネル入れてsshつなげるようにしたら飽きた。後は暇なときにやろう。。</p>
+
+  </div>
+
+  <div class="meta">
+    by typester /
+    at <a href="/memo/2006/02/06/2/">2006-02-06T04:32:00</a> /
+    <a href="/memo/tag/life/">life</a>
+    / <a href="/memo/2006/02/06/2/#disqus_thread">Comment</a>
+  </div>
+</div>
+
+<div class="entry autopagerize_page_element">
+  <h2 id="e001"><a href="/memo/2006/02/06/1/">放置してたSC430</a></h2>
+
+  <div class="body">
+    <p>に手をつけようかと思ったのだけど、なんかCD-RW読んでくれないんですが！！</p>
+
+  </div>
+
+  <div class="meta">
+    by typester /
+    at <a href="/memo/2006/02/06/1/">2006-02-06T02:37:00</a> /
+    <a href="/memo/tag/life/">life</a>
+    / <a href="/memo/2006/02/06/1/#disqus_thread">Comment</a>
+  </div>
+</div>
+
+
+
+</div>
+
+<p id="footer">
+  Copyright &copy; 2005-2013
+      by <a class="author" href="/about/#me">Daisuke Murase (typester)</a> /
+  Site generated by <a href="https://github.com/typester/nim">nim</a> /
+  Comments powered by <a href="http://disqus.com">DISQUS</a>.
+</p>
+
+</div>
+
+
+<script type="text/javascript">
+//<![CDATA[
+(function() {
+	var links = document.getElementsByTagName('a');
+	var query = '?';
+	for(var i = 0; i < links.length; i++) {
+	if(links[i].href.indexOf('#disqus_thread') >= 0) {
+		query += 'url' + i + '=' + encodeURIComponent(links[i].href) + '&';
+	}
+	}
+	document.write('<script charset="utf-8" type="text/javascript" src="http://disqus.com/forums/unknownplace/get_num_replies.js' + query + '"></' + 'script>');
+})();
+//]]>
+</script>
+
+
+<script type="text/javascript">
+var gaJsHost = (("https:" == document.location.protocol) ? "https://ssl." : "http://www.");
+document.write(unescape("%3Cscript src='" + gaJsHost + "google-analytics.com/ga.js' type='text/javascript'%3E%3C/script%3E"));
+</script>
+<script type="text/javascript">
+try {
+var pageTracker = _gat._getTracker("UA-53067-1");
+pageTracker._trackPageview();
+} catch(err) {}</script>
+
+<script>
+function googleTranslateElementInit() {
+  new google.translate.TranslateElement({
+    pageLanguage: 'ja',
+    gaTrack: true,
+    gaId: 'UA-53067',
+    floatPosition: google.translate.TranslateElement.FloatPosition.BOTTOM_RIGHT
+  });
+}
+</script><script src="//translate.google.com/translate_a/element.js?cb=googleTranslateElementInit"></script>
+
+</body>
+</html>
